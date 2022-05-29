@@ -1,0 +1,41 @@
+{
+	"textures": [
+		{
+			"image": "houndsprites.png",
+			"format": "RGBA8888",
+			"size": {
+				"w": 982,
+				"h": 924
+			},
+			"scale": 1,
+			"frames": [
+				{
+					"filename": "Hellhound.gif",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 980,
+						"h": 922
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 980,
+						"h": 922
+					},
+					"frame": {
+						"x": 1,
+						"y": 1,
+						"w": 980,
+						"h": 922
+					}
+				}
+			]
+		}
+	],
+	"meta": {
+		"app": "https://www.codeandweb.com/texturepacker",
+		"version": "3.0",
+		"smartupdate": "$TexturePacker:SmartUpdate:2a20b37ed364d7870cb69f42d714e4db:27206e0fb90b8e355f6c93ca740077af:3dfc74635ebac97cc7ca7d6eba64599d$"
+	}
+}
