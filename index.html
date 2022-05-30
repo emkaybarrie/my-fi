@@ -364,10 +364,10 @@
 
         this.physics.world.setBounds(0, 0, width * 3,  height);
         
-        this.woodsl1 = this.add.tileSprite(0,0, width * 3, height, 'woodsl1').setOrigin(0,0).setScrollFactor(0)//.setPipeline('Light2D')
-        this.woodsl2 = this.add.tileSprite(0,0, width * 3, height, 'woodsl2').setOrigin(0,0).setScrollFactor(0.25)//.setPipeline('Light2D')
-        this.woodsl3 = this.add.tileSprite(0,0, width * 3, height, 'woodsl3').setOrigin(0,0).setScrollFactor(0.5)//.setPipeline('Light2D')
-        this.woodsl4 = this.add.tileSprite(0,0, width * 3, height, 'woodsl4').setOrigin(0,0).setScrollFactor(1).setDepth(2)//.setPipeline('Light2D')
+        this.woodsl1 = this.add.tileSprite(0,0, width * 3, height, 'woodsl1').setOrigin(0,0).setScrollFactor(0)
+        this.woodsl2 = this.add.tileSprite(0,0, width * 3, height, 'woodsl2').setOrigin(0,0).setScrollFactor(0.25)
+        this.woodsl3 = this.add.tileSprite(0,0, width * 3, height, 'woodsl3').setOrigin(0,0).setScrollFactor(0.5)
+        this.woodsl4 = this.add.tileSprite(0,0, width * 3, height, 'woodsl4').setOrigin(0,0).setScrollFactor(1).setDepth(2)
 
         
         this.lights.enable();
@@ -379,7 +379,7 @@
         platforms = this.physics.add.staticGroup();
         platforms.create(0, height - 50, 'ground').setOrigin(0,0).setScale(width * 3 /400).refreshBody().setVisible(0);
 
-        player = this.physics.add.sprite(startPosition, height - 90 ,'heroF').setScale(2.5).setPipeline('Light2D');
+        player = this.physics.add.sprite(startPosition, height - 90 ,'heroF').setScale(2).setPipeline('Light2D');
         player.setDepth(1)
         player.tint = 0xdd7e6b;
         currentLife = startLife
