@@ -569,7 +569,7 @@
         cursors = this.input.keyboard.createCursorKeys();
         keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
         // Touch Screen Support
-
+        if(!this.sys.game.device.os.desktop){
         this.input.addPointer(5);
         up = this.add.image(0, 0, 'up').setInteractive().setDepth(3).setScale(0.75).setAlpha(0.5);
         down = this.add.image(0, 0, 'down').setInteractive().setDepth(3).setScale(0.75).setAlpha(0.5);
@@ -644,6 +644,7 @@
         }
 
         });
+    }
 
     }
 
@@ -683,6 +684,7 @@
         playerVitals.y = player.y - 20
         playerVitals.draw()
 
+        if(!this.sys.game.device.os.desktop){
         left.x = camera.scrollX + 25// - 245 
         energy.x = camera.scrollX + 650 
 
@@ -700,6 +702,7 @@
         up.y = deadSpace.y - 40.5
         down.y = left.y + 40.5
         focusB.y = energy.y + 53
+        }
 
         
 
