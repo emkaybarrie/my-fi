@@ -233,7 +233,7 @@
 
             player.anims.play({key:'pDash',frameRate: 12},true);
 
-            player.body.maxVelocity.x = 500
+            player.body.maxVelocity.x = 500 * (width/DEFAULT_WIDTH)
             player.setVelocityX(500)
             player.setDragX(5000)
             enemy1.setDragX(3000)
@@ -382,7 +382,7 @@
         playerVitals = new HealthBar(this,startLife, player.x, player.y - 50);
 
         player.body.setSize(10, 30).setOffset(25,15).setAllowDrag(true)
-        player.body.maxVelocity.x = 250
+        player.body.maxVelocity.x = 250 * (width/DEFAULT_WIDTH)
         player.setBounceY(0.15);
         player.setCollideWorldBounds(true);
 
@@ -398,7 +398,7 @@
             
             enemy1.setDepth(0)
             enemy1.flipX = true
-            enemy1.body.maxVelocity.x = 300
+            enemy1.body.maxVelocity.x = 300 * (width/DEFAULT_WIDTH)
             enemy1.setCollideWorldBounds(true)
             
             this.physics.add.overlap(enemy1, player, grabbed);
@@ -936,13 +936,13 @@
 
                     if (player.flipX){
                         
-                        player.body.maxVelocity.x = 500
+                        player.body.maxVelocity.x = 500 * (width/DEFAULT_WIDTH)
                         this.physics.moveTo(player,player.x - 100,height - 90,500)
 
                     } else if (player.flipX == false) {
 
                         
-                        player.body.maxVelocity.x = 500
+                        player.body.maxVelocity.x = 500 * (width/DEFAULT_WIDTH)
                         this.physics.moveTo(player,player.x + 100,height - 90,500)
                         
                     }
@@ -972,13 +972,13 @@
                 }  else if (player.body.touching.down){
 
                     player.anims.play({key:'pIdle',frameRate: 8},true);
-                    player.body.maxVelocity.x = 250
+                    player.body.maxVelocity.x = 250 * (width/DEFAULT_WIDTH)
                     enemy1HitCheck = false
 
  
                 } else {
                     player.anims.play({key:'pUptoFall',frameRate: 8});
-                    player.body.maxVelocity.x = 250
+                    player.body.maxVelocity.x = 250 * (width/DEFAULT_WIDTH)
                     enemy1HitCheck = false
                 }
 
