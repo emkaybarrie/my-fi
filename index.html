@@ -324,6 +324,13 @@
 
     function preload ()
     {
+        this.load.image('up', 'assets/buttonUp.png');
+        this.load.image('down', 'assets/buttonDown.png');
+        this.load.image('deadSpace', 'assets/buttonDeadSpace.png');
+        this.load.image('left', 'assets/buttonLeft.png');
+        this.load.image('right', 'assets/buttonRight.png');
+        this.load.image('energy', 'assets/buttonEnergy.png');
+        this.load.image('focus', 'assets/buttonFocus.png');
         this.load.image('dawnl1', 'assets/dawn1.png');
         this.load.image('dawnl2', 'assets/dawn2.png');
         this.load.image('dawnl3', 'assets/dawn3.png');
@@ -562,6 +569,28 @@
         // Controllers online
         cursors = this.input.keyboard.createCursorKeys();
         keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
+        // Touch Screen Support
+
+        //this.input.addPointer(5);
+        up = this.add.image(0, 0, 'up').setInteractive().setDepth(3).setScale(0.75).setAlpha(0.75);
+        down = this.add.image(0, 0, 'down').setInteractive().setDepth(3).setScale(0.75).setAlpha(0.75);
+        left = this.add.image(0, 0, 'left').setInteractive().setDepth(3).setScale(0.75).setAlpha(0.75);
+        right = this.add.image(0, 0, 'right').setInteractive().setDepth(3).setScale(0.75).setAlpha(0.75);
+        deadSpace = this.add.image(0, 0, 'deadSpace').setDepth(4).setScale(0.75).setAlpha(0.75);
+        energy = this.add.image(0, 0, 'energy').setInteractive().setDepth(3).setScale(0.75).setAlpha(0.75);
+        focusB = this.add.image(0, 0, 'focus').setInteractive().setDepth(3).setScale(0.75).setAlpha(0.75);
+
+        this.input.on('gameobjectdown', function (pointer, gameObject) {
+
+        gameObject.setAlpha(1);
+
+        });
+
+        this.input.on('gameobjectup', function (pointer, gameObject) {
+
+        gameObject.setAlpha(0.75);
+
+        });
 
     }
 
@@ -598,6 +627,24 @@
         playerVitals.x = player.x + 25
         playerVitals.y = player.y - 20
         playerVitals.draw()
+
+        left.x = player.x - 235 
+        energy.x = player.x + 225 
+
+        deadSpace.x = left.x + 40.5
+        right.x = deadSpace.x + 40.5
+        up.x = deadSpace.x
+        down.x = deadSpace.x
+        focusB.x = energy.x - 50
+
+        left.y = player.y + 48
+        energy.y = player.y + 23
+
+        deadSpace.y = left.y
+        right.y = deadSpace.y
+        up.y = deadSpace.y - 40.5
+        down.y = left.y + 40.5
+        focusB.y = energy.y + 50
 
         
 
