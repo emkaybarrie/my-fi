@@ -56,17 +56,10 @@
     var width = game.config.width
     var height = game.config.height
     var spotlight
-    var section 
- 
+    
     var startPosition 
     var playerPosition 
-    var enemyPosition
-
-    var section
     
-
-    var enemyGroup
- 
     var playerSpeed 
     var slowMo = false  
     var inBattle = false                                       
@@ -106,19 +99,11 @@
 
     var playerHitCheck = false
     var enemy1HitCheck = false
-    var enemy2HitCheck = false
-    var enemy3HitCheck = false
+
     var enemy1Life
     var enemy1Alive
-    var enemy2Life
-    var enemy2Alive
-    var enemy3Life
-    var enemy3Alive
+
   
-    
-    
-
-
 
     class HealthBar {
 
@@ -246,18 +231,17 @@
             player.setVelocityX(500)
             player.setDragX(5000)
             enemy1.setDragX(3000)
-            enemy2.setDragX(3000)
-            enemy3.setDragX(3000)
+
             player.flipX = true
             inBattle = true
-            //playerVitals.decreaseEnergy(currentEnergy * 0.025)
-            playerVitals.decreaseLife(currentLife * 0.025)
-            //playerVitals.decreaseFocus(currentFocus * 0.2)
-
-
-                
-            maxEnergy *= 1 - 0.04
+            if (currentLife <= 0){
+                playerVitals.decreaseEnergy(currentEnergy * 0.025)
+            } else {
+                playerVitals.decreaseLife(currentLife * 0.025)
+            }
+            
             income *= 1 - 0.04
+
             camera.startFollow(player, false, 0.05, 0.05)
 
 
@@ -272,6 +256,7 @@
                       if (playerHitCheck == true){
                         player.anims.play({key:'pHurt'},true);
                         playerVitals.decreaseLife(currentLife * 0.025)
+                        maxEnergy *= 1 - 0.04
                       }
                       
                                    
@@ -284,35 +269,10 @@
                     
                       enemy1HitCheck = true
                        
-                       enemy1Life -= Phaser.Math.Between(1,3)
-                       //enemy1.setVelocityX(0)  
-
-                      
-                      
-                      
-       
+                        enemy1Life -= Phaser.Math.Between(1,3) 
                
     }
-
-    function enemy2Hit(){
-
-            
-                enemy2HitCheck = true
-                enemy2.anims.play({key:'eHurt',frameRate: 10},true);
-                enemy2Life -= Phaser.Math.Between(1,5)
-                enemy2.setVelocityX(0)   
-               
-    }
-    
-    function enemy3Hit(){
-
-            
-                enemy3HitCheck = true
-                enemy3.anims.play({key:'eHurt',frameRate: 10},true);
-                enemy3Life -= Phaser.Math.Between(1,5)
-                enemy3.setVelocityX(0)   
-               
-    }   
+  
 
     // 144 seconds = 1 year
     // 12 seconds = 1 month
@@ -324,16 +284,12 @@
         var totalEnergy = currentEnergy + energyRegen
         currentEnergy = Phaser.Math.MaxAdd(currentEnergy, energyRegen,maxEnergy) 
         currentFocus = Phaser.Math.MaxAdd(currentFocus,totalEnergy - currentEnergy + focusRegen,maxFocus)
-        //player.body.maxVelocity.x += currentFocus / maxEnergy
-        //player.body.maxVelocity.x *= 1 - (0.04 / 12)   
-        //player.setVelocity(player.body.velocity.x + (player.body.maxVelocity.x  * budgetRatio * power)) 
+
         //maxEnergy *= 1 - (0.04 / 12)
-        //income *= 1 - (0.04 / 12)
+        income *= 1 - (0.04 / 12)
        // budget *= 1 - (0.04 / 12)
         
         enemy1.setVelocity(Phaser.Math.Between(100 * chaosMultiplierMin, 100 * chaosMultiplierMax))
-        enemy2.setVelocity(Phaser.Math.Between(100 * chaosMultiplierMin, 100 * chaosMultiplierMax))
-        enemy3.setVelocity(Phaser.Math.Between(100 * chaosMultiplierMin, 100 * chaosMultiplierMax))
           
         }
 
@@ -430,60 +386,14 @@
             enemy1Life = 200
             enemy1Alive = true
 
-            enemy2 = this.physics.add.sprite(100, height - 85, 'doomsayer').setScale(1.75).setPipeline('Light2D');
             
-            enemy2.setDepth(0)
-            enemy2.flipX = true
-            enemy2.body.maxVelocity.x = 300
-            enemy2.setBounceY(0.15);
-            enemy2.setCollideWorldBounds(true)
-            
-            this.physics.add.overlap(enemy2, player, grabbed);
-            this.physics.add.overlap(enemy2, player, playerHit)
-            this.physics.add.overlap(enemy2, sword, enemy2Hit)
-            this.physics.add.collider(platforms,enemy2);
-            
-            enemy2.anims.play({key:'eRun',frameRate: 10},true);
-            enemy2.body.setAllowDrag(true)
-            
-            enemy2Life = 100
-            enemy2Alive = true
-
-            enemy3 = this.physics.add.sprite(200, height - 850, 'doomsayer').setScale(1.75,2).setPipeline('Light2D');
-            
-            enemy3.setDepth(0)
-            enemy3.flipX = true
-            enemy3.body.maxVelocity.x = 300
-            enemy3.setCollideWorldBounds(true)
-            
-            this.physics.add.overlap(enemy3, player, grabbed);
-            this.physics.add.overlap(enemy3, player, playerHit)
-            this.physics.add.overlap(enemy3, sword, enemy3Hit)
-            this.physics.add.collider(platforms,enemy3);
-            
-            enemy3.anims.play({key:'eRun',frameRate: 10},true);
-            enemy3.body.setAllowDrag(true)
-            
-            enemy3Life = 150
-            enemy3Alive = true
-            
-    
-
-
-
         camera = this.cameras.main.centerOn(player.x, 0) //.startFollow(player, false, 0.05, 0.05)
 
         camera.setBounds(0, 0, width * 3, height)
         
         camera.fadeIn(6000)
 
-
-        
-        
-
         monthlyTimer = this.time.addEvent({delay: 12000, callback: runMonthlyFunctions, args: [], callbackScope: this, loop: true});
-        // cycle2Timer = this.time.addEvent({delay: 144000, callback: runCycle2Functions, args: [], callbackScope: this, loop: true});
-
 
         this.anims.create({
             key: 'pIdle',
@@ -566,12 +476,7 @@
             //delay: 1
         });
 
-       
-
     
-
-       
-
         this.anims.create({
             key: 'eIdle',
             frames: this.anims.generateFrameNames('doomsayer',{prefix: 'idle', start: 1, end: 8}),
@@ -616,8 +521,6 @@
 
        
 
-        
-      
 
         // Controllers online
         cursors = this.input.keyboard.createCursorKeys();
@@ -668,20 +571,11 @@
         spotlight.x = player.x
         spotlight.y = player.y
 
-        
-
-        
 
         console.log('Enemy 1 Life: ' + enemy1Life)
         console.log('Enemy 1 Hit: ' + enemy1HitCheck)
-        console.log('Enemy 2 Life: ' + enemy2Life)
-        console.log('Enemy 3 Life: ' + enemy3Life)
 
         
-        
-       
-        
-     
         playerPosition = player.x
         
         if (slowMo == false){
@@ -705,11 +599,7 @@
 
         chaosFactor = Phaser.Math.Between(chaosMultiplierMin,chaosMultiplierMax)
         enemy1.body.setSize(enemy1.width, enemy1.height)
-        enemy2.body.setSize(enemy2.width, enemy2.height)
-        enemy3.body.setSize(enemy3.width, enemy3.height)
 
-        
-        
 
         if (inBattle == false){
             // Check if Player is in Battle mode (beat'em up) or not
@@ -720,53 +610,33 @@
             
                 player.chain([ {key:'pUptoFall',frameRate: 12},true, {key:'pSlide',frameRate: 4},true]);
                 enemy1.anims.play({key:'eRun',frameRate: 10},true);
-                enemy2.anims.play({key:'eRun',frameRate: 10},true);
-                enemy3.anims.play({key:'eRun',frameRate: 10},true);
+
                 this.physics.moveTo(player,width * 1.4,height - 90,30)
             
             } else if (cursors.left.isDown){
                 this.physics.moveTo(player,width * 1.4,height - 90,90)
                 player.anims.play({key:'pRun',frameRate: 8},true);
                 enemy1.anims.play({key:'eRun',frameRate: 8},true);
-                enemy2.anims.play({key:'eRun',frameRate: 8},true);
-                enemy3.anims.play({key:'eRun',frameRate: 8},true);
+
                 
             } else if (cursors.right.isDown){
                 
                 this.physics.moveTo(player,width * 1.7,height - 90,90)
                 player.anims.play({key:'pRun',frameRate: 16},true);
                 enemy1.anims.play({key:'eRun',frameRate: 12},true);
-                enemy2.anims.play({key:'eRun',frameRate: 12},true);
-                enemy3.anims.play({key:'eRun',frameRate: 12},true);
-                
+
                     if (enemy1.x > width * 1.55 && player.x > width * 1.6){
                         slowMo = true
                         enemy1.setVelocityX(-100)
                         player.anims.play({key:'pRun',frameRate: 4},true);
                         enemy1.anims.play({key:'eRun',frameRate: 4},true);
                     }
-
-                    if (enemy2.x > width * 1.55 && player.x > width * 1.6){
-                        slowMo = true
-                        enemy2.setVelocityX(-100)
-                        player.anims.play({key:'pRun',frameRate: 4},true);
-                        enemy2.anims.play({key:'eRun',frameRate: 4},true);
-                    }
-
-                    if (enemy3.x > width * 1.55 && player.x > width * 1.6){
-                        slowMo = true
-                        enemy3.setVelocityX(-100)
-                        player.anims.play({key:'pRun',frameRate: 4},true);
-                        enemy3.anims.play({key:'eRun',frameRate: 4},true);
-                    }
-
-                   
+                 
             } else {
                 this.physics.moveTo(player,width * 1.5,height - 90,150)
                 player.anims.play({key:'pRun',frameRate: 12},true);
                 enemy1.anims.play({key:'eRun',frameRate: 10},true);
-                enemy2.anims.play({key:'eRun',frameRate: 10},true);
-                enemy3.anims.play({key:'eRun',frameRate: 10},true);
+
                 slowMo = false
             }
 
@@ -925,10 +795,8 @@
                     player.anims.play({key:'pIdle',frameRate: 8},true);
                     player.body.maxVelocity.x = 250
                     enemy1HitCheck = false
-                    enemy2HitCheck = false
-                    enemy3HitCheck = false
-                
-            
+
+ 
                 } 
 
             }
