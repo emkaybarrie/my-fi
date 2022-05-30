@@ -110,7 +110,7 @@
     var playerHitCheck = false
     var enemy1HitCheck = false
 
-    var enemy1Life
+    var enemy1Life = budget
     var enemy1Alive
 
   
@@ -281,13 +281,14 @@
 
     function enemy1Hit(){
 
-                    
+        if (inBattle) {              
         if (enemy1Hit == false){
             enemy1Hit = true
             enemy1Life -= damage * Phaser.Math.Between(0.8,1.15)
             enemy1.x -= Phaser.Math.Between(-10,10)
 
-        }              
+        } 
+    }             
                  
     }
 
@@ -723,11 +724,11 @@
         enemy1.y = height - 85
 
         console.log('Enemy 1 Life: ' + enemy1Life)
-        //console.log('Enemy 1 Hit: ' + enemy1HitCheck)
-        console.log('Charge Power %: ' + chargePower * 100)
-        console.log('Damage: ' + damage)
-        console.log('Camera X: ' + camera.scrollX)
-        console.log('Player Velocity x: ' + player.body.velocity.x)
+        console.log('Enemy 1 Hit: ' + enemy1HitCheck)
+        //console.log('Charge Power %: ' + chargePower * 100)
+       // console.log('Damage: ' + damage)
+        //console.log('Camera X: ' + camera.scrollX)
+       // console.log('Player Velocity x: ' + player.body.velocity.x)
 
         
 
