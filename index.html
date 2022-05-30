@@ -307,6 +307,7 @@
     function runMonthlyFunctions()
     {
        if (inBattle == false) {
+
         var totalEnergy = currentEnergy + energyRegen
         currentEnergy = Phaser.Math.MaxAdd(currentEnergy, energyRegen,maxEnergy) 
         currentFocus = Phaser.Math.MaxAdd(currentFocus,totalEnergy - currentEnergy + focusRegen,maxFocus)
@@ -314,7 +315,7 @@
         //maxEnergy *= 1 - (0.04 / 12)
         income *= 1 - (0.04 / 12)
        // budget *= 1 - (0.04 / 12)
-        
+        enemy1.setDragX(0)
         enemy1.setVelocity(Phaser.Math.Between(100 * chaosMultiplierMin, 100 * chaosMultiplierMax))
           
         }
@@ -726,7 +727,7 @@
         console.log('Enemy 1 Hit: ' + enemy1HitCheck)
         console.log('Charge Power %: ' + chargePower * 100)
        console.log('Damage: ' + damage)
-       console.log('Enemy X: ' + enemy1.x)
+       console.log('Enemy Drag X: ' + enemy1.body.drag.x)
        console.log('Enemy Velocity x: ' + enemy1.body.velocity.x)
 
         
@@ -797,13 +798,15 @@
             // In Battle Mode
 
             if (enemy1Alive == false){
-                enemy1.x = 20
+                enemy1.x = 0
                 enemy1.y =  0
                 player.flipX = false
+                
                 inBattle = false
                 enemy1Life = budget * chaosFactor
                 enemy1Alive = true
-                enemy1.setDragX(300)
+                
+                
                 
             }
 
