@@ -53,6 +53,8 @@
     var game = new Phaser.Game(config);
     var gameOver = false
 
+    var IS_TOUCH
+
     
 
     var width = game.config.width
@@ -569,7 +571,7 @@
         cursors = this.input.keyboard.createCursorKeys();
         keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
         // Touch Screen Support
-        if(!this.sys.game.device.os.desktop){
+        
         this.input.addPointer(5);
         up = this.add.image(0, 0, 'up').setInteractive().setDepth(3).setScale(0.75).setAlpha(0.5);
         down = this.add.image(0, 0, 'down').setInteractive().setDepth(3).setScale(0.75).setAlpha(0.5);
@@ -580,6 +582,8 @@
         focusB = this.add.image(0, 0, 'focus').setInteractive().setDepth(3).setScale(1).setAlpha(0.5);
 
         this.input.on('gameobjectdown', function (pointer, gameObject) {
+        IS_TOUCH = true;
+           
 
         gameObject.setAlpha(1);
         
@@ -644,7 +648,7 @@
         }
 
         });
-    }
+    
 
     }
 
@@ -684,7 +688,7 @@
         playerVitals.y = player.y - 20
         playerVitals.draw()
 
-        if(!this.sys.game.device.os.desktop){
+        if(IS_TOUCH){
         left.x = camera.scrollX + 25// - 245 
         energy.x = camera.scrollX + 650 
 
