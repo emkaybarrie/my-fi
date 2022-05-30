@@ -273,7 +273,7 @@
             enemy1Hit = true
             enemy1Life -= Phaser.Math.Between(25,75) 
             enemy1.x -= 10
-            
+
         }              
                  
     }
@@ -281,8 +281,7 @@
     function enemy1Recover(){
 
         if (enemy1Hit){
-            enemy1Hit = false
-            
+            enemy1Hit = false 
         }
 
     }
@@ -312,9 +311,6 @@
         
         
     }
-
-
-
 
 
     function preload ()
@@ -644,13 +640,18 @@
 
             camera.startFollow(player, false, 0.05, 0.05)
 
+            if (player.x - enemy1.x > 0){
+                enemy1.flipX = false
+            } else {
+                enemy1.flipX = true
+            }
              
             if (enemy1Hit){
                 enemy1.anims.play({key:'eHurt',frameRate: 12},true); 
                 enemy1.on('animationcomplete', function () {
                     enemy1Recover();
                 }, this);
-            } else if (enemy1Life > 0) {
+            } else if (enemy1Life > 0 && enemy1Recover) {
             
                     if (Math.abs(player.x - enemy1.x) > 120){
                     this.physics.moveToObject(enemy1,player,100)
