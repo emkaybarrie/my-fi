@@ -369,7 +369,7 @@
         this.lights.enable();
         this.lights.setAmbientColor(0x808080);
 
-        spotlight = this.lights.addLight(400, 300, 280).setIntensity(0.75);
+        spotlight = this.lights.addLight(400, 300, 280).setIntensity(0.5);
         spotlight2 = this.lights.addLight(400, 300, 280).setIntensity(0.25);
        
         platforms = this.physics.add.staticGroup();
@@ -885,6 +885,12 @@
                     if(Phaser.Input.Keyboard.JustDown(keyA)){
                         player.anims.play({key:'pChargeAttack',frameRate: 16},true);
                     }
+                    
+                    if (spotlight.intensity < 1.5){
+                        spotlight.intensity += 0.01
+                    }
+                    
+
 
                     // this.tweens.addCounter({
                     //     from: 255,
@@ -917,6 +923,8 @@
                     if (player.anims.currentFrame.index >= 6 && player.anims.currentFrame.index < 12){
                             sword.body.checkCollision.none = false
                     }
+
+                    spotlight.setIntensity(0.5)
 
                     
 
