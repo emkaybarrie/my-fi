@@ -713,7 +713,7 @@
         console.log('Charge Power %: ' + chargePower * 100)
         console.log('Damage: ' + damage)
         console.log('Camera X: ' + camera.scrollX)
-        console.log('Player X: ' + player.x)
+        console.log('Player Velocity x: ' + devicePixelRatio)
 
         
 
@@ -970,7 +970,7 @@
                     
                 } else if (cursors.right.isDown && player.body.touching.down){
 
-                    player.setVelocityX(player.body.velocity.x + 200)
+                    player.setVelocityX(player.body.velocity.x + (20 * devicePixelRatio))
                     player.flipX = false
                     player.anims.play({key:'pRun',frameRate: 10},true);
 
