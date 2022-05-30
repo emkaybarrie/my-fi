@@ -233,17 +233,17 @@
 
             player.anims.play({key:'pDash',frameRate: 12},true);
 
-            player.body.maxVelocity.x = 500
-            player.setVelocityX(500)
-            player.setDragX(5000)
-            enemy1.setDragX(3000)
+            player.body.maxVelocity.x = 250
+            player.setVelocityX(250)
+            player.setDragX(500)
+            enemy1.setDragX(300)
 
             player.flipX = true
             inBattle = true
             if (currentLife <= 0){
-                playerVitals.decreaseEnergy(currentEnergy * 0.025)
+                playerVitals.decreaseEnergy(currentEnergy * 0.05)
             } else {
-                playerVitals.decreaseLife(currentLife * 0.025)
+                playerVitals.decreaseLife(currentLife * 0.05)
             }
             
             income *= 1 - 0.04
@@ -647,7 +647,7 @@
 
     }
 
-    this.scale.startFullscreen();
+
 
     function update ()
     {
