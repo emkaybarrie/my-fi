@@ -576,8 +576,8 @@
         left = this.add.image(0, 0, 'left').setInteractive().setDepth(3).setScale(0.75).setAlpha(0.5);
         right = this.add.image(0, 0, 'right').setInteractive().setDepth(3).setScale(0.75).setAlpha(0.5);
         deadSpace = this.add.image(0, 0, 'deadSpace').setDepth(4).setScale(0.75).setAlpha(0.5);
-        energy = this.add.image(0, 0, 'energy').setInteractive().setDepth(3).setScale(0.75).setAlpha(0.5);
-        focusB = this.add.image(0, 0, 'focus').setInteractive().setDepth(3).setScale(0.75).setAlpha(0.5);
+        energy = this.add.image(0, 0, 'energy').setInteractive().setDepth(3).setScale(1).setAlpha(0.5);
+        focusB = this.add.image(0, 0, 'focus').setInteractive().setDepth(3).setScale(1).setAlpha(0.5);
 
         this.input.on('gameobjectdown', function (pointer, gameObject) {
 
@@ -690,16 +690,16 @@
         right.x = deadSpace.x + 40.5
         up.x = deadSpace.x
         down.x = deadSpace.x
-        focusB.x = energy.x - 50
+        focusB.x = energy.x - 75
 
         left.y = camera.scrollY + (height - 60)
-        energy.y = camera.scrollY + (height - 80.25)
+        energy.y = camera.scrollY + (height - 81)
 
         deadSpace.y = left.y
         right.y = deadSpace.y
         up.y = deadSpace.y - 40.5
         down.y = left.y + 40.5
-        focusB.y = energy.y + 50
+        focusB.y = energy.y + 53
 
         
 
