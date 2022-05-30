@@ -17,7 +17,8 @@
     var ratio = Math.max(window.innerWidth / window.innerHeight, window.innerHeight / window.innerWidth)
     var DEFAULT_HEIGHT = 272  // any height you want
     var DEFAULT_WIDTH = ratio * DEFAULT_HEIGHT// * 2
- // Comment
+
+
     var config = {
         type: Phaser.AUTO,
 
@@ -25,6 +26,7 @@
 
             parent: 'mygame',
             mode: Phaser.Scale.FIT,
+            autoCenter: Phaser.Scale.CENTER_BOTH,
             width:  DEFAULT_WIDTH, //592, //window.innerWidth * window.devicePixelRatio
             height: DEFAULT_HEIGHT //272, //window.innerHeight * window.devicePixelRatio
         },
@@ -61,7 +63,7 @@
     var playerPosition 
     
     var playerSpeed 
-    var slowMo = false  
+     
     var inBattle = false                                       
     var deathBlows = false
     var parry = false
@@ -539,7 +541,7 @@
 
          // v2 Player runs on spot, and tween 
 
-        // Player uses energy (auto via budget) to set velocity and coast on momentum, and to avoid incoming obstacles (budget/some stat determines auto slowMo/dodge)
+        // Player uses energy (auto via budget) to set velocity and coast on momentum, and to avoid incoming obstacles (budget/some stat determines auto dodge)
 
         // Enemies spawn and charge at intervals relating to a [month]
 
@@ -578,12 +580,7 @@
         
         playerPosition = player.x
         
-        if (slowMo == false){
-            playerSpeed = playerPosition / (width * 1.5)
-        } else if (slowMo == true) {
-            playerSpeed = (playerPosition / (width * 1.5)) * 0.25  
-        }
-        
+        playerSpeed = playerPosition / (width * 1.5)
         
         if (inBattle == false){
             this.woodsl2.tilePositionX += 1 * (playerSpeed)
@@ -626,10 +623,7 @@
                 enemy1.anims.play({key:'eRun',frameRate: 12},true);
 
                     if (enemy1.x > width * 1.55 && player.x > width * 1.6){
-                        slowMo = true
                         enemy1.setVelocityX(-100)
-                        player.anims.play({key:'pRun',frameRate: 4},true);
-                        enemy1.anims.play({key:'eRun',frameRate: 4},true);
                     }
                  
             } else {
@@ -637,7 +631,6 @@
                 player.anims.play({key:'pRun',frameRate: 12},true);
                 enemy1.anims.play({key:'eRun',frameRate: 10},true);
 
-                slowMo = false
             }
 
         } else if (inBattle) {
