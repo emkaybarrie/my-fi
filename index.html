@@ -965,20 +965,20 @@
                     
                 } else if (cursors.right.isDown && player.body.touching.down){
 
-                    player.setVelocityX(player.body.velocity.x + 200)
+                    player.setVelocityX(player.body.velocity.x + 2000)
                     player.flipX = false
                     player.anims.play({key:'pRun',frameRate: 10},true);
 
                 }  else if (player.body.touching.down){
 
                     player.anims.play({key:'pIdle',frameRate: 8},true);
-                    player.body.maxVelocity.x = 2500
+                    player.body.maxVelocity.x = 25000
                     enemy1HitCheck = false
 
  
                 } else {
                     player.anims.play({key:'pUptoFall',frameRate: 8});
-                    player.body.maxVelocity.x = 2500
+                    player.body.maxVelocity.x = 25000
                     enemy1HitCheck = false
                 }
 
