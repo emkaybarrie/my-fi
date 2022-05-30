@@ -436,8 +436,7 @@
             frameRate: 12,
             repeat: 0
         });
-
-       
+     
 
         this.anims.create({
             key: 'pHurt',
@@ -583,12 +582,66 @@
         this.input.on('gameobjectdown', function (pointer, gameObject) {
 
         gameObject.setAlpha(1);
+        
+        if (gameObject == up){
+            cursors.up.isDown = true
+        }
+
+        if (gameObject == down){
+            cursors.down.isDown = true
+        }
+
+        if (gameObject == left){
+            cursors.left.isDown = true
+        } 
+
+        if (gameObject == right){
+            cursors.right.isDown = true
+        }
+
+        if (gameObject == energy){
+            keyA.isDown = true
+            player.anims.play({key:'pChargeAttack',frameRate: 16},true);
+            keyA.isUp = false
+        }
+
+        if (gameObject == focusB){
+            // keyA.isDown = true
+            // player.anims.play({key:'pChargeAttack',frameRate: 16},true);
+            // keyA.isUp = false
+        }
 
         });
 
         this.input.on('gameobjectup', function (pointer, gameObject) {
 
         gameObject.setAlpha(0.75);
+
+        if (gameObject == up){
+            cursors.up.isDown = false
+        }
+
+        if (gameObject == down){
+            cursors.down.isDown = false
+        }
+
+        if (gameObject == left){
+            cursors.left.isDown = false
+        }
+
+        if (gameObject == right){
+            cursors.right.isDown = false
+        }
+
+        if (gameObject == energy){
+            keyA.isDown = false
+            keyA.isUp = true
+        }
+
+        if (gameObject == focusB){
+            // keyA.isDown = false
+            // keyA.isUp = true
+        }
 
         });
 
@@ -923,7 +976,11 @@
                     enemy1HitCheck = false
 
  
-                } 
+                } else {
+                    player.anims.play({key:'pUptoFall',frameRate: 8});
+                    player.body.maxVelocity.x = 250
+                    enemy1HitCheck = false
+                }
 
             }
 
