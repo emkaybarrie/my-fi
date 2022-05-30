@@ -724,8 +724,8 @@
 
         console.log('Enemy 1 Life: ' + enemy1Life)
         console.log('Enemy 1 Hit: ' + enemy1HitCheck)
-        //console.log('Charge Power %: ' + chargePower * 100)
-       // console.log('Damage: ' + damage)
+        console.log('Charge Power %: ' + chargePower * 100)
+       console.log('Damage: ' + damage)
         //console.log('Camera X: ' + camera.scrollX)
        // console.log('Player Velocity x: ' + player.body.velocity.x)
 
@@ -887,6 +887,7 @@
                    
                     player.anims.play({key:'pHeavyAttack',frameRate: 12},true);
 
+                   
                     playerVitals.decreaseEnergy(maxEnergy / 30 / 10)
                     // Activate Sword Hitbox
 
@@ -904,28 +905,20 @@
                         spotlight.intensity += 0.01
                     }
                     
-
-
-                    // this.tweens.addCounter({
-                    //     from: 255,
-                    //     to: 0,
-                    //     duration: 1000,
-                    //     onUpdate: function (tween)
-                    //     {
-                    //         const value = Math.floor(tween.getValue());
-
-                    //         player.setTint(Phaser.Display.Color.GetColor(value, value, value));
-                    //     }
-                    // });
                     
-                    if (chargePower <= 1){
+                    if (chargePower <= 1.1){
                         chargePower += 0.025
                     }
 
                     damage = maxEnergy * 0.5 * chargePower
 
                     keyDuration = keyA.getDuration()
-                    playerVitals.decreaseEnergy(maxEnergy / 300)
+                    if (chargePower < 0.95){
+                        playerVitals.decreaseEnergy(maxEnergy / 300)
+                    } else {
+                        playerVitals.decreaseEnergy(maxEnergy / 600)
+                    }
+                    
 
                    
                     // Activate Sword Hitbox
