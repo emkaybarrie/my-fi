@@ -527,12 +527,6 @@
         // Controllers online
         cursors = this.input.keyboard.createCursorKeys();
         keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
-       
-
-      
-
-        
-
 
     }
 
@@ -620,7 +614,7 @@
                 
                 this.physics.moveTo(player,width * 1.7,height - 90,90)
                 player.anims.play({key:'pRun',frameRate: 16},true);
-                enemy1.anims.play({key:'eRun',frameRate: 12},true);
+                enemy1.anims.play({key:'eRun',frameRate: 14},true);
 
                     if (enemy1.x > width * 1.55 && player.x > width * 1.6){
                         enemy1.setVelocityX(-100)
