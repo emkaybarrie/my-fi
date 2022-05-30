@@ -77,6 +77,10 @@
     var energyRegen = energyRegenAllocation * income
     var focusRegen = focusRegenAllocation * income
 
+    var chargePower = 0
+    var keyDuration = 0
+    var damage = 0
+
     var maxLife = income * 3
     var startLife = maxLife
     var currentLife 
@@ -252,6 +256,11 @@
 
     }
 
+    function playerComboEnd() {
+        keyDuration = 0
+        chargePower = 0
+    }
+
     function playerHit(){
 
                     
@@ -271,8 +280,8 @@
                     
         if (enemy1Hit == false){
             enemy1Hit = true
-            enemy1Life -= Phaser.Math.Between(25,75) 
-            enemy1.x -= 10
+            enemy1Life -= damage * Phaser.Math.Between(0.8,1.15)
+            enemy1.x -= Phaser.Math.Between(-10,10)
 
         }              
                  
@@ -393,7 +402,7 @@
             enemy1.anims.play({key:'eRun',frameRate: 10},true);
             enemy1.body.setAllowDrag(true)
             
-            enemy1Life = 200
+            enemy1Life = budget * Phaser.Math.Between(0.8,1.7)
             enemy1Alive = true
 
             
@@ -451,9 +460,6 @@
             repeat: 0
         });
 
-
-       
-
         this.anims.create({
             key: 'pRun',
             frames: this.anims.generateFrameNames('heroF',{prefix: 'Warrior_Run_', start: 1, end: 8, suffix: '.png'}),
@@ -479,12 +485,33 @@
         });
 
         this.anims.create({
+            key: 'pQuickAttack',
+            frames: this.anims.generateFrameNames('heroF',{prefix: 'Warrior_Attack_', start: 1, end: 8, suffix: '.png'}),
+            frameRate: 14,
+            repeat: 0,
+            //delay: 1
+        });
+
+        this.anims.create({
+            key: 'pChargeAttack',
+            frames: this.anims.generateFrameNames('heroF',{prefix: 'Warrior_Attack_', start: 1, end: 3, suffix: '.png'}),
+            frameRate: 2,
+            repeat: 0,
+            //yoyo: true,
+            //delay: 1
+        });
+
+        this.anims.create({
             key: 'pHeavyAttack',
             frames: this.anims.generateFrameNames('heroF',{prefix: 'Warrior_Dash-Attack_', start: 1, end: 10, suffix: '.png'}),
             frameRate: 14,
             repeat: 0,
             //delay: 1
         });
+
+
+
+
 
     
         this.anims.create({
@@ -572,13 +599,18 @@
         playerVitals.y = player.y - 20
         playerVitals.draw()
 
+        
+
         spotlight.x = player.x
         spotlight.y = player.y
 
         enemy1.y = height - 85
 
         console.log('Enemy 1 Life: ' + enemy1Life)
-        console.log('Enemy 1 Hit: ' + enemy1HitCheck)
+        //console.log('Enemy 1 Hit: ' + enemy1HitCheck)
+        console.log('Charge Power %: ' + chargePower * 100)
+        console.log('Damage: ' + damage)
+        
 
         
         playerPosition = player.x
@@ -744,15 +776,60 @@
                     } 
 
                 } else if (keyA.isDown){
-                    player.anims.play({key:'pAttack',frameRate: 16},true);
+                    
+                    if(Phaser.Input.Keyboard.JustDown(keyA)){
+                        player.anims.play({key:'pChargeAttack',frameRate: 16},true);
+                    }
 
-                    playerVitals.decreaseEnergy(maxEnergy / 600)
+                    // this.tweens.addCounter({
+                    //     from: 255,
+                    //     to: 0,
+                    //     duration: 1000,
+                    //     onUpdate: function (tween)
+                    //     {
+                    //         const value = Math.floor(tween.getValue());
+
+                    //         player.setTint(Phaser.Display.Color.GetColor(value, value, value));
+                    //     }
+                    // });
+                    
+                    if (chargePower <= 1){
+                        chargePower += 0.025
+                    }
+
+                    damage = maxEnergy * 0.5 * chargePower
+
+                    keyDuration = keyA.getDuration()
+                    playerVitals.decreaseEnergy(maxEnergy / 300)
+
+                   
                     // Activate Sword Hitbox
 
-                    if (player.anims.currentFrame.index >= 6 && player.anims.currentFrame.index < 12){
-                    sword.body.checkCollision.none = false
-                    } 
+                     
                     
+                } else if (keyA.isUp && keyDuration > 0){
+
+                    if (player.anims.currentFrame.index >= 6 && player.anims.currentFrame.index < 12){
+                            sword.body.checkCollision.none = false
+                    }
+
+                    
+
+                  if (chargePower > 0.75){
+         
+                        player.anims.play({key:'pAttack',frameRate: 24, startFrame: 3, repeat: 1},true);
+                          
+                    } else if (chargePower >= 0.25 && chargePower < 0.75){
+                        player.anims.play({key:'pAttack',frameRate: 16, startFrame: 3},true);
+                    } else if (chargePower <  0.25){
+                        player.anims.play({key:'pQuickAttack',frameRate: 18, startFrame: 3, endFrame: 8},true);
+                    }
+
+                    player.on('animationcomplete', function () {    
+                    playerComboEnd();
+                    }, this);
+ 
+
                 } else if (cursors.space.isDown){
 
                     player.anims.play({key:'pDash',frameRate: 12},true);
