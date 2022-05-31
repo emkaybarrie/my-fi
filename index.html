@@ -723,13 +723,13 @@
         // Touch Screen Support
         
         this.input.addPointer(5);
-        up = this.add.image(0, 0, 'up').setInteractive().setDepth(3).setScale(0.75).setAlpha(0.5);
-        down = this.add.image(0, 0, 'down').setInteractive().setDepth(3).setScale(0.75).setAlpha(0.5);
-        left = this.add.image(0, 0, 'left').setInteractive().setDepth(3).setScale(0.75).setAlpha(0.5);
-        right = this.add.image(0, 0, 'right').setInteractive().setDepth(3).setScale(0.75).setAlpha(0.5);
-        deadSpace = this.add.image(0, 0, 'deadSpace').setDepth(4).setScale(0.75).setAlpha(0.5);
-        energy = this.add.image(0, 0, 'energy').setInteractive().setDepth(3).setScale(1).setAlpha(0.5);
-        focusB = this.add.image(0, 0, 'focus').setInteractive().setDepth(3).setScale(1).setAlpha(0.5);
+        up = this.add.image(-100, -100, 'up').setInteractive().setDepth(3).setScale(0.75).setAlpha(0.5);
+        down = this.add.image(-100, -100, 'down').setInteractive().setDepth(3).setScale(0.75).setAlpha(0.5);
+        left = this.add.image(-100, -100, 'left').setInteractive().setDepth(3).setScale(0.75).setAlpha(0.5);
+        right = this.add.image(-100, -100, 'right').setInteractive().setDepth(3).setScale(0.75).setAlpha(0.5);
+        deadSpace = this.add.image(-100, -100, 'deadSpace').setDepth(4).setScale(0.75).setAlpha(0.5);
+        energy = this.add.image(-100, -100, 'energy').setInteractive().setDepth(3).setScale(1).setAlpha(0.5);
+        focusB = this.add.image(-100, -100, 'focus').setInteractive().setDepth(3).setScale(1).setAlpha(0.5);
 
         this.input.on('pointerdown', function (pointer) {
         IS_TOUCH = true;
