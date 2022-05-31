@@ -111,6 +111,7 @@
 
     var enemy1Life = budget
     var enemy1Alive
+    
 
   
 
@@ -309,6 +310,8 @@
         }
 
     }
+
+   
   
 
     // 144 seconds = 1 year
@@ -328,13 +331,15 @@
        // budget *= 1 - (0.04 / 12)
         enemy1.setDragX(0)
         enemy1.setVelocity(Phaser.Math.Between(100 * chaosMultiplierMin, 100 * chaosMultiplierMax))
+        enemy1Life = budget * chaosFactor
           
         }
 
         chaosMultiplierMin *= 1.04
         chaosMultiplierMax *= 1.06
 
-        enemy1Life = budget * chaosFactor
+
+      
         
         
     }
@@ -742,6 +747,8 @@
        console.log('Damage: ' + damage)
        console.log('Enemy Drag X: ' + enemy1.body.drag.x)
        console.log('Enemy Velocity x: ' + enemy1.body.velocity.x)
+
+       
        console.log('Enemy Chaos Factor: ' + chaosFactor)
 
         
@@ -841,9 +848,6 @@
                 inBattle = false
                 enemy1Life = budget * chaosFactor
                 enemy1Alive = true
-                
-                
-                
             }
 
             camera.startFollow(player, false, 0.05, 0.05)
@@ -859,16 +863,20 @@
                 enemy1.on('animationcomplete', function () {
                     enemy1Recover();
                 }, this);
-            } else if (enemy1Life > 0 && enemy1Recover && Math.abs(player.x - enemy1.x) > 120) {
+            } else if (enemy1Alive && enemy1Life > 0 && enemy1Hit == false && Math.abs(player.x - enemy1.x) >= 100) {
             
                     this.physics.moveToObject(enemy1,player,200)
                     enemy1.anims.play({key:'eRun',frameRate: 12},true); 
                     
-            } else if (enemy1Life > 0 && enemy1Recover && Math.abs(player.x - enemy1.x) <= 120){
+                    
+            } else if (enemy1Alive && enemy1Life > 0 && enemy1Hit == false){
 
                 enemy1.anims.play({key:'eIdle',frameRate: 10},true);
+
                 
-                    
+
+            
+                           
                 
             } else if (enemy1Life <=0 && enemy1Alive){
                     
