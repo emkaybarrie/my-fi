@@ -260,6 +260,7 @@
     }
 
     function playerComboEnd() {
+        
         keyDuration = 0
         chargePower = 0
     }
@@ -283,9 +284,18 @@
         if (inBattle) {              
         if (enemy1Hit == false){
             enemy1Hit = true
-            enemy1Life -= damage * Phaser.Math.Between(0.8,1.15)
-            enemy1.x -= Phaser.Math.Between(-10,10)
-            this.cameras.main.shake(500, 0.01);
+            var chaos = Phaser.Math.FloatBetween(0.00,1.00)
+            if (chargePower > .15 && chaos < 0.05){
+            camera.shake(500, 0.005);
+            enemy1Life -= damage * Phaser.Math.Between(1.1,2.45)
+            enemy1.x -= Phaser.Math.Between(-15,15)
+            } else {
+                enemy1Life -= damage * Phaser.Math.Between(0.8,1.15)
+                enemy1.x -= Phaser.Math.Between(-10,10)
+            }
+            
+            
+            
 
         } 
     }             
@@ -873,6 +883,7 @@
             } else if (enemy1Alive){
                     
                 enemy1.anims.play({key:'eDeath'},true);
+                
                 if (enemy1.anims.currentFrame.index > 9){
                 enemy1Alive = false
                 }
