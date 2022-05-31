@@ -859,28 +859,18 @@
                 enemy1.on('animationcomplete', function () {
                     enemy1Recover();
                 }, this);
-            } else if (enemy1Life > 0 && enemy1Recover) {
+            } else if (enemy1Life > 0 && enemy1Recover && Math.abs(player.x - enemy1.x) > 120) {
             
-                    if (Math.abs(player.x - enemy1.x) > 120){
                     this.physics.moveToObject(enemy1,player,200)
                     enemy1.anims.play({key:'eRun',frameRate: 12},true); 
-                    // } else if (Math.abs(player.x - enemy1.x) <= 150){
-
-                    // enemy1.anims.play({key:'eAttack',frameRate: 12},true);
-
-                    // if (enemy1.anims.currentFrame.index >= 5 && enemy1.anims.currentFrame.index < 7){
-                    //     playerHitCheck = true
-                
-                    // } 
-                   
-                    } else {
-                    enemy1.anims.play({key:'eIdle',frameRate: 10},true);
                     
+            } else if (enemy1Life > 0 && enemy1Recover && Math.abs(player.x - enemy1.x) <= 120){
 
-                    }
+                enemy1.anims.play({key:'eIdle',frameRate: 10},true);
                 
+                    
                 
-            } else if (enemy1Alive){
+            } else if (enemy1Life <=0 && enemy1Alive){
                     
                 enemy1.anims.play({key:'eDeath'},true);
                 
