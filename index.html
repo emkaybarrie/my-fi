@@ -285,6 +285,7 @@
             enemy1Hit = true
             enemy1Life -= damage * Phaser.Math.Between(0.8,1.15)
             enemy1.x -= Phaser.Math.Between(-10,10)
+            this.cameras.main.shake(500, 0.01);
 
         } 
     }             
@@ -757,6 +758,8 @@
 
 
         if (inBattle == false){
+
+            player.flipX = false
 
             if (enemy1.x > width * 1.55 && player.x > width * 1.6){
                         enemy1.setVelocityX(-100)
