@@ -666,7 +666,7 @@
         this.anims.create({
             key: 'pChargeAttack',
             frames: this.anims.generateFrameNames('heroF',{prefix: 'Warrior_Attack_', start: 1, end: 3, suffix: '.png'}),
-            frameRate: 2,
+            frameRate: 6,
             repeat: 0,
             //yoyo: true,
             //delay: 1
@@ -682,10 +682,10 @@
 
         this.anims.create({
             key: 'pChargeEnergy',
-            frames: this.anims.generateFrameNames('heroF',{prefix: 'Warrior_Attack_', start: 1, end: 2, suffix: '.png'}),
+            frames: this.anims.generateFrameNames('heroF',{prefix: 'Warrior_Crouch_', start: 1, end: 6, suffix: '.png'}),
             frameRate: 4,
             repeat: 0,
-            yoyo: true,
+            //yoyo: true,
             //delay: 500
         });
 
@@ -946,11 +946,15 @@
         if (inBattle == false){
             this.woodsl2.tilePositionX += 1 * (playerSpeed)
             this.woodsl3.tilePositionX += 2 * (playerSpeed)
-            this.woodsl4.tilePositionX += 4.5 * (playerSpeed)  
+            this.woodsl4.tilePositionX += 4.5 * (playerSpeed)
+            this.woodsl4.setAlpha(1) 
+            camera.zoomTo(1,750) 
         } else if (inBattle) {
             this.woodsl2.tilePositionX = camera.x * 0.3
             this.woodsl3.tilePositionX = camera.x * 0.6
             this.woodsl4.tilePositionX = camera.x
+            this.woodsl4.setAlpha(0.9)
+            camera.zoomTo(1.15,750)
         }
         
   
@@ -1153,7 +1157,7 @@
                 } else if (keyA.isDown && currentEnergy > 0){
                     
                     if(Phaser.Input.Keyboard.JustDown(keyA)){
-                        player.anims.play({key:'pChargeAttack',frameRate: 16},true);
+                        player.anims.play({key:'pChargeAttack'},true);
                     }
                     
                     if (spotlight.intensity < 1.5){
@@ -1176,7 +1180,7 @@
                     
 
                    
-                } else if (cursors.up.isDown && currentFocus > 0 && currentEnergy < maxEnergy * 0.99){   
+                } else if (cursors.up.isDown && cursors.space.isDown && currentFocus > 0 && currentEnergy < maxEnergy * 0.99){   
                     //if(Phaser.Input.Keyboard.JustDown(cursors.up)){
                         player.anims.play({key:'pChargeEnergy'},true);
                    // }
