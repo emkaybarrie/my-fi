@@ -353,18 +353,21 @@
         if (enemy1Hit == false){
             enemy1Hit = true
             var chaos = Phaser.Math.FloatBetween(0.00,1.00)
-            if (chargePower > .75 && chaos < 0.05){
+            if (chargePower > .75 && chaos < 0.075){
             camera.flash(150);
-            camera.shake(500, 0.005);
-            enemy1Life -= damage * Phaser.Math.Between(1.5,3.5)
+            camera.shake(500, 0.01);
+            damage *= Phaser.Math.Between(1.5,3)
+            enemy1Life -= damage
             enemy1.x -= Phaser.Math.Between(-15,15)
             } else
             if (chargePower > .15 && chaos < 0.1){
             camera.shake(500, 0.005);
-            enemy1Life -= damage * Phaser.Math.Between(1.1,2.45)
+            damage *= Phaser.Math.Between(1.1,2.5)
+            enemy1Life -= damage
             enemy1.x -= Phaser.Math.Between(-15,15)
             } else {
-                enemy1Life -= damage * Phaser.Math.Between(0.8,1.15)
+                damage *= Phaser.Math.Between(0.8,1.15)
+                enemy1Life -= damage 
                 enemy1.x -= Phaser.Math.Between(-10,10)
             }
             
