@@ -314,33 +314,84 @@
    
   
 
-    // 144 seconds = 1 year
-    // 12 seconds = 1 month
-    // 3 second per week
+    
+
+    function runYearlyFunctions()
+    {
+       if (inBattle == false) {
+
+        //maxEnergy *= 1 - (0.04 / 12)
+        income *= 1 - (0.04 / 12)
+       // budget *= 1 - (0.04 / 12)
+        // enemyYearly.setDragX(0)
+        // enemy1.setVelocity(Phaser.Math.Between(100 * chaosMultiplierMin, 100 * chaosMultiplierMax))
+        // enemy1Life = budget * chaosFactor
+          
+        }
+
+        chaosMultiplierMin *= 1.005
+        chaosMultiplierMax *= 1.012
+        enemy1.setScale(1.85 * chaosMultiplierMin, 1.2 * chaosMultiplierMin)
+  
+        
+    }
 
     function runMonthlyFunctions()
     {
        if (inBattle == false) {
 
-        var totalEnergy = currentEnergy + energyRegen
-        currentEnergy = Phaser.Math.MaxAdd(currentEnergy, energyRegen,maxEnergy) 
-        currentFocus = Phaser.Math.MaxAdd(currentFocus,totalEnergy - currentEnergy + focusRegen,maxFocus)
+        
 
-        //maxEnergy *= 1 - (0.04 / 12)
-        income *= 1 - (0.04 / 12)
-       // budget *= 1 - (0.04 / 12)
+        enemy1.setScale(1.55 * chaosMultiplierMin, 1.35 * chaosMultiplierMin)
         enemy1.setDragX(0)
         enemy1.setVelocity(Phaser.Math.Between(100 * chaosMultiplierMin, 100 * chaosMultiplierMax))
         enemy1Life = budget * chaosFactor
           
         }
 
-        chaosMultiplierMin *= 1.04
-        chaosMultiplierMax *= 1.06
-
-
-      
+        chaosMultiplierMin *= 1.002
+        chaosMultiplierMax *= 1.003
+  
         
+    }
+
+    function runWeeklyFunctions()
+    {
+       if (inBattle == false) {
+
+        var totalEnergy = currentEnergy + (energyRegen / 4)
+        currentEnergy = Phaser.Math.MaxAdd(currentEnergy, (energyRegen / 4),maxEnergy) 
+        currentFocus = Phaser.Math.MaxAdd(currentFocus,totalEnergy - currentEnergy + (focusRegen /4),maxFocus)
+
+       
+        // enemyWeekly.setDragX(0)
+        // enemy1.setVelocity(Phaser.Math.Between(100 * chaosMultiplierMin, 100 * chaosMultiplierMax))
+        // enemy1Life = budget * chaosFactor
+          
+        }
+
+        chaosMultiplierMin *= 1.001
+        chaosMultiplierMax *= 1.0015
+  
+        
+    }
+
+    function runDailyFunctions()
+    {
+       if (inBattle == false) {
+
+        // var totalEnergy = currentEnergy + energyRegen
+        // currentEnergy = Phaser.Math.MaxAdd(currentEnergy, energyRegen,maxEnergy) 
+        // currentFocus = Phaser.Math.MaxAdd(currentFocus,totalEnergy - currentEnergy + focusRegen,maxFocus)
+
+        
+        // enemyDaily.setDragX(0)
+        // enemy1.setVelocity(Phaser.Math.Between(100 * chaosMultiplierMin, 100 * chaosMultiplierMax))
+        // enemy1Life = budget * chaosFactor
+          
+        }
+
+  
         
     }
 
@@ -417,7 +468,7 @@
         this.physics.add.collider(player,platforms);
 
 
-            enemy1 = this.physics.add.sprite(0, height - 85, 'doomsayer').setScale(1.75,1.2).setPipeline('Light2D');
+            enemy1 = this.physics.add.sprite(0, height - 85, 'doomsayer').setScale(1.75, 1.2).setPipeline('Light2D');
             
             enemy1.setDepth(0)
             enemy1.flipX = true
@@ -442,7 +493,15 @@
         
         camera.fadeIn(6000)
 
-        monthlyTimer = this.time.addEvent({delay: 12000, callback: runMonthlyFunctions, args: [], callbackScope: this, loop: true});
+        // 96 seconds = 1 year
+        // 8 seconds = 1 month
+        // 2 second per week
+        // 0.285 seconds per day
+
+        yearlyTimer = this.time.addEvent({delay: 96000, callback: runYearlyFunctions, args: [], callbackScope: this, loop: true});
+        monthlyTimer = this.time.addEvent({delay: 8000, callback: runMonthlyFunctions, args: [], callbackScope: this, loop: true});
+        weeklyTimer = this.time.addEvent({delay: 2000, callback: runWeeklyFunctions, args: [], callbackScope: this, loop: true});
+        dailyTimer = this.time.addEvent({delay: 285, callback: runDailyFunctions, args: [], callbackScope: this, loop: true});
 
         this.anims.create({
             key: 'pIdle',
