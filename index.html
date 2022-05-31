@@ -411,7 +411,7 @@
 
         chaosMultiplierMin *= 1.005
         chaosMultiplierMax *= 1.012
-        enemy1.setScale(Phaser.Math.Between(1.55,1.9),Phaser.Math.Between(1,1.5))
+        enemy1.setScale(Phaser.Math.FloatBetween(1.75,1.9),Phaser.Math.FloatBetween(1.15,1.35))
   
         
     }
@@ -422,7 +422,7 @@
 
         
 
-        enemy1.setScale(Phaser.Math.Between(1.25,1.8),Phaser.Math.Between(1.2,1.4))
+        enemy1.setScale(Phaser.Math.FloatBetween(1.65,1.8),Phaser.Math.FloatBetween(1.2,1.3))
         enemy1.setDragX(0)
         enemy1.setVelocity(Phaser.Math.Between(100 * chaosMultiplierMin, 100 * chaosMultiplierMax))
         enemy1Life = budget * chaosFactor
@@ -502,6 +502,8 @@
         this.load.atlas('doomsayer', 'assets/doomsayer.png','assets/doomsayersprites.json');
         this.load.atlas('heroF', 'assets/heroF.png','assets/heroF.json');
         this.load.atlas('heroM', 'assets/heroM.png','assets/heroM.json');
+
+        this.load.spritesheet('chargeEnergy', 'assets/animations/17_felspell_spritesheet.png', { frameWidth: 100, frameHeight: 100});
   
 
     }
@@ -545,6 +547,9 @@
         this.physics.add.existing(sword, false)
         sword.body.setAllowGravity(false).setOffset(0,5)
         sword.body.checkCollision.none = true
+
+        pSFX = this.add.sprite(player.x, player.y)
+        pSFX.setAlpha(0.5).setDepth(1)
         
         this.physics.add.collider(player,platforms);
 
@@ -585,6 +590,14 @@
         monthlyTimer = this.time.addEvent({delay: 8000, callback: runMonthlyFunctions, args: [], callbackScope: this, loop: true});
         weeklyTimer = this.time.addEvent({delay: 2000, callback: runWeeklyFunctions, args: [], callbackScope: this, loop: true});
         dailyTimer = this.time.addEvent({delay: 285, callback: runDailyFunctions, args: [], callbackScope: this, loop: true});
+
+        this.anims.create({
+            key: 'chargeEnergy',
+            frames: this.anims.generateFrameNumbers('chargeEnergy', { start:0, end: 91}),
+            frameRate: 100,
+            repeat: 0,
+            //yoyo: true
+        });
 
         this.anims.create({
             key: 'pIdle',
@@ -926,6 +939,14 @@
         spotlight.x = player.x
         spotlight.y = player.y
 
+        if (player.flipX){
+            pSFX.x = player.x + 10
+        } else {
+            pSFX.x = player.x - 5
+        }
+        
+        pSFX.y = player.y
+
         enemy1.y = height - 85
 
         console.log('Enemy 1 Life: ' + enemy1Life)
@@ -1183,6 +1204,7 @@
                 } else if (cursors.up.isDown && cursors.space.isDown && currentFocus > 0 && currentEnergy < maxEnergy * 0.99){   
                     //if(Phaser.Input.Keyboard.JustDown(cursors.up)){
                         player.anims.play({key:'pChargeEnergy'},true);
+                        pSFX.play('chargeEnergy',true)
                    // }
                     
                     playerVitals.decreaseFocus(maxFocus / 600)
