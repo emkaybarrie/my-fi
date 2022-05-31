@@ -803,6 +803,38 @@
         }
 
         });
+
+        this.input.on('gameobjectover', function (pointer, gameObject) {
+
+            gameObject.setAlpha(0.5);
+
+            if (gameObject == up){
+                cursors.up.isDown = false
+            }
+
+            if (gameObject == down){
+                cursors.down.isDown = false
+            }
+
+            if (gameObject == left){
+                cursors.left.isDown = false
+            }
+
+            if (gameObject == right){
+                cursors.right.isDown = false
+            }
+
+            if (gameObject == energy){
+                keyA.isDown = false
+                keyA.isUp = true
+            }
+
+            if (gameObject == focusB){
+                cursors.space.isDown = false
+                // keyA.isUp = true
+            }
+
+            });
     
 
     }
