@@ -102,7 +102,7 @@
     var budgetRatio = budget/income
     var budgetAccuracy = 0.9
 
-    var chaosFactor
+    var chaosFactor = 0.0
     var chaosMultiplierMin = 0.7
     var chaosMultiplierMax = 2.5
 
@@ -320,8 +320,10 @@
           
         }
 
-        chaosMultiplierMin *= 1.02
-        chaosMultiplierMax *= 1.04
+        chaosMultiplierMin *= 1.04
+        chaosMultiplierMax *= 1.06
+
+        enemy1Life = budget * chaosFactor
         
         
     }
@@ -729,6 +731,7 @@
        console.log('Damage: ' + damage)
        console.log('Enemy Drag X: ' + enemy1.body.drag.x)
        console.log('Enemy Velocity x: ' + enemy1.body.velocity.x)
+       console.log('Enemy Chaos Factor: ' + chaosFactor)
 
         
 
@@ -749,15 +752,37 @@
         
   
 
-        chaosFactor = Phaser.Math.Between(chaosMultiplierMin,chaosMultiplierMax)
+        chaosFactor = Phaser.Math.FloatBetween(chaosMultiplierMin,chaosMultiplierMax)
         enemy1.body.setSize(enemy1.width, enemy1.height)
 
 
         if (inBattle == false){
+
+            if (enemy1.x > width * 1.55 && player.x > width * 1.6){
+                        enemy1.setVelocityX(-100)
+            }
             // Check if Player is in Battle mode (beat'em up) or not
-            if (cursors.space.isDown){
-                // Out of Battle Mode, spacebar enters Battle mode 
-                inBattle = true
+            if (cursors.space.isDown && currentFocus > 0){
+
+                playerVitals.decreaseFocus(maxEnergy / 400)
+                player.anims.play({key:'pDash',frameRate: 12},true);
+
+            
+                player.body.maxVelocity.x = 300
+                player.setVelocityX(200)
+                //this.physics.moveTo(player,width * 1.8,height - 90,300)
+
+        
+
+                
+            } 
+
+            else if (Phaser.Input.Keyboard.JustDown(cursors.space)){
+                
+                
+                player.setDragX(5000)
+
+            
             } else if (cursors.down.isDown && currentEnergy > 0){
 
                 playerVitals.decreaseEnergy(maxEnergy / 600)
@@ -767,7 +792,7 @@
 
                 this.physics.moveTo(player,width * 1.4,height - 90,30)
             
-            } else if (cursors.left.isDown && currentEnergy > 0){
+            } else if (cursors.left.isDown && currentEnergy > 0 && currentFocus < maxFocus){
 
                 playerVitals.decreaseEnergy(maxEnergy / 1200)
                 playerVitals.decreaseFocus(-maxEnergy / 1200)
@@ -783,9 +808,7 @@
                 player.anims.play({key:'pRun',frameRate: 16},true);
                 enemy1.anims.play({key:'eRun',frameRate: 14},true);
 
-                    if (enemy1.x > width * 1.55 && player.x > width * 1.6){
-                        enemy1.setVelocityX(-100)
-                    }
+                    
                  
             } else {
                 this.physics.moveTo(player,width * 1.5,height - 90,150)
@@ -972,9 +995,11 @@
                     }, this);
  
 
-                } else if (cursors.space.isDown){
+                } else if (cursors.space.isDown && currentFocus > 0){
 
                     player.anims.play({key:'pDash',frameRate: 12},true);
+
+                    playerVitals.decreaseFocus(maxEnergy / 400)
 
                     if (player.flipX){
                         
