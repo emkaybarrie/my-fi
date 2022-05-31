@@ -68,7 +68,7 @@
     var playerSpeed 
     var distanceToTravel = 7500
     var distanceTravelled = 0
-    var remainingDistance = distanceToTravel - distanceTravelled
+    
      
     var inBattle = false                                       
     var deathBlows = false
@@ -418,7 +418,7 @@
 
         
 
-        enemy1.setScale(1.55 * chaosMultiplierMin, 1.35 * chaosMultiplierMin)
+        enemy1.setScale(1.85 * chaosMultiplierMin, 1.45 * chaosMultiplierMin)
         enemy1.setDragX(0)
         enemy1.setVelocity(Phaser.Math.Between(100 * chaosMultiplierMin, 100 * chaosMultiplierMax))
         enemy1Life = budget * chaosFactor
@@ -920,8 +920,6 @@
         console.log('Charge Power %: ' + chargePower * 100)
        console.log('Damage: ' + damage)
       
-       console.log('Remaining Distance: ' + remainingDistance)
-
        
        console.log('Enemy Chaos Factor: ' + chaosFactor)
 
