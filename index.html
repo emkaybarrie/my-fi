@@ -416,8 +416,8 @@
           
         }
 
-        chaosMultiplierMin *= 1.002
-        chaosMultiplierMax *= 1.003
+        chaosMultiplierMin *= 1.003
+        chaosMultiplierMax *= 1.005
   
         
     }
@@ -437,8 +437,8 @@
           
         }
 
-        chaosMultiplierMin *= 1.001
-        chaosMultiplierMax *= 1.0015
+        chaosMultiplierMin *= 1.002
+        chaosMultiplierMax *= 1.003
   
         
     }
@@ -528,9 +528,9 @@
         player.setBounceY(0.15);
         player.setCollideWorldBounds(true);
 
-        sword = this.add.rectangle(player.x, player.y, 100, 60);
+        sword = this.add.rectangle(player.x, player.y, 60, 60);
         this.physics.add.existing(sword, false)
-        sword.body.setAllowGravity(false)
+        sword.body.setAllowGravity(false).setOffset(0,5)
         sword.body.checkCollision.none = true
         
         this.physics.add.collider(player,platforms);
