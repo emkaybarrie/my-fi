@@ -96,7 +96,7 @@
     var currentEnergyText
     
     var startMaxEnergy = 100
-    var currentFocus = 0
+    var currentFocus = 50
     var maxFocus = maxEnergy * 3
     
     var budget = 60
@@ -549,7 +549,7 @@
         sword.body.checkCollision.none = true
 
         pSFX = this.add.sprite(player.x, player.y)
-        pSFX.setAlpha(0.5).setDepth(1)
+        pSFX.setAlpha(0.75).setDepth(1).setPipeline('Light2D')
         
         this.physics.add.collider(player,platforms);
 
@@ -1205,6 +1205,10 @@
                     //if(Phaser.Input.Keyboard.JustDown(cursors.up)){
                         player.anims.play({key:'pChargeEnergy'},true);
                         pSFX.play('chargeEnergy',true)
+                        if (spotlight.intensity < 1.5){
+                        spotlight.intensity += 0.02
+                    }
+                        camera.shake(50, 0.0005);
                    // }
                     
                     playerVitals.decreaseFocus(maxFocus / 600)
@@ -1236,7 +1240,7 @@
                     }, this);
  
 
-                } else if (cursors.space.isDown && currentFocus > 0){
+                } else if (cursors.space.isDown && currentFocus > 0 && cursors.up.isUp){
 
                     player.anims.play({key:'pDash',frameRate: 12},true);
 
@@ -1292,6 +1296,7 @@
                     player.anims.play({key:'pIdle',frameRate: 8},true);
                     player.body.maxVelocity.x = 250
                     enemy1HitCheck = false
+                    spotlight.setIntensity(0.5)
 
  
                 } 
@@ -1300,6 +1305,7 @@
                     player.anims.play({key:'pUptoFall',frameRate: 8});
                     player.body.maxVelocity.x = 250
                     enemy1HitCheck = false
+                    spotlight.setIntensity(0.5)
                 }
 
             }
