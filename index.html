@@ -398,7 +398,7 @@
 
         chaosMultiplierMin *= 1.005
         chaosMultiplierMax *= 1.012
-        enemy1.setScale(1.85 * chaosMultiplierMin, 1.2 * chaosMultiplierMin)
+        enemy1.setScale(1.55 * Phaser.Math.Between(chaosMultiplierMin,chaosFactor), 1.2 * Phaser.Math.Between(chaosMultiplierMin,chaosFactor))
   
         
     }
@@ -917,6 +917,8 @@
             // Check if Player is in Battle mode (beat'em up) or not
             if (cursors.space.isDown && currentFocus > 0){
 
+                distanceTravelled += 8
+
                 playerVitals.decreaseFocus(maxEnergy / 400)
                 player.anims.play({key:'pDash',frameRate: 12},true);
 
@@ -966,7 +968,7 @@
                 player.anims.play({key:'pRun',frameRate: 16},true);
                 enemy1.anims.play({key:'eRun',frameRate: 14},true);
 
-                distanceTravelled += 4
+                distanceTravelled += 6
                     
                  
             } else {
