@@ -540,7 +540,14 @@
     function create ()
     {
 
+        // Text Instructions - Temp
 
+        text1 = this.add.text(width * 1.2, height * 0.15, 'Make it to the end whilst avoiding enemies and obstables.').setFontFamily('Arial').setFontSize(12).setColor('#674EA7').setDepth(4);
+        text2 = this.add.text(text1.x, text1.y + 12.5, 'Run Mode: Press FORWARD to speed up. Press BACK to slow down & charge focus. Press DOWN to slide/dodge.').setFontFamily('Arial').setFontSize(8).setColor('#ffffff').setDepth(4);
+        text3 = this.add.text(text1.x, text2.y + 12.5, 'Run Mode: Press/Hold FOCUS button (yellow) to dash/dodge').setFontFamily('Arial').setFontSize(8).setColor('#ffffff').setDepth(4);
+        text4 = this.add.text(text1.x, text3.y + 12.5, 'Battle Mode: Press/Hold ENERGY button (green) to attack. Hold LEFT/RIGHT + ENERGY for Heavy Attack.').setFontFamily('Arial').setFontSize(8).setColor('#ffffff').setDepth(4);
+        text5 = this.add.text(text1.x, text4.y + 12.5, 'Battle Mode: Hold UP + FOCUS to charge Energy. Press/Hold FOCUS button (yellow) to dash/dodge').setFontFamily('Arial').setFontSize(8).setColor('#ffffff').setDepth(4);
+        
         startPosition = (width * 1.5)
 
         this.physics.world.setBounds(0, 0, width * 3,  height);
@@ -996,6 +1003,8 @@
 
         
 
+        
+
         spotlight.x = player.x
         spotlight.y = player.y
 
@@ -1038,6 +1047,12 @@
             this.woodsl4.tilePositionX = camera.x
             this.woodsl4.setAlpha(0.9)
             camera.zoomTo(1.15,750)
+            
+            text1.visible = false
+            text2.visible = false
+            text3.visible = false
+            text4.visible = false
+            text5.visible = false
         }
         
   
