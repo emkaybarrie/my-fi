@@ -1204,7 +1204,7 @@
                     sword.body.checkCollision.none = false
                     } 
 
-                } else if (keyA.isDown && currentEnergy > 0){
+                } else if (keyA.isDown && currentEnergy > 0 && cursors.space.isUp){
                     
                     if(Phaser.Input.Keyboard.JustDown(keyA)){
                         player.anims.play({key:'pChargeAttack'},true);
@@ -1231,17 +1231,31 @@
 
                    
                 } else if (cursors.up.isDown && cursors.space.isDown && currentFocus > 0 && currentEnergy < maxEnergy * 0.99){   
-                    //if(Phaser.Input.Keyboard.JustDown(cursors.up)){
+                  
                         player.anims.play({key:'pChargeEnergy'},true);
                         pSFX.play('chargeEnergy',true)
                         if (spotlight.intensity < 1.5){
                         spotlight.intensity += 0.02
                     }
                         camera.shake(50, 0.0005);
-                   // }
+                  
                     
                     playerVitals.decreaseFocus(maxFocus / 600)
                     playerVitals.decreaseEnergy(-maxFocus / 600)
+                     
+                    
+                } else if (cursors.up.isDown && keyA.isDown && currentEnergy > 0 && currentFocus < maxFocus * 0.99){   
+                  
+                        player.anims.play({key:'pChargeEnergy'},true);
+                        pSFX.play('chargeEnergy',true)
+                        if (spotlight.intensity < 1.5){
+                        spotlight.intensity += 0.02
+                    }
+                        camera.shake(50, 0.0005);
+                  
+                    
+                    playerVitals.decreaseEnergy(maxEnergy / 600)
+                    playerVitals.decreaseFocus(-maxEnergy / 600)
                      
                     
                 } else if (keyA.isUp && keyDuration > 0){
