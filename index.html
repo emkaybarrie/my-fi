@@ -493,11 +493,17 @@
         this.load.image('dawnl6', 'assets/dawn6.png');
         this.load.image('dawnl7', 'assets/dawn7.png');
         this.load.image('dawnl8', 'assets/dawn8.png');
+
         this.load.image('woodsl1', 'assets/woods1.png');
         this.load.image('woodsl2', 'assets/woods2.png');
         this.load.image('woodsl3', 'assets/woods3.png');
         this.load.image('woodsl4', 'assets/woods4.png');
+
+        this.load.image('vines', 'assets/vines.png');
+
         this.load.image('ground', 'assets/woodground.png');
+
+
         this.load.atlas('logan', 'assets/loganv2.png','assets/loganspritesv2.json');
         this.load.atlas('doomsayer', 'assets/doomsayer.png','assets/doomsayersprites.json');
         this.load.atlas('heroF', 'assets/heroF.png','assets/heroF.json');
@@ -552,6 +558,8 @@
         pSFX.setAlpha(0.75).setDepth(1).setPipeline('Light2D')
         
         this.physics.add.collider(player,platforms);
+
+        this.vines = this.add.image(player.x,player.y - 120, 'vines').setOrigin(0,0).setDepth(1).setScale(0.35,0.45).setTint(0xed8a8a)
 
 
             enemy1 = this.physics.add.sprite(0, height - 85, 'doomsayer').setScale(1.75, 1.2).setPipeline('Light2D');
@@ -874,7 +882,19 @@
 
     }
 
+    function moveVines (vine,speed){
+    
+        vine.x -= speed;
+        if (vine.x < width / 2){
+            resetVines(vine)
+        }
 
+        
+    }
+
+    function resetVines (vine){
+        vine.x = width * 3
+    }
 
     function update ()
     {
@@ -991,7 +1011,9 @@
             if (enemy1.x > width * 1.55 && player.x > width * 1.6){
                         enemy1.setVelocityX(-100)
             }
-            // Check if Player is in Battle mode (beat'em up) or not
+
+            moveVines(this.vines,2.5)
+            
             if (cursors.space.isDown && currentFocus > 0){
 
                 distanceTravelled += 8
