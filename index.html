@@ -62,6 +62,7 @@
     var height = game.config.height
     var spotlight
     
+    
     var startPosition 
     var playerPosition 
     
@@ -532,7 +533,6 @@
         this.lights.setAmbientColor(0x808080);
 
         spotlight = this.lights.addLight(400, 300, 280).setIntensity(0.5);
-        spotlight2 = this.lights.addLight(400, 300, 280).setIntensity(0.25);
        
         platforms = this.physics.add.staticGroup();
         platforms.create(0, height - 50, 'ground').setOrigin(0,0).setScale(width * 3 /400).refreshBody().setVisible(0);
@@ -559,7 +559,7 @@
         
         this.physics.add.collider(player,platforms);
 
-        this.vines = this.add.image(player.x,player.y - 120, 'vines').setOrigin(0,0).setDepth(1).setScale(0.35,0.45).setTint(0xed8a8a)
+        this.vines = this.add.image(player.x,player.y - 120, 'vines').setOrigin(0,0).setDepth(1).setScale(0.35,0.5).setTint(0x38761d) //(0xed8a8a)
 
 
             enemy1 = this.physics.add.sprite(0, height - 85, 'doomsayer').setScale(1.75, 1.2).setPipeline('Light2D');
@@ -895,7 +895,7 @@
     function resetVines (vine){
         vine.x = width * 3
         var scaleXRandom = Phaser.Math.FloatBetween(0.15,0.45)
-        var scaleYRandom = Phaser.Math.FloatBetween(0.3,0.55)
+        var scaleYRandom = Phaser.Math.FloatBetween(0.35,0.6)
         vine.setScale(scaleXRandom,scaleYRandom)
     }
 
@@ -962,6 +962,8 @@
         spotlight.x = player.x
         spotlight.y = player.y
 
+       
+
         if (player.flipX){
             pSFX.x = player.x + 10
         } else {
@@ -1017,7 +1019,7 @@
                         enemy1.setVelocityX(-100)
             }
 
-            moveVines(this.vines,3)
+            moveVines(this.vines, 4.5 * (playerSpeed))
             
             if (cursors.space.isDown && currentFocus > 0){
 
@@ -1046,7 +1048,7 @@
 
                 playerVitals.decreaseEnergy(maxEnergy / 300)
 
-                distanceTravelled += 1
+                distanceTravelled += 4.5 * (playerSpeed)
             
                 if(Phaser.Input.Keyboard.JustDown(cursors.down)){
                     //player.chain([ {key:'pUptoFall',frameRate: 12},true, {key:'pSlide',frameRate: 6},true]);
@@ -1061,7 +1063,7 @@
             
             } else if (cursors.left.isDown && currentEnergy > 0 && currentFocus < maxFocus){
 
-                moveVines(this.vines,-0.5)
+                
 
                 playerVitals.decreaseEnergy(maxEnergy / 900)
                 playerVitals.decreaseFocus(-maxEnergy / 900)
@@ -1074,7 +1076,7 @@
                         }
                 camera.shake(50, 0.0005);
 
-                distanceTravelled += 2
+                distanceTravelled += 4.5 * (playerSpeed)
 
                 this.physics.moveTo(player,width * 1.4,height - 90,90)
                 player.anims.play({key:'pRun',frameRate: 8},true);
@@ -1083,14 +1085,14 @@
                 
             } else if (cursors.right.isDown && currentEnergy > 0){
 
-                moveVines(this.vines,1.5)
+                
                 
                 playerVitals.decreaseEnergy(maxEnergy / 600)
                 this.physics.moveTo(player,width * 1.7,height - 90,90)
                 player.anims.play({key:'pRun',frameRate: 16},true);
                 enemy1.anims.play({key:'eRun',frameRate: 14},true);
 
-                distanceTravelled += 6
+                distanceTravelled += 4.5 * (playerSpeed)
                     
                  
             } else {
