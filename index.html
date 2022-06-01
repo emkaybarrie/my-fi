@@ -633,7 +633,7 @@
 
         this.anims.create({
             key: 'pSlide',
-            frames: this.anims.generateFrameNames('heroF',{prefix: 'Warrior-Slide_', start: 1, end: 5, suffix: '.png'}),
+            frames: this.anims.generateFrameNames('heroF',{prefix: 'Warrior-Slide_', start: 1, end: 4, suffix: '.png'}),
             frameRate: 14,
             repeat: 0
         });
@@ -1048,7 +1048,13 @@
 
                 distanceTravelled += 1
             
-                player.chain([ {key:'pUptoFall',frameRate: 12},true, {key:'pSlide',frameRate: 6},true]);
+                if(Phaser.Input.Keyboard.JustDown(cursors.down)){
+                    player.chain([ {key:'pUptoFall',frameRate: 12},true, {key:'pSlide',frameRate: 6},true]);
+                    //player.anims.play({key:'pSlide',frameRate: 8},true);
+                }
+                
+
+
                 enemy1.anims.play({key:'eRun',frameRate: 12},true);
 
                 this.physics.moveTo(player,width * 1.4,height - 90,30)
