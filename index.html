@@ -67,7 +67,7 @@
     var playerPosition 
     
     var playerSpeed 
-    var distanceToTravel = 7500
+    var distanceToTravel = 20000
     var distanceTravelled = 0
     
      
@@ -246,7 +246,7 @@
         this.x = x;
         this.y = y;
         
-        this.p =  38 / distanceToTravel
+        this.p =  (width/2-2) / distanceToTravel
 
         this.draw();
 
@@ -283,7 +283,7 @@
             this.bg.fillStyle(0x000000);
             this.bg.fillRect(this.x, this.y, width/2, 25);
 
-            //  Health
+            //  Progress
 
             this.progressBar.fillStyle(0xffffff);
             this.progressBar.fillRect(this.x + 1, this.y + 1, width/2-2, 23);
@@ -1033,7 +1033,7 @@
         console.log('Enemy 1 Life: ' + enemy1Life)
         console.log('Player Hit?: ' + playerIsHit)
         console.log('Charge Power %: ' + chargePower * 100)
-        console.log('Damage: ' + damage)
+        console.log('Distance Travelled: ' + distanceTravelled)
       
        
        console.log('Enemy Chaos Factor: ' + chaosFactor)
