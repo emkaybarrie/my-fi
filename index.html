@@ -1233,6 +1233,7 @@
                 } else if (cursors.up.isDown && cursors.space.isDown && currentFocus > 0 && currentEnergy < maxEnergy * 0.99){   
                   
                         player.anims.play({key:'pChargeEnergy'},true);
+                        pSFX.setTint(0x93c47d)
                         pSFX.play('chargeEnergy',true)
                         if (spotlight.intensity < 1.5){
                         spotlight.intensity += 0.02
@@ -1247,6 +1248,7 @@
                 } else if (cursors.up.isDown && keyA.isDown && currentEnergy > 0 && currentFocus < maxFocus * 0.99){   
                   
                         player.anims.play({key:'pChargeEnergy'},true);
+                        pSFX.setTint(0xf1c232)
                         pSFX.play('chargeEnergy',true)
                         if (spotlight.intensity < 1.5){
                         spotlight.intensity += 0.02
