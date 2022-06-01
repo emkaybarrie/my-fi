@@ -350,7 +350,7 @@
 
     function playerVineHit(){
 
-    if (inBattle != true){
+    if (inBattle == false){
         playerIsHit = true
         playerVitals.decreaseLife(currentLife * 0.05 / 300)
         playerVitals.decreaseEnergy(currentEnergy * 0.05 / 300)
@@ -1039,6 +1039,8 @@
         if (inBattle == false){
 
             player.flipX = false
+
+            this.vines.body.checkCollision.none = false
 
             
 
