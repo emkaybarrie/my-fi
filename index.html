@@ -86,6 +86,7 @@
 
     var chargePower = 0
     var keyDuration = 0
+    var keyFocusDuration = 0
     var damage = 0
 
     var maxLife = income * 3
@@ -333,6 +334,7 @@
     function playerComboEnd() {
         
         keyDuration = 0
+        keyFocusDuration = 0
         chargePower = 0
     }
 
@@ -680,6 +682,14 @@
         this.anims.create({
             key: 'pRun',
             frames: this.anims.generateFrameNames('heroF',{prefix: 'Warrior_Run_', start: 1, end: 8, suffix: '.png'}),
+            frameRate: 14,
+            repeat: 0,
+            //delay: 1
+        });
+
+        this.anims.create({
+            key: 'pChargeDash',
+            frames: this.anims.generateFrameNames('heroF',{prefix: 'Warrior_Dash_', start: 6, end: 6, suffix: '.png'}),
             frameRate: 14,
             repeat: 0,
             //delay: 1
@@ -1197,13 +1207,9 @@
             }
 
             
-             
-
-            
             if (enemy1HitCheck){
                 if (player.flipX){
-                    this.physics.moveTo(enemy1,enemy1.x - 100,enemy1.y,100)
-                    
+                    this.physics.moveTo(enemy1,enemy1.x - 100,enemy1.y,100)   
                         
                 } else {
                     this.physics.moveTo(enemy1,enemy1.x + 100,enemy1.y,100)
@@ -1214,8 +1220,7 @@
             } 
 
             
-            
-            
+               
 
             player.body.setSize(10, 30).setOffset(25,15)
 
@@ -1228,9 +1233,7 @@
                 player.setDragX(100)
             }
            
-          
-            
-             enemy1.setDragX(600)
+            enemy1.setDragX(600)
             
            
 
@@ -1247,7 +1250,24 @@
                 //         player.setVelocityX(player.body.velocity.x + 50)
                 //     }
                 // } else 
-                if ((cursors.left.isDown && keyA.isDown || cursors.right.isDown && keyA.isDown) && currentEnergy > 0){
+
+                // Charge Energy
+                if (cursors.up.isDown && cursors.space.isDown && currentFocus > 0 && currentEnergy < maxEnergy * 0.99){   
+                  
+                  player.anims.play({key:'pChargeEnergy'},true);
+                  pSFX.setTint(0x93c47d)
+                  pSFX.play('chargeEnergy',true)
+                  if (spotlight.intensity < 1.5){
+                  spotlight.intensity += 0.02
+                  }
+                  camera.shake(50, 0.0005);
+            
+              
+              playerVitals.decreaseFocus(maxFocus / 600)
+              playerVitals.decreaseEnergy(-maxFocus / 600)
+               
+               
+                } else if ((cursors.left.isDown && keyA.isDown || cursors.right.isDown && keyA.isDown) && currentEnergy > 0){
                    
                     player.anims.play({key:'pHeavyAttack',frameRate: 12},true);
 
@@ -1287,22 +1307,7 @@
                     
 
                    
-                } else if (cursors.up.isDown && cursors.space.isDown && currentFocus > 0 && currentEnergy < maxEnergy * 0.99){   
-                  
-                        player.anims.play({key:'pChargeEnergy'},true);
-                        pSFX.setTint(0x93c47d)
-                        pSFX.play('chargeEnergy',true)
-                        if (spotlight.intensity < 1.5){
-                        spotlight.intensity += 0.02
-                        }
-                        camera.shake(50, 0.0005);
-                  
-                    
-                    playerVitals.decreaseFocus(maxFocus / 600)
-                    playerVitals.decreaseEnergy(-maxFocus / 600)
-                     
-                    
-                } else if (keyA.isUp && keyDuration > 0){
+                }  else if (keyA.isUp && keyDuration > 0 && cursors.space.isUp){
 
                     if (player.anims.currentFrame.index >= 6 && player.anims.currentFrame.index < 12){
                             sword.body.checkCollision.none = false
@@ -1329,28 +1334,60 @@
 
                 } else if (cursors.space.isDown && currentFocus > 0 && cursors.up.isUp){
 
-                    player.anims.play({key:'pDash',frameRate: 12},true);
-
-                    playerVitals.decreaseFocus(maxEnergy / 400)
-
-                    if (player.flipX){
-                        
-                        player.body.maxVelocity.x = 500
-                        this.physics.moveTo(player,player.x - 100,height - 90,500)
-
-                    } else if (player.flipX == false) {
-
-                        
-                        player.body.maxVelocity.x = 500
-                        this.physics.moveTo(player,player.x + 100,height - 90,500)
-                        
+                    if (spotlight.intensity < 1.25){
+                        spotlight.intensity += 0.01
                     }
+                    
+                    
+                    if (chargePower <= 1.1){
+                        chargePower += 0.025
+                    }
+
+                    if (chargePower < 0.15){
+                        chargePower = 0.15
+                    } 
+
+                    if(Phaser.Input.Keyboard.JustDown(cursors.space)){
+                    player.anims.play({key:'pChargeDash'},true);
+                    }
+
+                    playerVitals.decreaseFocus(maxFocus / 400)
+
+                    keyFocusDuration = cursors.space.getDuration()
+
+                    
 
                 } 
                 
                 else if (Phaser.Input.Keyboard.JustDown(cursors.space)){
 
                     player.setDragX(5000)
+
+                } else if (cursors.space.isUp && keyFocusDuration > 0){
+
+
+                    spotlight.setIntensity(0.5)
+
+                    player.anims.play({key:'pDash',frameRate: 12},true);
+
+                    
+                    if (player.flipX){
+                        
+                        player.body.maxVelocity.x = 750
+                        this.physics.moveTo(player,player.x - 100,height - 90,750 * chargePower)
+
+                    } else if (player.flipX == false) {
+
+                        
+                        player.body.maxVelocity.x = 750
+                        this.physics.moveTo(player,player.x + 100,height - 90,750 * chargePower)
+                        
+                    }
+
+                    player.on('animationcomplete', function () {    
+                    playerComboEnd();
+                    }, this);
+
 
                 } 
                 
