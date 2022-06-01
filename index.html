@@ -835,6 +835,8 @@
 
         if (gameObject == down){
             cursors.down.isDown = true
+            
+            
         }
 
         if (gameObject == left){
@@ -869,6 +871,7 @@
 
         if (gameObject == down){
             cursors.down.isDown = false
+            
         }
 
         if (gameObject == left){
@@ -1128,10 +1131,10 @@
 
                 distanceTravelled += 4.5 * (playerSpeed)
             
-                if(Phaser.Input.Keyboard.JustDown(cursors.down)){
+                //if(Phaser.Input.Keyboard.JustDown(cursors.down)){
                     //player.chain([ {key:'pUptoFall',frameRate: 12},true, {key:'pSlide',frameRate: 6},true]);
                     player.anims.play({key:'pSlide',frameRate: 6},true);
-                }
+                //}
                 
                 this.physics.moveTo(player,width * 1.4,height - 90,30)
             
