@@ -1015,7 +1015,7 @@
                         enemy1.setVelocityX(-100)
             }
 
-            moveVines(this.vines,2.5)
+            moveVines(this.vines,3)
             
             if (cursors.space.isDown && currentFocus > 0){
 
@@ -1053,6 +1053,8 @@
             
             } else if (cursors.left.isDown && currentEnergy > 0 && currentFocus < maxFocus){
 
+                moveVines(this.vines,-0.5)
+
                 playerVitals.decreaseEnergy(maxEnergy / 900)
                 playerVitals.decreaseFocus(-maxEnergy / 900)
 
@@ -1064,6 +1066,8 @@
 
                 
             } else if (cursors.right.isDown && currentEnergy > 0){
+
+                moveVines(this.vines,1.5)
                 
                 playerVitals.decreaseEnergy(maxEnergy / 600)
                 this.physics.moveTo(player,width * 1.7,height - 90,90)
