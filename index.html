@@ -1049,8 +1049,8 @@
                 distanceTravelled += 1
             
                 if(Phaser.Input.Keyboard.JustDown(cursors.down)){
-                    player.chain([ {key:'pUptoFall',frameRate: 12},true, {key:'pSlide',frameRate: 6},true]);
-                    //player.anims.play({key:'pSlide',frameRate: 8},true);
+                    //player.chain([ {key:'pUptoFall',frameRate: 12},true, {key:'pSlide',frameRate: 6},true]);
+                    player.anims.play({key:'pSlide',frameRate: 6},true);
                 }
                 
 
@@ -1330,7 +1330,11 @@
                 
                 else if (cursors.down.isDown && player.body.touching.down){ 
                     
-                    player.anims.play({key:'pSlide',frameRate: 12},false);
+                    if(Phaser.Input.Keyboard.JustDown(cursors.down)){
+                    //player.chain([ {key:'pUptoFall',frameRate: 12},true, {key:'pSlide',frameRate: 6},true]);
+                    player.anims.play({key:'pSlide',frameRate: 12},true);
+                    }
+                    
                     player.setDragX(300)
                           
                 } 
