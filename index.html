@@ -312,6 +312,7 @@
             enemy1.setDragX(300)
 
             player.flipX = true
+            playerIsHit == false
             inBattle = true
             if (currentLife <= 0){
                 playerVitals.decreaseEnergy(currentEnergy * 0.05)
@@ -345,6 +346,19 @@
                         player.x -= 1
                            
                
+    }
+
+    function playerVineHit(){
+
+    if (inBattle != true){
+        playerIsHit = true
+        playerVitals.decreaseLife(currentLife * 0.05 / 300)
+        playerVitals.decreaseEnergy(currentEnergy * 0.05 / 300)
+        maxEnergy *= 1 - (0.04 / 300)
+        player.x -= 1
+    }            
+    
+
     }
 
     function playerRecover(){
@@ -569,8 +583,8 @@
 
         this.physics.add.existing(this.vines,false)
         this.vines.body.setAllowGravity(false)
-        this.physics.add.overlap(player,this.vines, playerHit);
-        this.vines.body.setSize(474,175).setOffset(0,-12.5)
+        this.physics.add.overlap(player,this.vines, playerVineHit);
+        this.vines.body.setSize(474,175).setOffset(0,-7.5)
 
 
             enemy1 = this.physics.add.sprite(0, height - 85, 'doomsayer').setScale(1.75, 1.2).setPipeline('Light2D');
@@ -581,7 +595,7 @@
             enemy1.setCollideWorldBounds(true)
             
             this.physics.add.overlap(enemy1, player, grabbed);
-            //this.physics.add.overlap(enemy1, player, playerHit)
+            
             this.physics.add.overlap(sword, enemy1, enemy1Hit)
             this.physics.add.collider(platforms,enemy1);
             
@@ -905,8 +919,8 @@
 
     function resetVines (vine){
         vine.x = width * 3
-        var scaleXRandom = Phaser.Math.FloatBetween(0.15,0.55)
-        var scaleYRandom = Phaser.Math.FloatBetween(0.4,0.75)
+        var scaleXRandom = Phaser.Math.FloatBetween(0.15,0.65)
+        var scaleYRandom = Phaser.Math.FloatBetween(0.4,0.8)
         vine.setScale(scaleXRandom,scaleYRandom)
     }
 
@@ -1043,7 +1057,7 @@
                 }, this);
 
             } else if (cursors.space.isDown && currentFocus > 0 && playerIsHit == false){
-                player.body.checkCollision.none = true
+                this.vines.body.checkCollision.none = true
 
                 distanceTravelled += 8
 
@@ -1069,8 +1083,8 @@
             
             } else if (cursors.down.isDown && currentEnergy > 0){
 
-                player.body.checkCollision.none = true
-                playerHit = false
+                this.vines.body.checkCollision.none = true
+                
                 
                 
                 playerVitals.decreaseEnergy(maxEnergy / 300)
