@@ -621,6 +621,8 @@
         
         camera.fadeIn(6000)
 
+        
+
         playerProgress = new ProgressBar(this,distanceTravelled, player.x - 75, player.y - 50);
 
         // 96 seconds = 1 year
@@ -941,6 +943,10 @@
         vine.setScale(scaleXRandom,scaleYRandom)
     }
 
+    function finish(){
+        camera.fadeOut(6000)
+    }
+
     function update ()
     {
 
@@ -969,7 +975,11 @@
             sword.y = player.y - 15
         }
 
-      
+        if (gameOver == false)
+        if (distanceTravelled >= distanceToTravel){
+            finish()
+            gameOver = true
+        }
 
         sword.body.checkCollision.none = true
        
