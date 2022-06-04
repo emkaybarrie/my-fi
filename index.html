@@ -646,6 +646,8 @@
         text4 = this.add.text(text1.x, text3.y + 12.5, 'Battle Mode: Press/Hold ENERGY button (green) to attack. Hold LEFT/RIGHT + ENERGY for Heavy Attack.').setFontFamily('Arial').setFontSize(7).setColor('#ffffff').setDepth(4);
         text5 = this.add.text(text1.x, text4.y + 12.5, 'Battle Mode: Hold UP + FOCUS to charge Energy. Press/Hold FOCUS button (yellow) to dash/dodge').setFontFamily('Arial').setFontSize(7).setColor('#ffffff').setDepth(4);
         
+        
+
         startPosition = (width * 1.5)
 
         this.physics.world.setBounds(0, 0, width * 3,  height);
@@ -734,6 +736,8 @@
         
 
         playerProgress = new ProgressBar(this,distanceTravelled, camera.scrollX + width * 0.33, camera.scrollY + (height - 85));
+
+        highScoreText = this.add.text(camera.scrollX + (width - 340), camera.scrollY + (height - 57), 'High Score: ' + highScore).setFontFamily('Arial').setFontSize(12).setColor('#674EA7').setDepth(4);
 
         // 96 seconds = 1 year
         // 8 seconds = 1 month
@@ -1135,6 +1139,9 @@
         playerProgress.x = camera.scrollX + width * 0.33
         playerProgress.y = camera.scrollY + (height * 0.85)
         playerProgress.draw()
+
+        highScore.x = camera.scrollX + (width - 340)
+        highScore.y = camera.scrollY + (height - 57)
 
         if(IS_TOUCH){
         left.x = camera.scrollX + (width * 0.1)// - 245 
