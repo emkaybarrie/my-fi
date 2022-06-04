@@ -413,8 +413,8 @@
 
     if (inBattle == false){
         playerIsHit = true
-        playerVitals.decreaseLife(currentLife * 0.05 / 300)
-        playerVitals.decreaseEnergy(currentEnergy * 0.05 / 300)
+        playerVitals.decreaseLife(maxLife * 0.05 / 300)
+        playerVitals.decreaseEnergy(maxEnergy * 0.05 / 600)
         maxEnergy *= 1 - (0.04 / 300)
         player.x -= 1
     }            
