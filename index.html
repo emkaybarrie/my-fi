@@ -413,9 +413,9 @@
 
     if (inBattle == false){
         playerIsHit = true
-        playerVitals.decreaseLife(maxLife * 0.05 / 300)
-        playerVitals.decreaseEnergy(maxEnergy * 0.05 / 600)
-        maxEnergy *= 1 - (0.04 / 300)
+        playerVitals.decreaseLife((income * 0.3) / 100)
+        
+        maxEnergy *= 1 - (0.04 / 100)
         player.x -= 1
     }            
     
@@ -1007,7 +1007,7 @@
     function resetVines (vine){
         vine.x = width * 3
         var scaleXRandom = Phaser.Math.FloatBetween(0.15,0.65)
-        var scaleYRandom = Phaser.Math.FloatBetween(0.4,0.8)
+        var scaleYRandom = Phaser.Math.FloatBetween(0.55,0.8)
         vine.setScale(scaleXRandom,scaleYRandom)
     }
 
