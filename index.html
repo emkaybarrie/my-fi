@@ -462,7 +462,7 @@
             camera.flash(150);
             camera.shake(500, 0.01);
             damage *= Phaser.Math.Between(1.5,3)
-            enemy1Vitals.decreaseEnemyLife(damage / 100)
+            enemy1Vitals.decreaseEnemyLife(damage)
             //enemy1.x -= Phaser.Math.Between(-15,15)
             } else
             if (chargePower > .15 && chaos < 0.1){
@@ -472,7 +472,7 @@
             //enemy1.x -= Phaser.Math.Between(-15,15)
             } else {
                 damage *= Phaser.Math.Between(0.8,1.15)
-                enemy1Vitals.decreaseEnemyLife(damage / 100)
+                enemy1Vitals.decreaseEnemyLife(damage)
                 //enemy1.x -= Phaser.Math.Between(-10,10)
 
        
