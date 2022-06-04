@@ -1059,12 +1059,12 @@
 
         sword.body.checkCollision.none = true
        
-        playerVitals.x = camera.scrollX + (width * 0.1) //player.x + 25
-        playerVitals.y = camera.scrollY + (height * 0.015)//player.y - 20
+        // playerVitals.x = camera.scrollX + (width * 0.1) //player.x + 25
+        // playerVitals.y = camera.scrollY + (height * 0.015)//player.y - 20
         playerVitals.draw()
 
-        playerIcon.x = camera.scrollX + 25
-        playerIcon.y = camera.scrollY + 25
+        // playerIcon.x = camera.scrollX + 25
+        // playerIcon.y = camera.scrollY + 25
 
         enemy1Vitals.x = enemy1.x + 25
         enemy1Vitals.y = enemy1.y - 20
@@ -1130,14 +1130,21 @@
             this.woodsl3.tilePositionX += 2 * (playerSpeed)
             this.woodsl4.tilePositionX += 4.5 * (playerSpeed)
             this.woodsl4.setAlpha(1) 
-            camera.zoomTo(1,750) 
+            camera.zoomTo(1,750)
+            playerIcon.x = camera.scrollX + 25
+            playerIcon.y = camera.scrollY + 25
+            playerVitals.x = playerIcon.x + 30
+            playerVitals.y = playerIcon.y - 20
         } else if (inBattle) {
             this.woodsl2.tilePositionX = camera.x * 0.3
             this.woodsl3.tilePositionX = camera.x * 0.6
             this.woodsl4.tilePositionX = camera.x
             this.woodsl4.setAlpha(0.9)
             camera.zoomTo(1.15,750)
-            
+            playerIcon.x = camera.scrollX + 65
+            playerIcon.y = camera.scrollY + 45
+            playerVitals.x = playerIcon.x + 30
+            playerVitals.y = playerIcon.y - 20 
             text1.visible = false
             text2.visible = false
             text3.visible = false
