@@ -125,18 +125,21 @@
 
         constructor (scene,startLife, x, y)
         {
-            this.bg = new Phaser.GameObjects.Graphics(scene).setDepth(1);
+            this.bg = new Phaser.GameObjects.Graphics(scene).setDepth(4);
             
-            this.lifeBar = new Phaser.GameObjects.Graphics(scene).setDepth(1);
-            this.energyBar = new Phaser.GameObjects.Graphics(scene).setDepth(1);
-            this.focusBar = new Phaser.GameObjects.Graphics(scene).setDepth(1);
+            this.lifeBar = new Phaser.GameObjects.Graphics(scene).setDepth(4);
+            this.energyBar = new Phaser.GameObjects.Graphics(scene).setDepth(4);
+            this.focusBar = new Phaser.GameObjects.Graphics(scene).setDepth(4);
+
+            this.scaleX = 2
+            this.scaleY = 3
 
             this.x = x;
             this.y = y;
             
-            this.pL =  38 / maxLife
-            this.pE =  38 / maxEnergy
-            this.pF =  38 / maxFocus 
+            this.pL =  (38 * this.scaleX) / maxLife
+            this.pE =  (38 * this.scaleX)  / maxEnergy
+            this.pF =  (38 * this.scaleX)  / maxFocus 
 
             this.draw();
 
@@ -198,40 +201,40 @@
 
             //  BG
             this.bg.fillStyle(0x000000);
-            this.bg.fillRect(this.x, this.y, 40, 13);
+            this.bg.fillRect(this.x, this.y, (40 * this.scaleX), 13 * this.scaleY);
 
             //  Health
 
             this.lifeBar.fillStyle(0xffffff);
-            this.lifeBar.fillRect(this.x + 1, this.y + 1, 38, 3);
+            this.lifeBar.fillRect(this.x + (1 * this.scaleX), this.y + (1 * this.scaleY), 38 * this.scaleX, 3 * this.scaleY);
             this.lifeBar.fillStyle(0xcc0000);
 
 
             var d = Math.floor(this.pL * currentLife);
 
-            this.lifeBar.fillRect(this.x + 1, this.y + 1, d, 3);
+            this.lifeBar.fillRect(this.x + (1 * this.scaleX), this.y + (1 * this.scaleY), d , 3 * this.scaleY);
 
             //  Energy
 
             this.energyBar.fillStyle(0xffffff);
-            this.energyBar.fillRect(this.x + 1, this.y + 5, 38 * (maxEnergy/startMaxEnergy) , 3);
+            this.energyBar.fillRect(this.x + (1 * this.scaleX), this.y + (5 * this.scaleY) , 38 * (maxEnergy/startMaxEnergy) * this.scaleX , 3 * this.scaleY);
             this.energyBar.fillStyle(0x93c47d);
         
 
             var d = Math.floor(this.pE * currentEnergy);
 
-            this.energyBar.fillRect(this.x + 1, this.y + 5, d, 3);
+            this.energyBar.fillRect(this.x + (1 * this.scaleX), this.y + (5 * this.scaleY), d , 3 * this.scaleY);
 
             //  Focus
 
             this.focusBar.fillStyle(0xffffff);
-            this.focusBar.fillRect(this.x + 1, this.y + 9, 38, 3);
+            this.focusBar.fillRect(this.x + (1 * this.scaleX), this.y + (9 * this.scaleY), 38 * this.scaleX, 3 * this.scaleY);
             this.focusBar.fillStyle(0xf1c232);
             
 
             var d = Math.floor(this.pF * currentFocus);
 
-            this.focusBar.fillRect(this.x + 1, this.y + 9, d, 3);
+            this.focusBar.fillRect(this.x + (1 * this.scaleX), this.y + (9 * this.scaleY), d  , 3 * this.scaleY);
         }
 
     }
@@ -305,7 +308,7 @@
         this.x = x;
         this.y = y;
         
-        this.p =  (width/2-2) / distanceToTravel
+        this.p =  (width/3-2) / distanceToTravel
 
         this.draw();
 
@@ -340,18 +343,18 @@
 
             //  BG
             this.bg.fillStyle(0x000000);
-            this.bg.fillRect(this.x, this.y, width/2, 25);
+            this.bg.fillRect(this.x, this.y, width/3, 20);
 
             //  Progress
 
             this.progressBar.fillStyle(0xffffff);
-            this.progressBar.fillRect(this.x + 1, this.y + 1, width/2-2, 23);
+            this.progressBar.fillRect(this.x + 1, this.y + 1, width/3-2, 18);
             this.progressBar.fillStyle(0x674EA7);
 
 
             var d = Math.floor(this.p * distanceTravelled);
 
-            this.progressBar.fillRect(this.x + 1, this.y + 1, d, 23);
+            this.progressBar.fillRect(this.x + 1, this.y + 1, d, 18);
 
             
         }
@@ -563,6 +566,8 @@
 
     function preload ()
     {
+        this.load.image('playerIcon', 'assets/playerIcon.png');
+
         this.load.image('up', 'assets/buttonUp.png');
         this.load.image('down', 'assets/buttonDown.png');
         this.load.image('deadSpace', 'assets/buttonDeadSpace.png');
@@ -604,7 +609,7 @@
 
         // Text Instructions - Temp
 
-        text1 = this.add.text(width * 1.2, height * 0.15, 'Make it to the end whilst avoiding enemies and obstables.').setFontFamily('Arial').setFontSize(12).setColor('#674EA7').setDepth(4);
+        text1 = this.add.text(width * 1.25, height * 0.015, 'Make it to the end whilst avoiding enemies and obstables.').setFontFamily('Arial').setFontSize(12).setColor('#674EA7').setDepth(4);
         text2 = this.add.text(text1.x, text1.y + 15, 'Run Mode: Press FORWARD to speed up. Press BACK to slow down & charge focus. Press DOWN to slide/dodge.').setFontFamily('Arial').setFontSize(8).setColor('#ffffff').setDepth(4);
         text3 = this.add.text(text1.x, text2.y + 12.5, 'Run Mode: Press/Hold FOCUS button (yellow) to dash/dodge').setFontFamily('Arial').setFontSize(8).setColor('#ffffff').setDepth(4);
         text4 = this.add.text(text1.x, text3.y + 12.5, 'Battle Mode: Press/Hold ENERGY button (green) to attack. Hold LEFT/RIGHT + ENERGY for Heavy Attack.').setFontFamily('Arial').setFontSize(8).setColor('#ffffff').setDepth(4);
@@ -632,6 +637,7 @@
         player.setDepth(1)
         player.tint = 0xdd7e6b;
         currentLife = startLife
+        
         playerVitals = new HealthBar(this,startLife, player.x, player.y - 50);
         
 
@@ -686,9 +692,11 @@
         
         camera.fadeIn(6000)
 
+        playerIcon = this.add.image(camera.scrollX + 25,camera.scrollY + 25,'playerIcon').setDepth(4).setScale(2.5)
+
         
 
-        playerProgress = new ProgressBar(this,distanceTravelled, player.x - 75, player.y - 50);
+        playerProgress = new ProgressBar(this,distanceTravelled, camera.scrollX + width * 0.33, camera.scrollY + (height - 85));
 
         // 96 seconds = 1 year
         // 8 seconds = 1 month
@@ -1051,16 +1059,19 @@
 
         sword.body.checkCollision.none = true
        
-        playerVitals.x = player.x + 25
-        playerVitals.y = player.y - 20
+        playerVitals.x = camera.scrollX + (width * 0.1) //player.x + 25
+        playerVitals.y = camera.scrollY + (height * 0.015)//player.y - 20
         playerVitals.draw()
+
+        playerIcon.x = camera.scrollX + 25
+        playerIcon.y = camera.scrollY + 25
 
         enemy1Vitals.x = enemy1.x + 25
         enemy1Vitals.y = enemy1.y - 20
         enemy1Vitals.draw()
 
-        playerProgress.x = camera.scrollX + width * 0.25
-        playerProgress.y = camera.scrollY + height * 0.05
+        playerProgress.x = camera.scrollX + width * 0.33
+        playerProgress.y = camera.scrollY + (height * 0.85)
         playerProgress.draw()
 
         if(IS_TOUCH){
