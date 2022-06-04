@@ -56,6 +56,10 @@
     var gameOver = false
     var highScore = parseInt(localStorage.getItem('highScore')) || 0;
 
+    var spendingBuffTier = 3
+    var savingBuffTier = 6
+    var investingBuffTier = 7
+
     var IS_TOUCH = false
 
 
@@ -598,6 +602,18 @@
     {
         this.load.image('playerIcon', 'assets/playerIcon.png');
 
+        this.load.image('spendingBuffIcon', 'assets/ach_00059.png');
+        this.load.image('savingBuffIcon', 'assets/ach_00057.png');
+        this.load.image('investingBuffIcon', 'assets/ach_00046.png');
+
+        this.load.image('t1BuffIcon', 'assets/ach_00117.png');
+        this.load.image('t2BuffIcon', 'assets/ach_00118.png');
+        this.load.image('t3BuffIcon', 'assets/ach_00119.png');
+        this.load.image('t4BuffIcon', 'assets/ach_00120.png');
+        this.load.image('t5BuffIcon', 'assets/ach_00121.png');
+        this.load.image('t6BuffIcon', 'assets/ach_00122.png');
+        this.load.image('t7BuffIcon', 'assets/ach_00091.png');
+
         this.load.image('up', 'assets/buttonUp.png');
         this.load.image('down', 'assets/buttonDown.png');
         this.load.image('deadSpace', 'assets/buttonDeadSpace.png');
@@ -733,7 +749,14 @@
 
         playerIcon = this.add.image(camera.scrollX + 25,camera.scrollY + 25,'playerIcon').setDepth(4).setScale(2.5)
 
-        
+        spendingBuffIcon = this.add.image(camera.scrollX + 225,camera.scrollY + 25,'spendingBuffIcon').setDepth(4).setScale(0.5)
+        savingBuffIcon = this.add.image(camera.scrollX + 350,camera.scrollY + 25,'savingBuffIcon').setDepth(4).setScale(0.5)
+        investingBuffIcon = this.add.image(camera.scrollX + 475,camera.scrollY + 25,'investingBuffIcon').setDepth(4).setScale(0.5)
+
+        spendingBuffTierIcon = this.add.image(camera.scrollX + 275,camera.scrollY + 25,'t'+spendingBuffTier+'BuffIcon').setDepth(4).setScale(0.5)
+        savingBuffTierIcon = this.add.image(camera.scrollX + 400,camera.scrollY + 25,'t'+savingBuffTier+'BuffIcon').setDepth(4).setScale(0.5)
+        investingBuffTierIcon = this.add.image(camera.scrollX + 525,camera.scrollY + 25,'t'+investingBuffTier+'BuffIcon').setDepth(4).setScale(0.2)
+
 
         playerProgress = new ProgressBar(this,distanceTravelled, camera.scrollX + width * 0.33, camera.scrollY + (height - 85));
 
