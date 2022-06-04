@@ -54,6 +54,7 @@
 
     var game = new Phaser.Game(config);
     var gameOver = false
+    var highScore = parseInt(localStorage.getItem('highScore')) || 0;
 
     var IS_TOUCH = false
 
@@ -583,6 +584,15 @@
         
     }
 
+    function updateHighScore(){
+        if (highScore < distanceTravelled){
+            highScore = distanceTravelled
+        }
+
+        
+        localStorage.setItem('highScore',highScore);
+    }
+
 
     function preload ()
     {
@@ -1079,6 +1089,7 @@
         // Enemy can sprint, rep unexpected cost, accelratin up to player (higher accelration = larger unexpected cost)  
         // Player can expend further energy to accelerate, and while sprinting cuts enemy accelration
         
+        updateHighScore()
 
         player.setTint()
         
@@ -1164,7 +1175,7 @@
         console.log('Player is Hit: ' + playerIsHit)
         console.log('Enemy is Hit: ' + enemy1IsHit)
         console.log('Enemy Aggro: ' + enemy1Aggro)
-        console.log('Gameo Over: ' + gameOver)
+        console.log('High Score: ' + highScore)
       
        
        //console.log('Enemy Chaos Factor: ' + chaosFactor)
