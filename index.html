@@ -757,6 +757,13 @@
         savingBuffTierIcon = this.add.image(camera.scrollX + 400,camera.scrollY + 25,'t'+savingBuffTier+'BuffIcon').setDepth(4).setScale(0.5)
         investingBuffTierIcon = this.add.image(camera.scrollX + 525,camera.scrollY + 25,'t'+investingBuffTier+'BuffIcon').setDepth(4).setScale(0.2)
 
+        spendingBuffIcon.visible = false
+            savingBuffIcon.visible = false
+            investingBuffIcon.visible = false
+            spendingBuffTierIcon.visible = false
+            savingBuffTierIcon.visible = false
+            investingBuffTierIcon.visible = false
+
 
         playerProgress = new ProgressBar(this,distanceTravelled, camera.scrollX + width * 0.33, camera.scrollY + (height - 85));
 
@@ -1243,6 +1250,12 @@
             text3.visible = false
             text4.visible = false
             text5.visible = false
+            spendingBuffIcon.visible = true
+            savingBuffIcon.visible = true
+            investingBuffIcon.visible = true
+            spendingBuffTierIcon.visible = true
+            savingBuffTierIcon.visible = true
+            investingBuffTierIcon.visible = true
         }
 
     
