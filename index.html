@@ -57,7 +57,7 @@
     var highScore = parseInt(localStorage.getItem('highScore')) || 0;
 
     var spendingBuffTier = 3
-    var savingBuffTier = 6
+    var savingBuffTier = 5
     var investingBuffTier = 7
 
     var IS_TOUCH = false
@@ -1102,6 +1102,8 @@
         if (gameOver == false){
             gameOver = true
             camera.fadeOut(6000)
+            camera.on('camerafadeoutcomplete',this.scene.restart())
+            
         }
         
     }
@@ -1170,6 +1172,8 @@
         playerProgress.y = camera.scrollY + (height * 0.85)
         playerProgress.draw()
 
+        
+
         highScoreText.x = camera.scrollX + (width - 340)
         highScoreText.y = camera.scrollY + (height - 57)
         highScoreText.setText('High Score: ' + Math.floor(highScore))
@@ -1235,6 +1239,20 @@
             playerIcon.y = camera.scrollY + 25
             playerVitals.x = playerIcon.x + 30
             playerVitals.y = playerIcon.y - 20
+
+            spendingBuffIcon.x = camera.scrollX + 225
+            spendingBuffIcon.y = camera.scrollY + 25
+            savingBuffIcon.x = camera.scrollX + 345
+            savingBuffIcon.y = camera.scrollY + 25
+            investingBuffIcon.x = camera.scrollX + 465
+            investingBuffIcon.y = camera.scrollY + 25
+
+            spendingBuffTierIcon.x = camera.scrollX + 275
+            spendingBuffTierIcon.y = camera.scrollY + 25
+            savingBuffTierIcon.x = camera.scrollX + 395
+            savingBuffTierIcon.y = camera.scrollY + 25
+            investingBuffTierIcon.x = camera.scrollX + 515
+            investingBuffTierIcon.y = camera.scrollY + 25
         } else if (inBattle) {
             this.woodsl2.tilePositionX = camera.x * 0.3
             this.woodsl3.tilePositionX = camera.x * 0.6
@@ -1256,6 +1274,20 @@
             spendingBuffTierIcon.visible = true
             savingBuffTierIcon.visible = true
             investingBuffTierIcon.visible = true
+
+            spendingBuffIcon.x = camera.scrollX + 250
+            spendingBuffIcon.y = camera.scrollY + 45
+            savingBuffIcon.x = camera.scrollX + 370
+            savingBuffIcon.y = camera.scrollY + 45
+            investingBuffIcon.x = camera.scrollX + 480
+            investingBuffIcon.y = camera.scrollY + 45
+
+            spendingBuffTierIcon.x = camera.scrollX + 300
+            spendingBuffTierIcon.y = camera.scrollY + 45
+            savingBuffTierIcon.x = camera.scrollX + 420
+            savingBuffTierIcon.y = camera.scrollY + 45
+            investingBuffTierIcon.x = camera.scrollX + 530
+            investingBuffTierIcon.y = camera.scrollY + 45
         }
 
     
