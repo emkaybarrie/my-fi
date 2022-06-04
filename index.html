@@ -1385,9 +1385,11 @@
                 } else {
                     if(Math.abs(player.x - enemy1.x) > 75 && Math.abs(player.x - enemy1.x) <= 100){    
                     enemy1.anims.play({key:'eIdle',frameRate: 10},true);
-                    } else if (Math.abs(player.x - enemy1.x)){
+                    } else if (gameOver){
                         this.physics.moveToObject(enemy1,player,200)
                         enemy1.anims.play({key:'eRun',frameRate: 14},true);
+                    } else if (gameOver == true){
+                        enemy1.anims.play({key:'eIdle',frameRate: 10},true);
                     }
                 }
                 
