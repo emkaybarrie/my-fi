@@ -98,7 +98,7 @@
     var currentEnergyText
     
     var startMaxEnergy = 100
-    var currentFocus = 50
+    var currentFocus = 240
     var maxFocus = maxEnergy * 3
     
     var budget = 60
@@ -600,6 +600,7 @@
         this.load.atlas('heroM', 'assets/heroM.png','assets/heroM.json');
 
         this.load.spritesheet('chargeEnergy', 'assets/animations/17_felspell_spritesheet.png', { frameWidth: 100, frameHeight: 100});
+        this.load.spritesheet('chargeDash', 'assets/animations/chargeDash.png', { frameWidth: 128.5, frameHeight: 128.6});
   
 
     }
@@ -712,6 +713,14 @@
             key: 'chargeEnergy',
             frames: this.anims.generateFrameNumbers('chargeEnergy', { start:0, end: 91}),
             frameRate: 100,
+            repeat: 0,
+            //yoyo: true
+        });
+
+        this.anims.create({
+            key: 'chargeDash',
+            frames: this.anims.generateFrameNumbers('chargeDash', { start:0, end: 5}),
+            frameRate: 6,
             repeat: 0,
             //yoyo: true
         });
@@ -1151,12 +1160,14 @@
             text4.visible = false
             text5.visible = false
         }
+
+    
         
   
 
         chaosFactor = Phaser.Math.FloatBetween(chaosMultiplierMin,chaosMultiplierMax)
         enemy1.body.setSize(enemy1.width, enemy1.height)
-
+        pSFX.setVisible(false)
 
         if (inBattle == false){
 
@@ -1188,6 +1199,18 @@
                 playerVitals.decreaseFocus(maxEnergy / 150)
 
                 player.anims.play({key:'pDash',frameRate: 12},true);
+
+                if (player.flipX){
+                        pSFX.x = player.x + 20
+                    } else {
+                        pSFX.x = player.x - 15
+                    }
+                pSFX.y = player.y - 25
+                pSFX.setVisible(true)
+                pSFX.setTint()
+                pSFX.setAlpha(0.85)
+                pSFX.setDepth(0)
+                pSFX.play('chargeDash',true)
 
             
                 player.body.maxVelocity.x = 300
@@ -1232,11 +1255,13 @@
                 playerVitals.decreaseFocus(-maxEnergy / 900)
 
                 
-                        pSFX.setTint(0xf1c232)
-                        pSFX.play('chargeEnergy',true)
-                        if (spotlight.intensity < 1.25){
-                        spotlight.intensity += 0.01
-                        }
+                pSFX.setTint(0xf1c232)
+                pSFX.setDepth(2)
+                pSFX.setVisible(true)
+                pSFX.play('chargeEnergy',true)
+                if (spotlight.intensity < 1.25){
+                    spotlight.intensity += 0.01
+                }
                 camera.shake(50, 0.0005);
 
                 distanceTravelled += 4.5 * (playerSpeed)
@@ -1285,6 +1310,8 @@
             }
 
             camera.startFollow(player, false, 0.05, 0.05)
+
+            
 
             if (player.x - enemy1.x > 0){
                 enemy1.flipX = true
@@ -1371,6 +1398,8 @@
                 if (cursors.up.isDown && cursors.space.isDown && currentFocus > 0 && currentEnergy < maxEnergy * 0.99){   
                   
                   player.anims.play({key:'pChargeEnergy'},true);
+                  pSFX.setVisible(true)
+                  pSFX.setDepth(1)
                   pSFX.setTint(0x93c47d)
                   pSFX.play('chargeEnergy',true)
                   if (spotlight.intensity < 1.5){
@@ -1465,7 +1494,20 @@
 
                     if(Phaser.Input.Keyboard.JustDown(cursors.space)){
                     player.anims.play({key:'pChargeDash'},true);
+                   
                     }
+                    pSFX.setVisible(true)
+
+                    if (player.flipX){
+                        pSFX.x = player.x + 20
+                    } else {
+                        pSFX.x = player.x - 15
+                    }
+                    pSFX.y = player.y - 25
+                    pSFX.setTint()
+                    pSFX.setAlpha(0.85)
+                    pSFX.setDepth(0)
+                    pSFX.play('chargeDash',true)
 
                     playerVitals.decreaseFocus(maxFocus / 400)
 
