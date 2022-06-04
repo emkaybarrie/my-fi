@@ -1185,13 +1185,15 @@
 
                 distanceTravelled += 8
 
-                playerVitals.decreaseFocus(maxEnergy / 450)
+                playerVitals.decreaseFocus(maxEnergy / 150)
 
                 player.anims.play({key:'pDash',frameRate: 12},true);
 
             
                 player.body.maxVelocity.x = 300
                 player.setVelocityX(200)
+                
+                
                 //this.physics.moveTo(player,width * 1.8,height - 90,300)
 
         
@@ -1202,7 +1204,7 @@
             else if (Phaser.Input.Keyboard.JustDown(cursors.space)){
                 
                 
-                player.setDragX(5000)
+                player.setDragX(7500)
 
             
             } else if (cursors.down.isDown && currentEnergy > 0){
