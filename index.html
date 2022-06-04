@@ -438,7 +438,7 @@
     if (inBattle){
         //if (playerIsHit == false){
             playerIsHit = true
-            playerVitals.decreaseLife(e1MaxLife / 100)
+            playerVitals.decreaseLife(e1MaxLife / 50)
             maxEnergy *= 1 - (0.04 / 100)
             
         //} 
@@ -1104,7 +1104,7 @@
             camera.fadeOut(6000)
             camera.on('camerafadeoutcomplete', function () {
 
-            // this.scene.restart();
+            
 
             }, this);
             
