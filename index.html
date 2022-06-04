@@ -1102,7 +1102,11 @@
         if (gameOver == false){
             gameOver = true
             camera.fadeOut(6000)
-            camera.on('camerafadeoutcomplete',this.scene.restart())
+            camera.on('camerafadeoutcomplete', function () {
+
+            // this.scene.restart();
+
+            }, this);
             
         }
         
@@ -1244,14 +1248,14 @@
             spendingBuffIcon.y = camera.scrollY + 25
             savingBuffIcon.x = camera.scrollX + 345
             savingBuffIcon.y = camera.scrollY + 25
-            investingBuffIcon.x = camera.scrollX + 465
+            investingBuffIcon.x = camera.scrollX + 460
             investingBuffIcon.y = camera.scrollY + 25
 
             spendingBuffTierIcon.x = camera.scrollX + 275
             spendingBuffTierIcon.y = camera.scrollY + 25
             savingBuffTierIcon.x = camera.scrollX + 395
             savingBuffTierIcon.y = camera.scrollY + 25
-            investingBuffTierIcon.x = camera.scrollX + 515
+            investingBuffTierIcon.x = camera.scrollX + 510
             investingBuffTierIcon.y = camera.scrollY + 25
         } else if (inBattle) {
             this.woodsl2.tilePositionX = camera.x * 0.3
