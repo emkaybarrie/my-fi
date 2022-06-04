@@ -434,7 +434,7 @@
         //if (playerIsHit == false){
             playerIsHit = true
             playerVitals.decreaseLife(e1MaxLife / 100)
-            maxEnergy *= 1 - 0.04
+            maxEnergy *= 1 - (0.04 / 100)
             
         //} 
         
@@ -630,7 +630,7 @@
 
         // Text Instructions - Temp
 
-        text1 = this.add.text(width * 1.3, height * 0.015, 'Make it to the end whilst avoiding enemies and obstables.').setFontFamily('Arial').setFontSize(10).setColor('#674EA7').setDepth(4);
+        text1 = this.add.text(width * 1.35, height * 0.015, 'Make it to the end whilst avoiding enemies and obstables.').setFontFamily('Arial').setFontSize(10).setColor('#674EA7').setDepth(4);
         text2 = this.add.text(text1.x, text1.y + 15, 'Run Mode: Press FORWARD to speed up. Press BACK to slow down & charge focus. Press DOWN to slide/dodge.').setFontFamily('Arial').setFontSize(7).setColor('#ffffff').setDepth(4);
         text3 = this.add.text(text1.x, text2.y + 12.5, 'Run Mode: Press/Hold FOCUS button (yellow) to dash/dodge').setFontFamily('Arial').setFontSize(7).setColor('#ffffff').setDepth(4);
         text4 = this.add.text(text1.x, text3.y + 12.5, 'Battle Mode: Press/Hold ENERGY button (green) to attack. Hold LEFT/RIGHT + ENERGY for Heavy Attack.').setFontFamily('Arial').setFontSize(7).setColor('#ffffff').setDepth(4);
@@ -1055,9 +1055,11 @@
     }
 
     function finish(){
-        if (gameOver == false)
-        gameOver = true
-        camera.fadeOut(6000)
+        if (gameOver == false){
+            gameOver = true
+            camera.fadeOut(6000)
+        }
+        
     }
 
     function update ()
@@ -1090,7 +1092,7 @@
 
 
 
-        if (gameOver == false)
+       
         if (distanceTravelled >= distanceToTravel){
             finish()
             
@@ -1162,7 +1164,7 @@
         console.log('Player is Hit: ' + playerIsHit)
         console.log('Enemy is Hit: ' + enemy1IsHit)
         console.log('Enemy Aggro: ' + enemy1Aggro)
-        console.log('Enemy Distance: ' + Math.abs(player.x - enemy1.x))
+        console.log('Gameo Over: ' + gameOver)
       
        
        //console.log('Enemy Chaos Factor: ' + chaosFactor)
@@ -1375,7 +1377,7 @@
                 }, this);
             } else if (enemy1Alive && enemy1Life > 0 && enemy1IsHit == false) {
             
-                if (enemy1Aggro){
+                if (enemy1Aggro && gameOver == false){
                     enemy1.anims.play({key:'eAttack'},true);
                     if (enemy1.anims.currentFrame.index >= 5 && enemy1.anims.currentFrame.index < 8){
                         eSword.body.checkCollision.none = false
@@ -1404,11 +1406,7 @@
                     
             }
 
-            
-          
-
-            
-               
+     
 
             player.body.setSize(10, 30).setOffset(25,15)
 
@@ -1424,219 +1422,219 @@
             enemy1.setDragX(600)
             
            
-
+            
             
             
             if (currentLife <= 0 && gameOver == false){
                 player.anims.play({key:'pDeath',frameRate: 12},true); 
-                 player.on('animationcomplete', function () {
+                player.on('animationcomplete', function () {
                     finish();
                  }, this);
-            } else {
+            } else if (currentLife >= 0 && gameOver == false){
                 if (playerIsHit){
 
-player.anims.play({key:'pHurt',frameRate: 12},true); 
-player.on('animationcomplete', function () {
-   playerRecover();
-}, this);
-} else if (cursors.up.isDown && cursors.space.isDown && currentFocus > 0 && currentEnergy < maxEnergy * 0.99){   
- 
- player.anims.play({key:'pChargeEnergy'},true);
- pSFX.setVisible(true)
- pSFX.setDepth(1)
- pSFX.setTint(0x93c47d)
- pSFX.play('chargeEnergy',true)
- if (spotlight.intensity < 1.5){
- spotlight.intensity += 0.02
- }
- camera.shake(50, 0.0005);
+                player.anims.play({key:'pHurt',frameRate: 12},true); 
+                player.on('animationcomplete', function () {
+                playerRecover();
+                }, this);
+                } else if (cursors.up.isDown && cursors.space.isDown && currentFocus > 0 && currentEnergy < maxEnergy * 0.99){   
+            
+            player.anims.play({key:'pChargeEnergy'},true);
+            pSFX.setVisible(true)
+            pSFX.setDepth(1)
+            pSFX.setTint(0x93c47d)
+            pSFX.play('chargeEnergy',true)
+            if (spotlight.intensity < 1.5){
+            spotlight.intensity += 0.02
+            }
+            camera.shake(50, 0.0005);
 
 
-playerVitals.decreaseFocus(maxFocus / 600)
-playerVitals.decreaseEnergy(-maxFocus / 600)
+            playerVitals.decreaseFocus(maxFocus / 600)
+            playerVitals.decreaseEnergy(-maxFocus / 600)
 
 
-} else if ((cursors.left.isDown && keyA.isDown || cursors.right.isDown && keyA.isDown) && currentEnergy > 0){
-  
-   player.anims.play({key:'pHeavyAttack',frameRate: 12},true);
+            } else if ((cursors.left.isDown && keyA.isDown || cursors.right.isDown && keyA.isDown) && currentEnergy > 0){
+            
+            player.anims.play({key:'pHeavyAttack',frameRate: 12},true);
 
-  
-   playerVitals.decreaseEnergy(maxEnergy / 300)
-   damage = maxEnergy * 0.75
+            
+            playerVitals.decreaseEnergy(maxEnergy / 300)
+            damage = maxEnergy * 0.75
 
-   // Activate Sword Hitbox
+            // Activate Sword Hitbox
 
-   if (player.anims.currentFrame.index >= 4 && player.anims.currentFrame.index < 6){
-   sword.body.checkCollision.none = false
-   } 
+            if (player.anims.currentFrame.index >= 4 && player.anims.currentFrame.index < 6){
+            sword.body.checkCollision.none = false
+            } 
 
-} else if (keyA.isDown && currentEnergy > 0 && cursors.up.isUp){
-   
-   if(Phaser.Input.Keyboard.JustDown(keyA)){
-       player.anims.play({key:'pChargeAttack'},true);
-   }
-   
-   if (spotlight.intensity < 1.25){
-       spotlight.intensity += 0.01
-   }
-   
-   
-   if (chargePower <= 1.1){
-       chargePower += 0.025
-   }
+            } else if (keyA.isDown && currentEnergy > 0 && cursors.up.isUp){
+            
+            if(Phaser.Input.Keyboard.JustDown(keyA)){
+                player.anims.play({key:'pChargeAttack'},true);
+            }
+            
+            if (spotlight.intensity < 1.25){
+                spotlight.intensity += 0.01
+            }
+            
+            
+            if (chargePower <= 1.1){
+                chargePower += 0.025
+            }
 
-   damage = maxEnergy * 0.5 * chargePower
+            damage = maxEnergy * 0.5 * chargePower
 
-   keyDuration = keyA.getDuration()
-   if (chargePower < 0.95){
-       playerVitals.decreaseEnergy(maxEnergy / 300)
-   } else {
-       playerVitals.decreaseEnergy(maxEnergy / 600)
-   }
-   
+            keyDuration = keyA.getDuration()
+            if (chargePower < 0.95){
+                playerVitals.decreaseEnergy(maxEnergy / 300)
+            } else {
+                playerVitals.decreaseEnergy(maxEnergy / 600)
+            }
+            
 
-  
-}  else if (keyA.isUp && keyDuration > 0 && cursors.space.isUp){
+            
+            }  else if (keyA.isUp && keyDuration > 0 && cursors.space.isUp){
 
-   if (player.anims.currentFrame.index >= 6 && player.anims.currentFrame.index < 12){
-           sword.body.checkCollision.none = false
-   }
+            if (player.anims.currentFrame.index >= 6 && player.anims.currentFrame.index < 12){
+                    sword.body.checkCollision.none = false
+            }
 
-   spotlight.setIntensity(0.5)
+            spotlight.setIntensity(0.5)
 
-   
+            
 
- if (chargePower > 0.75){
+            if (chargePower > 0.75){
 
-       player.anims.play({key:'pAttack',frameRate: 24, startFrame: 3, repeat: 1},true);
-         
-   } else if (chargePower >= 0.25 && chargePower < 0.75){
-       player.anims.play({key:'pAttack',frameRate: 16, startFrame: 3},true);
-   } else if (chargePower <  0.25){
-       player.anims.play({key:'pQuickAttack',frameRate: 18, startFrame: 3, endFrame: 8},true);
-   }
+                player.anims.play({key:'pAttack',frameRate: 24, startFrame: 3, repeat: 1},true);
+                    
+            } else if (chargePower >= 0.25 && chargePower < 0.75){
+                player.anims.play({key:'pAttack',frameRate: 16, startFrame: 3},true);
+            } else if (chargePower <  0.25){
+                player.anims.play({key:'pQuickAttack',frameRate: 18, startFrame: 3, endFrame: 8},true);
+            }
 
-   player.on('animationcomplete', function () {    
-   playerComboEnd();
-   }, this);
-
-
-} else if (cursors.space.isDown && currentFocus > 0 && cursors.up.isUp){
-
-   if (spotlight.intensity < 1.25){
-       spotlight.intensity += 0.01
-   }
-   
-   
-   if (chargePower <= 1.1){
-       chargePower += 0.025
-   }
-
-   if (chargePower < 0.15){
-       chargePower = 0.15
-   } 
-
-   if(Phaser.Input.Keyboard.JustDown(cursors.space)){
-   player.anims.play({key:'pChargeDash'},true);
-  
-   }
-   pSFX.setVisible(true)
-
-   if (player.flipX){
-       pSFX.x = player.x + 20
-   } else {
-       pSFX.x = player.x - 15
-   }
-   pSFX.y = player.y - 25
-   pSFX.setTint()
-   pSFX.setAlpha(0.85)
-   pSFX.setDepth(0)
-   pSFX.play('chargeDash',true)
-
-   playerVitals.decreaseFocus(maxFocus / 400)
-
-   keyFocusDuration = cursors.space.getDuration()
-
-   
-
-} 
-
-else if (Phaser.Input.Keyboard.JustDown(cursors.space)){
-
-   player.setDragX(5000)
-
-} else if (cursors.space.isUp && keyFocusDuration > 0){
+            player.on('animationcomplete', function () {    
+            playerComboEnd();
+            }, this);
 
 
-   spotlight.setIntensity(0.5)
+            } else if (cursors.space.isDown && currentFocus > 0 && cursors.up.isUp){
 
-   player.anims.play({key:'pDash',frameRate: 12},true);
+            if (spotlight.intensity < 1.25){
+                spotlight.intensity += 0.01
+            }
+            
+            
+            if (chargePower <= 1.1){
+                chargePower += 0.025
+            }
 
-   
-   if (player.flipX){
-       
-       player.body.maxVelocity.x = 750
-       this.physics.moveTo(player,player.x - 100,height - 90,750 * chargePower)
+            if (chargePower < 0.15){
+                chargePower = 0.15
+            } 
 
-   } else if (player.flipX == false) {
+            if(Phaser.Input.Keyboard.JustDown(cursors.space)){
+            player.anims.play({key:'pChargeDash'},true);
+            
+            }
+            pSFX.setVisible(true)
 
-       
-       player.body.maxVelocity.x = 750
-       this.physics.moveTo(player,player.x + 100,height - 90,750 * chargePower)
-       
-   }
+            if (player.flipX){
+                pSFX.x = player.x + 20
+            } else {
+                pSFX.x = player.x - 15
+            }
+            pSFX.y = player.y - 25
+            pSFX.setTint()
+            pSFX.setAlpha(0.85)
+            pSFX.setDepth(0)
+            pSFX.play('chargeDash',true)
 
-   player.on('animationcomplete', function () {    
-   playerComboEnd();
-   }, this);
+            playerVitals.decreaseFocus(maxFocus / 400)
 
+            keyFocusDuration = cursors.space.getDuration()
 
-} 
+            
 
-else if (cursors.down.isDown && player.body.touching.down){ 
-   
-   if(Phaser.Input.Keyboard.JustDown(cursors.down)){
-   //player.chain([ {key:'pUptoFall',frameRate: 12},true, {key:'pSlide',frameRate: 6},true]);
-   player.anims.play({key:'pSlide',frameRate: 12},true);
-   }
-   
-   player.setDragX(300)
-         
-} 
+            } 
 
-else if (cursors.left.isDown && player.body.touching.down){
+            else if (Phaser.Input.Keyboard.JustDown(cursors.space)){
 
-   player.setVelocityX(player.body.velocity.x - (20 * devicePixelRatio))
-   player.flipX = true 
-   player.anims.play({key:'pRun',frameRate: 10},true);
-   
-   
-} 
+            player.setDragX(5000)
 
-else if (cursors.right.isDown && player.body.touching.down){
-
-   player.setVelocityX(player.body.velocity.x + (20 * devicePixelRatio))
-   player.flipX = false
-   player.anims.play({key:'pRun',frameRate: 10},true);
-
-}  
-
-else if (player.body.touching.down){
-
-   player.anims.play({key:'pIdle',frameRate: 8},true);
-   player.body.maxVelocity.x = 250
-   
-   spotlight.setIntensity(0.5)
+            } else if (cursors.space.isUp && keyFocusDuration > 0){
 
 
-} 
+            spotlight.setIntensity(0.5)
 
-else {
-   player.anims.play({key:'pUptoFall',frameRate: 8});
-   player.body.maxVelocity.x = 250
-  
-   spotlight.setIntensity(0.5)
-}
+            player.anims.play({key:'pDash',frameRate: 12},true);
+
+            
+            if (player.flipX){
+                
+                player.body.maxVelocity.x = 750
+                this.physics.moveTo(player,player.x - 100,height - 90,750 * chargePower)
+
+            } else if (player.flipX == false) {
+
+                
+                player.body.maxVelocity.x = 750
+                this.physics.moveTo(player,player.x + 100,height - 90,750 * chargePower)
+                
+            }
+
+            player.on('animationcomplete', function () {    
+            playerComboEnd();
+            }, this);
+
+
+            } 
+
+            else if (cursors.down.isDown && player.body.touching.down){ 
+            
+            if(Phaser.Input.Keyboard.JustDown(cursors.down)){
+            //player.chain([ {key:'pUptoFall',frameRate: 12},true, {key:'pSlide',frameRate: 6},true]);
+            player.anims.play({key:'pSlide',frameRate: 12},true);
+            }
+            
+            player.setDragX(300)
+                    
+            } 
+
+            else if (cursors.left.isDown && player.body.touching.down){
+
+            player.setVelocityX(player.body.velocity.x - (20 * devicePixelRatio))
+            player.flipX = true 
+            player.anims.play({key:'pRun',frameRate: 10},true);
+            
+            
+            } 
+
+            else if (cursors.right.isDown && player.body.touching.down){
+
+            player.setVelocityX(player.body.velocity.x + (20 * devicePixelRatio))
+            player.flipX = false
+            player.anims.play({key:'pRun',frameRate: 10},true);
+
+            }  
+
+            else if (player.body.touching.down){
+
+            player.anims.play({key:'pIdle',frameRate: 8},true);
+            player.body.maxVelocity.x = 250
+            
+            spotlight.setIntensity(0.5)
+
+
+            } 
+
+            else {
+            player.anims.play({key:'pUptoFall',frameRate: 8});
+            player.body.maxVelocity.x = 250
+            
+            spotlight.setIntensity(0.5)
+            }
             } 
 
             } 
