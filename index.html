@@ -420,6 +420,7 @@
         
         maxEnergy *= 1 - (0.04 / 100)
         player.x -= 1
+        enemy1.body.velocity.x += 2
     }            
     
 
@@ -1119,8 +1120,8 @@
 
         enemy1.y = height - 85
 
-        console.log('Enemy 1 Life: ' + enemy1Life)
-        console.log('Enemy 1 Max Life: ' + e1MaxLife)
+        //console.log('Enemy 1 Life: ' + enemy1Life)
+        console.log('Enemy 1 Vellcity: ' + enemy1.body.velocity.x)
         //console.log('Charge Power %: ' + chargePower * 100)
         //console.log('Distance Travelled: ' + distanceTravelled)
       
