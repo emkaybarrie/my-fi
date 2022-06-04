@@ -586,11 +586,11 @@
 
     function updateHighScore(){
         if (highScore < distanceTravelled){
-            highScore = distanceTravelled
+            highScore = Math.abs(distanceTravelled)
         }
 
         
-        localStorage.setItem('highScore',highScore);
+        localStorage.setItem('highScore',Math.abs(highScore));
     }
 
 
@@ -737,7 +737,7 @@
 
         playerProgress = new ProgressBar(this,distanceTravelled, camera.scrollX + width * 0.33, camera.scrollY + (height - 85));
 
-        highScoreText = this.add.text(camera.scrollX + (width - 340), camera.scrollY + (height - 57), 'High Score: ' + highScore).setFontFamily('Arial').setFontSize(12).setColor('#674EA7').setDepth(4);
+        highScoreText = this.add.text(camera.scrollX + (width - 340), camera.scrollY + (height - 57), 'High Score: ' + Math.abs(highScore)).setFontFamily('Arial').setFontSize(12).setColor('#674EA7').setDepth(4);
 
         // 96 seconds = 1 year
         // 8 seconds = 1 month
@@ -1142,7 +1142,7 @@
 
         highScoreText.x = camera.scrollX + (width - 340)
         highScoreText.y = camera.scrollY + (height - 57)
-        highScoreText.setText('High Score: ' + highScore)
+        highScoreText.setText('High Score: ' + Math.abs(highScore))
 
         if(IS_TOUCH){
         left.x = camera.scrollX + (width * 0.1)// - 245 
