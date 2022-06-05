@@ -62,6 +62,7 @@
 
     var IS_TOUCH = false
 
+    var playerSwordSwing
 
     var width = game.config.width
     var height = game.config.height
@@ -599,7 +600,15 @@
 
 
     function preload ()
-    {
+    {   
+        this.load.audio("bgMusic", ["assets/music/Le_château_magique.mp3"]);
+        this.load.audio("bgMusic2", ["assets/music/Kids_See_Ghosts.mp3"]);
+        
+        this.load.audio("playerSwordSwing", ["assets/soundFX/SFX_Whoosh_Sword_02.mp3"]);
+        this.load.audio("playerHeavySwordSwing", ["assets/soundFX/SFX_Whoosh_Sword_03.mp3"]);        
+        this.load.audio("enemySwordSwing", ["assets/soundFX/SFX_Sword_Whoosh_01.mp3"]);
+        
+
         this.load.image('playerIcon', 'assets/playerIcon.png');
 
         this.load.image('spendingBuffIcon', 'assets/ach_00059.png');
@@ -655,6 +664,13 @@
     function create ()
     {
 
+        var bgMusic = this.sound.add("bgMusic2", { loop: true });
+        //bgMusic.play()
+
+        playerSwordSwing = this.sound.add("playerSwordSwing")
+        playerHeavySwordSwing = this.sound.add("playerHeavySwordSwing")
+        enemySwordSwing = this.sound.add("enemySwordSwing")
+        
         // Text Instructions - Temp
 
         text1 = this.add.text(width * 1.35, height * 0.015, 'Make it to the end whilst avoiding enemies and obstables.').setFontFamily('Arial').setFontSize(10).setColor('#674EA7').setDepth(4);
@@ -741,6 +757,8 @@
         camera = this.cameras.main.centerOn(player.x, 0) //.startFollow(player, false, 0.05, 0.05)
 
         camera.setBounds(0, 0, width * 3, height)
+
+        
         
         camera.fadeIn(6000)
 
@@ -1074,6 +1092,7 @@
             }
 
             });
+            
     
 
     }
@@ -1466,6 +1485,7 @@
             } else if (enemy1Alive && enemy1Life > 0 && enemy1IsHit == false) {
             
                 if (enemy1Aggro && gameOver == false){
+                    enemySwordSwing.play()
                     enemy1.anims.play({key:'eAttack'},true);
                     if (enemy1.anims.currentFrame.index >= 5 && enemy1.anims.currentFrame.index < 8){
                         eSword.body.checkCollision.none = false
@@ -1545,6 +1565,8 @@
 
 
             } else if ((cursors.left.isDown && keyA.isDown || cursors.right.isDown && keyA.isDown) && currentEnergy > 0){
+
+            playerHeavySwordSwing.play()
             
             player.anims.play({key:'pHeavyAttack',frameRate: 12},true);
 
@@ -1586,6 +1608,8 @@
             
             }  else if (keyA.isUp && keyDuration > 0 && cursors.space.isUp){
 
+                playerSwordSwing.play()
+
             if (player.anims.currentFrame.index >= 6 && player.anims.currentFrame.index < 12){
                     sword.body.checkCollision.none = false
             }
@@ -1603,6 +1627,8 @@
             } else if (chargePower <  0.25){
                 player.anims.play({key:'pQuickAttack',frameRate: 18, startFrame: 3, endFrame: 8},true);
             }
+
+            
 
             player.on('animationcomplete', function () {    
             playerComboEnd();
