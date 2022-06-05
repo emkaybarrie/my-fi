@@ -614,13 +614,14 @@
         this.load.image('t6BuffIcon', 'assets/ach_00122.png');
         this.load.image('t7BuffIcon', 'assets/ach_00091.png');
 
-        this.load.image('up', 'assets/buttonUp.png');
-        this.load.image('down', 'assets/buttonDown.png');
+        this.load.image('up', 'assets/controls/shadedDark03');
+        this.load.image('down', 'assets/controls/shadedDark10');
         this.load.image('deadSpace', 'assets/buttonDeadSpace.png');
-        this.load.image('left', 'assets/buttonLeft.png');
-        this.load.image('right', 'assets/buttonRight.png');
-        this.load.image('energy', 'assets/buttonEnergy.png');
-        this.load.image('focus', 'assets/buttonFocus.png');
+        this.load.image('left', 'assets/controls/shadedDark05.png');
+        this.load.image('right', 'assets/controls/shadedDark06');
+        this.load.image('energy', 'assets/controls/shadedDark36');
+        this.load.image('focus', 'assets/controls/shadedDark37');
+
         this.load.image('dawnl1', 'assets/dawn1.png');
         this.load.image('dawnl2', 'assets/dawn2.png');
         this.load.image('dawnl3', 'assets/dawn3.png');
@@ -657,13 +658,11 @@
         // Text Instructions - Temp
 
         text1 = this.add.text(width * 1.35, height * 0.015, 'Make it to the end whilst avoiding enemies and obstables.').setFontFamily('Arial').setFontSize(10).setColor('#674EA7').setDepth(4);
-        text2 = this.add.text(text1.x, text1.y + 15, 'Run Mode: Press FORWARD to speed up. Press BACK to slow down & charge focus. Press DOWN to slide/dodge.').setFontFamily('Arial').setFontSize(7).setColor('#ffffff').setDepth(4);
-        text3 = this.add.text(text1.x, text2.y + 12.5, 'Run Mode: Press/Hold FOCUS button (yellow) to dash/dodge').setFontFamily('Arial').setFontSize(7).setColor('#ffffff').setDepth(4);
-        text4 = this.add.text(text1.x, text3.y + 12.5, 'Battle Mode: Press/Hold ENERGY button (green) to attack. Hold LEFT/RIGHT + ENERGY for Heavy Attack.').setFontFamily('Arial').setFontSize(7).setColor('#ffffff').setDepth(4);
-        text5 = this.add.text(text1.x, text4.y + 12.5, 'Battle Mode: Hold UP + FOCUS to charge Energy. Press/Hold FOCUS button (yellow) to dash/dodge').setFontFamily('Arial').setFontSize(7).setColor('#ffffff').setDepth(4);
+        text2 = this.add.text(text1.x, text1.y + 15, 'Run Mode: Press FORWARD to Speed Up. Press BACK to slow down & Charge Focus. Press DOWN to Slide/Dodge.').setFontFamily('Arial').setFontSize(7).setColor('#ffffff').setDepth(4);
+        text3 = this.add.text(text1.x, text2.y + 12.5, 'Run Mode: Press/Hold B to Dash/Dodge').setFontFamily('Arial').setFontSize(7).setColor('#ffffff').setDepth(4);
+        text4 = this.add.text(text1.x, text3.y + 12.5, 'Battle Mode: Press/Hold A to attack. Hold LEFT/RIGHT + A for Heavy Attack.').setFontFamily('Arial').setFontSize(7).setColor('#ffffff').setDepth(4);
+        text5 = this.add.text(text1.x, text4.y + 12.5, 'Battle Mode: Hold UP + B to charge Energy. Press/Hold B to Dash/Dodge').setFontFamily('Arial').setFontSize(7).setColor('#ffffff').setDepth(4);
         
-        
-
         startPosition = (width * 1.5)
 
         this.physics.world.setBounds(0, 0, width * 3,  height);
@@ -673,7 +672,6 @@
         this.woodsl3 = this.add.tileSprite(0,0, width * 3, height, 'woodsl3').setOrigin(0,0).setScrollFactor(0.5)
         this.woodsl4 = this.add.tileSprite(0,0, width * 3, height, 'woodsl4').setOrigin(0,0).setScrollFactor(1).setDepth(2)
 
-        
         this.lights.enable();
         this.lights.setAmbientColor(0x808080);
 
@@ -724,7 +722,6 @@
             
             this.physics.add.overlap(sword, enemy1, enemy1Hit)
             this.physics.add.collider(platforms,enemy1);
-            
             
             enemy1.body.setAllowDrag(true)
             
@@ -966,9 +963,9 @@
         down = this.add.image(-100, -100, 'down').setInteractive().setDepth(3).setScale(0.75).setAlpha(0.5);
         left = this.add.image(-100, -100, 'left').setInteractive().setDepth(3).setScale(0.75).setAlpha(0.5);
         right = this.add.image(-100, -100, 'right').setInteractive().setDepth(3).setScale(0.75).setAlpha(0.5);
-        deadSpace = this.add.image(-100, -100, 'deadSpace').setDepth(4).setScale(0.75).setAlpha(0.5);
-        energy = this.add.image(-100, -100, 'energy').setInteractive().setDepth(3).setScale(1).setAlpha(0.5);
-        focusB = this.add.image(-100, -100, 'focus').setInteractive().setDepth(3).setScale(1).setAlpha(0.5);
+        deadSpace = this.add.image(-100, -100, 'deadSpace').setDepth(4).setScale(0.75).setVisible(0);
+        energy = this.add.image(-100, -100, 'energy').setInteractive().setDepth(3).setScale(.75).setAlpha(0.5).setTint(0x93c47d);
+        focusB = this.add.image(-100, -100, 'focus').setInteractive().setDepth(3).setScale(.75).setAlpha(0.5).setTint(0xf1c232);
 
         this.input.on('pointerdown', function (pointer) {
         IS_TOUCH = true;
@@ -1186,8 +1183,8 @@
         left.x = camera.scrollX + (width * 0.1)// - 245 
         energy.x = camera.scrollX + (width * 0.9) 
 
-        deadSpace.x = left.x + 40.5
-        right.x = deadSpace.x + 40.5
+        deadSpace.x = left.x + 35.5
+        right.x = deadSpace.x + 35.5
         up.x = deadSpace.x
         down.x = deadSpace.x
         focusB.x = energy.x - 75
