@@ -62,7 +62,7 @@
 
     var IS_TOUCH = false
 
-    var playerSwordSwing
+    
 
     var width = game.config.width
     var height = game.config.height
@@ -601,12 +601,17 @@
 
     function preload ()
     {   
-        this.load.audio("bgMusic", ["assets/music/Le_château_magique.mp3"]);
+        this.load.audio("bgMusic1", ["assets/music/Le_château_magique.mp3"]);
         this.load.audio("bgMusic2", ["assets/music/Kids_See_Ghosts.mp3"]);
+        this.load.audio("bgMusic3", ["assets/music/Riptide.mp3"]);
+        this.load.audio("bgMusic4", ["assets/music/The_Apartment.mp3"]);
+        this.load.audio("bgMusic5", ["assets/music/Katana.mp3"]);
+        this.load.audio("bgMusic6", ["assets/music/Ludum_Dare_38_Track_2.wav"]);
         
         this.load.audio("playerSwordSwing", ["assets/soundFX/SFX_Whoosh_Sword_02.mp3"]);
         this.load.audio("playerHeavySwordSwing", ["assets/soundFX/SFX_Whoosh_Sword_03.mp3"]);        
         this.load.audio("enemySwordSwing", ["assets/soundFX/SFX_Sword_Whoosh_01.mp3"]);
+        this.load.audio("charge", ["assets/soundFX/SFX_Potion_01.mp3"]);
         
 
         this.load.image('playerIcon', 'assets/playerIcon.png');
@@ -664,12 +669,16 @@
     function create ()
     {
 
-        var bgMusic = this.sound.add("bgMusic2", { loop: true });
-        //bgMusic.play()
+        songChoice = Math.floor(Phaser.Math.Between(1,6))
+        bgMusic = this.sound.add("bgMusic"+songChoice, { loop: true, volume: 0.75});
 
-        playerSwordSwing = this.sound.add("playerSwordSwing")
-        playerHeavySwordSwing = this.sound.add("playerHeavySwordSwing")
-        enemySwordSwing = this.sound.add("enemySwordSwing")
+
+        bgMusic.play()
+
+        playerSwordSwing = this.sound.add("playerSwordSwing", {volume: 0.5})
+        playerHeavySwordSwing = this.sound.add("playerHeavySwordSwing", {volume: 0.5})
+        enemySwordSwing = this.sound.add("enemySwordSwing", {volume: 0.5})
+        charge = this.sound.add("charge",{volume: 0.5})
         
         // Text Instructions - Temp
 
@@ -1410,6 +1419,7 @@
                 pSFX.setDepth(2)
                 pSFX.setVisible(true)
                 pSFX.play('chargeEnergy',true)
+                charge.play()
                 if (spotlight.intensity < 1.25){
                     spotlight.intensity += 0.01
                 }
@@ -1554,6 +1564,7 @@
             pSFX.setDepth(1)
             pSFX.setTint(0x93c47d)
             pSFX.play('chargeEnergy',true)
+            charge.play()
             if (spotlight.intensity < 1.5){
             spotlight.intensity += 0.02
             }
