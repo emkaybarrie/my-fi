@@ -808,20 +808,14 @@
             kianovaBuffIcon = this.add.image(camera.scrollX + 525,camera.scrollY + 25,'t'+kianovaBuffTier+'KianovaBuffIcon').setDepth(4).setScale(0.45)
         }
 
-        
-        
-        
-
-        
-
-        
-
+ 
         storingBuffIcon.visible = false
         spendingBuffIcon.visible = false
         growingBuffIcon.visible = false
         storingBuffTierIcon.visible = false
         spendingBuffTierIcon.visible = false
         growingBuffTierIcon.visible = false
+        kianovaBuffIcon.visible = false
 
 
         playerProgress = new ProgressBar(this,distanceTravelled, camera.scrollX + width * 0.33, camera.scrollY + (height - 85));
@@ -1343,6 +1337,7 @@
             storingBuffTierIcon.visible = true
             spendingBuffTierIcon.visible = true
             growingBuffTierIcon.visible = true
+            kianovaBuffIcon.visible = true
 
             storingBuffIcon.x = camera.scrollX + 240
             storingBuffIcon.y = camera.scrollY + 45
