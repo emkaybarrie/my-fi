@@ -56,9 +56,9 @@
     var gameOver = false
     var highScore = parseInt(localStorage.getItem('highScore')) || 0;
 
+    var storingBuffTier = 0
     var spendingBuffTier = 3
-    var savingBuffTier = 5
-    var investingBuffTier = 7
+    var growingBuffTier = 5
 
     var IS_TOUCH = false
 
@@ -616,9 +616,9 @@
 
         this.load.image('playerIcon', 'assets/playerIcon.png');
 
-        this.load.image('spendingBuffIcon', 'assets/ach_00059.png');
-        this.load.image('savingBuffIcon', 'assets/ach_00057.png');
-        this.load.image('investingBuffIcon', 'assets/ach_00046.png');
+        this.load.image('storingBuffIcon', 'assets/ach_00059.png');
+        this.load.image('spendingBuffIcon', 'assets/ach_00057.png');
+        this.load.image('growingBuffIcon', 'assets/ach_00046.png');
 
         this.load.image('t1BuffIcon', 'assets/ach_00117.png');
         this.load.image('t2BuffIcon', 'assets/ach_00118.png');
@@ -773,20 +773,54 @@
 
         playerIcon = this.add.image(camera.scrollX + 25,camera.scrollY + 25,'playerIcon').setDepth(4).setScale(2.5)
 
+        storingBuffIcon = this.add.image(camera.scrollX + 350,camera.scrollY + 25,'storingBuffIcon').setDepth(4).setScale(0.5)
         spendingBuffIcon = this.add.image(camera.scrollX + 225,camera.scrollY + 25,'spendingBuffIcon').setDepth(4).setScale(0.5)
-        savingBuffIcon = this.add.image(camera.scrollX + 350,camera.scrollY + 25,'savingBuffIcon').setDepth(4).setScale(0.5)
-        investingBuffIcon = this.add.image(camera.scrollX + 475,camera.scrollY + 25,'investingBuffIcon').setDepth(4).setScale(0.5)
+        growingBuffIcon = this.add.image(camera.scrollX + 475,camera.scrollY + 25,'growingBuffIcon').setDepth(4).setScale(0.5)
 
-        spendingBuffTierIcon = this.add.image(camera.scrollX + 275,camera.scrollY + 25,'t'+spendingBuffTier+'BuffIcon').setDepth(4).setScale(0.5)
-        savingBuffTierIcon = this.add.image(camera.scrollX + 400,camera.scrollY + 25,'t'+savingBuffTier+'BuffIcon').setDepth(4).setScale(0.5)
-        investingBuffTierIcon = this.add.image(camera.scrollX + 525,camera.scrollY + 25,'t'+investingBuffTier+'BuffIcon').setDepth(4).setScale(0.2)
+        if (storingBuffTier == 0){
 
+            storingBuffTierIcon = this.add.image(camera.scrollX + 275,camera.scrollY + 25,'t1BuffIcon').setDepth(4).setScale(0.5).setAlpha(0.5)
+        } else {
+            storingBuffTierIcon = this.add.image(camera.scrollX + 275,camera.scrollY + 25,'t'+storingBuffTier+'BuffIcon').setDepth(4).setScale(0.5)
+        }
+
+        if (spendingBuffTier == 0){
+            spendingBuffTierIcon = this.add.image(camera.scrollX + 400,camera.scrollY + 25,'t1BuffIcon').setDepth(4).setScale(0.5).setAlpha(0.5)
+        } else {
+            spendingBuffTierIcon = this.add.image(camera.scrollX + 400,camera.scrollY + 25,'t'+spendingBuffTier+'BuffIcon').setDepth(4).setScale(0.5)
+        }
+
+        if (growingBuffTier == 0){
+            growingBuffTierIcon = this.add.image(camera.scrollX + 525,camera.scrollY + 25,'t1BuffIcon').setDepth(4).setScale(0.5).setAlpha(0.5)
+        } else {
+            growingBuffTierIcon = this.add.image(camera.scrollX + 525,camera.scrollY + 25,'t'+growingBuffTier+'BuffIcon').setDepth(4).setScale(0.5)
+        }
+
+        
+        
+        
+
+        if (storingBuffTier == 0){
+            storingBuffTierIcon.setAlpha(0.5)
+        }
+
+        if (spendingBuffTier == 0){
+            spendingBuffTierIcon.setAlpha(0.5)
+            
+        }
+
+        if (growingBuffTier == 0){
+            growingBuffTierIcon.setAlpha(0.5)
+        }
+
+        
+
+        storingBuffIcon.visible = false
         spendingBuffIcon.visible = false
-            savingBuffIcon.visible = false
-            investingBuffIcon.visible = false
-            spendingBuffTierIcon.visible = false
-            savingBuffTierIcon.visible = false
-            investingBuffTierIcon.visible = false
+        growingBuffIcon.visible = false
+        storingBuffTierIcon.visible = false
+        spendingBuffTierIcon.visible = false
+        growingBuffTierIcon.visible = false
 
 
         playerProgress = new ProgressBar(this,distanceTravelled, camera.scrollX + width * 0.33, camera.scrollY + (height - 85));
@@ -1269,19 +1303,19 @@
             playerVitals.x = playerIcon.x + 30
             playerVitals.y = playerIcon.y - 20
 
-            spendingBuffIcon.x = camera.scrollX + 225
+            storingBuffIcon.x = camera.scrollX + 225
+            storingBuffIcon.y = camera.scrollY + 25
+            spendingBuffIcon.x = camera.scrollX + 345
             spendingBuffIcon.y = camera.scrollY + 25
-            savingBuffIcon.x = camera.scrollX + 345
-            savingBuffIcon.y = camera.scrollY + 25
-            investingBuffIcon.x = camera.scrollX + 460
-            investingBuffIcon.y = camera.scrollY + 25
+            growingBuffIcon.x = camera.scrollX + 460
+            growingBuffIcon.y = camera.scrollY + 25
 
-            spendingBuffTierIcon.x = camera.scrollX + 275
+            storingBuffTierIcon.x = camera.scrollX + 275
+            storingBuffTierIcon.y = camera.scrollY + 25
+            spendingBuffTierIcon.x = camera.scrollX + 395
             spendingBuffTierIcon.y = camera.scrollY + 25
-            savingBuffTierIcon.x = camera.scrollX + 395
-            savingBuffTierIcon.y = camera.scrollY + 25
-            investingBuffTierIcon.x = camera.scrollX + 510
-            investingBuffTierIcon.y = camera.scrollY + 25
+            growingBuffTierIcon.x = camera.scrollX + 510
+            growingBuffTierIcon.y = camera.scrollY + 25
         } else if (inBattle) {
             this.woodsl2.tilePositionX = camera.x * 0.3
             this.woodsl3.tilePositionX = camera.x * 0.6
@@ -1297,26 +1331,26 @@
             text3.visible = false
             text4.visible = false
             text5.visible = false
+            storingBuffIcon.visible = true
             spendingBuffIcon.visible = true
-            savingBuffIcon.visible = true
-            investingBuffIcon.visible = true
+            growingBuffIcon.visible = true
+            storingBuffTierIcon.visible = true
             spendingBuffTierIcon.visible = true
-            savingBuffTierIcon.visible = true
-            investingBuffTierIcon.visible = true
+            growingBuffTierIcon.visible = true
 
-            spendingBuffIcon.x = camera.scrollX + 250
+            storingBuffIcon.x = camera.scrollX + 250
+            storingBuffIcon.y = camera.scrollY + 45
+            spendingBuffIcon.x = camera.scrollX + 370
             spendingBuffIcon.y = camera.scrollY + 45
-            savingBuffIcon.x = camera.scrollX + 370
-            savingBuffIcon.y = camera.scrollY + 45
-            investingBuffIcon.x = camera.scrollX + 480
-            investingBuffIcon.y = camera.scrollY + 45
+            growingBuffIcon.x = camera.scrollX + 480
+            growingBuffIcon.y = camera.scrollY + 45
 
-            spendingBuffTierIcon.x = camera.scrollX + 300
+            storingBuffTierIcon.x = camera.scrollX + 300
+            storingBuffTierIcon.y = camera.scrollY + 45
+            spendingBuffTierIcon.x = camera.scrollX + 420
             spendingBuffTierIcon.y = camera.scrollY + 45
-            savingBuffTierIcon.x = camera.scrollX + 420
-            savingBuffTierIcon.y = camera.scrollY + 45
-            investingBuffTierIcon.x = camera.scrollX + 530
-            investingBuffTierIcon.y = camera.scrollY + 45
+            growingBuffTierIcon.x = camera.scrollX + 530
+            growingBuffTierIcon.y = camera.scrollY + 45
         }
 
     
