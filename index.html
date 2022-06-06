@@ -59,6 +59,7 @@
     var storingBuffTier = 0
     var spendingBuffTier = 3
     var growingBuffTier = 5
+    var kianovaBuffTier = 2
 
     var IS_TOUCH = false
 
@@ -625,8 +626,9 @@
         this.load.image('t3BuffIcon', 'assets/ach_00119.png');
         this.load.image('t4BuffIcon', 'assets/ach_00120.png');
         this.load.image('t5BuffIcon', 'assets/ach_00121.png');
-        this.load.image('t6BuffIcon', 'assets/ach_00122.png');
-        this.load.image('t7BuffIcon', 'assets/ach_00091.png');
+
+        this.load.image('t1KianovaBuffIcon', 'assets/ach_00122.png');
+        this.load.image('t2KianovaBuffIcon', 'assets/ach_00091.png');
 
         this.load.image('up', 'assets/controls/shadedDark03');
         this.load.image('down', 'assets/controls/shadedDark10');
@@ -777,41 +779,38 @@
         spendingBuffIcon = this.add.image(camera.scrollX + 225,camera.scrollY + 25,'spendingBuffIcon').setDepth(4).setScale(0.5)
         growingBuffIcon = this.add.image(camera.scrollX + 475,camera.scrollY + 25,'growingBuffIcon').setDepth(4).setScale(0.5)
 
+        
+
         if (storingBuffTier == 0){
 
-            storingBuffTierIcon = this.add.image(camera.scrollX + 275,camera.scrollY + 25,'t1BuffIcon').setDepth(4).setScale(0.5).setAlpha(0.05)
+            storingBuffTierIcon = this.add.image(camera.scrollX + 275,camera.scrollY + 25,'t1BuffIcon').setDepth(4).setScale(0.5).setAlpha(0.25)
         } else {
             storingBuffTierIcon = this.add.image(camera.scrollX + 275,camera.scrollY + 25,'t'+storingBuffTier+'BuffIcon').setDepth(4).setScale(0.5)
         }
 
         if (spendingBuffTier == 0){
-            spendingBuffTierIcon = this.add.image(camera.scrollX + 400,camera.scrollY + 25,'t1BuffIcon').setDepth(4).setScale(0.5).setAlpha(0.05)
+            spendingBuffTierIcon = this.add.image(camera.scrollX + 400,camera.scrollY + 25,'t1BuffIcon').setDepth(4).setScale(0.5).setAlpha(0.25)
         } else {
             spendingBuffTierIcon = this.add.image(camera.scrollX + 400,camera.scrollY + 25,'t'+spendingBuffTier+'BuffIcon').setDepth(4).setScale(0.5)
         }
 
         if (growingBuffTier == 0){
-            growingBuffTierIcon = this.add.image(camera.scrollX + 525,camera.scrollY + 25,'t1BuffIcon').setDepth(4).setScale(0.5).setAlpha(0.05)
+            growingBuffTierIcon = this.add.image(camera.scrollX + 525,camera.scrollY + 25,'t1BuffIcon').setDepth(4).setScale(0.5).setAlpha(0.25)
         } else {
             growingBuffTierIcon = this.add.image(camera.scrollX + 525,camera.scrollY + 25,'t'+growingBuffTier+'BuffIcon').setDepth(4).setScale(0.5)
         }
 
+        if (kianovaBuffTier == 0){
+            kianovaBuffIcon = this.add.image(camera.scrollX + 525,camera.scrollY + 25,'t1KianovaBuffIcon').setDepth(4).setScale(0.65).setAlpha(0.25)
+        } else {
+            kianovaBuffIcon = this.add.image(camera.scrollX + 525,camera.scrollY + 25,'t'+kianovaBuffTier+'KianovaBuffIcon').setDepth(4).setScale(0.65)
+        }
+
         
         
         
 
-        if (storingBuffTier == 0){
-            storingBuffTierIcon.setAlpha(0.5)
-        }
-
-        if (spendingBuffTier == 0){
-            spendingBuffTierIcon.setAlpha(0.5)
-            
-        }
-
-        if (growingBuffTier == 0){
-            growingBuffTierIcon.setAlpha(0.5)
-        }
+        
 
         
 
@@ -1303,19 +1302,24 @@
             playerVitals.x = playerIcon.x + 30
             playerVitals.y = playerIcon.y - 20
 
-            storingBuffIcon.x = camera.scrollX + 225
+            storingBuffIcon.x = camera.scrollX + 215
             storingBuffIcon.y = camera.scrollY + 25
-            spendingBuffIcon.x = camera.scrollX + 345
-            spendingBuffIcon.y = camera.scrollY + 25
-            growingBuffIcon.x = camera.scrollX + 460
-            growingBuffIcon.y = camera.scrollY + 25
+            spendingBuffIcon.x = storingBuffIcon.x + 100
+            spendingBuffIcon.y =  storingBuffIcon.y
+            growingBuffIcon.x = spendingBuffIcon.x + 95
+            growingBuffIcon.y =  storingBuffIcon.y
 
-            storingBuffTierIcon.x = camera.scrollX + 275
-            storingBuffTierIcon.y = camera.scrollY + 25
-            spendingBuffTierIcon.x = camera.scrollX + 395
-            spendingBuffTierIcon.y = camera.scrollY + 25
-            growingBuffTierIcon.x = camera.scrollX + 510
-            growingBuffTierIcon.y = camera.scrollY + 25
+            storingBuffTierIcon.x = storingBuffIcon.x + 50
+            storingBuffTierIcon.y = storingBuffIcon.y
+            spendingBuffTierIcon.x = spendingBuffIcon.x + 50
+            spendingBuffTierIcon.y = spendingBuffIcon.y
+            growingBuffTierIcon.x = growingBuffIcon.x + 45
+            growingBuffTierIcon.y = growingBuffIcon.y
+
+            kianovaBuffIcon.x = growingBuffIcon.x + 115
+            kianovaBuffIcon.y = camera.scrollY + 30
+
+            
         } else if (inBattle) {
             this.woodsl2.tilePositionX = camera.x * 0.3
             this.woodsl3.tilePositionX = camera.x * 0.6
@@ -1338,19 +1342,22 @@
             spendingBuffTierIcon.visible = true
             growingBuffTierIcon.visible = true
 
-            storingBuffIcon.x = camera.scrollX + 250
+            storingBuffIcon.x = camera.scrollX + 240
             storingBuffIcon.y = camera.scrollY + 45
-            spendingBuffIcon.x = camera.scrollX + 370
-            spendingBuffIcon.y = camera.scrollY + 45
-            growingBuffIcon.x = camera.scrollX + 480
-            growingBuffIcon.y = camera.scrollY + 45
+            spendingBuffIcon.x = storingBuffIcon.x + 100
+            spendingBuffIcon.y = storingBuffIcon.y
+            growingBuffIcon.x = spendingBuffIcon.x + 95
+            growingBuffIcon.y = storingBuffIcon.y
 
-            storingBuffTierIcon.x = camera.scrollX + 300
-            storingBuffTierIcon.y = camera.scrollY + 45
-            spendingBuffTierIcon.x = camera.scrollX + 420
-            spendingBuffTierIcon.y = camera.scrollY + 45
-            growingBuffTierIcon.x = camera.scrollX + 530
-            growingBuffTierIcon.y = camera.scrollY + 45
+            storingBuffTierIcon.x = storingBuffIcon.x + 50
+            storingBuffTierIcon.y = storingBuffIcon.y
+            spendingBuffTierIcon.x = spendingBuffIcon.x + 50
+            spendingBuffTierIcon.y = spendingBuffIcon.y
+            growingBuffTierIcon.x = growingBuffIcon.x + 45
+            growingBuffTierIcon.y = growingBuffIcon.y
+
+            kianovaBuffIcon.x = growingBuffIcon.x + 115
+            kianovaBuffIcon.y = camera.scrollY + 50
         }
 
     
