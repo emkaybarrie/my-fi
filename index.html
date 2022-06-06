@@ -375,17 +375,22 @@
     function grabbed(){
 
         if (inBattle == false) {
+            
 
             player.anims.play({key:'pDash',frameRate: 12},true);
 
             player.body.maxVelocity.x = 250
             player.setVelocityX(250)
             player.setDragX(500)
-            enemy1.setDragX(300)
+            enemy1.setDragX(500)
+            enemy1.setVelocityX(-200)
+
+            inBattle = true
+            camera.flash(1000)
 
             player.flipX = true
             playerIsHit == false
-            inBattle = true
+            
             if (currentLife <= 0){
                 playerVitals.decreaseEnergy(currentEnergy * 0.05)
             } else {
@@ -394,7 +399,7 @@
             
             income *= 1 - 0.04
 
-            camera.startFollow(player, false, 0.05, 0.05)
+            
 
 
         }
@@ -429,7 +434,7 @@
         
         maxEnergy *= 1 - (0.04 / 100)
         player.x -= 1
-        enemy1.body.velocity.x += 2
+        enemyChase(3)
     }            
     
 
@@ -500,39 +505,11 @@
     
 
    
-  
-
-    
-
-    function runYearlyFunctions()
+    function enemyChase(velocityBoost)
     {
        if (inBattle == false) {
-
-        //maxEnergy *= 1 - (0.04 / 12)
-        income *= 1 - (0.04 / 12)
-       // budget *= 1 - (0.04 / 12)
-        // enemyYearly.setDragX(0)
-        // enemy1.setVelocity(Phaser.Math.Between(100 * chaosMultiplierMin, 100 * chaosMultiplierMax))
-        // enemy1Life = budget * chaosFactor
-          
-        }
-
-        chaosMultiplierMin *= 1.005
-        chaosMultiplierMax *= 1.012
-        enemy1.setScale(Phaser.Math.FloatBetween(1.75,1.9),Phaser.Math.FloatBetween(1.15,1.35))
-  
-        
-    }
-
-    function runMonthlyFunctions()
-    {
-       if (inBattle == false) {
-
-        
-
-        enemy1.setScale(Phaser.Math.FloatBetween(1.65,1.8),Phaser.Math.FloatBetween(1.2,1.3))
         enemy1.setDragX(0)
-        enemy1.setVelocity(Phaser.Math.Between(100 * chaosMultiplierMin, 100 * chaosMultiplierMax))
+        enemy1.setVelocity(enemy1.body.velocity.x + (velocityBoost * chaosFactor))
         // e1MaxLife = budget * chaosFactor
         // enemy1Life = e1MaxLife
         
@@ -542,50 +519,62 @@
 
         chaosMultiplierMin *= 1.003
         chaosMultiplierMax *= 1.005
-  
         
+    }
+
+    
+
+    function runYearlyFunctions()
+    {
+       if (inBattle == false) {
+
+        income *= 1 - (0.04 / 12)
+
+        }
+
+        chaosMultiplierMin *= 1.005
+        chaosMultiplierMax *= 1.012
+
+        enemy1.setScale(Phaser.Math.FloatBetween(1.65,1.8),Phaser.Math.FloatBetween(1.2,1.3))
+     
+    }
+
+    function runMonthlyFunctions()
+    {
+       if (inBattle == false) {
+
+        enemy1.setVelocity(Phaser.Math.Between(-5 * chaosFactor, 5 * chaosFactor))
+
+        }
+
+        chaosMultiplierMin *= 1.003
+        chaosMultiplierMax *= 1.005
+
     }
 
     function runWeeklyFunctions()
     {
        if (inBattle == false) {
-
-        var totalEnergy = currentEnergy + (energyRegen / 4)
-        currentEnergy = Phaser.Math.MaxAdd(currentEnergy, (energyRegen / 4),maxEnergy) 
-        currentFocus = Phaser.Math.MaxAdd(currentFocus,totalEnergy - currentEnergy + (focusRegen /4),maxFocus)
-
-       
-        // enemyWeekly.setDragX(0)
-        // enemy1.setVelocity(Phaser.Math.Between(100 * chaosMultiplierMin, 100 * chaosMultiplierMax))
-        // enemy1Life = budget * chaosFactor
-          
+ 
         }
 
         chaosMultiplierMin *= 1.002
         chaosMultiplierMax *= 1.003
-
-      
-       
-        
-  
-        
+    
     }
 
     function runDailyFunctions()
     {
        if (inBattle == false) {
 
-        // var totalEnergy = currentEnergy + energyRegen
-        // currentEnergy = Phaser.Math.MaxAdd(currentEnergy, energyRegen,maxEnergy) 
-        // currentFocus = Phaser.Math.MaxAdd(currentFocus,totalEnergy - currentEnergy + focusRegen,maxFocus)
-
-        
-        // enemyDaily.setDragX(0)
-        // enemy1.setVelocity(Phaser.Math.Between(100 * chaosMultiplierMin, 100 * chaosMultiplierMax))
-        // enemy1Life = budget * chaosFactor
+        var totalEnergy = currentEnergy + (energyRegen / 31)
+        currentEnergy = Phaser.Math.MaxAdd(currentEnergy, (energyRegen / 31),maxEnergy) 
+        currentFocus = Phaser.Math.MaxAdd(currentFocus,totalEnergy - currentEnergy + (focusRegen / 31),maxFocus)
           
         }
 
+        enemy1.setVelocityX(enemy1.body.velocity.x - 1)
+        enemy1.setDragX(10)
   
         
     }
@@ -675,7 +664,7 @@
         bgMusic = this.sound.add("bgMusic"+songChoice, { loop: true, volume: 0.75});
 
 
-        bgMusic.play()
+        //bgMusic.play()
 
         playerSwordSwing = this.sound.add("playerSwordSwing", {volume: 0.5})
         playerHeavySwordSwing = this.sound.add("playerHeavySwordSwing", {volume: 0.5})
@@ -712,7 +701,7 @@
         player.tint = 0xdd7e6b;
         currentLife = startLife
         
-        playerVitals = new HealthBar(this,startLife, player.x, player.y - 50);
+        
         
 
         player.body.setSize(10, 30).setOffset(25,15).setAllowDrag(true)
@@ -742,7 +731,7 @@
             
             enemy1.setDepth(0)
             enemy1.flipX = true
-            enemy1.body.maxVelocity.x = 300
+            enemy1.body.maxVelocity.x = 100
             enemy1.setCollideWorldBounds(true)
             
             this.physics.add.overlap(enemy1, player, grabbed);
@@ -751,6 +740,7 @@
             this.physics.add.collider(platforms,enemy1);
             
             enemy1.body.setAllowDrag(true)
+           
             
             enemy1Life = budget * Phaser.Math.Between(0.8,1.7)
             e1MaxLife = enemy1Life
@@ -765,15 +755,18 @@
             this.physics.add.overlap(eSword, player, playerEnemyHit);
 
             
-        camera = this.cameras.main.centerOn(player.x, 0) //.startFollow(player, false, 0.05, 0.05)
+        camera = this.cameras.main.centerOn(width * 1.5, 0) //.startFollow(player, false, 0.05, 0.05)
+
 
         camera.setBounds(0, 0, width * 3, height)
 
         
         
-        camera.fadeIn(6000)
+        camera.fadeIn(3000)
 
         playerIcon = this.add.image(camera.scrollX + 25,camera.scrollY + 25,'playerIcon').setDepth(4).setScale(2.5)
+
+        playerVitals = new HealthBar(this,startLife, playerIcon.x + 30, playerIcon.x + 20);
 
         storingBuffIcon = this.add.image(camera.scrollX + 350,camera.scrollY + 25,'storingBuffIcon').setDepth(4).setScale(0.5)
         spendingBuffIcon = this.add.image(camera.scrollX + 225,camera.scrollY + 25,'spendingBuffIcon').setDepth(4).setScale(0.5)
@@ -1185,57 +1178,6 @@
         
         updateHighScore()
 
-        player.setTint()
-        
-        if (player.flipX){
-            sword.x = player.x - 10
-            sword.y = player.y - 15
-        } else {
-            sword.x = player.x + 10
-            sword.y = player.y - 15
-        }
-
-
-
-       
-        if (distanceTravelled >= distanceToTravel){
-            finish()
-            
-        }
-
-        sword.body.checkCollision.none = true
-
-        if (enemy1.flipX){
-            eSword.x = enemy1.x + 25
-            eSword.y = enemy1.y - 15
-        } else {
-            eSword.x = enemy1.x - 50
-            eSword.y = enemy1.y - 15
-        }
-
-        eSword.body.checkCollision.none = true
-       
-        // playerVitals.x = camera.scrollX + (width * 0.1) //player.x + 25
-        // playerVitals.y = camera.scrollY + (height * 0.015)//player.y - 20
-        playerVitals.draw()
-
-        // playerIcon.x = camera.scrollX + 25
-        // playerIcon.y = camera.scrollY + 25
-
-        enemy1Vitals.x = enemy1.x + 25
-        enemy1Vitals.y = enemy1.y - 20
-        enemy1Vitals.draw()
-
-        playerProgress.x = camera.scrollX + width * 0.33
-        playerProgress.y = camera.scrollY + (height * 0.85)
-        playerProgress.draw()
-
-        
-
-        highScoreText.x = camera.scrollX + (width - 340)
-        highScoreText.y = camera.scrollY + (height - 57)
-        highScoreText.setText('High Score: ' + Math.floor(highScore))
-
         if(IS_TOUCH){
         left.x = camera.scrollX + (width * 0.1)// - 245 
         energy.x = camera.scrollX + (width * 0.9) 
@@ -1256,6 +1198,45 @@
         focusB.y = energy.y + 53
         }
 
+        
+
+
+        if (distanceTravelled >= distanceToTravel){
+            finish()  
+        }
+
+        
+
+        if (enemy1.flipX){
+            eSword.x = enemy1.x + 25
+            eSword.y = enemy1.y - 15
+        } else {
+            eSword.x = enemy1.x - 50
+            eSword.y = enemy1.y - 15
+        }
+
+
+
+        eSword.body.checkCollision.none = true
+       
+        
+        //
+
+        
+        enemy1Vitals.x = enemy1.x + 25
+        enemy1Vitals.y = enemy1.y - 20
+        enemy1Vitals.draw()
+
+        playerProgress.x = camera.scrollX + width * 0.33
+        playerProgress.y = camera.scrollY + (height * 0.85)
+        playerProgress.draw()
+
+        highScoreText.x = camera.scrollX + (width - 340)
+        highScoreText.y = camera.scrollY + (height - 57)
+        highScoreText.setText('High Score: ' + Math.floor(highScore))
+
+        
+
 
         spotlight.x = player.x
         spotlight.y = player.y
@@ -1270,62 +1251,67 @@
         
         pSFX.y = player.y
 
-        enemy1.y = height - 85
+        
 
         console.log('Player is Hit: ' + playerIsHit)
         console.log('Enemy is Hit: ' + enemy1IsHit)
-        console.log('Enemy Aggro: ' + enemy1Aggro)
+        console.log('Enemy Velocity: ' + enemy1.body.velocity.x)
         console.log('High Score: ' + highScore)
       
-       
-       //console.log('Enemy Chaos Factor: ' + chaosFactor)
 
-      
-
-        
         playerPosition = player.x
         
         playerSpeed = playerPosition / (width * 1.5)
+
+            playerIcon.x = camera.scrollX + 25
+            playerIcon.y = camera.scrollY + 25
+
+            playerVitals.x = playerIcon.x + 30
+            playerVitals.y = playerIcon.y - 20
+            playerVitals.draw()
+
+            storingBuffIcon.x = playerVitals.x + 160
+            storingBuffIcon.y = playerIcon.y
+            spendingBuffIcon.x = storingBuffIcon.x + 100
+            spendingBuffIcon.y =  playerIcon.y
+            growingBuffIcon.x = spendingBuffIcon.x + 95
+            growingBuffIcon.y =  playerIcon.y
+
+            storingBuffTierIcon.x = storingBuffIcon.x + 50
+            storingBuffTierIcon.y = playerIcon.y
+            spendingBuffTierIcon.x = spendingBuffIcon.x + 50
+            spendingBuffTierIcon.y = playerIcon.y
+            growingBuffTierIcon.x = growingBuffIcon.x + 45
+            growingBuffTierIcon.y = playerIcon.y
+
+            kianovaBuffIcon.x = growingBuffIcon.x + 115
+            kianovaBuffIcon.y = playerIcon.y + 5
+
+            player.setTint()
+        
+            if (player.flipX){
+                sword.x = player.x - 10
+                sword.y = player.y - 15
+            } else {
+                sword.x = player.x + 10
+                sword.y = player.y - 15
+            }
+
+        sword.body.checkCollision.none = true
         
         if (inBattle == false){
+            
+            camera.stopFollow()
+            camera.pan(width* 1.5, 0,250)
+
             this.woodsl2.tilePositionX += 1 * (playerSpeed)
             this.woodsl3.tilePositionX += 2 * (playerSpeed)
             this.woodsl4.tilePositionX += 4.5 * (playerSpeed)
             this.woodsl4.setAlpha(1) 
-            camera.zoomTo(1,750)
-            playerIcon.x = camera.scrollX + 25
-            playerIcon.y = camera.scrollY + 25
-            playerVitals.x = playerIcon.x + 30
-            playerVitals.y = playerIcon.y - 20
-
-            storingBuffIcon.x = camera.scrollX + 215
-            storingBuffIcon.y = camera.scrollY + 25
-            spendingBuffIcon.x = storingBuffIcon.x + 100
-            spendingBuffIcon.y =  storingBuffIcon.y
-            growingBuffIcon.x = spendingBuffIcon.x + 95
-            growingBuffIcon.y =  storingBuffIcon.y
-
-            storingBuffTierIcon.x = storingBuffIcon.x + 50
-            storingBuffTierIcon.y = storingBuffIcon.y
-            spendingBuffTierIcon.x = spendingBuffIcon.x + 50
-            spendingBuffTierIcon.y = spendingBuffIcon.y
-            growingBuffTierIcon.x = growingBuffIcon.x + 45
-            growingBuffTierIcon.y = growingBuffIcon.y
-
-            kianovaBuffIcon.x = growingBuffIcon.x + 115
-            kianovaBuffIcon.y = camera.scrollY + 30
-
+   
             
         } else if (inBattle) {
-            this.woodsl2.tilePositionX = camera.x * 0.3
-            this.woodsl3.tilePositionX = camera.x * 0.6
-            this.woodsl4.tilePositionX = camera.x
-            this.woodsl4.setAlpha(0.9)
-            camera.zoomTo(1.15,750)
-            playerIcon.x = camera.scrollX + 65
-            playerIcon.y = camera.scrollY + 45
-            playerVitals.x = playerIcon.x + 30
-            playerVitals.y = playerIcon.y - 20 
+
             text1.visible = false
             text2.visible = false
             text3.visible = false
@@ -1339,22 +1325,14 @@
             growingBuffTierIcon.visible = true
             kianovaBuffIcon.visible = true
 
-            storingBuffIcon.x = camera.scrollX + 240
-            storingBuffIcon.y = camera.scrollY + 45
-            spendingBuffIcon.x = storingBuffIcon.x + 100
-            spendingBuffIcon.y = storingBuffIcon.y
-            growingBuffIcon.x = spendingBuffIcon.x + 95
-            growingBuffIcon.y = storingBuffIcon.y
+            this.woodsl2.tilePositionX = camera.x * 0.3
+            this.woodsl3.tilePositionX = camera.x * 0.6
+            this.woodsl4.tilePositionX = camera.x
+            this.woodsl4.setAlpha(0.9)
 
-            storingBuffTierIcon.x = storingBuffIcon.x + 50
-            storingBuffTierIcon.y = storingBuffIcon.y
-            spendingBuffTierIcon.x = spendingBuffIcon.x + 50
-            spendingBuffTierIcon.y = spendingBuffIcon.y
-            growingBuffTierIcon.x = growingBuffIcon.x + 45
-            growingBuffTierIcon.y = growingBuffIcon.y
+            camera.startFollow(player)
+            
 
-            kianovaBuffIcon.x = growingBuffIcon.x + 115
-            kianovaBuffIcon.y = camera.scrollY + 50
         }
 
     
@@ -1373,8 +1351,8 @@
 
             
 
-            if (enemy1.x > width * 1.55 && player.x > width * 1.6){
-                        enemy1.setVelocityX(-100)
+            if (enemy1.x > width * 1.5 && player.x > width * 1.6){
+                        enemy1.setVelocityX(-25)
             }
 
             enemy1.anims.play({key:'eRun',frameRate: 14 * playerSpeed},true);
@@ -1409,10 +1387,10 @@
                 pSFX.setAlpha(0.85)
                 pSFX.setDepth(0)
                 pSFX.play('chargeDash',true)
-
-            
-                player.body.maxVelocity.x = 300
-                player.setVelocityX(200)
+                this.physics.moveTo(player,width * 1.9,height - 90,110)
+                enemy1.setVelocityX(-50)
+                
+                
                 
                 
                 //this.physics.moveTo(player,width * 1.8,height - 90,300)
@@ -1425,15 +1403,13 @@
             else if (Phaser.Input.Keyboard.JustDown(cursors.space)){
                 
                 
-                player.setDragX(7500)
+                //player.setDragX(7500)
 
             
             } else if (cursors.down.isDown && currentEnergy > 0){
 
                 this.vines.body.checkCollision.none = true
-                
-                
-                
+ 
                 playerVitals.decreaseEnergy(maxEnergy / 300)
 
                 distanceTravelled += 4.5 * (playerSpeed)
@@ -1443,7 +1419,7 @@
                     player.anims.play({key:'pSlide',frameRate: 6},true);
                 //}
                 
-                this.physics.moveTo(player,width * 1.4,height - 90,30)
+                this.physics.moveTo(player,width * 1.45,height - 90,30)
             
             } else if (cursors.left.isDown && currentEnergy > 0 && currentFocus < maxFocus && playerIsHit == false){
 
@@ -1465,7 +1441,7 @@
 
                 distanceTravelled += 4.5 * (playerSpeed)
 
-                this.physics.moveTo(player,width * 1.4,height - 90,90)
+                this.physics.moveTo(player,width * 1.3,height - 90,90)
                 player.anims.play({key:'pRun',frameRate: 8},true);
                 
             } else if (cursors.right.isDown && currentEnergy > 0 && playerIsHit == false){
