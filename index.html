@@ -656,9 +656,13 @@
         enemy1.setDragX(10)
         }
 
+
+        if (playerAttacking == false){
+
         var totalEnergy = currentEnergy + (energyRegen / 31)
         currentEnergy = Phaser.Math.MaxAdd(currentEnergy, (energyRegen / 31),maxEnergy) 
         currentFocus = Phaser.Math.MaxAdd(currentFocus,totalEnergy - currentEnergy + (focusRegen / 31),maxFocus) 
+        }
   
         
     }
