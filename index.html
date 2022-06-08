@@ -564,7 +564,7 @@
         
             enemy1IsHit = true
             var chaos = Phaser.Math.FloatBetween(0.00,1.00)
-            if (chargePower > .75 && chaos < 0.075){
+            if (chaos < 0.075){
            
             camera.flash(150);
             camera.shake(500, 0.01);
@@ -578,7 +578,7 @@
             }
             //
             } else
-            if (chargePower > .15 && chaos < 0.1){
+            if (chaos < 0.1){
             camera.shake(500, 0.005);
             damage *= Phaser.Math.Between(1.1,2.5)
             enemy1Vitals.decreaseEnemyLife(damage)
