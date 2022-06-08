@@ -1107,6 +1107,7 @@
         // Controllers online
         cursors = this.input.keyboard.createCursorKeys();
         keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
+        keyZ = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Z);
 
         // Touch Screen Support
         
@@ -1324,6 +1325,14 @@
         up.y = deadSpace.y - 40.5
         down.y = left.y + 40.5
         focusB.y = energy.y + 53
+        }
+
+        if (Phaser.Input.Keyboard.JustDown(keyZ)){
+            if(IS_TOUCH){
+            IS_TOUCH = false
+            } else {
+                IS_TOUCH = false
+            }
         }
 
  
