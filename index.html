@@ -1308,7 +1308,16 @@
         highScoreText.setText('High Score: ' + Math.floor(highScore))
 
         if(IS_TOUCH){
-        left.x = camera.scrollX + (width * 0.1)// - 245 
+        left.setInteractive(1).setVisible(1)
+        left.setInteractive(1).setVisible(1)
+        energy.setInteractive(1).setVisible(1)
+
+        right.setInteractive(1).setVisible(1)
+        up.setInteractive(1).setVisible(1)
+        down.setInteractive(1).setVisible(1)
+        focusB.setInteractive(1).setVisible(1)
+
+        left.x = camera.scrollX + (width * 0.1)
         energy.x = camera.scrollX + (width * 0.9) 
 
         deadSpace.x = left.x + 35.5
@@ -1325,13 +1334,21 @@
         up.y = deadSpace.y - 40.5
         down.y = left.y + 40.5
         focusB.y = energy.y + 53
+        } else {
+            left.setInteractive(0).setVisible(0)
+            energy.setInteractive(0).setVisible(0)
+            right.setInteractive(0).setVisible(0)
+            up.setInteractive(0).setVisible(0)
+            down.setInteractive(0).setVisible(0)
+            focusB.setInteractive(0).setVisible(0)
+
         }
 
         if (Phaser.Input.Keyboard.JustDown(keyZ)){
             if(IS_TOUCH){
             IS_TOUCH = false
             } else {
-                IS_TOUCH = false
+            IS_TOUCH = true
             }
         }
 
