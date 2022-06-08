@@ -705,13 +705,13 @@
         this.load.image('t1KianovaBuffIcon', 'assets/ach_00122.png');
         this.load.image('t2KianovaBuffIcon', 'assets/ach_00091.png');
 
-        this.load.image('up', 'assets/controls/shadedDark03');
-        this.load.image('down', 'assets/controls/shadedDark10');
+        this.load.image('up', 'assets/controls/shadedDark03.png');
+        this.load.image('down', 'assets/controls/shadedDark10.png');
         this.load.image('deadSpace', 'assets/controls/buttonDeadSpace.png');
         this.load.image('left', 'assets/controls/shadedDark05.png');
-        this.load.image('right', 'assets/controls/shadedDark06');
-        this.load.image('energy', 'assets/controls/shadedDark36');
-        this.load.image('focus', 'assets/controls/shadedDark37');
+        this.load.image('right', 'assets/controls/shadedDark06.png');
+        this.load.image('energy', 'assets/controls/shadedDark36.png');
+        this.load.image('focus', 'assets/controls/shadedDark37.png');
 
         this.load.image('dawnl1', 'assets/dawn1.png');
         this.load.image('dawnl2', 'assets/dawn2.png');
@@ -1065,6 +1065,7 @@
         // Controllers online
         cursors = this.input.keyboard.createCursorKeys();
         keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
+
         // Touch Screen Support
         
         this.input.addPointer(5);
@@ -1651,10 +1652,7 @@
 
                                 player.play({key:'pAttack'},true)
 
-                                damage
-
-                            
-                            
+      
 
                         }
                             
