@@ -79,7 +79,7 @@
     var distanceTravelled = 0
     
      
-    var inBattle = 1
+    var inBattle = false
     var playerAttacking = false   
     var playerAttackNumber  = 0                            
     var deathBlows = false
@@ -518,7 +518,18 @@
         maxEnergy *= 1 - (0.04 / 100)
         player.x -= 1
         enemyChase(5)
-    }            
+    } 
+    
+    function playerTreeTrunkHit(){
+
+    if (inBattle == false){
+        playerIsHit = true
+        playerVitals.decreaseLife((income * 0.4) / 100)
+        
+        maxEnergy *= 1 - (0.08 / 100)
+        player.x -= 1.5
+        enemyChase(2.5)
+    }
     
 
     }
@@ -730,6 +741,7 @@
         this.load.image('woodsl4', 'assets/woods4.png');
 
         this.load.image('vines', 'assets/vines.png');
+        this.load.image('treeTrunk', 'assets/treeTrunk.png');
 
         this.load.image('ground', 'assets/woodground.png');
 
@@ -803,6 +815,14 @@
         this.vines.body.setAllowGravity(false)
         this.physics.add.overlap(player,this.vines, playerVineHit);
         this.vines.body.setSize(474,175).setOffset(0,-7.5)
+
+        treeTrunk = this.add.image(0,player.y - 120, 'treeTrunk').setOrigin(0,0).setDepth(1)//.setScale(0.35,0.5).setTint(0x38761d) //(0xed8a8a)
+
+        this.physics.add.existing(treeTrunk,false)
+        treeTrunk.body.setAllowGravity(true)
+        this.physics.add.overlap(player,treeTrunk, playerTreeTrunkHit);
+        this.physics.add.collider(platforms,treeTrunk);
+        //treeTrunk.body.setSize(474,175).setOffset(0,-7.5)
 
 
             enemy1 = this.physics.add.sprite(0, height - 85, 'doomsayer').setScale(1.75, 1.2).setPipeline('Light2D');
@@ -1197,11 +1217,21 @@
     function moveVines (vine,speed){
     
         vine.x -= speed;
-        if (vine.x < width / 2){
+        if (vine.x < Phaser.Math.Between(10,175)){
             resetVines(vine)
         }
 
         
+    }
+
+    function moveTreeTrunk (treeTrunk,speed){
+    
+    treeTrunk.x -= speed;
+    if (treeTrunk.x < Phaser.Math.Between(0,25)){
+        resetTreeTrunk(treeTrunk)
+    }
+
+    
     }
 
     function resetVines (vine){
@@ -1209,6 +1239,13 @@
         var scaleXRandom = Phaser.Math.FloatBetween(0.15,0.65)
         var scaleYRandom = Phaser.Math.FloatBetween(0.55,0.8)
         vine.setScale(scaleXRandom,scaleYRandom)
+    }
+
+    function resetTreeTrunk (treeTrunk){
+        treeTrunk.x = width * 3
+        var scaleXRandom = Phaser.Math.FloatBetween(0.75,1.1)
+        var scaleYRandom = Phaser.Math.FloatBetween(0.8,1.2)
+        treeTrunk.setScale(scaleXRandom,scaleYRandom)
     }
 
     function finish(){
@@ -1414,6 +1451,8 @@
             
 
             moveVines(this.vines, 4.5 * (playerSpeed))
+
+            moveTreeTrunk(treeTrunk, 4.5 * (playerSpeed))
             
             if (playerIsHit){ 
                 player.anims.play({key:'pHurt',frameRate: 12},true); 
@@ -1425,7 +1464,8 @@
 
                 if(Phaser.Input.Keyboard.JustDown(cursors.up)){
                     player.chain([{key:'pJump',frameRate: 12},true,{key:'pUptoFall',frameRate: 12}],true); 
-                    player.setVelocityY(-200)
+                    player.setVelocityY(player.body.velocity.y - (225 * devicePixelRatio))
+                    enemy1.setVelocity(-20 * devicePixelRatio)
                 }
 
   
