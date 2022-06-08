@@ -568,19 +568,35 @@
            
             camera.flash(150);
             camera.shake(500, 0.01);
-            damage *= Phaser.Math.Between(1.5,3)
-            enemy1Vitals.decreaseEnemyLife(damage )
-            //enemy1.x -= Phaser.Math.Between(-15,15)
+            damage *= Phaser.Math.Between(1.75,3)
+            enemy1Vitals.decreaseEnemyLife(damage)
+            if (player.flipX){
+                enemy1.x -= Phaser.Math.Between(10,20)
+                
+            } else {
+                enemy1.x -= Phaser.Math.Between(-10,-20)
+            }
+            //
             } else
             if (chargePower > .15 && chaos < 0.1){
             camera.shake(500, 0.005);
             damage *= Phaser.Math.Between(1.1,2.5)
             enemy1Vitals.decreaseEnemyLife(damage)
-            //enemy1.x -= Phaser.Math.Between(-15,15)
+            if (player.flipX){
+                enemy1.x -= Phaser.Math.Between(2.5,5)
+                
+            } else {
+                enemy1.x -= Phaser.Math.Between(-5,-2.5)
+            }
             } else {
                 damage *= Phaser.Math.Between(0.8,1.15)
                 enemy1Vitals.decreaseEnemyLife(damage)
-                //enemy1.x -= Phaser.Math.Between(-10,10)
+                if (player.flipX){
+                
+                enemy1.x -= Phaser.Math.Between(-1,2.5)
+            } else {
+                enemy1.x -= Phaser.Math.Between(-2.5,1)
+            }
 
        
             }
@@ -1419,9 +1435,9 @@
             
         } else if (inBattle) {
 
-            this.woodsl2.tilePositionX = camera.x * 0.3
-            this.woodsl3.tilePositionX = camera.x * 0.6
-            this.woodsl4.tilePositionX = camera.x
+            this.woodsl2.tilePositionX = (camera.x * 0.3) * devicePixelRatio
+            this.woodsl3.tilePositionX = (camera.x * 0.6) * devicePixelRatio
+            this.woodsl4.tilePositionX = (camera.x) * devicePixelRatio
 
             this.woodsl4.setAlpha(0.85)
 
@@ -1469,7 +1485,7 @@
                     player.chain([{key:'pJump',frameRate: 12},true,{key:'pUptoFall',frameRate: 12}],true); 
                     this.physics.moveTo(player,width * 1.45,75)
                     player.setVelocityY(player.body.velocity.y - (175 * devicePixelRatio))
-                    enemy1.setVelocity(-50 * devicePixelRatio)
+                    enemy1.setVelocity(-15 * devicePixelRatio)
                 }
 
   
@@ -1629,7 +1645,7 @@
    
                 if (enemy1.anims.currentFrame.index > 9){
                 enemy1Alive = false
-                //camera.flash()
+                
                 }
                     
             }
