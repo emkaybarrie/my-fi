@@ -475,8 +475,6 @@
             player.anims.play({key:'pDash',frameRate: 12},true);
 
             player.setVelocityX(100)
-            // player.setDragX(200)
-            // enemy1.setDragX(200)
             enemy1.setVelocityX(-100)
             player.flipX = true
             playerIsHit = false
@@ -811,7 +809,7 @@
             enemy1.setCollideWorldBounds(true)
             enemy1.body.setAllowGravity(true)
             enemy1.setGravityY(375)
-            enemy1.body.setMaxVelocityY(0)
+            
             
             this.physics.add.overlap(enemy1, player, grabbed);
             
@@ -1283,6 +1281,10 @@
         console.log('Charge Power: ' + chargePower)
         console.log('Combo Level: ' + playerAttackNumber)
 
+        if (enemy1.body.onFloor() == false){
+            enemy1.y = height - 85
+        }
+        
 
         if (enemy1.flipX){
             eSword.x = enemy1.x + 25
@@ -1515,7 +1517,7 @@
 
             if (enemy1Alive == false){
                 enemy1.x = 0
-                enemy1.y =  0
+                enemy1.y = height - 85
                 player.flipX = false
                 
                 
