@@ -720,9 +720,9 @@
         if (playerAttacking == false){
 
             
-        playerVitals.decreaseLife(-lifeRegen / 4) 
-        playerVitals.decreaseEnergy(-energyRegen / 4)
-        playerVitals.decreaseFocus(-focusRegen / 4)
+        playerVitals.decreaseLife(-lifeRegen / 5) 
+        playerVitals.decreaseEnergy(-energyRegen / 5)
+        playerVitals.decreaseFocus(-focusRegen / 5)
 
         }
 
@@ -966,11 +966,11 @@
         // 2 second per week
         // 0.285 seconds per day
 
-        yearlyTimer = this.time.addEvent({delay: 48000, callback: runYearlyFunctions, args: [], callbackScope: this, loop: true});
+        yearlyTimer = this.time.addEvent({delay: 60000, callback: runYearlyFunctions, args: [], callbackScope: this, loop: true});
         // Each minute represents a month
-        monthlyTimer = this.time.addEvent({delay: 4000, callback: runMonthlyFunctions, args: [], callbackScope: this, loop: true});
+        monthlyTimer = this.time.addEvent({delay: 5000, callback: runMonthlyFunctions, args: [], callbackScope: this, loop: true});
 
-        weeklyTimer = this.time.addEvent({delay: 1000, callback: runWeeklyFunctions, args: [], callbackScope: this, loop: true});
+        weeklyTimer = this.time.addEvent({delay: 1250, callback: runWeeklyFunctions, args: [], callbackScope: this, loop: true});
 
         regenTimer = this.time.addEvent({delay: 1000, callback: runRegenFunctions, args: [], callbackScope: this, loop: true});
 
