@@ -81,6 +81,9 @@
      
     var inBattle = 1
     var playerAttacking = false   
+    var playerDefending = false
+    var playerParrying = false
+    var finishedplayererDefense = true
     var playerAttackNumber  = 0                            
     var deathBlows = false
     var parry = false
@@ -538,14 +541,45 @@
     function playerEnemyHit(){
 
     if (inBattle){
-        //if (playerIsHit == false){
+        
+        if (playerDefending){
+            if (playerParrying == false){
+            playerVitals.decreaseLife(e1MaxLife / 150)
+            camera.shake(20,0.0025)
+            
+            }
+
+        } else if (playerParrying == false && finishedplayererDefense) {
             playerIsHit = true
             playerVitals.decreaseLife(e1MaxLife / 50)
             maxEnergy *= 1 - (0.04 / 100)
+        }
+            
             
         //} 
         
-    }            
+    }   
+    }
+    
+    function playerParry(){
+
+    if (inBattle){
+    
+    if (playerParrying) {
+            camera.flash()
+            playerVitals.decreaseLife(-e1MaxLife / 150)
+            if (enemy1.flipX){
+                enemy1.setVelocityX(-100)
+            } else {
+                enemy1.setVelocityX(100)
+            }
+            
+            
+   
+        }
+        
+        
+    }  
 
 
     }
@@ -562,7 +596,8 @@
 
         if (inBattle) {              
         
-            enemy1IsHit = true
+            if (playerParrying == false){
+                enemy1IsHit = true
             var chaos = Phaser.Math.FloatBetween(0.00,1.00)
             if (chaos < 0.025){
            
@@ -600,6 +635,8 @@
 
        
             }
+            }
+            
              
     }             
                  
@@ -870,6 +907,7 @@
             eSword.body.setAllowGravity(false).setOffset(0,5)
             eSword.body.checkCollision.none = true
             this.physics.add.overlap(eSword, player, playerEnemyHit);
+            this.physics.add.overlap(eSword, sword, playerParry);
 
             
         camera = this.cameras.main.centerOn(width * 1.5, 0) //.startFollow(player, false, 0.05, 0.05)
@@ -1013,6 +1051,14 @@
         this.anims.create({
             key: 'pDash',
             frames: this.anims.generateFrameNames('heroF',{prefix: 'Warrior_Dash_', start: 1, end: 7, suffix: '.png'}),
+            frameRate: 14,
+            repeat: 0,
+            //delay: 1
+        });
+
+        this.anims.create({
+            key: 'pParry',
+            frames: this.anims.generateFrameNames('heroF',{prefix: 'Warrior_Attack_', start: 9, end: 12, suffix: '.png'}),
             frameRate: 14,
             repeat: 0,
             //delay: 1
@@ -1364,8 +1410,8 @@
         // console.log('Player is Hit: ' + playerIsHit)
         // console.log('Enemy is Hit: ' + enemy1IsHit)
        
-        console.log('Charge Power: ' + chargePower)
-        console.log('Combo Level: ' + playerAttackNumber)
+        console.log('Player Defending: ' + playerDefending)
+        console.log('Player Parrying: ' + playerParrying)
 
         if (enemy1.body.onFloor() == false){
             enemy1.y = height - 85
@@ -1428,6 +1474,7 @@
             }
 
             sword.body.checkCollision.none = true
+            
 
             if (player.flipX){
                 pSFX.x = player.x + 10
@@ -1719,6 +1766,13 @@
                     sword.body.checkCollision.none = false
                     damage = 2
                     }
+                } else if (player.anims.getName() == 'pParry'){
+                    playerHeavySwordSwing.play()
+
+                    if (player.anims.currentFrame.index >= 2 && player.anims.currentFrame.index < 4){
+                    playerParrying = true
+                    sword.body.checkCollision.none = false
+                    }
                 }
 
                 if (playerIsHit){
@@ -1846,7 +1900,7 @@
 
                     }
 
-
+                  
 
                     energy.on('pointerup', function(pointer){
                             if (chargePower >= 65){
@@ -1942,7 +1996,25 @@
                         player.play('pJump',true)
                         player.setVelocityY(player.body.velocity.y - (250 * devicePixelRatio))
 
-                    } else if (player.body.onFloor() && playerAttacking == false){
+                    } else if (playerAttacking == false && cursors.down.isDown){
+                        player.play('pParry')
+
+                        playerDefending = true
+
+                    } else if (playerAttacking == false && Phaser.Input.Keyboard.JustUp(cursors.down)){
+                        player.play('pParry',true)
+                        finishedplayererDefense = false
+                        playerDefending = false
+
+                        player.on('animationcomplete', function () {
+                            playerParrying = false
+                            finishedplayererDefense = true
+
+                        }, this);
+
+                        
+
+                    } else if (player.body.onFloor() && playerAttacking == false && finishedplayererDefense){
                         player.play('pIdle',true)
                     
                     } else if (playerAttacking == false && player.body.onFloor() == false) {
