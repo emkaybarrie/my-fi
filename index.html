@@ -83,6 +83,8 @@
     var playerAttacking = false   
     var playerDefending = false
     var playerParrying = false
+    var playerDodging = false
+    var playerCharging = false
     var finishedplayererDefense = true
     var playerAttackNumber  = 0                            
     var deathBlows = false
@@ -1041,8 +1043,24 @@
         });
 
         this.anims.create({
-            key: 'pChargeDash',
-            frames: this.anims.generateFrameNames('heroF',{prefix: 'Warrior_Dash_', start: 6, end: 6, suffix: '.png'}),
+            key: 'pSpecial1',
+            frames: this.anims.generateFrameNames('heroF',{prefix: 'Warrior_Dash_', start: 5, end: 7, suffix: '.png'}),
+            frameRate: 4,
+            repeat: 0,
+            //delay: 1
+        });
+
+        this.anims.create({
+            key: 'pChargeSpecial1',
+            frames: this.anims.generateFrameNames('heroF',{prefix: 'Warrior_Dash-Attack_', start: 10, end: 10, suffix: '.png'}),
+            frameRate: 14,
+            repeat: 0,
+            //delay: 1
+        });
+
+        this.anims.create({
+            key: 'pChargeSpecial2',
+            frames: this.anims.generateFrameNames('heroF',{prefix: 'Warrior_Dash-Attack_', start: 1, end: 2, suffix: '.png'}),
             frameRate: 14,
             repeat: 0,
             //delay: 1
@@ -1413,6 +1431,14 @@
         console.log('Player Defending: ' + playerDefending)
         console.log('Player Parrying: ' + playerParrying)
 
+        console.log('Player Charging: ' + playerCharging)
+
+        console.log('Player Charge Power: ' + chargePower)
+
+        console.log('Player Drag: ' + player.body.drag.x)
+
+        console.log('Player Velocity: ' + player.body.velocity.x)
+
         if (enemy1.body.onFloor() == false){
             enemy1.y = height - 85
         }
@@ -1731,7 +1757,12 @@
 
            if(player.body.onFloor()){
             
-                player.setDragX(600)
+                if (playerCharging){
+                    player.setDragX(0)
+                } else {
+                    player.setDragX(600)
+                }
+                
 
             } else {
                 player.setDragX(100)
@@ -1786,6 +1817,8 @@
                 
                 if(playerIsHit == false){
 
+                    // Offensive Controls
+
                     if (keyA.isDown){
 
                         playerAttacking = true
@@ -1809,10 +1842,10 @@
                                 player.play({key:'pAttack'},true)
                                 if (player.body.onFloor()){
                                     if (player.flipX){
-                                player.setVelocityX(-15 *devicePixelRatio)
-                                } else {
-                                player.setVelocityX(15 *devicePixelRatio) 
-                                }
+                                        player.setVelocityX(-15 *devicePixelRatio)
+                                    } else {
+                                        player.setVelocityX(15 *devicePixelRatio) 
+                                    }
                                 }
                                 
                                 
@@ -1973,6 +2006,117 @@
 
                     }, this);
 
+                    // if (cursors.space.isDown){
+
+                    // playerCharging = true
+
+                    // if (cursors.left.isDown || cursors.right.isDown){
+
+                    //     player.setDragX(200) 
+                        
+                    //     if(chargePower < 100){
+                    //         chargePower += 2
+                    //     }
+                        
+                                
+                    //     if (Phaser.Input.Keyboard.JustDown(cursors.space) && (Phaser.Input.Keyboard.JustDown(cursors.left) ||Phaser.Input.Keyboard.JustDown(cursors.right))){
+                    //     player.play('pChargeSpecial2',true)
+                        
+                    //     }
+
+                    // } else if ((cursors.left.isUp || cursors.right.isUp) && cursors.space.isDown){
+
+                    //         player.play({key:'pAttack'},true)
+                    //         if (player.body.onFloor()){
+                    //             if (player.flipX){
+                    //         player.setVelocityX(-15 *devicePixelRatio)
+                    //         } else {
+                    //         player.setVelocityX(15 *devicePixelRatio) 
+                    //         }
+                    //         }
+                            
+                            
+
+
+
+                    // }
+                        
+
+                    // } else {
+                    //     playerCharging = false
+                    // }
+
+                    if(playerIsHit == false && Phaser.Input.Keyboard.JustDown(cursors.space)){
+                        
+                        playerDodging = true
+
+                        if (player.flipX){
+                                    
+                                    player.setVelocityX(400)
+                                    
+                        } else {
+                                    
+                                    player.setVelocityX(-400)
+                                    
+                        } 
+                      
+                        player.play('pSpecial1')
+
+                        player.on('animationcomplete', function () {
+
+                        
+                        playerDodging = false
+
+                        }, this);
+                        
+                    }
+
+                    
+                    if(cursors.space.isDown && playerDodging == false){
+
+                        playerCharging = true
+                        
+                        player.play('pChargeSpecial1')
+                        
+
+                        if(chargePower < 100){
+                                chargePower += 2
+                        }
+
+                        
+                                 
+                    } else if (Phaser.Input.Keyboard.JustUp(cursors.space)  && playerCharging) {
+
+                        player.play('pDash')
+
+                        player.body.maxVelocity.x = 400
+
+                        
+
+                        if (player.flipX){
+                                    
+                                    player.setVelocityX((-1000 * devicePixelRatio) * (chargePower / 100))
+                                    
+                        } else {
+                                    
+                                    player.setVelocityX((1000 * devicePixelRatio) * (chargePower / 100))
+                                    
+                        } 
+
+                        player.on('animationcomplete', function () {
+
+                        chargePower = 0
+                        playerCharging = false
+                        
+
+                        }, this);
+
+
+                    
+                    }
+
+
+                    // Movement & Defense
 
                     if (cursors.left.isDown || cursors.right.isDown){
                         if (cursors.left.isDown){
@@ -2014,7 +2158,7 @@
 
                         
 
-                    } else if (player.body.onFloor() && playerAttacking == false && finishedplayererDefense){
+                    } else if (player.body.onFloor() && playerAttacking == false && playerDodging == false && playerCharging == false && finishedplayererDefense){
                         player.play('pIdle',true)
                     
                     } else if (playerAttacking == false && player.body.onFloor() == false) {
