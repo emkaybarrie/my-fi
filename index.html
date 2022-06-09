@@ -1730,7 +1730,7 @@
                         eSword.body.checkCollision.none = false
                     }
                 } else {
-                    if(Math.abs(player.x - enemy1.x) > 75 && Math.abs(player.x - enemy1.x) <= 100){    
+                    if(Math.abs(player.x - enemy1.x) > 75 && Math.abs(player.x - enemy1.x) <= 85){    
                     enemy1.anims.play({key:'eIdle',frameRate: 10},true);
                     } else if (gameOver == false){
                         this.physics.moveToObject(enemy1,player,200)
@@ -2083,11 +2083,16 @@
                                 chargePower += 2
                         }
 
+                        if (spotlight.intensity < 1.25){
+                            spotlight.intensity += 0.02
+                        }
+
                         
                                  
                     } else if (Phaser.Input.Keyboard.JustUp(cursors.space)  && playerCharging) {
 
                         player.play('pDash')
+                        spotlight.intensity = 0.25
 
                         player.body.maxVelocity.x = 400
 
@@ -2107,6 +2112,8 @@
 
                         chargePower = 0
                         playerCharging = false
+                        player.body.maxVelocity.x = 250
+                        
                         
 
                         }, this);
