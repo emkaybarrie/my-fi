@@ -79,7 +79,7 @@
     var distanceTravelled = 0
     
      
-    var inBattle = false
+    var inBattle = 1
     var playerAttacking = false   
     var playerAttackNumber  = 0                            
     var deathBlows = false
@@ -1317,23 +1317,7 @@
         down.setInteractive(1).setVisible(1)
         focusB.setInteractive(1).setVisible(1)
 
-        left.x = camera.scrollX + (width * 0.1)
-        energy.x = camera.scrollX + (width * 0.9) 
-
-        deadSpace.x = left.x + 35.5
-        right.x = deadSpace.x + 35.5
-        up.x = deadSpace.x
-        down.x = deadSpace.x
-        focusB.x = energy.x - 75
-
-        left.y = camera.scrollY + (height - 85)
-        energy.y = camera.scrollY + (height - 106)
-
-        deadSpace.y = left.y
-        right.y = deadSpace.y
-        up.y = deadSpace.y - 40.5
-        down.y = left.y + 40.5
-        focusB.y = energy.y + 53
+        
         } else {
             left.setInteractive(0).setVisible(0)
             energy.setInteractive(0).setVisible(0)
@@ -1351,6 +1335,24 @@
             IS_TOUCH = true
             }
         }
+
+        left.x = camera.scrollX + (width * 0.1)
+        energy.x = camera.scrollX + (width * 0.9) 
+
+        deadSpace.x = left.x + 35.5
+        right.x = deadSpace.x + 35.5
+        up.x = deadSpace.x
+        down.x = deadSpace.x
+        focusB.x = energy.x - 75
+
+        left.y = camera.scrollY + (height - 85)
+        energy.y = camera.scrollY + (height - 106)
+
+        deadSpace.y = left.y
+        right.y = deadSpace.y
+        up.y = deadSpace.y - 40.5
+        down.y = left.y + 40.5
+        focusB.y = energy.y + 53
 
  
         if (distanceTravelled >= distanceToTravel){
@@ -1751,6 +1753,12 @@
                         } else if ((cursors.left.isUp || cursors.right.isUp) && keyA.isDown){
 
                                 player.play({key:'pAttack'},true)
+                                if (player.flipX){
+                                player.setVelocityX(-15 *devicePixelRatio)
+                                } else {
+                                player.setVelocityX(15 *devicePixelRatio) 
+                                }
+                                
 
       
 
