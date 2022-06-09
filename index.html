@@ -75,7 +75,7 @@
     var playerPosition 
     
     var playerSpeed 
-    var distanceToTravel = 20000
+    var distanceToTravel = 100
     var distanceTravelled = 0
     
      
@@ -713,7 +713,7 @@
     
     }
 
-    function runRegenFunctions()
+    function runSecondsFunctions()
     {
         
 
@@ -724,6 +724,10 @@
         playerVitals.decreaseEnergy(-energyRegen / 5)
         playerVitals.decreaseFocus(-focusRegen / 5)
 
+        }
+
+        if (inBattle == false){
+            playerProgress.increaseDistance((100 / 60))
         }
 
 
@@ -972,7 +976,7 @@
 
         weeklyTimer = this.time.addEvent({delay: 1250, callback: runWeeklyFunctions, args: [], callbackScope: this, loop: true});
 
-        regenTimer = this.time.addEvent({delay: 1000, callback: runRegenFunctions, args: [], callbackScope: this, loop: true});
+        secondsTimer = this.time.addEvent({delay: 1000, callback: runSecondsFunctions, args: [], callbackScope: this, loop: true});
 
         this.anims.create({
             key: 'chargeEnergy',
