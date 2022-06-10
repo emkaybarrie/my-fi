@@ -117,7 +117,7 @@
     var startLife = maxLife
     var currentLife = maxLife
 
-    var maxEnergy = 100
+    var maxEnergy = income
     var currentEnergy = maxEnergy
     var currentEnergyText
     
@@ -621,7 +621,7 @@
            
             camera.flash(150);
             camera.shake(500, 0.0075);
-            damage *= Phaser.Math.Between(1.75,3)
+            damage *= Phaser.Math.Between(1.75,2.75)
             enemy1Vitals.decreaseEnemyLife(damage)
             if (player.flipX){
                 enemy1.x -= Phaser.Math.Between(10,20)
@@ -633,7 +633,7 @@
             } else
             if (chaos < 0.075){
             camera.shake(500, 0.0025);
-            damage *= Phaser.Math.Between(1.1,2.5)
+            damage *= Phaser.Math.Between(1.15,1.75)
             enemy1Vitals.decreaseEnemyLife(damage)
             if (player.flipX){
                 enemy1.x -= Phaser.Math.Between(2.5,5)
@@ -642,7 +642,7 @@
                 enemy1.x -= Phaser.Math.Between(-5,-2.5)
             }
             } else {
-                damage *= Phaser.Math.Between(0.8,1.15)
+                damage *= Phaser.Math.Between(0.85,1.1)
                 enemy1Vitals.decreaseEnemyLife(damage)
                 if (player.flipX){
                 
@@ -696,8 +696,8 @@
 
         
 
-        chaosMultiplierMin *= 1 + (0.06 / 12)
-        chaosMultiplierMax *= 1 + (0.16 / 12)
+        chaosMultiplierMin *= 1 + (0.08)
+        chaosMultiplierMax *= 1 + (0.12)
         
  
     }
@@ -706,7 +706,7 @@
     {
 
 
-        chaosMultiplierMin *= 1 + (0.03 / 12)
+        chaosMultiplierMin *= 1 + (0.06 / 12)
         chaosMultiplierMax *= 1 + (0.08 / 12) 
 
         if (inBattle == false) {
@@ -1388,6 +1388,7 @@
     function levelUp(){
         exp = 0
         level += 1
+        chaosMultiplierMin *= 1.1
         expToLevelUp *= 1.04
         playerExperience.p = (width/3-2) / expToLevelUp
     }
@@ -1479,7 +1480,9 @@
         }
 
         
-
+        console.log('Chaos Factor: ' + chaosFactor)
+        console.log('Chaos Factor Min: ' + chaosMultiplierMin)
+        console.log('Chaos Factor Max: ' + chaosMultiplierMax)
         // console.log('Player is Hit: ' + playerIsHit)
          console.log('Enemy Max HP: ' + e1MaxLife)
        
@@ -1857,7 +1860,7 @@
 
                     if (player.anims.currentFrame.index >= 6 && player.anims.currentFrame.index < 12){
                         sword.body.checkCollision.none = false
-                        damage = (income * 0.05)
+                        damage = (maxEnergy * 0.01)
                     }
 
                 } else if (player.anims.getName() == 'pHeavyAttack'){
@@ -1865,7 +1868,7 @@
 
                     if (player.anims.currentFrame.index >= 4 && player.anims.currentFrame.index < 6){
                     sword.body.checkCollision.none = false
-                    damage = (income * 0.1)
+                    damage = (maxEnergy * 0.025)
                     }
                 } else if (player.anims.getName() == 'pParry'){
                     playerHeavySwordSwing.play()
