@@ -176,7 +176,7 @@
                              
    
 
-    var playerFreeFall = false
+        playerFreeFall = false
 
         chargePower = 0
     
@@ -203,6 +203,7 @@
     
         enemy1Life = (income * 0.3)
         e1MaxLife = (income * 0.3)
+        enemy1Alive = true
         
     }
     
@@ -608,7 +609,7 @@
         maxEnergy *= 1 - (0.01 / 12 / 50)
         player.x -= 1
         //enemy1.x += 1
-        enemyChase(5)
+        enemyChase(10)
     } 
     
     }
@@ -621,9 +622,9 @@
         
         maxEnergy *= 1 - (0.02 / 12 / 50)
         player.x -= 1
-        enemy1.setVelocityX
+        //enemy1.setVelocityX
         //enemy1.x += 2
-        enemyChase(10)
+        enemyChase(15)
     } 
 
     }
@@ -815,13 +816,15 @@
             enemy1Life = e1MaxLife
             enemy1Vitals.p = 38 / e1MaxLife
 
+            enemyChase(5)
+
         }
 
     }
 
     function runWeeklyFunctions()
     {
-       enemyChase(-5)
+       enemyChase(-2.5)
 
        if (inBattle == false) {
 
@@ -1638,10 +1641,11 @@
             reset()
             this.scene.restart()
             gameRestart = false
+            gameOver = false
         }
 
         if (Phaser.Input.Keyboard.JustDown(keyX)){
-            
+            toggleSkillTree()
       
         }
 
@@ -1875,8 +1879,8 @@
 
             
 
-            if (enemy1.x > width * 1.4 && player.x > width * 1.6){
-                        enemy1.setVelocityX(enemy1.body.velocity.x - 15)
+            if (enemy1.x > width * 1.5 && player.x > width * 1.6){
+                        enemy1.setVelocityX(enemy1.body.velocity.x - 10)
             }
 
             enemy1.anims.play({key:'eRun',frameRate: 14 * playerSpeed},true);
@@ -1929,7 +1933,9 @@
                 pSFX.setDepth(0)
                 pSFX.play('chargeDash',true)
                 this.physics.moveTo(player,width * 1.9,player.y,110)
-                enemy1.setVelocityX(enemy1.body.velocity.x - 5)
+                if (enemy1.x > width * 1.4 && player.x > width * 1.55){
+                enemy1.setVelocityX(enemy1.body.velocity.x - 2.5)
+                }
                 
                 
                 
