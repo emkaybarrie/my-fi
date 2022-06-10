@@ -568,7 +568,7 @@
 
         } else if (playerParrying == false && finishedplayererDefense) {
             playerIsHit = true
-            playerVitals.decreaseLife(e1MaxLife / 50)
+            playerVitals.decreaseLife((e1MaxLife * 1.5) / 50)
             maxEnergy *= 1 - (0.04 / 12 / 50)
             income *= 1 - (0.02 / 12 / 50)
         }
