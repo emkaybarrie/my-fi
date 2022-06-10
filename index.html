@@ -2232,6 +2232,7 @@
                     } else if (player.body.onFloor() && playerAttacking == false && playerDodging == false && playerCharging == false && finishedplayererDefense){
                         player.play('pIdle',true)
                         playerDefending = false
+                        player.body.maxVelocity.x = 250
                     
                     } else if (playerAttacking == false && player.body.onFloor() == false) {
 
