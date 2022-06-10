@@ -64,6 +64,7 @@
 
     var game = new Phaser.Game(config);
     var gameOver = false
+    var gameRestart = false
     var score = 0
     var highScore = parseInt(localStorage.getItem('highScore')) || 0;
 
@@ -83,8 +84,8 @@
     var playerPosition 
     
     var playerSpeed 
-    var expToLevelUp = 50
-    var exp = 40
+    var expToLevelUp = 100
+    var exp = 0
     
      
     var inBattle = 0
@@ -97,7 +98,7 @@
     var playerDodging = false
     var playerCharging = false
     var finishedplayererDefense = true
-    var playerAttackNumber  = 0                            
+                             
    
 
     var playerFreeFall = false
@@ -125,7 +126,7 @@
     var currentEnergyText
     
     var startMaxEnergy = 100
-    var currentFocus = 100
+    var currentFocus = 0
     var maxFocus = maxEnergy * 3
 
     var chaosFactor = 0.0
@@ -139,6 +140,71 @@
     var enemy1Alive
     var e1MaxLife = (income * 0.3)
     var enemy1Aggro = true
+
+    function reset(){
+        score = 0
+        storingBuffTier = 0
+        spendingBuffTier = 0
+        growingBuffTier = 0
+        kianovaBuffTier = 0
+
+        IS_TOUCH = false
+        skillTreeOpen = false
+    
+        expToLevelUp = 100
+        exp = 0
+        
+        inBattle = 0
+
+        level = 0
+
+        income = 100
+        lifeRegenAllocation = 0.3 // Equates to budget % allocated to needs
+        energyRegenAllocation = 0.5
+        focusRegenAllocation = 0.2
+        
+        lifeRegen = lifeRegenAllocation * income
+        energyRegen = energyRegenAllocation * income
+        focusRegen = focusRegenAllocation * income
+
+        playerAttacking = false   
+        playerDefending = false
+        playerParrying = false
+        playerDodging = false
+        playerCharging = false
+        finishedplayererDefense = true
+                             
+   
+
+    var playerFreeFall = false
+
+        chargePower = 0
+    
+    
+        damage = 0
+
+        maxLife = income * 3
+        startLife = maxLife
+        currentLife = maxLife
+
+        maxEnergy = income
+        currentEnergy = maxEnergy
+        
+        startMaxEnergy = 100
+        currentFocus = 0
+        maxFocus = maxEnergy * 3
+
+        chaosFactor = 0.0
+        chaosMultiplierMin = 0.7
+        chaosMultiplierMax = 2.5
+
+        playerIsHit = false
+        enemy1IsHit = false
+    
+        enemy1Life = (income * 0.3)
+        e1MaxLife = (income * 0.3)
+        
+    }
     
 
     class HealthBar {
@@ -771,7 +837,7 @@
     {
         
 
-        if (playerAttacking == false && playerDefending == false && playerDodging == false && playerCharging == false && skillTreeOpen == false){
+        if (playerAttacking == false && playerDefending == false && playerDodging == false && playerCharging == false && skillTreeOpen == false || gameOver == false){
 
             
         playerVitals.decreaseLife(-lifeRegen / 5) 
@@ -1524,7 +1590,7 @@
             gameOver = true
             camera.fadeOut(6000)
             camera.on('camerafadeoutcomplete', function () {
-
+            gameRestart = true
             
 
             }, this);
@@ -1567,6 +1633,12 @@
         // Player can expend further energy to accelerate, and while sprinting cuts enemy accelration
         
         updateHighScore()
+
+        if (gameRestart){
+            reset()
+            this.scene.restart()
+            gameRestart = false
+        }
 
         if (Phaser.Input.Keyboard.JustDown(keyX)){
             
