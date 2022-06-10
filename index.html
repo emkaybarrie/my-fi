@@ -777,8 +777,11 @@
         }
 
         if (inBattle == false){
-            playerExperience.increaseExp((100 / 60))
-            score += (100 / 60)
+            if (skillTreeOpen == false){
+                playerExperience.increaseExp((100 / 60))
+                score += (100 / 60)
+            }
+            
         } else {
             if (score > 0){
                 score -= (50 / 60)
@@ -1538,7 +1541,7 @@
             
         chaosMultiplierMin *= 1.1
         expToLevelUp *= 1.04
-        playerExperience.p = (width/3-2) / expToLevelUp
+        playerExperience.p = 233 / expToLevelUp
         
     }
 
