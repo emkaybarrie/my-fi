@@ -122,7 +122,7 @@
     var currentEnergyText
     
     var startMaxEnergy = 100
-    var currentFocus = 0
+    var currentFocus = 100
     var maxFocus = maxEnergy * 3
 
     var chaosFactor = 0.0
@@ -2140,7 +2140,7 @@
                         player.play('pDash')
                         spotlight.intensity = 0.25
 
-                        player.body.maxVelocity.x = 500
+                        player.body.maxVelocity.x = 750
 
                         
 
@@ -2220,6 +2220,7 @@
 
                     } else if (player.body.onFloor() && playerAttacking == false && playerDodging == false && playerCharging == false && finishedplayererDefense){
                         player.play('pIdle',true)
+                        playerDefending = false
                     
                     } else if (playerAttacking == false && player.body.onFloor() == false) {
 
