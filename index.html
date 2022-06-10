@@ -2138,11 +2138,16 @@
 
                     // Offensive Controls
 
-                    if (keyA.isDown && currentEnergy > ((income * 0.5) / 50)){
+                    if (keyA.isDown && currentLife > 0 && currentEnergy > ((income * 0.5) / 50)){
 
                         playerAttacking = true
 
-                        playerVitals.decreaseEnergy((income * 0.5) / 50)
+                        if (currentEnergy > 0){
+                            playerVitals.decreaseEnergy((income * 0.5) / 50)
+                        } else {
+                            playerVitals.decreaseLife((income * 0.5) / 50)
+                        }
+                        
 
                         if (cursors.left.isDown || cursors.right.isDown){
 
@@ -2479,33 +2484,7 @@
             }
                 
 
-               
 
-
-
-                
-                
-
-            
-                // } else if (cursors.up.isDown && cursors.space.isDown && currentFocus > 0 && currentEnergy < maxEnergy * 0.99){   
-            
-                // player.anims.play({key:'pChargeEnergy'},true);
-                // pSFX.setVisible(true)
-                // pSFX.setDepth(1)
-                // pSFX.setTint(0x93c47d)
-                // pSFX.play('chargeEnergy',true)
-                // charge.play()
-                //     if (spotlight.intensity < 1.5){
-                //     spotlight.intensity += 0.02
-                //     }
-                // camera.shake(50, 0.0005);
-
-
-                // playerVitals.decreaseFocus(maxFocus / 600)
-                // playerVitals.decreaseEnergy(-maxFocus / 600)
-
-
-            
     
                 // } else if (cursors.right.isDown){
                     
@@ -2533,31 +2512,6 @@
 
                 
 
-                // } else if (cursors.down.isDown){ 
-            
-
-                //     player.play({key:'pSlide',frameRate: 12});
-                //     player.setDragX(300)
-                        
-                // } else if (cursors.left.isDown){
-
-                //     player.flipX = true 
-
-                //     if (playerAttacking == false){
-                //         player.setVelocityX(player.body.velocity.x - (20 * devicePixelRatio))
-                //         player.play({key:'pRun',frameRate: 10},true);
-                //     }
-    
-                // } else if (cursors.right.isDown){
-
-                //     player.flipX = false 
-
-                //     if (playerAttacking == false){
-                //         player.setVelocityX(player.body.velocity.x + (20 * devicePixelRatio))
-                //         player.play({key:'pRun',frameRate: 10},true);
-                //     }
-
-                // }
 
 
             } 
