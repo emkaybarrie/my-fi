@@ -76,8 +76,8 @@
     var playerPosition 
     
     var playerSpeed 
-    var distanceToTravel = 100
-    var distanceTravelled = 0
+    var expToLevelUp = 100
+    var exp = 0
     
      
     var inBattle = false
@@ -356,38 +356,38 @@
 
     }
 
-    class ProgressBar {
+    class ExperienceBar {
 
-    constructor (scene,distanceTravelled, x, y)
+    constructor (scene,exp, x, y)
     {
         this.bg = new Phaser.GameObjects.Graphics(scene).setDepth(4);
         
-        this.progressBar = new Phaser.GameObjects.Graphics(scene).setDepth(4);
+        this.experienceBar = new Phaser.GameObjects.Graphics(scene).setDepth(4);
 
         this.x = x;
         this.y = y;
         
-        this.p =  (width/3-2) / distanceToTravel
+        this.p =  (width/3-2) / expToLevelUp
 
         this.draw();
 
         scene.add.existing(this.bg)
-        scene.add.existing(this.progressBar);
+        scene.add.existing(this.experienceBar);
         
     }
 
-    increaseDistance (amount)
+    increaseExp (amount)
     {
-        distanceTravelled += amount;
+        exp += amount;
 
-        if (distanceTravelled > distanceToTravel)
+        if (exp > expToLevelUp)
         {
-            distanceTravelled = distanceToTravel;
+            exp = expToLevelUp;
         }
 
         this.draw();
 
-        return (distanceTravelled === distanceToTravel);
+        return (exp === expToLevelUp);
     }
 
     
@@ -397,23 +397,23 @@
         draw ()
         {
             this.bg.clear()
-            this.progressBar.clear();
+            this.experienceBar.clear();
            
 
             //  BG
             this.bg.fillStyle(0x000000);
             this.bg.fillRect(this.x, this.y, width/3, 20);
 
-            //  Progress
+            //  Exp
 
-            this.progressBar.fillStyle(0xffffff);
-            this.progressBar.fillRect(this.x + 1, this.y + 1, width/3-2, 18);
-            this.progressBar.fillStyle(0x674EA7);
+            this.experienceBar.fillStyle(0xffffff);
+            this.experienceBar.fillRect(this.x + 1, this.y + 1, width/3-2, 18);
+            this.experienceBar.fillStyle(0x674EA7);
 
 
-            var d = Math.floor(this.p * distanceTravelled);
+            var d = Math.floor(this.p * exp);
 
-            this.progressBar.fillRect(this.x + 1, this.y + 1, d, 18);
+            this.experienceBar.fillRect(this.x + 1, this.y + 1, d, 18);
 
             
         }
@@ -731,7 +731,7 @@
         }
 
         if (inBattle == false){
-            playerProgress.increaseDistance((100 / 60))
+            playerExperience.increaseExp((100 / 60))
             score += (100 / 60)
         } else {
             if (score > 0){
@@ -973,7 +973,7 @@
         }
 
  
-        playerProgress = new ProgressBar(this,distanceTravelled, camera.scrollX + width * 0.33, camera.scrollY + (height - 85));
+        playerExperience = new ExperienceBar(this,exp, camera.scrollX + width * 0.33, camera.scrollY + (height - 85));
 
         highScoreText = this.add.text(camera.scrollX + (width - 340), camera.scrollY + (height - 57), 'High Score: ' + Math.floor(highScore)).setFontFamily('Arial').setFontSize(12).setColor('#674EA7').setDepth(4);
         scoreText = this.add.text(camera.scrollX + (width - 140), camera.scrollY + (height - 57), 'Score: ' + Math.floor(score)).setFontFamily('Arial').setFontSize(12).setColor('#674EA7').setDepth(4);
@@ -1363,8 +1363,9 @@
     }
 
     function levelUp(){
-        distanceTravelled = 0
+        exp = 0
         level += 1
+        expToLevelUp *= 1.04
     }
 
     function update ()
@@ -1386,9 +1387,9 @@
         
         updateHighScore()
 
-        playerProgress.x = camera.scrollX + width * 0.33
-        playerProgress.y = camera.scrollY + (height * 0.85)
-        playerProgress.draw()
+        playerExperience.x = camera.scrollX + width * 0.33
+        playerExperience.y = camera.scrollY + (height * 0.85)
+        playerExperience.draw()
 
         scoreText.x = camera.scrollX + (width - 367.5)
         scoreText.y = camera.scrollY + (height - 57)
@@ -1448,7 +1449,7 @@
         focusB.y = energy.y + 53
 
  
-        if (distanceTravelled >= distanceToTravel){
+        if (exp >= expToLevelUp){
             score += (100 / 60) * 10
             levelUp()  
         }
@@ -1471,7 +1472,9 @@
 
          //console.log('Chaos Factor: ' + chaosFactor)
 
-        console.log('Score: ' + score)
+        console.log('Level: ' + level)
+
+        console.log('Exp to Level: ' + expToLevelUp)
 
         if (enemy1.body.onFloor() == false){
             enemy1.y = height - 85
