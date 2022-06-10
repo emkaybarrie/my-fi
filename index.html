@@ -73,6 +73,8 @@
     var kianovaBuffTier = 1
 
     var IS_TOUCH = false
+    var skillTreeOpen = false
+  
 
     var width = game.config.width
     var height = game.config.height
@@ -82,10 +84,10 @@
     
     var playerSpeed 
     var expToLevelUp = 100
-    var exp = 0
+    var exp = 90
     
      
-    var inBattle = 1
+    var inBattle = 0
 
     var level = 0
 
@@ -765,7 +767,7 @@
     {
         
 
-        if (playerAttacking == false && playerDefending == false && playerDodging == false && playerCharging == false ){
+        if (playerAttacking == false && playerDefending == false && playerDodging == false && playerCharging == false && skillTreeOpen == false){
 
             
         playerVitals.decreaseLife(-lifeRegen / 5) 
@@ -787,9 +789,12 @@
         }
 
         
+    }
 
-
-        
+    function refreshStats(){
+        lifeRegen = lifeRegenAllocation * income
+        energyRegen = energyRegenAllocation * income
+        focusRegen = focusRegenAllocation * income
     }
 
     function updateHighScore(){
@@ -1022,6 +1027,9 @@
         scoreText = this.add.text(camera.scrollX + (width - 140), camera.scrollY + (height - 57), 'Score: ' + Math.floor(score)).setFontFamily('Arial').setFontSize(12).setColor('#674EA7').setDepth(4);
         highScoreText = this.add.text(camera.scrollX + (width - 340), camera.scrollY + (height - 57), 'High Score: ' + Math.floor(highScore)).setFontFamily('Arial').setFontSize(12).setColor('#674EA7').setDepth(4);
         
+        skillTreeLifeIcon = this.add.image(width * 0.25, height / 2,'storingBuffIcon').setDepth(4).setScale(1).setVisible(0).setAlpha(0.75)
+        skillTreeFocusIcon = this.add.image(width * 0.5 , height / 2,'spendingBuffIcon').setDepth(4).setScale(1).setVisible(0).setAlpha(0.75)
+        skillTreeEnergyIcon = this.add.image(width * 0.75, height / 2,'growingBuffIcon').setDepth(4).setScale(1).setVisible(0).setAlpha(0.75)
 
         // 96 seconds = 1 year
         // 8 seconds = 1 month
@@ -1230,15 +1238,18 @@
             
         });
 
+        
+
 
         // Controllers online
         cursors = this.input.keyboard.createCursorKeys();
         keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
         keyZ = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Z);
+        keyX = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.X);
 
         // Touch Screen Support
         
-        this.input.addPointer(5);
+        this.input.addPointer(8);
         up = this.add.image(-100, -100, 'up').setInteractive().setDepth(3).setScale(0.75).setAlpha(0.5);
         down = this.add.image(-100, -100, 'down').setInteractive().setDepth(3).setScale(0.75).setAlpha(0.5);
         left = this.add.image(-100, -100, 'left').setInteractive().setDepth(3).setScale(0.75).setAlpha(0.5);
@@ -1248,7 +1259,10 @@
         focusB = this.add.image(-100, -100, 'focus').setInteractive().setDepth(3).setScale(.75).setAlpha(0.5).setTint(0xf1c232);
 
         this.input.on('pointerdown', function (pointer) {
-        IS_TOUCH = true;
+        
+            IS_TOUCH = true;
+        
+        
         })
 
         this.input.on('gameobjectdown', function (pointer, gameObject) {
@@ -1281,6 +1295,7 @@
             if (gameObject == energy){
                 keyA.isDown = true
                 keyA.isUp = false
+                
             }
 
             if (gameObject == focusB){
@@ -1288,6 +1303,33 @@
                 // player.anims.play({key:'pChargeAttack',frameRate: 16},true);
                 cursors.space.isUp = false
             }
+
+            if (gameObject == skillTreeLifeIcon){
+
+                lifeRegenAllocation *= 1.15
+        
+                toggleSkillTree()
+                IS_TOUCH = false
+                
+            } 
+
+            if (gameObject == skillTreeFocusIcon){
+
+                focusRegenAllocation *= 1.15
+
+                toggleSkillTree()
+                IS_TOUCH = false
+                
+            } 
+
+            if (gameObject == skillTreeEnergyIcon){
+
+                energyRegenAllocation *= 1.15
+
+                toggleSkillTree()
+                IS_TOUCH = false
+                
+            } 
 
         });
 
@@ -1364,6 +1406,36 @@
 
     }
 
+    function toggleSkillTree(){
+
+        IS_TOUCH = false
+
+        if (skillTreeOpen){
+            
+            
+            skillTreeLifeIcon.setVisible(0).disableInteractive()
+            skillTreeFocusIcon.setVisible(0).disableInteractive()
+            skillTreeEnergyIcon.setVisible(0).disableInteractive()
+            skillTreeOpen = false
+         
+            
+         
+        } else {
+            
+            skillTreeLifeIcon.setVisible(1).setInteractive()
+            skillTreeFocusIcon.setVisible(1).setInteractive()
+            skillTreeEnergyIcon.setVisible(1).setInteractive()
+            skillTreeOpen = true
+           
+    
+
+            enemy1.setVelocityX(-100)
+            enemy1.setDragX(500)
+        }
+        
+           
+    }
+
     function moveVines (vine,speed){
     
         vine.x -= speed;
@@ -1415,23 +1487,17 @@
     function levelUp(){
         exp = 0
         level += 1
-        var passiveLvlUpRandomsier = Phaser.Math.Between(1,4)
-
-        if (passiveLvlUpRandomsier = 1){
+        toggleSkillTree()
+        
+        
+        if (level > 10){
             income *= 1.05
-        } else if (passiveLvlUpRandomsier = 2){
-            lifeRegenAllocation *= 1.05
-        } else if (passiveLvlUpRandomsier = 3){
-            energyRegenAllocation *= 1.05
-        } else {
-            focusRegenAllocation *= 1.05
-        }
+        } 
+            
         chaosMultiplierMin *= 1.1
         expToLevelUp *= 1.04
         playerExperience.p = (width/3-2) / expToLevelUp
-        lifeRegen = lifeRegenAllocation * income
-        energyRegen = energyRegenAllocation * income
-        focusRegen = focusRegenAllocation * income
+        
     }
 
     function update ()
@@ -1452,6 +1518,11 @@
         // Player can expend further energy to accelerate, and while sprinting cuts enemy accelration
         
         updateHighScore()
+
+        if (Phaser.Input.Keyboard.JustDown(keyX)){
+            
+      
+        }
 
         playerExperience.x = camera.scrollX + width * 0.3
         playerExperience.y = camera.scrollY + (height * 0.85)
@@ -1483,22 +1554,25 @@
 
         
         } else {
-            left.setInteractive(0).setVisible(0)
-            energy.setInteractive(0).setVisible(0)
-            right.setInteractive(0).setVisible(0)
-            up.setInteractive(0).setVisible(0)
-            down.setInteractive(0).setVisible(0)
-            focusB.setInteractive(0).setVisible(0)
+            left.disableInteractive().setVisible(0)
+            energy.disableInteractive().setVisible(0)
+            right.disableInteractive().setVisible(0)
+            up.disableInteractive().setVisible(0)
+            down.disableInteractive().setVisible(0)
+            focusB.disableInteractive().setVisible(0)
 
         }
 
         if (Phaser.Input.Keyboard.JustDown(keyZ)){
+            
             if(IS_TOUCH){
             IS_TOUCH = false
             } else {
             IS_TOUCH = true
             }
         }
+
+        
 
         left.x = camera.scrollX + (width * 0.1)
         energy.x = camera.scrollX + (width * 0.9) 
@@ -1521,31 +1595,34 @@
  
         if (exp >= expToLevelUp){
             score += (100 / 60) * 10
-            levelUp()  
+            levelUp()
+
         }
 
+        refreshStats()
+
         
-        console.log('Chaos Factor: ' + chaosFactor)
+
+        
+
+        skillTreeLifeIcon.x = camera.scrollX + (width * 0.25)
+        skillTreeFocusIcon.x = camera.scrollX + (width * 0.5)
+        skillTreeEnergyIcon.x = camera.scrollX + (width * 0.75)
+
+        
+        //console.log('Chaos Factor: ' + chaosFactor)
         console.log('Chaos Factor Min: ' + chaosMultiplierMin)
         console.log('Chaos Factor Max: ' + chaosMultiplierMax)
-        // console.log('Player is Hit: ' + playerIsHit)
+
+        console.log('Player Power Regen: ' + income)
+        console.log('Player Life Regen: ' + lifeRegen)
+        console.log('Player Focus Regen: ' + focusRegen)
+        console.log('Player energy Regen: ' + energyRegen)
+
+
          console.log('Enemy Max HP: ' + e1MaxLife)
        
-         console.log('Player Attacking: ' + playerAttacking)
-        console.log('Player Defending: ' + playerDefending)
-        console.log('Player Parrying: ' + playerParrying)
-
-        console.log('Player Charging: ' + playerCharging)
-
-        // console.log('Player Charge Power: ' + chargePower)
-
-        // console.log('Player Drag: ' + player.body.drag.x)
-
-        // console.log('Player Velocity: ' + player.body.velocity.x)
-
-         //console.log('Chaos Factor: ' + chaosFactor)
-
-        console.log('Level: ' + level)
+ 
 
         console.log('Exp to Level: ' + expToLevelUp)
 
@@ -1666,9 +1743,14 @@
 
             player.flipX = false
 
-            this.vines.body.checkCollision.none = false
-
-            treeTrunk.body.checkCollision.none = false
+            if (skillTreeOpen){
+                this.vines.body.checkCollision.none = true
+                treeTrunk.body.checkCollision.none = true
+            } else {
+                this.vines.body.checkCollision.none = false
+                treeTrunk.body.checkCollision.none = false
+            }
+            
 
             
 
@@ -1799,7 +1881,7 @@
                 enemy1Life = e1MaxLife
                 enemy1Vitals.p = 38 / e1MaxLife
                 enemy1Alive = true
-                //modeSwitch()
+                modeSwitch()
 
             }
 
