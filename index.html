@@ -1865,7 +1865,7 @@
 
                     // Offensive Controls
 
-                    if (keyA.isDown){
+                    if (keyA.isDown && currentEnergy > ((income * 0.25) / 50)){
 
                         playerAttacking = true
 
@@ -2094,7 +2094,7 @@
                     //     playerCharging = false
                     // }
 
-                    if(playerIsHit == false && Phaser.Input.Keyboard.JustDown(cursors.space)){
+                    if(playerIsHit == false && Phaser.Input.Keyboard.JustDown(cursors.space) && currentFocus > ((income * 0.5) / 50)){
                         
                         playerDodging = true
 
@@ -2122,9 +2122,11 @@
                     }
 
                     
-                    if(cursors.space.isDown && playerDodging == false){
+                    if(cursors.space.isDown && playerDodging == false && currentFocus > ((income * 0.25) / 50)){
 
                         playerCharging = true
+
+                        playerVitals.decreaseFocus((income * 0.25) / 50)
                         
                         player.play('pChargeSpecial1')
                         
@@ -2192,19 +2194,21 @@
                             player.setVelocityX(player.body.velocity.x + (20 * devicePixelRatio))
                             }
                         }
-                    } else if (Phaser.Input.Keyboard.JustDown(cursors.up) && player.body.onFloor() ){
+                    } else if (Phaser.Input.Keyboard.JustDown(cursors.up) && player.body.onFloor() && currentEnergy > (income * 0.3)){
 
                         player.play('pJump',true)
+
+                        playerVitals.decreaseEnergy((income * 0.3))
                         player.setVelocityY(player.body.velocity.y - (250 * devicePixelRatio))
 
-                    } else if (playerAttacking == false && cursors.down.isDown){
+                    } else if (playerAttacking == false && cursors.down.isDown && currentEnergy > ((income * 0.15)/50) ){
 
                         playerVitals.decreaseEnergy((income * 0.15) / 50)
                         player.play('pParry')
 
                         playerDefending = true
 
-                    } else if (playerAttacking == false && Phaser.Input.Keyboard.JustUp(cursors.down)){
+                    } else if (playerAttacking == false && Phaser.Input.Keyboard.JustUp(cursors.down)  && currentEnergy > (income * 0.25) ){
 
                         
                         player.play('pParry',true)
