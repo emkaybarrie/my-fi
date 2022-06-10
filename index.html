@@ -731,7 +731,12 @@
             playerProgress.increaseDistance((100 / 60))
             score += (100 / 60)
         } else {
-            score -= (50 / 60)
+            if (score > 0){
+                score -= (50 / 60)
+            } else {
+                score = 0
+            }
+            
         }
 
         
@@ -1771,6 +1776,10 @@
    
                 if (enemy1.anims.currentFrame.index > 9){
                 enemy1Alive = false
+
+                score += ((100/60) * 5)
+                
+                 
                 
                 }
                     
