@@ -2138,7 +2138,7 @@
 
                     // Offensive Controls
 
-                    if (keyA.isDown && currentLife > 0 && currentEnergy > ((income * 0.5) / 50)){
+                    if (keyA.isDown && (currentLife > 0 || currentEnergy > ((income * 0.5) / 50))){
 
                         playerAttacking = true
 
