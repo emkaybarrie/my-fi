@@ -2082,51 +2082,13 @@
 
                     }, this);
 
-                    // if (cursors.space.isDown){
+                  // Focus MoveSet
 
-                    // playerCharging = true
-
-                    // if (cursors.left.isDown || cursors.right.isDown){
-
-                    //     player.setDragX(200) 
-                        
-                    //     if(chargePower < 100){
-                    //         chargePower += 2
-                    //     }
-                        
-                                
-                    //     if (Phaser.Input.Keyboard.JustDown(cursors.space) && (Phaser.Input.Keyboard.JustDown(cursors.left) ||Phaser.Input.Keyboard.JustDown(cursors.right))){
-                    //     player.play('pChargeSpecial2',true)
-                        
-                    //     }
-
-                    // } else if ((cursors.left.isUp || cursors.right.isUp) && cursors.space.isDown){
-
-                    //         player.play({key:'pAttack'},true)
-                    //         if (player.body.onFloor()){
-                    //             if (player.flipX){
-                    //         player.setVelocityX(-15 *devicePixelRatio)
-                    //         } else {
-                    //         player.setVelocityX(15 *devicePixelRatio) 
-                    //         }
-                    //         }
-                            
-                            
-
-
-
-                    // }
-                        
-
-                    // } else {
-                    //     playerCharging = false
-                    // }
-
-                    if(playerIsHit == false && Phaser.Input.Keyboard.JustDown(cursors.space) && currentFocus > ((income * 0.5) / 50)){
+                    if(playerIsHit == false && Phaser.Input.Keyboard.JustDown(cursors.space) && currentFocus > (income * 0.25)){
                         
                         playerDodging = true
 
-                        playerVitals.decreaseFocus((income * 0.5) / 50)
+                        playerVitals.decreaseFocus((income * 0.25))
 
                         if (player.flipX){
                                     
