@@ -562,7 +562,7 @@
         
         if (playerDefending){
             if (playerParrying == false){
-            playerVitals.decreaseLife(e1MaxLife / 150)
+            playerVitals.decreaseLife(e1MaxLife * 1.5 / 100)
             camera.shake(20,0.0025)
             if (player.flipX){
                 player.setVelocityX(50)
@@ -2215,7 +2215,7 @@
 
                     } else if (playerAttacking == false && cursors.down.isDown && currentEnergy > ((income * 0.075)/50) ){
 
-                        playerVitals.decreaseEnergy((income * 0.075) / 50)
+                        playerVitals.decreaseEnergy((income * 0.025) / 50)
                         player.play('pParry')
 
                         playerDefending = true
