@@ -18,7 +18,7 @@
 
     // Feature MVP To do:
 
-    // 1) Add levelUp screen and v1 buff/skill tree selection
+    // 1) Add basic levelUp screen and v1 buff/skill tree selection - Done but for buff level icon changes 
     // 2) Add Focus Special 2 move (left/right + B button) - offensive focus move
     // 3) Carry out code clean up - condense into functions
     // 4) Add MVP linking of Kraken wallet
@@ -68,9 +68,9 @@
     var highScore = parseInt(localStorage.getItem('highScore')) || 0;
 
     var storingBuffTier = 0
-    var spendingBuffTier = 3
-    var growingBuffTier = 5
-    var kianovaBuffTier = 1
+    var spendingBuffTier = 0
+    var growingBuffTier = 0
+    var kianovaBuffTier = 0
 
     var IS_TOUCH = false
     var skillTreeOpen = false
@@ -1307,7 +1307,21 @@
             if (gameObject == skillTreeLifeIcon){
 
                 lifeRegenAllocation *= 1.15
-        
+                
+                var tier = storingBuffTier += 1
+
+                if (tier >= 5){
+                    tier = 5
+                    var alpha = 1
+                } else if (tier == 0){
+                    var alpha = 0.5
+                    tier = 1
+                } else {
+                    var alpha = 1
+                }
+
+                storingBuffTierIcon.setTexture('t'+ tier +'BuffIcon').setAlpha(alpha)
+
                 toggleSkillTree()
                 IS_TOUCH = false
                 
@@ -1317,6 +1331,20 @@
 
                 focusRegenAllocation *= 1.15
 
+                var tier = storingBuffTier += 1
+
+                if (tier >= 5){
+                    tier = 5
+                    var alpha = 1
+                } else if (tier == 0){
+                    var alpha = 0.5
+                    tier = 1
+                } else {
+                    var alpha = 1
+                }
+
+                growingBuffTierIcon.setTexture('t'+ tier +'BuffIcon').setAlpha(alpha)
+
                 toggleSkillTree()
                 IS_TOUCH = false
                 
@@ -1325,6 +1353,20 @@
             if (gameObject == skillTreeEnergyIcon){
 
                 energyRegenAllocation *= 1.15
+
+                var tier = storingBuffTier += 1
+
+                if (tier >= 5){
+                    tier = 5
+                    var alpha = 1
+                } else if (tier == 0){
+                    var alpha = 0.5
+                    tier = 1
+                } else {
+                    var alpha = 1
+                }
+
+                spendiongBuffTierIcon.setTexture('t'+ tier +'BuffIcon').setAlpha(alpha)
 
                 toggleSkillTree()
                 IS_TOUCH = false
