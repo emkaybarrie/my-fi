@@ -730,6 +730,8 @@
         if (inBattle == false){
             playerProgress.increaseDistance((100 / 60))
             score += (100 / 60)
+        } else {
+            score -= (50 / 60)
         }
 
         
@@ -966,6 +968,7 @@
         playerProgress = new ProgressBar(this,distanceTravelled, camera.scrollX + width * 0.33, camera.scrollY + (height - 85));
 
         highScoreText = this.add.text(camera.scrollX + (width - 340), camera.scrollY + (height - 57), 'High Score: ' + Math.floor(highScore)).setFontFamily('Arial').setFontSize(12).setColor('#674EA7').setDepth(4);
+        scoreText = this.add.text(camera.scrollX + (width - 140), camera.scrollY + (height - 57), 'Score: ' + Math.floor(score)).setFontFamily('Arial').setFontSize(12).setColor('#674EA7').setDepth(4);
 
         // 96 seconds = 1 year
         // 8 seconds = 1 month
@@ -1374,9 +1377,15 @@
         playerProgress.y = camera.scrollY + (height * 0.85)
         playerProgress.draw()
 
-        highScoreText.x = camera.scrollX + (width - 340)
+        scoreText.x = camera.scrollX + (width - 367.5)
+        scoreText.y = camera.scrollY + (height - 57)
+        scoreText.setText('Score: ' + Math.floor(score))
+
+        highScoreText.x = scoreText.x + 100
         highScoreText.y = camera.scrollY + (height - 57)
         highScoreText.setText('High Score: ' + Math.floor(highScore))
+
+        
 
         if(IS_TOUCH){
         left.setInteractive(1).setVisible(1)
