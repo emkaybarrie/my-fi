@@ -563,6 +563,11 @@
             if (playerParrying == false){
             playerVitals.decreaseLife(e1MaxLife / 150)
             camera.shake(20,0.0025)
+            if (player.flipX){
+                player.setVelocityX(50)
+            } else {
+                player.setVelocityX(-50)
+            }
             
             }
 
