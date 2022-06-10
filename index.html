@@ -25,7 +25,7 @@
     // 5) Add title screen and v1 game testing & balancing
 
     var ratio = Math.max((window.innerWidth * window.devicePixelRatio)/ (window.innerHeight * window.devicePixelRatio), (window.innerHeight * window.devicePixelRatio) / (window.innerWidth * window.devicePixelRatio)) 
-    var DEFAULT_HEIGHT = 272 //* window.devicePixelRatio // any height you want
+    var DEFAULT_HEIGHT = 272 //window.innerHeight * window.devicePixelRatio // 272
     var DEFAULT_WIDTH = ratio * DEFAULT_HEIGHT// * 2
 
 
@@ -532,7 +532,7 @@
         playerIsHit = true
         playerVitals.decreaseLife((income * 0.35) / 50)
         
-        maxEnergy *= 1 - (0.04 / 50)
+        maxEnergy *= 1 - (0.01 / 12 / 50)
         player.x -= 1
         //enemy1.x += 1
         enemyChase(5)
@@ -546,7 +546,7 @@
         playerIsHit = true
         playerVitals.decreaseLife((income * 0.5) / 50)
         
-        maxEnergy *= 1 - (0.08 / 50)
+        maxEnergy *= 1 - (0.02 / 12 / 50)
         player.x -= 1
         enemy1.setVelocityX
         //enemy1.x += 2
@@ -569,7 +569,7 @@
         } else if (playerParrying == false && finishedplayererDefense) {
             playerIsHit = true
             playerVitals.decreaseLife(e1MaxLife / 50)
-            maxEnergy *= 1 - (0.04 / 100)
+            maxEnergy *= 1 - (0.04 / 12 / 50)
         }
             
             
