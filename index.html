@@ -737,7 +737,7 @@
     {
         
 
-        if (playerAttacking == false){
+        if (playerAttacking == false || playerDefending == false || playerDodging == false || playerCharging == false ){
 
             
         playerVitals.decreaseLife(-lifeRegen / 5) 
@@ -1860,7 +1860,7 @@
 
                     if (player.anims.currentFrame.index >= 6 && player.anims.currentFrame.index < 12){
                         sword.body.checkCollision.none = false
-                        damage = (maxEnergy * 0.01)
+                        damage = (income * 0.01)
                     }
 
                 } else if (player.anims.getName() == 'pHeavyAttack'){
@@ -1868,7 +1868,7 @@
 
                     if (player.anims.currentFrame.index >= 4 && player.anims.currentFrame.index < 6){
                     sword.body.checkCollision.none = false
-                    damage = (maxEnergy * 0.025)
+                    damage = (income * 0.025)
                     }
                 } else if (player.anims.getName() == 'pParry'){
                     playerHeavySwordSwing.play()
