@@ -2090,6 +2090,8 @@
 
                         playerVitals.decreaseFocus((income * 0.25))
 
+                        player.body.maxVelocity.x = 500
+
                         if (player.flipX){
                                     
                                     player.setVelocityX(400)
@@ -2119,6 +2121,8 @@
                         playerVitals.decreaseFocus((income * 0.25) / 50)
                         
                         player.play('pChargeSpecial1')
+
+                        
                         
 
                         if(chargePower < 100){
@@ -2136,7 +2140,7 @@
                         player.play('pDash')
                         spotlight.intensity = 0.25
 
-                        player.body.maxVelocity.x = 400
+                        player.body.maxVelocity.x = 500
 
                         
 
