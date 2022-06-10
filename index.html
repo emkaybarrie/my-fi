@@ -688,11 +688,16 @@
        if (inBattle == false) {
 
         income *= 0.96
+        enemyChase(75)
+        enemy1.setScale(Phaser.Math.FloatBetween(1.65,1.8),Phaser.Math.FloatBetween(1.2,1.3))
 
         }
 
-        enemy1.setScale(Phaser.Math.FloatBetween(1.65,1.8),Phaser.Math.FloatBetween(1.2,1.3))
-        enemyChase(75)
+        
+
+        chaosMultiplierMin *= 1 + (0.06 / 12)
+        chaosMultiplierMax *= 1 + (0.16 / 12)
+        
  
     }
 
