@@ -55,6 +55,7 @@
 
     var game = new Phaser.Game(config);
     var gameOver = false
+    var score = 0
     var highScore = parseInt(localStorage.getItem('highScore')) || 0;
 
     var storingBuffTier = 0
@@ -728,17 +729,18 @@
 
         if (inBattle == false){
             playerProgress.increaseDistance((100 / 60))
+            score += (100 / 60)
         }
 
-
         
-  
+
+
         
     }
 
     function updateHighScore(){
-        if (highScore < distanceTravelled){
-            highScore = distanceTravelled
+        if (highScore < score){
+            highScore = score
         }
 
         
@@ -1444,9 +1446,9 @@
 
         // console.log('Player Velocity: ' + player.body.velocity.x)
 
-         console.log('Chaos Factor: ' + chaosFactor)
+         //console.log('Chaos Factor: ' + chaosFactor)
 
-        console.log('Enemy Velocity: ' + enemy1.body.velocity.x)
+        console.log('Score: ' + score)
 
         if (enemy1.body.onFloor() == false){
             enemy1.y = height - 85
