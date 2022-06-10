@@ -1293,8 +1293,8 @@
             frames: this.anims.generateFrameNames('doomsayer',{prefix: 'attack', start: 1, end: 10}),
             frameRate: 10,
             repeat: -1,
-            delay: 50,
-            repeatDelay: Math.random() * 4000
+            delay: 25,
+            repeatDelay: Math.random() * 3000
             
         });
 
@@ -2120,6 +2120,8 @@
                     if (player.anims.currentFrame.index >= 2 && player.anims.currentFrame.index < 4){
                     playerParrying = true
                     sword.body.checkCollision.none = false
+                    } else {
+                        playerParrying = false
                     }
                 }
 
