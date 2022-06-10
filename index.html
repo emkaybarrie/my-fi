@@ -502,7 +502,7 @@
                 playerVitals.decreaseLife(currentLife * 0.05)
             }
             
-            income *= 1 - 0.04
+            income *= 1 - (0.04 / 12)
 
             modeSwitch()
 
@@ -703,11 +703,27 @@
         chaosMultiplierMin *= 1 + (0.03 / 12)
         chaosMultiplierMax *= 1 + (0.08 / 12) 
 
+        if (inBattle == false) {
+
+            e1MaxLife = (income * 0.3) * chaosFactor
+            enemy1Life = e1MaxLife
+            enemy1Vitals.p = 38 / e1MaxLife
+
+        }
+
     }
 
     function runWeeklyFunctions()
     {
        enemyChase(-5)
+
+       if (inBattle == false) {
+
+        e1MaxLife = (income * 0.3) * chaosFactor
+        enemy1Life = e1MaxLife
+        enemy1Vitals.p = 38 / e1MaxLife
+
+        }
     
     }
 
