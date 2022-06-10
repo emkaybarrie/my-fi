@@ -2225,9 +2225,9 @@
                         playerVitals.decreaseEnergy((income * 0.3))
                         player.setVelocityY(player.body.velocity.y - (250 * devicePixelRatio))
 
-                    } else if (playerAttacking == false && cursors.down.isDown && currentEnergy > ((income * 0.15)/50) ){
+                    } else if (playerAttacking == false && cursors.down.isDown && currentEnergy > ((income * 0.075)/50) ){
 
-                        playerVitals.decreaseEnergy((income * 0.15) / 50)
+                        playerVitals.decreaseEnergy((income * 0.075) / 50)
                         player.play('pParry')
 
                         playerDefending = true
