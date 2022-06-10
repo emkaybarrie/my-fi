@@ -65,14 +65,10 @@
 
     var IS_TOUCH = false
 
-    
-
     var width = game.config.width
     var height = game.config.height
     var spotlight
-    
-    
-    var startPosition 
+
     var playerPosition 
     
     var playerSpeed 
@@ -91,8 +87,7 @@
     var playerCharging = false
     var finishedplayererDefense = true
     var playerAttackNumber  = 0                            
-    var deathBlows = false
-    var parry = false
+   
 
     var playerFreeFall = false
 
@@ -106,8 +101,8 @@
     var focusRegen = focusRegenAllocation * income
 
     var chargePower = 0
-    var keyDuration = 0
-    var keyFocusDuration = 0
+ 
+   
     var damage = 0
 
     var maxLife = income * 3
@@ -121,12 +116,6 @@
     var startMaxEnergy = 100
     var currentFocus = 0
     var maxFocus = maxEnergy * 3
-    
-    var budget = 60
-
-    var power
-    var budgetRatio = budget/income
-    var budgetAccuracy = 0.9
 
     var chaosFactor = 0.0
     var chaosMultiplierMin = 0.7
@@ -135,14 +124,11 @@
     var playerIsHit = false
     var enemy1IsHit = false
    
-
     var enemy1Life = (income * 0.3)
     var enemy1Alive
     var e1MaxLife = (income * 0.3)
     var enemy1Aggro = true
     
-
-  
 
     class HealthBar {
 
@@ -841,7 +827,6 @@
         enemySwordSwing = this.sound.add("enemySwordSwing", {volume: 0.5})
         charge = this.sound.add("charge",{volume: 0.5})
         
-        startPosition = (width * 1.5)
 
         this.physics.world.setBounds(0, 0, width * 3,  height);
         
@@ -858,7 +843,7 @@
         platforms = this.physics.add.staticGroup();
         platforms.create(0, height - 50, 'ground').setOrigin(0,0).setScale(width * 3 /400).refreshBody().setVisible(1);
 
-        player = this.physics.add.sprite(startPosition, height - 90 ,'heroF').setScale(2).setPipeline('Light2D');
+        player = this.physics.add.sprite(width * 1.5, height - 90 ,'heroF').setScale(2).setPipeline('Light2D');
         player.setDepth(1)
         player.tint = 0xdd7e6b;
         currentLife = startLife
@@ -912,7 +897,7 @@
             
             enemy1.body.setAllowDrag(true)
            
-            enemy1Life = budget * Phaser.Math.Between(0.8,1.7)
+            enemy1Life = (income * 0.3) * Phaser.Math.Between(0.8,1.7)
             e1MaxLife = enemy1Life
             enemy1Alive = true
 
@@ -1497,7 +1482,7 @@
 
         playerPosition = player.x
         
-        playerSpeed = playerPosition / (width * 1.5)
+        playerSpeed = playerPosition / (width * 1.2)
 
             playerVitals.x = playerIcon.x + 30
             playerVitals.y = playerIcon.y - 20
@@ -1733,7 +1718,7 @@
                 player.flipX = false
                 
                 
-                e1MaxLife = budget * chaosFactor
+                e1MaxLife = (income * 0.3) * chaosFactor
                 enemy1Life = e1MaxLife
                 enemy1Vitals.p = 38 / e1MaxLife
                 enemy1Alive = true
