@@ -85,7 +85,7 @@
     var exp = 0
     
      
-    var inBattle = false
+    var inBattle = 1
 
     var level = 0
 
@@ -590,13 +590,29 @@
     if (inBattle){
     
     if (playerParrying) {
+            hideHUD()
+            camera.zoomTo(1.5,50)
+ 
             camera.flash()
+
             camera.on('cameraflashcomplete', function () {
                 playerVitals.decreaseLife(-e1MaxLife / 120)
                 playerVitals.decreaseFocus(-e1MaxLife / 80)
                 playerVitals.decreaseEnergy(-e1MaxLife / 40)
+                camera.zoomTo(1.05,250)
+
+                camera.on('camerazoomcomplete', function () {
+                
+                    showHUD()
+ 
+                }, this);
+
+                
             }, this);
 
+
+            
+            
             
             if (enemy1.flipX){
                 enemy1.setVelocityX(-100)
@@ -1783,7 +1799,7 @@
                 enemy1Life = e1MaxLife
                 enemy1Vitals.p = 38 / e1MaxLife
                 enemy1Alive = true
-                modeSwitch()
+                //modeSwitch()
 
             }
 
