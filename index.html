@@ -737,7 +737,7 @@
     {
         
 
-        if (playerAttacking == false || playerDefending == false || playerDodging == false || playerCharging == false ){
+        if (playerAttacking == false && playerDefending == false && playerDodging == false && playerCharging == false ){
 
             
         playerVitals.decreaseLife(-lifeRegen / 5) 
@@ -1486,10 +1486,11 @@
         // console.log('Player is Hit: ' + playerIsHit)
          console.log('Enemy Max HP: ' + e1MaxLife)
        
-        // console.log('Player Defending: ' + playerDefending)
-        // console.log('Player Parrying: ' + playerParrying)
+         console.log('Player Attacking: ' + playerAttacking)
+        console.log('Player Defending: ' + playerDefending)
+        console.log('Player Parrying: ' + playerParrying)
 
-        // console.log('Player Charging: ' + playerCharging)
+        console.log('Player Charging: ' + playerCharging)
 
         // console.log('Player Charge Power: ' + chargePower)
 
