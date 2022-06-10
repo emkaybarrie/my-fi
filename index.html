@@ -83,8 +83,8 @@
     var playerPosition 
     
     var playerSpeed 
-    var expToLevelUp = 100
-    var exp = 90
+    var expToLevelUp = 50
+    var exp = 40
     
      
     var inBattle = 0
@@ -422,10 +422,12 @@
         playerVitals.show()
         storingBuffIcon.setVisible(1)
         storingBuffTierIcon.setVisible(1)
-        spendingBuffIcon.setVisible(1)
-        spendingBuffTierIcon.setVisible(1)
+        
         growingBuffIcon.setVisible(1)
         growingBuffTierIcon.setVisible(1) 
+
+        spendingBuffIcon.setVisible(1)
+        spendingBuffTierIcon.setVisible(1)
 
         kianovaBuffIcon.setVisible(1)
     }
@@ -435,10 +437,12 @@
         playerVitals.hide()
         storingBuffIcon.setVisible(0)
         storingBuffTierIcon.setVisible(0)
-        spendingBuffIcon.setVisible(0)
-        spendingBuffTierIcon.setVisible(0)
+        
         growingBuffIcon.setVisible(0)
         growingBuffTierIcon.setVisible(0) 
+
+        spendingBuffIcon.setVisible(0)
+        spendingBuffTierIcon.setVisible(0)
 
         kianovaBuffIcon.setVisible(0)
     }
@@ -828,8 +832,8 @@
         this.load.image('playerIcon', 'assets/playerIcon.png');
 
         this.load.image('storingBuffIcon', 'assets/ach_00059.png');
-        this.load.image('spendingBuffIcon', 'assets/ach_00057.png');
-        this.load.image('growingBuffIcon', 'assets/ach_00046.png');
+        this.load.image('spendingBuffIcon', 'assets/ach_00046.png');
+        this.load.image('growingBuffIcon', 'assets/ach_00057.png');
 
         this.load.image('t1BuffIcon', 'assets/ach_00117.png');
         this.load.image('t2BuffIcon', 'assets/ach_00118.png');
@@ -991,8 +995,8 @@
         playerVitals = new HealthBar(this,startLife, playerIcon.x + 30, playerIcon.x + 20);
 
         storingBuffIcon = this.add.image(playerVitals.x + 120,camera.scrollY + 25,'storingBuffIcon').setDepth(4).setScale(0.5)
-        spendingBuffIcon = this.add.image(storingBuffIcon.x + 100,camera.scrollY + 25,'spendingBuffIcon').setDepth(4).setScale(0.5)
-        growingBuffIcon = this.add.image(spendingBuffIcon.x + 95,camera.scrollY + 25,'growingBuffIcon').setDepth(4).setScale(0.5)
+        growingBuffIcon = this.add.image(storingBuffIcon.x + 100,camera.scrollY + 25,'growingBuffIcon').setDepth(4).setScale(0.5)
+        spendingBuffIcon = this.add.image(growingBuffIcon.x + 95,camera.scrollY + 25,'spendingBuffIcon').setDepth(4).setScale(0.5)
 
         
 
@@ -1003,16 +1007,16 @@
             storingBuffTierIcon = this.add.image(camera.scrollX + 275,camera.scrollY + 25,'t'+storingBuffTier+'BuffIcon').setDepth(4).setScale(0.5)
         }
 
-        if (spendingBuffTier == 0){
-            spendingBuffTierIcon = this.add.image(camera.scrollX + 400,camera.scrollY + 25,'t1BuffIcon').setDepth(4).setScale(0.5).setAlpha(0.25)
+        if (growingBuffTier == 0){
+            growingBuffTierIcon = this.add.image(camera.scrollX + 400,camera.scrollY + 25,'t1BuffIcon').setDepth(4).setScale(0.5).setAlpha(0.25)
         } else {
-            spendingBuffTierIcon = this.add.image(camera.scrollX + 400,camera.scrollY + 25,'t'+spendingBuffTier+'BuffIcon').setDepth(4).setScale(0.5)
+            growingBuffTierIcon = this.add.image(camera.scrollX + 400,camera.scrollY + 25,'t'+spendingBuffTier+'BuffIcon').setDepth(4).setScale(0.5)
         }
 
-        if (growingBuffTier == 0){
-            growingBuffTierIcon = this.add.image(camera.scrollX + 525,camera.scrollY + 25,'t1BuffIcon').setDepth(4).setScale(0.5).setAlpha(0.25)
+        if (spendingBuffTier == 0){
+            spendingBuffTierIcon = this.add.image(camera.scrollX + 525,camera.scrollY + 25,'t1BuffIcon').setDepth(4).setScale(0.5).setAlpha(0.25)
         } else {
-            growingBuffTierIcon = this.add.image(camera.scrollX + 525,camera.scrollY + 25,'t'+growingBuffTier+'BuffIcon').setDepth(4).setScale(0.5)
+            spendingBuffTierIcon = this.add.image(camera.scrollX + 525,camera.scrollY + 25,'t'+growingBuffTier+'BuffIcon').setDepth(4).setScale(0.5)
         }
 
         if (kianovaBuffTier == 0){
@@ -1031,8 +1035,8 @@
         highScoreText = this.add.text(camera.scrollX + (width - 340), camera.scrollY + (height - 57), 'High Score: ' + Math.floor(highScore)).setFontFamily('Arial').setFontSize(12).setColor('#674EA7').setDepth(4);
         
         skillTreeLifeIcon = this.add.image(width * 0.25, height / 2,'storingBuffIcon').setDepth(4).setScale(1).setVisible(0).setAlpha(0.75)
-        skillTreeFocusIcon = this.add.image(width * 0.5 , height / 2,'spendingBuffIcon').setDepth(4).setScale(1).setVisible(0).setAlpha(0.75)
-        skillTreeEnergyIcon = this.add.image(width * 0.75, height / 2,'growingBuffIcon').setDepth(4).setScale(1).setVisible(0).setAlpha(0.75)
+        skillTreeFocusIcon = this.add.image(width * 0.5 , height / 2,'growingBuffIcon').setDepth(4).setScale(1).setVisible(0).setAlpha(0.75)
+        skillTreeEnergyIcon = this.add.image(width * 0.75, height / 2,'spendingBuffIcon').setDepth(4).setScale(1).setVisible(0).setAlpha(0.75)
 
         // 96 seconds = 1 year
         // 8 seconds = 1 month
@@ -1334,7 +1338,7 @@
 
                 focusRegenAllocation *= 1.15
 
-                var tier = storingBuffTier += 1
+                var tier = growingBuffTier += 1
 
                 if (tier >= 5){
                     tier = 5
@@ -1357,7 +1361,7 @@
 
                 energyRegenAllocation *= 1.15
 
-                var tier = storingBuffTier += 1
+                var tier = spendingBuffTier += 1
 
                 if (tier >= 5){
                     tier = 5
@@ -1369,7 +1373,7 @@
                     var alpha = 1
                 }
 
-                spendiongBuffTierIcon.setTexture('t'+ tier +'BuffIcon').setAlpha(alpha)
+                spendingBuffTierIcon.setTexture('t'+ tier +'BuffIcon').setAlpha(alpha)
 
                 toggleSkillTree()
                 IS_TOUCH = false
@@ -1706,19 +1710,19 @@
             
 
             storingBuffIcon.y = playerIcon.y
-            spendingBuffIcon.x = storingBuffIcon.x + 100
-            spendingBuffIcon.y =  playerIcon.y
-            growingBuffIcon.x = spendingBuffIcon.x + 95
+            growingBuffIcon.x = storingBuffIcon.x + 100
             growingBuffIcon.y =  playerIcon.y
+            spendingBuffIcon.x = growingBuffIcon.x + 95
+            spendingBuffIcon.y =  playerIcon.y
 
             storingBuffTierIcon.x = storingBuffIcon.x + 50
             storingBuffTierIcon.y = playerIcon.y
-            spendingBuffTierIcon.x = spendingBuffIcon.x + 50
-            spendingBuffTierIcon.y = playerIcon.y
-            growingBuffTierIcon.x = growingBuffIcon.x + 45
+            growingBuffTierIcon.x = growingBuffIcon.x + 50
             growingBuffTierIcon.y = playerIcon.y
+            spendingBuffTierIcon.x = spendingBuffIcon.x + 45
+            spendingBuffTierIcon.y = playerIcon.y
 
-            kianovaBuffIcon.x = growingBuffIcon.x + 102
+            kianovaBuffIcon.x = spendingBuffIcon.x + 102
             kianovaBuffIcon.y = playerIcon.y + 2
 
             player.setTint()
