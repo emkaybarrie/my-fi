@@ -81,6 +81,9 @@
     
      
     var inBattle = false
+
+    var level = 0
+
     var playerAttacking = false   
     var playerDefending = false
     var playerParrying = false
@@ -1359,6 +1362,11 @@
         
     }
 
+    function levelUp(){
+        distanceTravelled = 0
+        level += 1
+    }
+
     function update ()
     {
 
@@ -1442,7 +1450,7 @@
  
         if (distanceTravelled >= distanceToTravel){
             score += (100 / 60) * 10
-            finish()  
+            levelUp()  
         }
 
         
