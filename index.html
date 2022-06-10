@@ -361,7 +361,7 @@
         this.x = x;
         this.y = y;
         
-        this.p =  (width/3-2) / expToLevelUp
+        this.p =  233 / expToLevelUp
 
         this.draw();
 
@@ -396,12 +396,12 @@
 
             //  BG
             this.bg.fillStyle(0x000000);
-            this.bg.fillRect(this.x, this.y, width/3, 20);
+            this.bg.fillRect(this.x, this.y, 235, 20);
 
             //  Exp
 
             this.experienceBar.fillStyle(0xffffff);
-            this.experienceBar.fillRect(this.x + 1, this.y + 1, width/3-2, 18);
+            this.experienceBar.fillRect(this.x + 1, this.y + 1, 233, 18);
             this.experienceBar.fillStyle(0x674EA7);
 
 
@@ -995,8 +995,10 @@
  
         playerExperience = new ExperienceBar(this,exp, camera.scrollX + width * 0.33, camera.scrollY + (height - 85));
 
-        highScoreText = this.add.text(camera.scrollX + (width - 340), camera.scrollY + (height - 57), 'High Score: ' + Math.floor(highScore)).setFontFamily('Arial').setFontSize(12).setColor('#674EA7').setDepth(4);
+        levelText = this.add.text(camera.scrollX + (width - 140), camera.scrollY + (height - 57), 'Level: ' + Math.floor(level)).setFontFamily('Arial').setFontSize(12).setColor('#674EA7').setDepth(4);
         scoreText = this.add.text(camera.scrollX + (width - 140), camera.scrollY + (height - 57), 'Score: ' + Math.floor(score)).setFontFamily('Arial').setFontSize(12).setColor('#674EA7').setDepth(4);
+        highScoreText = this.add.text(camera.scrollX + (width - 340), camera.scrollY + (height - 57), 'High Score: ' + Math.floor(highScore)).setFontFamily('Arial').setFontSize(12).setColor('#674EA7').setDepth(4);
+        
 
         // 96 seconds = 1 year
         // 8 seconds = 1 month
@@ -1417,15 +1419,19 @@
         
         updateHighScore()
 
-        playerExperience.x = camera.scrollX + width * 0.33
+        playerExperience.x = camera.scrollX + width * 0.3
         playerExperience.y = camera.scrollY + (height * 0.85)
         playerExperience.draw()
 
-        scoreText.x = camera.scrollX + (width - 367.5)
+        levelText.x = camera.scrollX + width * 0.3
+        levelText.y = camera.scrollY + (height - 57)
+        levelText.setText('Level: ' + Math.floor(level))
+
+        scoreText.x = levelText.x + 75
         scoreText.y = camera.scrollY + (height - 57)
         scoreText.setText('Score: ' + Math.floor(score))
 
-        highScoreText.x = scoreText.x + 100
+        highScoreText.x = scoreText.x + 75
         highScoreText.y = camera.scrollY + (height - 57)
         highScoreText.setText('High Score: ' + Math.floor(highScore))
 
