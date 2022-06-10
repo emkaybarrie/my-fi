@@ -1208,32 +1208,36 @@
         
         if (gameObject == up){
             cursors.up.isDown = true
+            cursors.up.isUp = false
         }
 
         if (gameObject == down){
             cursors.down.isDown = true
+            cursors.down.isUp = false
             
             
         }
 
         if (gameObject == left){
             cursors.left.isDown = true
+            cursors.left.isUp = false
         } 
 
         if (gameObject == right){
             cursors.right.isDown = true
+            cursors.right.isUp = false
         }
 
         if (gameObject == energy){
             keyA.isDown = true
-            player.anims.play({key:'pChargeAttack',frameRate: 16},true);
+            //player.anims.play({key:'pChargeAttack',frameRate: 16},true);
             keyA.isUp = false
         }
 
         if (gameObject == focusB){
             cursors.space.isDown = true
             // player.anims.play({key:'pChargeAttack',frameRate: 16},true);
-            // keyA.isUp = false
+            cursors.space.isUp = false
         }
 
         });
@@ -1244,19 +1248,21 @@
 
         if (gameObject == up){
             cursors.up.isDown = false
+            cursors.up.isUp = true
         }
 
         if (gameObject == down){
             cursors.down.isDown = false
-            
+            cursors.down.isUp = true
         }
 
         if (gameObject == left){
             cursors.left.isDown = false
-        }
+            cursors.left.isUp = true
 
         if (gameObject == right){
             cursors.right.isDown = false
+            cursors.right.isUp = true
         }
 
         if (gameObject == energy){
@@ -1266,6 +1272,7 @@
 
         if (gameObject == focusB){
             cursors.space.isDown = false
+            cursors.space.isUp = true
             // keyA.isUp = true
         }
 
