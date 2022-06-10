@@ -1459,7 +1459,7 @@
         
 
         // console.log('Player is Hit: ' + playerIsHit)
-        // console.log('Enemy is Hit: ' + enemy1IsHit)
+         console.log('Enemy Max HP: ' + e1MaxLife)
        
         // console.log('Player Defending: ' + playerDefending)
         // console.log('Player Parrying: ' + playerParrying)
@@ -1619,7 +1619,7 @@
                     playerRecover();
                 }, this);
 
-            } else if (cursors.up.isDown && currentEnergy > 0 && playerIsHit == false && player.body.onFloor()){ 
+            } else if (cursors.up.isDown && currentEnergy > (income * 0.3) && playerIsHit == false && player.body.onFloor()){ 
 
                 playerVitals.decreaseEnergy(income * 0.3)
 
@@ -1633,7 +1633,7 @@
   
 
                 
-            } else if (cursors.space.isDown && currentFocus > 0 && playerIsHit == false){
+            } else if (cursors.space.isDown && currentFocus > ((income) / 50) && playerIsHit == false){
                 this.vines.body.checkCollision.none = true
 
                 treeTrunk.body.checkCollision.none = true
@@ -1659,7 +1659,7 @@
                 
                 
                 
-            } else if (cursors.down.isDown && currentEnergy > 0 && player.body.onFloor()){
+            } else if (cursors.down.isDown && currentEnergy > ((income * 0.25) / 25) && player.body.onFloor()){
 
                 this.vines.body.checkCollision.none = true
  
@@ -1671,7 +1671,7 @@
 
                 this.physics.moveTo(player,width * 1.45,height - 90,30)
             
-            } else if (cursors.left.isDown && currentEnergy > 0 && playerIsHit == false && player.body.onFloor()){
+            } else if (cursors.left.isDown && currentEnergy > ((income * 0.25) / 50 ) && playerIsHit == false && player.body.onFloor()){
 
                 
                 
@@ -1698,7 +1698,7 @@
                 this.physics.moveTo(player,width * 1.3,height - 90,90)
                 player.anims.play({key:'pRun',frameRate: 8},true);
                 
-            } else if (cursors.right.isDown && currentEnergy > 0 && playerIsHit == false && player.body.onFloor()){
+            } else if (cursors.right.isDown && currentEnergy > ((income * 0.25) / 50 ) && playerIsHit == false && player.body.onFloor()){
 
                 
                 playerVitals.decreaseEnergy((income * 0.25) / 50)
