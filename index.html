@@ -570,6 +570,7 @@
             playerIsHit = true
             playerVitals.decreaseLife(e1MaxLife / 50)
             maxEnergy *= 1 - (0.04 / 12 / 50)
+            income *= 1 - (0.02 / 12 / 50)
         }
             
             
@@ -1795,7 +1796,7 @@
                         eSword.body.checkCollision.none = false
                     }
                 } else {
-                    if(Math.abs(player.x - enemy1.x) > 75 && Math.abs(player.x - enemy1.x) <= 85){    
+                    if(Math.abs(player.x - enemy1.x) > 75 && Math.abs(player.x - enemy1.x) <= 80){    
                     enemy1.anims.play({key:'eIdle',frameRate: 10},true);
                     } else if (gameOver == false){
                         this.physics.moveToObject(enemy1,player,200)
