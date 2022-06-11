@@ -871,6 +871,7 @@
         //lifeRegen = lifeRegenAllocation * income
         energyRegen = energyRegenAllocation * income
         focusRegen = focusRegenAllocation * income
+        
     }
 
     function updateHighScore(){
@@ -1382,7 +1383,7 @@
 
             if (gameObject == skillTreeLifeIcon){
 
-                lifeRegenAllocation *= 1.15
+                maxLife *= 1.10
                 
                 var tier = storingBuffTier += 1
 
@@ -1397,6 +1398,7 @@
                 }
 
                 storingBuffTierIcon.setTexture('t'+ tier +'BuffIcon').setAlpha(alpha)
+                playerVitals.pL = 38 / maxLife
 
                 toggleSkillTree()
                 IS_TOUCH = false
@@ -1615,6 +1617,7 @@
         chaosMultiplierMin *= 1.1
         expToLevelUp *= 1.04
         playerExperience.p = 233 / expToLevelUp
+        
         
     }
 
