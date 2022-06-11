@@ -1904,12 +1904,12 @@
 
                 playerVitals.decreaseEnergy(income * 0.3)
 
-                if(Phaser.Input.Keyboard.JustDown(cursors.up)){
+                //if(Phaser.Input.Keyboard.JustDown(cursors.up)){
                     player.chain([{key:'pJump',frameRate: 12},true,{key:'pUptoFall',frameRate: 12}],true); 
                     this.physics.moveTo(player,width * 1.45,75)
                     player.setVelocityY(player.body.velocity.y - (175 * devicePixelRatio))
                     //enemy1.setVelocity(-15 * devicePixelRatio)
-                }
+                //}
 
   
 
