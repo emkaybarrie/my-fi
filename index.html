@@ -2446,7 +2446,7 @@
                             player.setVelocityX(player.body.velocity.x + (20 * devicePixelRatio))
                             }
                         }
-                    } else if (Phaser.Input.Keyboard.JustDown(cursors.up) && player.body.onFloor() && currentEnergy > (income * 0.3)){
+                    } else if (cursors.up.isDown && player.body.onFloor() && currentEnergy > (income * 0.3)){
 
                         player.play('pJump',true)
 
