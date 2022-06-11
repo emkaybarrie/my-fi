@@ -104,20 +104,19 @@
     var playerFreeFall = false
 
     var income = 100
-    var lifeRegenAllocation = 0.3 // Equates to budget % allocated to needs
-    var energyRegenAllocation = 0.5
-    var focusRegenAllocation = 0.2
-    
-    var lifeRegen = lifeRegenAllocation * income
-    var energyRegen = energyRegenAllocation * income
+    var lifeRegenAllocation = 0.0 
+    var focusRegenAllocation = 0.3 // a) self -report budget driven (i.e. how much do you save/invest a month) b) queried - eventually determined by funds in specific location (myFi designated/directed savings/funds)
+    var energyRegenAllocation = 0.7  // a) self-report buidget driven b) delta of non-saved/invested income
+   
+    var lifeRegen  // Calc TBD - Buy-in to myFi stable/pension/emergency fund provides buff to regen - lock tokens/stables and earn 1 - x% 'regen' i.e return
     var focusRegen = focusRegenAllocation * income
-
+    var energyRegen = energyRegenAllocation * income
+ 
     var chargePower = 0
  
-   
     var damage = 0
-
-    var maxLife = income * 3
+    var lifeMultiplier = 3
+    var maxLife = income * lifeMultiplier
     var startLife = maxLife
     var currentLife = maxLife
 
@@ -159,13 +158,14 @@
         level = 0
 
         income = 100
-        lifeRegenAllocation = 0.3 // Equates to budget % allocated to needs
-        energyRegenAllocation = 0.5
-        focusRegenAllocation = 0.2
+        //lifeRegenAllocation = 0.3 // Equates to budget % allocated to needs
         
-        lifeRegen = lifeRegenAllocation * income
-        energyRegen = energyRegenAllocation * income
+        focusRegenAllocation = 0.3
+        energyRegenAllocation = 0.7
+        
+        //lifeRegen = lifeRegenAllocation * income
         focusRegen = focusRegenAllocation * income
+        energyRegen = energyRegenAllocation * income
 
         playerAttacking = false   
         playerDefending = false
@@ -843,7 +843,7 @@
         if (playerAttacking == false && playerDefending == false && playerDodging == false && playerCharging == false && skillTreeOpen == false || gameOver == false){
 
             
-        playerVitals.decreaseLife(-lifeRegen / 5) 
+        //playerVitals.decreaseLife(-lifeRegen / 5) 
         playerVitals.decreaseEnergy(-energyRegen / 5)
         playerVitals.decreaseFocus(-focusRegen / 5)
 
@@ -868,7 +868,7 @@
     }
 
     function refreshStats(){
-        lifeRegen = lifeRegenAllocation * income
+        //lifeRegen = lifeRegenAllocation * income
         energyRegen = energyRegenAllocation * income
         focusRegen = focusRegenAllocation * income
     }
