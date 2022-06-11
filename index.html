@@ -1485,6 +1485,7 @@
         if (gameObject == focusB){
             cursors.space.isDown = false
             cursors.space.isUp = true
+            playerCharging = false
             // keyA.isUp = true
         }
 
@@ -2435,6 +2436,8 @@
                     
                     }
 
+                    
+
 
                     // Movement & Defense
 
@@ -2494,6 +2497,8 @@
 
                     
                         player.play({key:'pUptoFall', repeatDelay: 3000, repeat: 1},true)
+
+                        
                         
 
                     }
