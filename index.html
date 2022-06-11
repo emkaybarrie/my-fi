@@ -1987,7 +1987,12 @@
 
 
                 if (player.body.onFloor()){
-                    this.physics.moveTo(player,width * 1.3,height - 90,150)
+                    if(skillTreeOpen){
+                        this.physics.moveTo(player,width * 1.5,height - 90,150)
+                    } else {
+                        this.physics.moveTo(player,width * 1.3,height - 90,150)
+                    }
+                    
                     player.anims.play({key:'pRun',frameRate: 12},true);
                 }
                 
