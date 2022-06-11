@@ -2391,8 +2391,14 @@
                             spotlight.intensity += 0.02
                         }
 
-                        damage = (income * 0.005) + (income * 0.01 * chargePower)
+                        damage = (income * 0.005) + (income * 0.005 * chargePower)
                         sword.body.checkCollision.none = false
+                        pSFX.y = player.y - 25
+                        pSFX.setVisible(true)
+                        pSFX.setTint()
+                        pSFX.setAlpha(0.85)
+                        pSFX.setDepth(0)
+                        pSFX.play('chargeDash',true)
 
                         
                                  
