@@ -2391,6 +2391,9 @@
                             spotlight.intensity += 0.02
                         }
 
+                        damage = (income * 0.005) + (income * 0.01 * chargePower)
+                        sword.body.checkCollision.none = false
+
                         
                                  
                     } else if (Phaser.Input.Keyboard.JustUp(cursors.space)  && playerCharging) {
