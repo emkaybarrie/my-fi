@@ -597,9 +597,7 @@
 
     function playerStandardCombo(){
 
-        
 
-   
             player.play({key:'pHeavyAttack',frameRate: 16},true);
 
                 if(player.anims.getName() == 'pHeavyAttack'){
@@ -614,8 +612,7 @@
 
                 comboNo += 1
 
-                
-                
+                if (currentEnergy > 0){
                 player.play({key:'pDoubleAttack',frameRate: 16},true);
 
                 if (player.flipX){
@@ -630,19 +627,21 @@
 
                     comboNo += 1
 
+                    if (currentEnergy > 0){
+
                     player.play({key:'pAttack1'},true)
 
                         
                             if (player.flipX){
-                                            player.setVelocityX(-50 * devicePixelRatio)
+                                player.setVelocityX(-50 * devicePixelRatio)
                             } else {
-                                            player.setVelocityX(50 * devicePixelRatio)
+                                player.setVelocityX(50 * devicePixelRatio)
                             }
 
                             player.once('animationcomplete', function () {
 
                                 comboNo += 1
-
+                                if (currentEnergy > 0){
                                 player.play({key:'pAttack2'},true)
 
                                     
@@ -656,13 +655,13 @@
                                 player.once('animationcomplete', function () {
                                     comboNo += 1
 
-                                
+                                    if (currentEnergy > 0){
                                     player.play('pCrouch',true)  
                                     
 
                                     player.once('animationcomplete', function () {
 
-                                
+                                        if (currentEnergy > 0){
                                         player.play('Jump',true)
 
                                     
@@ -682,7 +681,7 @@
                                         player.once('animationcomplete', function () {
 
                                         
-                                       
+                                            if (currentEnergy > 0){
                                             player.play('pHeavyAttack',true)
 
                                             
@@ -710,26 +709,38 @@
 
                                                 }, this)
                                                 
-                                           
+                                            } else {
+                                                player.play('pIdle',true)
+            }
 
                                         }, this)
 
                                 
-                                        
+                                    }   else {
+                                        player.play('pIdle',true)
+            }
                                     
                                 }, this)
-
+                            }else {
+                                player.play('pIdle',true)
+            }
                             }, this)
-                                        
+                        }   else {
+                            player.play('pIdle',true)
+            }     
                                     
                             }, this)
                             
-                        
+                        } else {
+                            player.play('pIdle',true)
+            }   
                 }, this)
 
                     
             
-    
+            } else {
+                player.play('pIdle',true)
+            }
             },this)
 
             
@@ -2374,7 +2385,7 @@
                        
                         if (Phaser.Input.Keyboard.JustDown(keyA) && (currentEnergy > 0)){
                             playerStandardCombo()
-   
+
                         }
                           
         
