@@ -88,7 +88,7 @@
     var exp = 0
     
      
-    var inBattle = 0
+    var inBattle = 1
 
     var level = 0
 
@@ -1231,15 +1231,15 @@
         });
 
         this.anims.create({
-            key: 'pAttack',
+            key: 'pQuickAttack',
             frames: this.anims.generateFrameNames('heroF',{prefix: 'Warrior_Attack_', start: 1, end: 12, suffix: '.png'}),
-            frameRate: 14,
+            frameRate: 20,
             repeat: 0,
             //delay: 1
         });
 
         this.anims.create({
-            key: 'pQuickAttack',
+            key: 'pAttack1',
             frames: this.anims.generateFrameNames('heroF',{prefix: 'Warrior_Attack_', start: 1, end: 8, suffix: '.png'}),
             frameRate: 14,
             repeat: 0,
@@ -1492,37 +1492,37 @@
 
         });
 
-        // this.input.on('gameobjectout', function (pointer, gameObject) {
+        this.input.on('gameobjectout', function (pointer, gameObject) {
 
-        //     // gameObject.setAlpha(0.5);
+            gameObject.setAlpha(0.5);
 
-        //     // if (gameObject == up){
-        //     //     cursors.up.isDown = false
-        //     // }
+            if (gameObject == up){
+                cursors.up.isDown = false
+            }
 
-        //     // if (gameObject == down){
-        //     //     cursors.down.isDown = false
-        //     // }
+            if (gameObject == down){
+                cursors.down.isDown = false
+            }
 
-        //     // if (gameObject == left){
-        //     //     cursors.left.isDown = false
-        //     // }
+            if (gameObject == left){
+                cursors.left.isDown = false
+            }
 
-        //     // if (gameObject == right){
-        //     //     cursors.right.isDown = false
-        //     // }
+            if (gameObject == right){
+                cursors.right.isDown = false
+            }
 
-        //     // if (gameObject == energy){
-        //     //     keyA.isDown = false
-        //     //     keyA.isUp = true
-        //     // }
+            if (gameObject == energy){
+                keyA.isDown = false
+                keyA.isUp = true
+            }
 
-        //     // if (gameObject == focusB){
-        //     //     cursors.space.isDown = false
-        //     //     // keyA.isUp = true
-        //     // }
+            if (gameObject == focusB){
+                cursors.space.isDown = false
+                // keyA.isUp = true
+            }
 
-        //     // });
+            });
             
     
 
@@ -1740,7 +1740,7 @@
         skillTreeEnergyIcon.x = camera.scrollX + (width * 0.75)
 
         
-        //console.log('Chaos Factor: ' + chaosFactor)
+        console.log('Chaos Factor: ' + chargePower)
         console.log('Chaos Factor Min: ' + chaosMultiplierMin)
         console.log('Chaos Factor Max: ' + chaosMultiplierMax)
 
@@ -2159,44 +2159,52 @@
                         }
                         
 
-                        if (cursors.left.isDown || cursors.right.isDown){
+                        // if (cursors.left.isDown || cursors.right.isDown){
 
-                            player.setDragX(200) 
+                        //     player.setDragX(200) 
                             
-                            if(chargePower < 100){
-                                chargePower += 2
-                            }
+                        //     if(chargePower < 100){
+                        //         chargePower += 2
+                        //     }
                             
                                     
-                            if (Phaser.Input.Keyboard.JustDown(keyA) && (Phaser.Input.Keyboard.JustDown(cursors.left) ||Phaser.Input.Keyboard.JustDown(cursors.right))){
+                        //     if (Phaser.Input.Keyboard.JustDown(keyA) && (Phaser.Input.Keyboard.JustDown(cursors.left) ||Phaser.Input.Keyboard.JustDown(cursors.right))){
+                        //     player.play('pChargeAttack',true)
+                            
+                        //     }
+
+                        // } else if ((cursors.left.isUp || cursors.right.isUp) && keyA.isDown){
+
+                        //         player.play({key:'pAttack'},true)
+                        //         if (player.body.onFloor()){
+                        //             if (player.flipX){
+                        //                 player.setVelocityX(-15 *devicePixelRatio)
+                        //             } else {
+                        //                 player.setVelocityX(15 *devicePixelRatio) 
+                        //             }
+                        //         }
+         
+
+                        // }
+
+                        player.setDragX(200) 
+                            
+                        if(chargePower < 100){
+                                chargePower += 2
+                        }
+
+                        if (Phaser.Input.Keyboard.JustDown(keyA)){
                             player.play('pChargeAttack',true)
                             
-                            }
-
-                        } else if ((cursors.left.isUp || cursors.right.isUp) && keyA.isDown){
-
-                                player.play({key:'pAttack'},true)
-                                if (player.body.onFloor()){
-                                    if (player.flipX){
-                                        player.setVelocityX(-15 *devicePixelRatio)
-                                    } else {
-                                        player.setVelocityX(15 *devicePixelRatio) 
-                                    }
-                                }
-                                
-                                
-
-      
-
                         }
                             
         
                     } else if (Phaser.Input.Keyboard.JustUp(keyA)  && playerAttacking) {
                         
 
-                        if (chargePower >= 65){
+                        if (chargePower >= 75){
 
-                            
+                            chargePower = 0
                             player.play({key:'pHeavyAttack',frameRate: 16, repeat: 1},true);
                             if (player.flipX){
                                 player.setVelocityX(-500)
@@ -2223,9 +2231,9 @@
                             
 
 
-                        } else if (chargePower >= 25){
+                        } else if (chargePower >= 50){
 
-                            
+                            chargePower = 0
                             player.play({key:'pHeavyAttack',frameRate: 18},true);
                             if (player.flipX){
                                 
@@ -2248,14 +2256,34 @@
 
                             }, this);
 
-                        } else if (chargePower > 0) {
-
+                        } else if (chargePower > 25) {
+                            chargePower = 0
                             player.play({key:'pHeavyAttack',frameRate: 20})
                             if (player.flipX){
                                 player.setVelocityX(-75)
                             } else {
                                 player.setVelocityX(75)
                             }
+                        } else if (chargePower > 10){
+                            chargePower = 0
+                            player.play({key:'pAttack1'},true)
+                                if (player.body.onFloor()){
+                                    if (player.flipX){
+                                        player.setVelocityX(-15 *devicePixelRatio)
+                                    } else {
+                                        player.setVelocityX(15 *devicePixelRatio) 
+                                    }
+                                }
+                        } else {
+                            chargePower = 0
+                            player.play({key:'pQuickAttack'},true)
+                                if (player.body.onFloor()){
+                                    if (player.flipX){
+                                        player.setVelocityX(-15 *devicePixelRatio)
+                                    } else {
+                                        player.setVelocityX(15 *devicePixelRatio) 
+                                    }
+                                }
                         }
                         
         
