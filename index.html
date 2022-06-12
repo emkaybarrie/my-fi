@@ -2030,7 +2030,7 @@
 
             
             if(Math.abs(player.x - enemy1.x) <= 75){
-                enemy1Aggro = false
+                enemy1Aggro = true
             } else {
                 enemy1Aggro = false
             }
@@ -2113,7 +2113,7 @@
 
                 
 
-                if (player.anims.getName() == 'pAttack'){
+                if (player.anims.getName() == 'pQuickAttack' || player.anims.getName() == 'pAttack1'){
                     playerSwordSwing.play()
 
                     if (player.anims.currentFrame.index >= 6 && player.anims.currentFrame.index < 12){
