@@ -88,7 +88,7 @@
     var exp = 0
     
      
-    var inBattle = false
+    var inBattle = 1
 
     var level = 0
 
@@ -588,6 +588,17 @@
 
     }
 
+    function playerStandardCombo(){
+        player.play({key:'pHeavyAttack',frameRate: 16},true);
+                            player.on('animationcomplete', function () {
+                                player.play({key:'pQuickAttack',frameRate: 16},true);
+                                    player.on('animationcomplete', function () {
+                                    player.play({key:'pAttack1',frameRate: 16},true);
+                                    },this)
+        },this)
+        
+    }
+
    
 
     function playerHit(){
@@ -894,6 +905,9 @@
         this.load.audio("bgMusic4", ["assets/music/The_Apartment.mp3"]);
         this.load.audio("bgMusic5", ["assets/music/Katana.mp3"]);
         this.load.audio("bgMusic6", ["assets/music/Ludum_Dare_38_Track_2.wav"]);
+        this.load.audio("bgMusic7", ["assets/music/Night_(Instrumental).mp3"]);
+
+        
         
         this.load.audio("playerSwordSwing", ["assets/soundFX/SFX_Whoosh_Sword_02.mp3"]);
         this.load.audio("playerHeavySwordSwing", ["assets/soundFX/SFX_Whoosh_Sword_03.mp3"]);        
@@ -958,7 +972,7 @@
     function create ()
     {
 
-        songChoice = Math.floor(Phaser.Math.Between(1,6))
+        songChoice = 7//Math.floor(Phaser.Math.Between(1,7))
         bgMusic = this.sound.add("bgMusic"+songChoice, { loop: true, volume: 0.75});
 
 
@@ -1601,6 +1615,7 @@
             gameOver = true
             camera.fadeOut(6000)
             camera.on('camerafadeoutcomplete', function () {
+            bgMusic.stop()
             gameRestart = true
             
 
@@ -2030,7 +2045,7 @@
 
             
             if(Math.abs(player.x - enemy1.x) <= 75){
-                enemy1Aggro = true
+                enemy1Aggro = 0
             } else {
                 enemy1Aggro = false
             }
@@ -2193,18 +2208,29 @@
 
                         player.setDragX(200) 
                             
-                        if(chargePower < 100){
-                                chargePower += 2
-                        }
+                        // if(chargePower < 100){
+                        //         chargePower += 2
+                        // }
 
+                        // if (Phaser.Input.Keyboard.JustDown(keyA)){
+                        //     player.play('pChargeAttack',true)
+                            
+                        // }
                         if (Phaser.Input.Keyboard.JustDown(keyA)){
-                            player.play('pChargeAttack',true)
-                            
-                        }
-                            
+                            player.play({key:'pHeavyAttack',frameRate: 16},true);
+                            player.on('animationcomplete', function () {
+                                player.play({key:'pQuickAttack',frameRate: 16},true);
+                                    player.on('animationcomplete', function () {
+                                    player.play({key:'pAttack1',frameRate: 16},true);
+                                    },this)
+                            },this)
+                            playerStandardCombo()
+                       }
+                          
         
                     } else if (Phaser.Input.Keyboard.JustUp(keyA) && playerAttacking) {
                         
+                        playerAttacking = false
 
                         if (chargePower >= 80){
 
@@ -2280,14 +2306,14 @@
                                 }
                         } else {
                             
-                            player.play({key:'pQuickAttack'},true)
-                                if (player.body.onFloor()){
-                                    if (player.flipX){
-                                        player.setVelocityX(-15 *devicePixelRatio)
-                                    } else {
-                                        player.setVelocityX(15 *devicePixelRatio) 
-                                    }
-                                }
+                            // player.play({key:'pQuickAttack'},true)
+                            //     if (player.body.onFloor()){
+                            //         if (player.flipX){
+                            //             player.setVelocityX(-15 *devicePixelRatio)
+                            //         } else {
+                            //             player.setVelocityX(15 *devicePixelRatio) 
+                            //         }
+                            //     }
                         }
 
                         chargePower = 0
@@ -2304,7 +2330,14 @@
                     }
 
                     energy.on('pointerdown', function(pointer){
-                        player.play('pChargeAttack',true)
+                        
+                        player.play({key:'pHeavyAttack',frameRate: 16},true);
+                            player.on('animationcomplete', function () {
+                                player.play({key:'pQuickAttack',frameRate: 16},true);
+                                    player.on('animationcomplete', function () {
+                                    player.play({key:'pAttack1',frameRate: 16},true);
+                                    },this)
+                            },this)
                     },this)
 
                     energy.on('pointerup', function(pointer){
