@@ -670,7 +670,7 @@
     // Attack 5a
         player.once('animationcomplete_pAttack2', function (anim,frame) {
         
-        //if (currentEnergy > 0){
+        if (currentEnergy > 0){
             player.play({key:'pJump',frameRate: 16},true);
 
             if (player.flipX){
@@ -681,53 +681,52 @@
 
             if (player.body.onFloor()){
                 if(player.anims.currentFrame.index >= 1){
-                    player.setVelocityY(-200 * devicePixelRatio)
+                    player.setVelocityY(-150 * devicePixelRatio)
                 }
             }
 
             player.once('animationcomplete', function (anim,frame) {
                 player.emit('animationcomplete_' + anim.key, frame)
             }, player)
-        //}
+        }
 
         }, player) 
 
     // Attack 5b
         player.once('animationcomplete_pJump', function (anim,frame) {
         
-        //if (currentEnergy > 0){
-            
-            player.play({key:'pHeavyAttack',frameRate: 12},500);
-            
+            //if (currentEnergy > 0){
+                
+                player.play({key:'pHeavyAttack',frameRate: 12},true);
+                
 
-            if (player.flipX){
-                player.setVelocityX(-50 * devicePixelRatio)
-            } else {
-                player.setVelocityX(50 * devicePixelRatio)
-            }
+                if (player.flipX){
+                    player.setVelocityX(-50 * devicePixelRatio)
+                } else {
+                    player.setVelocityX(50 * devicePixelRatio)
+                }
 
-            player.body.maxVelocity.y = 500
-            
+                player.body.maxVelocity.y = 500
+                
+                if(player.anims.currentFrame.index >= 4){
+                            player.setVelocityY(500 * devicePixelRatio)
+                }
 
-            player.once('animationcomplete', function (anim,frame) {
-                player.emit('animationcomplete_' + anim.key, frame)
-                player.body.maxVelocity.y = 250
-            }, player)
-        //}
+                player.once('animationcomplete', function (anim,frame) {
+                    player.emit('animationcomplete_' + anim.key, frame)
+                    player.body.maxVelocity.y = 250
+                }, player)
+            //}
+
+                
 
         }, player) 
 
-
-}
-
-        
-   
+      
 
 
-    
+    }
 
-
-   
 
     function playerHit(){
 
@@ -2304,11 +2303,7 @@
                     damage = (income * 0.01) + (income * 0.015 * chargePower) 
                     }
 
-                    //if (!player.body.onFloor){
-                        if(player.anims.currentFrame.index >= 4){
-                            player.setVelocityY(500 * devicePixelRatio)
-                        }
-                    //}
+                   
                 } else if (player.anims.getName() == 'pParry'){
                     playerHeavySwordSwing.play()
 
