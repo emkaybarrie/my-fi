@@ -598,6 +598,7 @@
 
     function playerStandardCombo(){
 
+    if (currentEnergy > 0){    
     // Attack 1
         player.play({key:'pHeavyAttack',frameRate: 16},true);
 
@@ -629,7 +630,12 @@
             player.once('animationcomplete', function (anim,frame) {
                 player.emit('animationcomplete_' + anim.key, frame)
             }, player)
-        }
+        } else {
+        
+        playerAttacking = false
+        chargePower = 0
+        
+    }
 
         }, player)  
     
@@ -637,7 +643,7 @@
         player.once('animationcomplete_pDoubleAttack', function (anim,frame) {
         
         if (currentEnergy > 0){
-            player.play({key:'pAttack1',frameRate: 16},true);
+            player.play({key:'pAttack1'},true);
 
             if(player.anims.getName() == 'pAttack1'){
                 if (player.flipX){
@@ -650,7 +656,11 @@
             player.once('animationcomplete', function (anim,frame) {
                 player.emit('animationcomplete_' + anim.key, frame)
             }, player)
-        }
+        } else {
+        
+        playerAttacking = false
+        chargePower = 0
+    }
 
         }, player) 
 
@@ -658,12 +668,16 @@
         player.once('animationcomplete_pAttack1', function (anim,frame) {
         
         if (currentEnergy > 0){
-            player.play({key:'pAttack2',frameRate: 16},true);
+            player.play({key:'pAttack2'},true);
 
             player.once('animationcomplete', function (anim,frame) {
                 player.emit('animationcomplete_' + anim.key, frame)
             }, player)
-        }
+        } else {
+        
+        playerAttacking = false
+        chargePower = 0
+    }
 
         }, player)
     
@@ -671,7 +685,7 @@
         player.once('animationcomplete_pAttack2', function (anim,frame) {
         
         if (currentEnergy > 0){
-            player.play({key:'pJump',frameRate: 16},true);
+            player.play({key:'pJump'},true);
 
             if (player.flipX){
                 player.setVelocityX(-100 * devicePixelRatio)
@@ -688,16 +702,20 @@
             player.once('animationcomplete', function (anim,frame) {
                 player.emit('animationcomplete_' + anim.key, frame)
             }, player)
-        }
+        } else {
+        
+        playerAttacking = false
+        chargePower = 0
+    }
 
         }, player) 
 
     // Attack 5b
         player.once('animationcomplete_pJump', function (anim,frame) {
         
-            //if (currentEnergy > 0){
+            if (currentEnergy > 0){
                 
-                player.play({key:'pHeavyAttack',frameRate: 12},true);
+                player.play({key:'pHeavyAttack'},true);
                 
 
                 if (player.flipX){
@@ -708,22 +726,213 @@
 
                 player.body.maxVelocity.y = 500
                 
-                if(player.anims.currentFrame.index >= 4){
-                            player.setVelocityY(500 * devicePixelRatio)
-                }
+                // if(player.anims.currentFrame.index >= 4){
+                //             player.setVelocityY(500 * devicePixelRatio)
+                // }
 
                 player.once('animationcomplete', function (anim,frame) {
                     player.emit('animationcomplete_' + anim.key, frame)
                     player.body.maxVelocity.y = 250
                 }, player)
-            //}
+            } else {
+        
+        playerAttacking = false
+        chargePower = 0
+    }
 
                 
 
         }, player) 
 
       
+    } else {
+       
+        playerAttacking = false
+        chargePower = 0
+    }
 
+    }
+
+    function playerDirectionalCombo(){
+
+    if (currentEnergy > 0){   
+    // Attack 1
+        player.play({key:'pAttack1'},true);
+
+            if(player.anims.getName() == 'pAttack1'){
+                if (player.flipX){
+                    player.setVelocityX(-150 * devicePixelRatio)
+                } else {
+                    player.setVelocityX(150 * devicePixelRatio)
+                }   
+            }
+            player.once('animationcomplete', function (anim,frame) {
+                player.emit('animationcomplete_' + anim.key, frame)
+            }, player)
+
+    // Attack 2
+        player.once('animationcomplete_pAttack1', function (anim,frame) {
+        
+        if (currentEnergy > 0){
+            player.play({key:'pChargeAttack', frameRate: 8},true);
+
+            if(player.anims.getName() == 'pChargeAttack'){
+                if (player.flipX){
+                    player.setVelocityX(-75 * devicePixelRatio)
+                } else {
+                    player.setVelocityX(75 * devicePixelRatio)
+                }   
+            }
+
+            player.once('animationcomplete', function (anim,frame) {
+                player.emit('animationcomplete_' + anim.key, frame)
+            }, player)
+        } else {
+            playerAttacking = false
+            chargePower = 0
+        }
+
+        }, player)  
+
+    // Attack 3
+        player.once('animationcomplete_pChargeAttack', function (anim,frame) {
+        
+        if (currentEnergy > 0){
+            player.play({key:'pDoubleAttack',frameRate: 12, start: 4},true);
+
+            if(player.anims.getName() == 'pDoubleAttack'){
+                if (player.flipX){
+                    player.setVelocityX(-50 * devicePixelRatio)
+                } else {
+                    player.setVelocityX(50 * devicePixelRatio)
+                }   
+            }
+
+            player.once('animationcomplete', function (anim,frame) {
+                player.emit('animationcomplete_' + anim.key, frame)
+            }, player)
+        } else {
+            playerAttacking = false
+            chargePower = 0
+        }
+
+        }, player) 
+
+    // Attack 4
+        player.once('animationcomplete_pDoubleAttack', function (anim,frame) {
+        
+        if (currentEnergy > 0){
+            player.play({key:'pHeavyAttack',frameRate: 14},true);
+
+            if(player.anims.getName() == 'pDoubleAttack'){
+                if (player.flipX){
+                    player.setVelocityX(-150 * devicePixelRatio)
+                } else {
+                    player.setVelocityX(150 * devicePixelRatio)
+                }   
+            }
+
+            player.once('animationcomplete', function (anim,frame) {
+                player.emit('animationcomplete_' + anim.key, frame)
+            }, player)
+        } else {
+            playerAttacking = false
+            chargePower = 0
+        }
+
+        }, player)
+
+    // Attack 5a
+        player.once('animationcomplete_pDoubleAttack', function (anim,frame) {
+        
+        if (currentEnergy > 0){
+            player.play({key:'pBackDash',start: 5},true);
+
+            if (player.flipX){
+                player.setVelocityX(200 * devicePixelRatio)
+            } else {
+                player.setVelocityX(-200 * devicePixelRatio)
+            }
+
+            if (player.body.onFloor()){
+                if(player.anims.currentFrame.index >= 1){
+                    player.setVelocityY(-100 * devicePixelRatio)
+                }
+            }
+
+            player.once('animationcomplete', function (anim,frame) {
+                player.emit('animationcomplete_' + anim.key, frame)
+            }, player)
+        } else {
+            playerAttacking = false
+            chargePower = 0
+        }
+
+        }, player) 
+
+    // Attack 5b
+        player.once('animationcomplete_pBackDash', function (anim,frame) {
+        
+            if (currentEnergy > 0){
+                
+                player.play({key:'pDash',frameRate: 10},true);
+                
+
+                if (player.flipX){
+                    player.setVelocityX(-200 * devicePixelRatio)
+                } else {
+                    player.setVelocityX(200 * devicePixelRatio)
+                }
+
+               
+
+                player.once('animationcomplete', function (anim,frame) {
+                    player.emit('animationcomplete_' + anim.key, frame)
+                    
+                }, player)
+            } else {
+            playerAttacking = false
+            chargePower = 0
+            }
+
+                
+
+        }, player) 
+
+    // Attack 5c
+    player.once('animationcomplete_pDash', function (anim,frame) {
+        
+        if (currentEnergy > 0){
+            
+            player.play({key:'pAttack2',frameRate: 12},true);
+            
+
+            if (player.flipX){
+                player.setVelocityX(-100 * devicePixelRatio)
+            } else {
+                player.setVelocityX(100 * devicePixelRatio)
+            }
+
+           
+
+            player.once('animationcomplete', function (anim,frame) {
+                player.emit('animationcomplete_' + anim.key, frame)
+                
+            }, player)
+        } else {
+            playerAttacking = false
+            chargePower = 0
+        }
+
+            
+
+    }, player) 
+
+    
+    } else {
+            playerAttacking = false
+            chargePower = 0
+    }
 
     }
 
@@ -1374,6 +1583,14 @@
             key: 'pDash',
             frames: this.anims.generateFrameNames('heroF',{prefix: 'Warrior_Dash_', start: 1, end: 7, suffix: '.png'}),
             frameRate: 14,
+            repeat: 0,
+            //delay: 1
+        });
+
+        this.anims.create({
+            key: 'pBackDash',
+            frames: this.anims.generateFrameNames('heroF',{prefix: 'Warrior_Dash_', start: 5, end: 7, suffix: '.png'}),
+            frameRate: 10,
             repeat: 0,
             //delay: 1
         });
@@ -2354,7 +2571,13 @@
 
                        
                         if (Phaser.Input.Keyboard.JustDown(keyA) && (currentEnergy > 0)){
-                            playerStandardCombo()
+                            if (cursors.left.isDown || cursors.right.isDown){
+                                playerDirectionalCombo()
+                            } else{
+                                playerStandardCombo()
+                            }
+                            
+                            
 
                         }
                           
@@ -2371,6 +2594,8 @@
                         if(attackChargePower < 10){
                             
                             player.play({key:'pDoubleAttack',frameRate: 24},true)
+
+                            playerVitals.decreaseEnergy((income * 0.1))
 
                             player.once('animationcomplete', function () {
 
