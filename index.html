@@ -18,7 +18,6 @@
 
     // Feature MVP To do:
 
-    // 1) Add basic levelUp screen and v1 buff/skill tree selection - Done but for buff level icon changes 
     // 2) Add Focus Special 2 move (left/right + B button) - offensive focus move
     // 3) Carry out code clean up - condense into functions
     // 4) Add MVP linking of Kraken wallet
@@ -95,7 +94,7 @@
     var playerAttacking = false 
     var playerReleaseAttack = false 
     var playerComboStarted = false
-    var comboNo = 0
+   
     var finisherNext = false
    
  
@@ -595,167 +594,144 @@
 
     }
 
+    
+
     function playerStandardCombo(){
 
+    // Attack 1
+        player.play({key:'pHeavyAttack',frameRate: 16},true);
 
-            player.play({key:'pHeavyAttack',frameRate: 16},true);
-
-                if(player.anims.getName() == 'pHeavyAttack'){
-                    if (player.flipX){
-                        player.setVelocityX(-50 * devicePixelRatio)
-                    } else {
-                        player.setVelocityX(50 * devicePixelRatio)
-                    }   
-                }
-
-            player.once('animationcomplete', function () {
-
-                comboNo += 1
-
-                if (currentEnergy > 0){
-                player.play({key:'pDoubleAttack',frameRate: 16},true);
-
+            if(player.anims.getName() == 'pHeavyAttack'){
                 if (player.flipX){
-                        player.setVelocityX(-25 * devicePixelRatio)
-                    } else {
-                        player.setVelocityX(25 * devicePixelRatio)
-                    }
-                    
-                    
-
-                player.once('animationcomplete', function () {
-
-                    comboNo += 1
-
-                    if (currentEnergy > 0){
-
-                    player.play({key:'pAttack1'},true)
-
-                        
-                            if (player.flipX){
-                                player.setVelocityX(-50 * devicePixelRatio)
-                            } else {
-                                player.setVelocityX(50 * devicePixelRatio)
-                            }
-
-                            player.once('animationcomplete', function () {
-
-                                comboNo += 1
-                                if (currentEnergy > 0){
-                                player.play({key:'pAttack2'},true)
-
-                                    
-                                        if (player.flipX){
-                                                        player.setVelocityX(-25 * devicePixelRatio)
-                                        } else {
-                                                        player.setVelocityX(25 * devicePixelRatio)
-                                        }
-
-                                        
-                                player.once('animationcomplete', function () {
-                                    comboNo += 1
-
-                                    if (currentEnergy > 0){
-                                    player.play('pCrouch',true)  
-                                    
-
-                                    player.once('animationcomplete', function () {
-
-                                        if (currentEnergy > 0){
-                                        player.play('Jump',true)
-
-                                    
-                                        if (player.flipX){
-                                                        player.setVelocityX(-25 * devicePixelRatio)
-                                        } else {
-                                                        player.setVelocityX(25 * devicePixelRatio)
-                                        }
-
-                                        if (player.body.onFloor()){
-                                            if(player.anims.currentFrame.index > 1){
-                                                    player.setVelocityY(-275 * devicePixelRatio)
-                                            }
-                                        }
-                                        
-
-                                        player.once('animationcomplete', function () {
-
-                                        
-                                            if (currentEnergy > 0){
-                                            player.play('pHeavyAttack',true)
-
-                                            
-                                                if (player.flipX){
-                                                                player.setVelocityX(-125 * devicePixelRatio)
-                                                } else {
-                                                                player.setVelocityX(125 * devicePixelRatio)
-                                                }
-
-                                                if(player.anims.currentFrame.index >= 4){
-                                                player.setVelocityY(50 * devicePixelRatio)
-                                                }
-
-                                                player.once('animationcomplete', function () {
-
-                                        
-                                                comboNo += 1
-                                                
-
-                                                
-                                                    
-
-                                                    
-
-
-                                                }, this)
-                                                
-                                            } else {
-                                                player.play('pIdle',true)
+                    player.setVelocityX(-50 * devicePixelRatio)
+                } else {
+                    player.setVelocityX(50 * devicePixelRatio)
+                }   
             }
+            player.once('animationcomplete', function (anim,frame) {
+                player.emit('animationcomplete_' + anim.key, frame)
+            }, player)
 
-                                        }, this)
-
-                                
-                                    }   else {
-                                        player.play('pIdle',true)
-            }
-                                    
-                                }, this)
-                            }else {
-                                player.play('pIdle',true)
-            }
-                            }, this)
-                        }   else {
-                            player.play('pIdle',true)
-            }     
-                                    
-                            }, this)
-                            
-                        } else {
-                            player.play('pIdle',true)
-            }   
-                }, this)
-
-                    
-            
-            } else {
-                player.play('pIdle',true)
-            }
-            },this)
-
-            
+    // Attack 2
+        player.once('animationcomplete_pHeavyAttack', function (anim,frame) {
         
+        if (currentEnergy > 0){
+            player.play({key:'pDoubleAttack',frameRate: 16},true);
 
+            if(player.anims.getName() == 'pDoubleAttack'){
+                if (player.flipX){
+                    player.setVelocityX(25 * devicePixelRatio)
+                } else {
+                    player.setVelocityX(-25 * devicePixelRatio)
+                }   
+            }
+
+            player.once('animationcomplete', function (anim,frame) {
+                player.emit('animationcomplete_' + anim.key, frame)
+            }, player)
         }
+
+        }, player)  
+    
+    // Attack 3
+        player.once('animationcomplete_pDoubleAttack', function (anim,frame) {
+        
+        if (currentEnergy > 0){
+            player.play({key:'pAttack1',frameRate: 16},true);
+
+            if(player.anims.getName() == 'pAttack1'){
+                if (player.flipX){
+                    player.setVelocityX(-75 * devicePixelRatio)
+                } else {
+                    player.setVelocityX(75 * devicePixelRatio)
+                }   
+            }
+
+            player.once('animationcomplete', function (anim,frame) {
+                player.emit('animationcomplete_' + anim.key, frame)
+            }, player)
+        }
+
+        }, player) 
+
+    // Attack 4
+        player.once('animationcomplete_pAttack1', function (anim,frame) {
+        
+        if (currentEnergy > 0){
+            player.play({key:'pAttack2',frameRate: 16},true);
+
+            player.once('animationcomplete', function (anim,frame) {
+                player.emit('animationcomplete_' + anim.key, frame)
+            }, player)
+        }
+
+        }, player)
+    
+    // Attack 5a
+        player.once('animationcomplete_pAttack2', function (anim,frame) {
+        
+        //if (currentEnergy > 0){
+            player.play({key:'pJump',frameRate: 16},true);
+
+            if (player.flipX){
+                player.setVelocityX(-100 * devicePixelRatio)
+            } else {
+                player.setVelocityX(100 * devicePixelRatio)
+            }
+
+            if (player.body.onFloor()){
+                if(player.anims.currentFrame.index >= 1){
+                    player.setVelocityY(-200 * devicePixelRatio)
+                }
+            }
+
+            player.once('animationcomplete', function (anim,frame) {
+                player.emit('animationcomplete_' + anim.key, frame)
+            }, player)
+        //}
+
+        }, player) 
+
+    // Attack 5b
+        player.once('animationcomplete_pJump', function (anim,frame) {
+        
+        //if (currentEnergy > 0){
+            
+            player.play({key:'pHeavyAttack',frameRate: 12},500);
+            
+
+            if (player.flipX){
+                player.setVelocityX(-50 * devicePixelRatio)
+            } else {
+                player.setVelocityX(50 * devicePixelRatio)
+            }
+
+            player.body.maxVelocity.y = 500
+            
+
+            player.once('animationcomplete', function (anim,frame) {
+                player.emit('animationcomplete_' + anim.key, frame)
+                player.body.maxVelocity.y = 250
+            }, player)
+        //}
+
+        }, player) 
+
+        
+        if(player.anims.getName() == 'pHeavyAttack'){
+            if (!player.body.onFloor){
+                if(player.anims.currentFrame.index === 4){
+                    player.setVelocityY(1650 * devicePixelRatio)
+                }
+            }
+        }
+
+
+}
 
         
    
 
-    function updateCounter() {
-
-    comboNo = 0;
-
-    }
 
     
 
@@ -1138,7 +1114,7 @@
     function create ()
     {
 
-        songChoice = 7//Math.floor(Phaser.Math.Between(1,7))
+        songChoice = Math.floor(Phaser.Math.Between(1,7))
         bgMusic = this.sound.add("bgMusic"+songChoice, { loop: true, volume: 0.75});
 
 
@@ -1296,11 +1272,11 @@
         // 2 second per week
         // 0.285 seconds per day
 
-        yearlyTimer = this.time.addEvent({delay: 60000, callback: runYearlyFunctions, args: [], callbackScope: this, loop: true});
-        // Each minute represents a month
-        monthlyTimer = this.time.addEvent({delay: 5000, callback: runMonthlyFunctions, args: [], callbackScope: this, loop: true});
+        yearlyFunctionsTimer = this.time.addEvent({delay: 60000, callback: runYearlyFunctions, args: [], callbackScope: this, loop: true});
+    
+        monthlyFunctionsTimer = this.time.addEvent({delay: 5000, callback: runMonthlyFunctions, args: [], callbackScope: this, loop: true});
 
-        weeklyTimer = this.time.addEvent({delay: 1250, callback: runWeeklyFunctions, args: [], callbackScope: this, loop: true});
+        weeklyFunctionsTimer = this.time.addEvent({delay: 1250, callback: runWeeklyFunctions, args: [], callbackScope: this, loop: true});
 
         secondsTimer = this.time.addEvent({delay: 1000, callback: runSecondsFunctions, args: [], callbackScope: this, loop: true});
 
@@ -1513,11 +1489,7 @@
             
         });
 
-        //  Create our Timer
-        //comboTimer = this.time.addEvent({ delay: 2000, callback: updateCounter, callbackScope: this });
-
-
-
+        
         // Controllers online
         cursors = this.input.keyboard.createCursorKeys();
         keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
@@ -1828,6 +1800,11 @@
     function update ()
     {
 
+        
+
+            
+         
+
          // v2 Player runs on spot, and tween 
 
         // Player uses energy (auto via budget) to set velocity and coast on momentum, and to avoid incoming obstacles (budget/some stat determines auto dodge)
@@ -1952,14 +1929,15 @@
         // console.log('Player Energy Regen: ' + energyRegen)
 
        
-        console.log('Charge Power: ' + attackChargePower )
+        console.log('Charge Power: ' + chargePower )
 
 
         //  console.log('Enemy Max HP: ' + e1MaxLife)
+
+          
        
  
 
-         console.log('Combo No: ' + comboNo)
 
         if (enemy1.body.onFloor() == false){
             enemy1.y = height - 85
@@ -2231,7 +2209,7 @@
 
             
             if(Math.abs(player.x - enemy1.x) <= 75){
-                enemy1Aggro = 0
+                enemy1Aggro = true
             } else {
                 enemy1Aggro = false
             }
@@ -2261,7 +2239,7 @@
                     if(Math.abs(player.x - enemy1.x) > 75 && Math.abs(player.x - enemy1.x) <= 80){    
                     enemy1.anims.play({key:'eIdle',frameRate: 10},true);
                     } else if (gameOver == false){
-                        //this.physics.moveToObject(enemy1,player,200)
+                        this.physics.moveToObject(enemy1,player,200)
                         enemy1.anims.play({key:'eRun',frameRate: 14},true);
                     } else if (gameOver){
                         enemy1.anims.play({key:'eIdle',frameRate: 10},true);
@@ -2334,6 +2312,12 @@
                     sword.body.checkCollision.none = false
                     damage = (income * 0.01) + (income * 0.015 * chargePower) 
                     }
+
+                    //if (!player.body.onFloor){
+                        if(player.anims.currentFrame.index >= 4){
+                            player.setVelocityY(500 * devicePixelRatio)
+                        }
+                    //}
                 } else if (player.anims.getName() == 'pParry'){
                     playerHeavySwordSwing.play()
 
@@ -2393,9 +2377,9 @@
                         
                         
 
-                        //this.time.addEvent({ delay: 1500, callback: updateCounter, callbackScope: this });;
+                      
 
-                        comboNo = 0
+                        
 
 
                         if(attackChargePower < 10){
@@ -2411,23 +2395,14 @@
                                 
                         } else {
                             playerAttacking = false
+                            
                         }
 
                         attackChargePower = 0
                         
                         
-
-
-                        
-                        
                         
 
-                        // player.once('animationcomplete', function () {
-
-                        //     playerAttacking = false
-                            
-
-                        // }, this);
 
                     }
 
