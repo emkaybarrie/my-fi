@@ -83,7 +83,7 @@
     var playerPosition 
     
     var playerSpeed 
-    var expToLevelUp = 25
+    var expToLevelUp = 100
     var exp = 0
     
      
@@ -113,7 +113,7 @@
     var focusRegenAllocation = 0.3 // a) self -report budget driven (i.e. how much do you save/invest a month) b) queried - eventually determined by funds in specific location (myFi designated/directed savings/funds)
     var energyRegenAllocation = 0.7  // a) self-report buidget driven b) delta of non-saved/invested income
    
-    var lifeRegen  // Calc TBD - Buy-in to myFi stable/pension/emergency fund provides buff to regen - lock tokens/stables and earn 1 - x% 'regen' i.e return
+    var lifeRegen = lifeRegenAllocation * income // Calc TBD - Buy-in to myFi stable/pension/emergency fund provides buff to regen - lock tokens/stables and earn 1 - x% 'regen' i.e return
     var focusRegen = focusRegenAllocation * income
     var energyRegen = energyRegenAllocation * income
  
@@ -164,12 +164,12 @@
         level = 0
 
         income = 100
-        //lifeRegenAllocation = 0.3 // Equates to budget % allocated to needs
+        lifeRegenAllocation = 0.0 // Equates to budget % allocated to needs
         
         focusRegenAllocation = 0.3
         energyRegenAllocation = 0.7
         
-        //lifeRegen = lifeRegenAllocation * income
+        lifeRegen = lifeRegenAllocation * income
         focusRegen = focusRegenAllocation * income
         energyRegen = energyRegenAllocation * income
 
@@ -937,23 +937,12 @@
     }
 
 
-    function playerHit(){
-
-                    
-                        playerIsHit = true
-                        playerVitals.decreaseLife(currentLife * 0.05 / 450)
-                        playerVitals.decreaseEnergy(currentEnergy * 0.05 / 600)
-                        
-                        player.x -= 1
-                           
-               
-    }
 
     function playerVineHit(){
 
     if (inBattle == false){
         playerIsHit = true
-        playerVitals.decreaseLife((income * 0.35) / 75)
+        playerVitals.decreaseLife((income * 0.35) / 50)
         
         
         player.x -= 0.5
@@ -981,7 +970,7 @@
         
         if (playerDefending){
             if (playerParrying == false){
-            playerVitals.decreaseLife(e1MaxLife * 1.5 / 100)
+            playerVitals.decreaseLife(e1MaxLife * 1.5 / 150)
             camera.shake(20,0.0025)
             if (player.flipX){
                 player.setVelocityX(50)
@@ -1010,7 +999,7 @@
     
     if (playerParrying) {
             hideHUD()
-            camera.zoomTo(1.5,50)
+            
  
             camera.flash()
 
@@ -1018,21 +1007,11 @@
                 playerVitals.decreaseLife(-e1MaxLife / 120)
                 playerVitals.decreaseFocus(-e1MaxLife / 80)
                 playerVitals.decreaseEnergy(-e1MaxLife / 40)
-                camera.zoomTo(1.05,250)
-
-                camera.on('camerazoomcomplete', function () {
-                
-                    showHUD()
+                showHUD()
  
-                }, this);
-
-                
             }, this);
 
 
-            
-            
-            
             if (enemy1.flipX){
                 enemy1.setVelocityX(-100)
             } else {
@@ -1995,7 +1974,7 @@
         } 
             
         chaosMultiplierMin *= 1.1
-        expToLevelUp *= 1.04
+        expToLevelUp *= 1.08
         playerExperience.p = 233 / expToLevelUp
         
         
@@ -2291,7 +2270,7 @@
 
             } else if (cursors.up.isDown && currentEnergy > (income * 0.3) && playerIsHit == false && player.body.onFloor()){ 
 
-                playerVitals.decreaseEnergy(income * 0.25)
+                playerVitals.decreaseEnergy(income * 0.3)
 
                 //if(Phaser.Input.Keyboard.JustDown(cursors.up)){
                     player.chain([{key:'pJump',frameRate: 12},true,{key:'pUptoFall',frameRate: 12}],true); 
@@ -2309,7 +2288,7 @@
                 treeTrunk.body.checkCollision.none = true
 
 
-                playerVitals.decreaseFocus((income) / 100)
+                playerVitals.decreaseFocus((income) / 50)
 
                 player.anims.play({key:'pDash',frameRate: 12},true);
 
@@ -2335,7 +2314,7 @@
 
                 this.vines.body.checkCollision.none = true
  
-                playerVitals.decreaseEnergy((income * 0.25) / 50)
+                playerVitals.decreaseEnergy((income * 0.25) / 25)
 
                 
 
@@ -2347,8 +2326,8 @@
 
                 
                 
-                    playerVitals.decreaseEnergy((income * 0.25) / 75 )
-                    playerVitals.decreaseLife(-(income * 0.25)  / 75 )
+                    playerVitals.decreaseEnergy((income * 0.25) / 50 )
+                    playerVitals.decreaseLife(-(income * 0.25)  / 50 )
                 
 
                 pSFX.setTint(0xcc0000)
@@ -2367,7 +2346,7 @@
             } else if (cursors.right.isDown && currentEnergy > ((income * 0.25) / 50 ) && playerIsHit == false && player.body.onFloor()){
 
                 
-                playerVitals.decreaseEnergy((income * 0.25) / 75)
+                playerVitals.decreaseEnergy((income * 0.25) / 50)
                 this.physics.moveTo(player,width * 1.5,height - 90,90)
                 player.anims.play({key:'pRun',frameRate: 16},true);
         
@@ -2622,8 +2601,8 @@
 
                     energy.on('pointerup', function(pointer){
                         
-
                         playerAttacking = false
+
                     }, this);
 
                   // Focus MoveSet
@@ -2662,7 +2641,7 @@
 
                         playerCharging = true
 
-                        playerVitals.decreaseFocus((income * 0.5) / 75)
+                        playerVitals.decreaseFocus((income * 0.5) / 50)
                         
                         player.play('pChargeSpecial1')
 
@@ -2747,7 +2726,7 @@
 
                         player.play('pJump',true)
 
-                        playerVitals.decreaseEnergy((income * 0.25))
+                        playerVitals.decreaseEnergy((income * 0.3))
                         player.setVelocityY(player.body.velocity.y - (250 * devicePixelRatio))
 
                     } else if (playerAttacking == false && cursors.down.isDown && currentEnergy > ((income * 0.075)/50) ){
