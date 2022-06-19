@@ -357,7 +357,7 @@
             //  Energy
 
             this.energyBar.fillStyle(0xffffff);
-            this.energyBar.fillRect(this.x + (1 * this.scaleX), this.y + (9 * this.scaleY) , 38 * (maxEnergy/startMaxEnergy) * this.scaleX , 3 * this.scaleY);
+            this.energyBar.fillRect(this.x + (1 * this.scaleX), this.y + (9 * this.scaleY) , 38 * this.scaleX , 3 * this.scaleY);
             this.energyBar.fillStyle(0x93c47d);
         
 
@@ -943,7 +943,7 @@
                         playerIsHit = true
                         playerVitals.decreaseLife(currentLife * 0.05 / 450)
                         playerVitals.decreaseEnergy(currentEnergy * 0.05 / 600)
-                        maxEnergy *= 1 - (0.04 / 450)
+                        
                         player.x -= 1
                            
                
@@ -955,9 +955,9 @@
         playerIsHit = true
         playerVitals.decreaseLife((income * 0.35) / 75)
         
-        maxEnergy *= 1 - (0.01 / 12 / 50)
-        player.x -= 1
-        //enemy1.x += 1
+        
+        player.x -= 0.5
+
         enemyChase(10)
     } 
     
@@ -969,10 +969,7 @@
         playerIsHit = true
         playerVitals.decreaseLife((income * 0.5) / 75)
         
-        maxEnergy *= 1 - (0.02 / 12 / 100)
         player.x -= 1
-        //enemy1.setVelocityX
-        //enemy1.x += 2
         enemyChase(15)
     } 
 
@@ -1192,15 +1189,12 @@
         if (!playerAttacking && !playerDefending && !playerDodging && !playerCharging && !skillTreeOpen && !gameOver){
 
             
-        //playerVitals.decreaseLife(-lifeRegen / 5) 
+        playerVitals.decreaseLife(-lifeRegen / 5) 
         playerVitals.decreaseEnergy(-energyRegen / 5)
         playerVitals.decreaseFocus(-focusRegen / 5)
 
         }
 
-        // if (!playerAttacking){
-        //     playerVitals.decreaseEnergy(-energyRegen / 5)
-        // }
         
 
         if (inBattle == false){
@@ -1222,7 +1216,7 @@
     }
 
     function refreshStats(){
-        //lifeRegen = lifeRegenAllocation * income
+        lifeRegen = lifeRegenAllocation * income
         energyRegen = energyRegenAllocation * income
         focusRegen = focusRegenAllocation * income
         
@@ -1362,14 +1356,14 @@
         
         this.physics.add.collider(player,platforms);
 
-        this.vines = this.add.image(player.x,player.y - 120, 'vines').setOrigin(0,0).setDepth(1).setScale(0.35,0.5).setTint(0x38761d) //(0xed8a8a)
+        this.vines = this.add.image(player.x,player.y - 120, 'vines').setOrigin(0,0).setDepth(1).setScale(0.35,0.5).setTint(0x38761d)
 
         this.physics.add.existing(this.vines,false)
         this.vines.body.setAllowGravity(false)
         this.physics.add.overlap(player,this.vines, playerVineHit);
         this.vines.body.setSize(474,175).setOffset(0,-7.5)
 
-        treeTrunk = this.add.image(0,height - 110, 'treeTrunk').setOrigin(0,0).setDepth(1)//.setScale(0.35,0.5).setTint(0x38761d) //(0xed8a8a)
+        treeTrunk = this.add.image(0,height - 110, 'treeTrunk').setOrigin(0,0).setDepth(1)
 
         this.physics.add.existing(treeTrunk,false)
         treeTrunk.body.setAllowGravity(false)
@@ -1763,7 +1757,7 @@
 
             if (gameObject == skillTreeLifeIcon){
 
-                maxLife *= 1.10
+                maxLife *= 1.025
                 
                 var tier = storingBuffTier += 1
 
@@ -1778,7 +1772,7 @@
                 }
 
                 storingBuffTierIcon.setTexture('t'+ tier +'BuffIcon').setAlpha(alpha)
-                playerVitals.pL = 38 / maxLife
+                playerVitals.pL = (38 * playerVitals.scaleX) / maxLife
 
                 toggleSkillTree()
                 IS_TOUCH = false
@@ -1787,7 +1781,8 @@
 
             if (gameObject == skillTreeFocusIcon){
 
-                focusRegenAllocation *= 1.15
+                focusRegenAllocation *= 1.05
+                maxFocus *= (1.0 + (0.025 * tier))
 
                 var tier = growingBuffTier += 1
 
@@ -1802,7 +1797,7 @@
                 }
 
                 growingBuffTierIcon.setTexture('t'+ tier +'BuffIcon').setAlpha(alpha)
-                playerVitals.pF = 38 / maxFocus
+                playerVitals.pF = (38 * playerVitals.scaleX) / maxFocus
 
                 toggleSkillTree()
                 IS_TOUCH = false
@@ -1826,7 +1821,7 @@
                 }
 
                 spendingBuffTierIcon.setTexture('t'+ tier +'BuffIcon').setAlpha(alpha)
-                playerVitals.pE = 38 / maxEnergy
+                playerVitals.pE = (38 * playerVitals.scaleX) / maxEnergy
 
                 toggleSkillTree()
                 IS_TOUCH = false
