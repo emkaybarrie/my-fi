@@ -690,7 +690,7 @@
         enemy1.once('animationcomplete_eTaunt', function (anim,frame) {
             
         
-            enemy1.play({key:'eIdle'},true);
+            //enemy1.play({key:'eIdle'},true);
 
 
             enemy1.once('animationcomplete', function (anim,frame) {
@@ -843,11 +843,12 @@
         player.play({key:'pBackDash', frameRate: 6},true);
         
 
-            player.setVelocityX((Phaser.Math.GetSpeed(Math.abs(Phaser.Math.FloatBetween(width * 1.55,width * 1.9)) - player.x, 1) * 1500) * devicePixelRatio)
+            player.setVelocityX((Phaser.Math.GetSpeed(Math.abs(Phaser.Math.FloatBetween(width * 1.55,width * 1.85)) - player.x, 1) * 1500) * devicePixelRatio)
         
 
         player.once('animationcomplete', function (anim,frame) {
             player.emit('animationcomplete_' + anim.key, frame)
+            enemy1GetInBattlePosition()
             
         }, player)
 
@@ -1157,12 +1158,13 @@
 
     function enemy1Hit(){
 
+        enemy1IsHit = true
+
         if (inBattle) {   
+ 
             
             
-        
-            if (playerParrying == false){
-                enemy1IsHit = true
+
             var chaos = Phaser.Math.FloatBetween(0.00,1.00)
             if (chaos < 0.025){
            
@@ -1171,10 +1173,10 @@
             damage *= Phaser.Math.Between(1.75,2.75)
             enemy1Vitals.decreaseEnemyLife(damage)
             if (player.flipX){
-                enemy1.x -= Phaser.Math.Between(10,20)
+                enemy1.x -= Phaser.Math.Between(15,25)
                 
             } else {
-                enemy1.x -= Phaser.Math.Between(-10,-20)
+                enemy1.x -= Phaser.Math.Between(-15,-25)
             }
             //
             } else
@@ -1183,24 +1185,24 @@
             damage *= Phaser.Math.Between(1.15,1.75)
             enemy1Vitals.decreaseEnemyLife(damage)
             if (player.flipX){
-                enemy1.x -= Phaser.Math.Between(2.5,5)
+                enemy1.x -= Phaser.Math.Between(1.5,2.5)
                 
             } else {
-                enemy1.x -= Phaser.Math.Between(-5,-2.5)
+                enemy1.x -= Phaser.Math.Between(-2.5,-1.5)
             }
             } else {
                 damage *= Phaser.Math.Between(0.85,1.1)
                 enemy1Vitals.decreaseEnemyLife(damage)
                 if (player.flipX){
                 
-                enemy1.x -= Phaser.Math.Between(-1,2.5)
+                enemy1.x -= Phaser.Math.Between(-1.5,1.5)
             } else {
-                enemy1.x -= Phaser.Math.Between(-2.5,1)
+                enemy1.x -= Phaser.Math.Between(-1,1)
             }
 
        
             }
-            }
+            
             
              
     }             
@@ -1767,7 +1769,7 @@
             key: 'eIdle',
             frames: this.anims.generateFrameNames('doomsayer',{prefix: 'idle', start: 1, end: 8}),
             frameRate: 10,
-            repeat: -1
+            repeat:-1
         });
 
        
@@ -2164,6 +2166,45 @@
             }
         }
 
+        // Enable player sword collision detection
+
+        if (player.anims.getName() == 'pDoubleAttack' || player.anims.getName() == 'pAttack1' || player.anims.getName() == 'pAttack2'){
+                    playerSwordSwing.play()
+                    
+                    
+
+                    if (player.anims.currentFrame.index >= 6 && player.anims.currentFrame.index < 12){
+                        
+                        sword.body.checkCollision.none = false
+                        damage = (income * 0.01)
+                    } else {
+                        sword.body.checkCollision.none = true
+                    }
+
+                } else if (player.anims.getName() == 'pHeavyAttack'){
+                    playerHeavySwordSwing.play()
+
+                      
+                    if (player.anims.currentFrame.index >= 4 && player.anims.currentFrame.index < 6){
+                        
+                    sword.body.checkCollision.none = false
+                    damage = (income * 0.01) + (income * 0.015 * chargePower) 
+                    } else {
+                        sword.body.checkCollision.none = true
+                    }
+
+                   
+        }
+
+        // Enemy detects collision with player sword
+
+        if (enemy1IsHit){
+                enemy1.anims.play({key:'eHurt',frameRate: 12},true); 
+                enemy1.once('animationcomplete', function () {
+                    enemy1Recover();
+                }, this);
+        }
+
         
             
          
@@ -2303,6 +2344,10 @@
 
         console.log('Combatant Distance: ' + Math.abs(player.x - enemy1.x))
 
+        console.log('Enemy 1 Hit: ' + enemy1IsHit)
+
+        console.log('Player Sword Disabled: ' + sword.body.checkCollision.none) 
+
         
 
 
@@ -2371,7 +2416,7 @@
                 sword.y = player.y - 15
             }
 
-            sword.body.checkCollision.none = true
+            
             
 
             if (player.flipX){
@@ -2573,6 +2618,49 @@
             } 
   
             // Charge Move - Energy
+
+                    // Touch controls
+
+                    energy.on('pointerdown', function(pointer){
+                        
+                        //playerStandardCombo()
+                        
+                     },this)
+ 
+                     energy.on('pointerup', function(pointer){
+                         
+                         if (playerChargingEnergyAttack){
+
+                            if(attackChargePower < 50){
+                            
+                            playerStandardCombo()
+
+                            player.once('animationcomplete', function () {
+
+                                playerChargingEnergyAttack = false
+                                
+
+                            }, this);
+                                
+                        } else {
+
+                            playerDirectionalCombo()
+                            player.once('animationcomplete', function () {
+
+                            playerAttacking = false
+
+
+                            }, this);
+                            
+                        }
+
+                        attackChargePower = 0
+
+                        }
+ 
+                     }, this);
+
+                    // Keyboard Controls
 
                     if (keyA.isDown  && (currentEnergy > 0)){
 
