@@ -26,7 +26,7 @@
 
     var ratio = Math.max((window.innerWidth * window.devicePixelRatio)/ (window.innerHeight * window.devicePixelRatio), (window.innerHeight * window.devicePixelRatio) / (window.innerWidth * window.devicePixelRatio)) 
     var DEFAULT_HEIGHT = 272 //window.innerHeight * window.devicePixelRatio // 272
-    var DEFAULT_WIDTH = ratio * DEFAULT_HEIGHT// * 2
+    var DEFAULT_WIDTH =  592 //ratio * DEFAULT_HEIGHT// * 2
 
 
     var config = {
@@ -39,7 +39,8 @@
             pixelArt: 0,
             autoCenter: Phaser.Scale.CENTER_BOTH,
             width:  DEFAULT_WIDTH, //592, //window.innerWidth * window.devicePixelRatio
-            height: DEFAULT_HEIGHT //272, //window.innerHeight * window.devicePixelRatio
+            height: DEFAULT_HEIGHT, //272, //window.innerHeight * window.devicePixelRatio
+            resolution: window.devicePixelRatio || 1
         },
         input: {
             keyboard: true,
@@ -660,11 +661,11 @@
 
 
     // Enemy steps to position
-        enemy1.play({key:'eRun',frameRate: 8},true);
+        enemy1.play({key:'eRun',frameRate: 10},true);
 
             if(enemy1.anims.getName() == 'eRun'){
                 
-                enemy1.setVelocityX((175  * ((width * 1.25) / playerPosition)) * devicePixelRatio)
+                enemy1.setVelocityX((Phaser.Math.GetSpeed(Phaser.Math.Between(width * 1.15, width * 1.45) - enemy1.x, 1) * 1500) * devicePixelRatio)
                 
             }
             enemy1.once('animationcomplete', function (anim,frame) {
@@ -675,7 +676,7 @@
         enemy1.once('animationcomplete_eRun', function (anim,frame) {
         
             
-            enemy1.play('eTaunt',true);
+            enemy1.play('eAttack',true);
 
             
 
@@ -687,10 +688,10 @@
         }, enemy1)  
 
     // Enemy enters idle
-        enemy1.once('animationcomplete_eTaunt', function (anim,frame) {
+        enemy1.once('animationcomplete_eAttack', function (anim,frame) {
             
         
-            //enemy1.play({key:'eIdle'},true);
+            enemy1.play({key:'eIdle'},true);
 
 
             enemy1.once('animationcomplete', function (anim,frame) {
@@ -831,6 +832,7 @@
                 player.once('animationcomplete', function (anim,frame) {
                     player.emit('animationcomplete_' + anim.key, frame)
                     player.body.maxVelocity.y = 250
+                    enemy1GetInBattlePosition()
                 }, player)
         
 
@@ -843,12 +845,12 @@
         player.play({key:'pBackDash', frameRate: 6},true);
         
 
-            player.setVelocityX((Phaser.Math.GetSpeed(Math.abs(Phaser.Math.FloatBetween(width * 1.55,width * 1.85)) - player.x, 1) * 1500) * devicePixelRatio)
+            player.setVelocityX((Phaser.Math.GetSpeed(Math.abs(Phaser.Math.FloatBetween(width * 1.7,width * 1.8)) - player.x, 1) * 1500) * devicePixelRatio)
         
 
         player.once('animationcomplete', function (anim,frame) {
             player.emit('animationcomplete_' + anim.key, frame)
-            enemy1GetInBattlePosition()
+            //enemy1GetInBattlePosition()
             
         }, player)
 
@@ -1785,9 +1787,8 @@
             key: 'eAttack',
             frames: this.anims.generateFrameNames('doomsayer',{prefix: 'attack', start: 1, end: 10}),
             frameRate: 10,
-            repeat: -1,
             delay: 25,
-            repeatDelay: Math.random() * 3000
+            //repeatDelay: Math.random() * 3000
             
         });
 
@@ -2144,7 +2145,7 @@
         }
 
         if (enemy1.body.onFloor()){
-            enemy1.setDragX(250)
+            enemy1.setDragX(300)
         } else {
             enemy1.setDragX(100)
         }
@@ -2346,7 +2347,7 @@
 
         console.log('Enemy 1 Hit: ' + enemy1IsHit)
 
-        console.log('Player Sword Disabled: ' + sword.body.checkCollision.none) 
+        console.log('Player Attack Charge: ' + attackChargePower) 
 
         
 
@@ -2668,9 +2669,12 @@
                         
 
                         if (currentEnergy > 0){
-                            playerVitals.decreaseEnergy((income / 60) * (attackChargePower / 100))
+                            playerVitals.decreaseEnergy((income / 75) * (attackChargePower / 100))
                         }
-                        
+
+                        if(Phaser.Input.Keyboard.JustDown(keyA)){
+                        player.play('pChargeAttack',true)
+                        }
                             
                         if(attackChargePower < 100){
                                 attackChargePower += 0.5
