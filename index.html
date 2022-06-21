@@ -937,8 +937,9 @@
         player.play({key:'pJump',frameRate: 10},true);
         
         player.setVelocityY(-275)
+        
 
-        if(player.anims.getName() == 'pJump' ){
+        if(player.anims.getName() == 'pJump'){
             fireTowardsTarget(player,enemy1,1,true)
             
                 
@@ -955,7 +956,7 @@
         
             player.play({key:'pUptoFall',frameRate: 10, repeat : 2},true);
 
-            player.setVelocityY(5)
+            player.setVelocityY(-10)
 
 
             player.once('animationcomplete', function (anim,frame) {
@@ -1461,7 +1462,7 @@
         charge = this.sound.add("charge",{volume: 0.5})
         
 
-        this.physics.world.setBounds(0, 0, width * 3,  height);
+        this.physics.world.setBounds(0, -200, width * 3,  height + 200);
         
         this.woodsl1 = this.add.tileSprite(0,0, width * 3, height, 'woodsl1').setOrigin(0,0).setScrollFactor(0)
         this.woodsl2 = this.add.tileSprite(0,0, width * 3, height, 'woodsl2').setOrigin(0,0).setScrollFactor(0.25)
@@ -1488,7 +1489,7 @@
         
         player.setBounceY(0.15);
         player.setCollideWorldBounds(true);
-        player.body.setBoundsRectangle(new Phaser.Geom.Rectangle(width, -100, width, height + 100));
+        player.body.setBoundsRectangle(new Phaser.Geom.Rectangle(width, -200, width, height + 200));
 
        
 
