@@ -84,7 +84,10 @@
     var playerPosition 
 
     var battleTransitionComplete 
+
+    var battleStart = false
     var playerLanded = true
+    var playerStance = 0
     var playerEntangled = false
     var enableEntanglement = false
     
@@ -561,6 +564,7 @@
 
                     camera.flash(250,1000)
                     camera.on('cameraflashcomplete', function () {
+                    playerStance = -1
                     showHUD()
                     },this)
                     
@@ -605,7 +609,7 @@
 
                 if(player.anims.getName() == 'pSlide'){
                     
-                        player.setVelocityX((350 * ((width * 1.25) / playerPosition)) * devicePixelRatio)
+                        player.setVelocityX((350 * ((width * 1.25) / playerPosition)) )
                       
                 }
                 player.once('animationcomplete', function (anim,frame) {
@@ -620,8 +624,8 @@
 
                 if(player.anims.getName() == 'pJump'){
                     
-                        //player.setVelocityX(250 * devicePixelRatio)
-                        player.setVelocityY(-200 * devicePixelRatio)
+                        
+                        player.setVelocityY(-200)
                         playerLanded = false
   
                 }
@@ -642,7 +646,7 @@
 
                 if(player.anims.getName() == 'pUptoFall'){
                     
-                    player.setVelocityX(150 * devicePixelRatio)
+                    player.setVelocityX(150)
                       
                 }
 
@@ -650,7 +654,7 @@
                     player.emit('animationcomplete_' + anim.key, frame)
                     
                 }, player)
-            
+                battleStart = true
                 enableEntanglement = true
             }, player) 
 
@@ -665,7 +669,7 @@
 
             if(enemy1.anims.getName() == 'eRun'){
                 
-                enemy1.setVelocityX((Phaser.Math.GetSpeed(Phaser.Math.Between(width * 1.15, width * 1.45) - enemy1.x, 1) * 1500) * devicePixelRatio)
+                enemy1.setVelocityX((Phaser.Math.GetSpeed(Phaser.Math.Between(width * 1.15, width * 1.45) - enemy1.x, 1) * 1500))
                 
             }
             enemy1.once('animationcomplete', function (anim,frame) {
@@ -705,11 +709,19 @@
 
     }
 
-    function fireTowardsTarget(sprite,target,seconds){
-        sprite.setVelocityX(-(Phaser.Math.GetSpeed(sprite.x - target.x, seconds) * (seconds * 1500)) * devicePixelRatio)
+    function fireTowardsTarget(sprite,target,seconds,inAir){
+
+        if (inAir){
+            var d = 1000
+        } else {
+            var d = 1500
+        }
+         
+
+        sprite.setVelocityX(-(Phaser.Math.GetSpeed(sprite.x - target.x, seconds) * (seconds * d)))
     }
 
-    function playerStandardCombo(){
+    function playerS0Combo(){
 
     // Player runs to enemy
         var distance = Math.abs(player.x - enemy1.x)
@@ -725,6 +737,7 @@
                fireTowardsTarget(player,enemy1,1)
                 
         }
+
         player.once('animationcomplete', function (anim,frame) {
             player.emit('animationcomplete_' + anim.key, frame)
         }, player)
@@ -766,7 +779,7 @@
 
             if(player.anims.getName() == 'pAttack1'){
                 
-                    player.setVelocityX(-15 * devicePixelRatio)
+                    player.setVelocityX(-15)
                   
             }
 
@@ -777,284 +790,304 @@
 
         }, player) 
 
-    // Attack 4
-        player.once('animationcomplete_pAttack1', function (anim,frame) {
-        
-        
-            player.play({key:'pAttack2'},true);
-
-            player.once('animationcomplete', function (anim,frame) {
-                player.emit('animationcomplete_' + anim.key, frame)
-            }, player)
-        
-
-        }, player)
+    /// Empowered    
     
-    // Attack 5a
-        player.once('animationcomplete_pAttack2', function (anim,frame) {
-        
-        
-            player.play({key:'pJump'},true);
-
+    if (attackChargePower / income >= 0.5){
+        // Attack 4
+            player.once('animationcomplete_pAttack1', function (anim,frame) {
             
-                player.setVelocityX(100 * devicePixelRatio)
             
-
-            if (player.body.onFloor()){
-                if(player.anims.currentFrame.index >= 1){
-                    player.setVelocityY(-150 * devicePixelRatio)
-                }
-            }
-
-            player.once('animationcomplete', function (anim,frame) {
-                player.emit('animationcomplete_' + anim.key, frame)
-            }, player)
-        
-
-        }, player) 
-
-    // Attack 5b
-        player.once('animationcomplete_pJump', function (anim,frame) {
-   
-                
-                player.play({key:'pHeavyAttack'},true);
-                
-
-                if (player.flipX){
-                    player.setVelocityX(-50 * devicePixelRatio)
-                } else {
-                    player.setVelocityX(50 * devicePixelRatio)
-                }
-
-                player.body.maxVelocity.y = 500
-
+                player.play({key:'pAttack2'},true);
 
                 player.once('animationcomplete', function (anim,frame) {
                     player.emit('animationcomplete_' + anim.key, frame)
-                    player.body.maxVelocity.y = 250
-                    enemy1GetInBattlePosition()
                 }, player)
-        
-
-        }, player) 
-
-        // Dash back to position
-        player.once('animationcomplete_pHeavyAttack', function (anim,frame) {
-   
-                
-        player.play({key:'pBackDash', frameRate: 6},true);
-        
-
-            player.setVelocityX((Phaser.Math.GetSpeed(Math.abs(Phaser.Math.FloatBetween(width * 1.7,width * 1.8)) - player.x, 1) * 1500) * devicePixelRatio)
-        
-
-        player.once('animationcomplete', function (anim,frame) {
-            player.emit('animationcomplete_' + anim.key, frame)
-            //enemy1GetInBattlePosition()
             
-        }, player)
 
-
-        }, player)
-
-        // Return to Idle
-        player.once('animationcomplete_pBackDash', function (anim,frame) {
-   
-                
-        player.play({key:'pIdle', frameRate: 8},true);
+            }, player)
         
-        
-
-        player.once('animationcomplete', function (anim,frame) {
-            player.emit('animationcomplete_' + anim.key, frame)
+        // Attack 5a
+            player.once('animationcomplete_pAttack2', function (anim,frame) {
             
-        }, player)
+            
+                player.play({key:'pJump'},true);
 
-
-        }, player)
-
-    }
-
-    function playerDirectionalCombo(){
-
-    if (currentEnergy > 0){   
-    // Attack 1
-        player.play({key:'pAttack1'},true);
-
-            if(player.anims.getName() == 'pAttack1'){
-                if (player.flipX){
-                    player.setVelocityX(-150 * devicePixelRatio)
-                } else {
-                    player.setVelocityX(150 * devicePixelRatio)
-                }   
-            }
-            player.once('animationcomplete', function (anim,frame) {
-                player.emit('animationcomplete_' + anim.key, frame)
-            }, player)
-
-    // Attack 2
-        player.once('animationcomplete_pAttack1', function (anim,frame) {
-        
-        if (currentEnergy > 0){
-            player.play({key:'pChargeAttack', frameRate: 8},true);
-
-            if(player.anims.getName() == 'pChargeAttack'){
-                if (player.flipX){
-                    player.setVelocityX(-75 * devicePixelRatio)
-                } else {
-                    player.setVelocityX(75 * devicePixelRatio)
-                }   
-            }
-
-            player.once('animationcomplete', function (anim,frame) {
-                player.emit('animationcomplete_' + anim.key, frame)
-            }, player)
-        } else {
-            playerAttacking = false
-            chargePower = 0
-        }
-
-        }, player)  
-
-    // Attack 3
-        player.once('animationcomplete_pChargeAttack', function (anim,frame) {
-        
-        if (currentEnergy > 0){
-            player.play({key:'pDoubleAttack',frameRate: 12, start: 4},true);
-
-            if(player.anims.getName() == 'pDoubleAttack'){
-                if (player.flipX){
-                    player.setVelocityX(-50 * devicePixelRatio)
-                } else {
-                    player.setVelocityX(50 * devicePixelRatio)
-                }   
-            }
-
-            player.once('animationcomplete', function (anim,frame) {
-                player.emit('animationcomplete_' + anim.key, frame)
-            }, player)
-        } else {
-            playerAttacking = false
-            chargePower = 0
-        }
-
-        }, player) 
-
-    // Attack 4
-        player.once('animationcomplete_pDoubleAttack', function (anim,frame) {
-        
-        if (currentEnergy > 0){
-            player.play({key:'pHeavyAttack',frameRate: 14},true);
-
-            if(player.anims.getName() == 'pDoubleAttack'){
-                if (player.flipX){
-                    player.setVelocityX(-150 * devicePixelRatio)
-                } else {
-                    player.setVelocityX(150 * devicePixelRatio)
-                }   
-            }
-
-            player.once('animationcomplete', function (anim,frame) {
-                player.emit('animationcomplete_' + anim.key, frame)
-            }, player)
-        } else {
-            playerAttacking = false
-            chargePower = 0
-        }
-
-        }, player)
-
-    // Attack 5a
-        player.once('animationcomplete_pDoubleAttack', function (anim,frame) {
-        
-        if (currentEnergy > 0){
-            player.play({key:'pBackDash',start: 5},true);
-
-            if (player.flipX){
-                player.setVelocityX(200 * devicePixelRatio)
-            } else {
-                player.setVelocityX(-200 * devicePixelRatio)
-            }
-
-            if (player.body.onFloor()){
-                if(player.anims.currentFrame.index >= 1){
-                    player.setVelocityY(-100 * devicePixelRatio)
-                }
-            }
-
-            player.once('animationcomplete', function (anim,frame) {
-                player.emit('animationcomplete_' + anim.key, frame)
-            }, player)
-        } else {
-            playerAttacking = false
-            chargePower = 0
-        }
-
-        }, player) 
-
-    // Attack 5b
-        player.once('animationcomplete_pBackDash', function (anim,frame) {
-        
-            if (currentEnergy > 0){
                 
-                player.play({key:'pDash',frameRate: 10},true);
+                    player.setVelocityX(100)
                 
 
-                if (player.flipX){
-                    player.setVelocityX(-200 * devicePixelRatio)
-                } else {
-                    player.setVelocityX(200 * devicePixelRatio)
+                if (player.body.onFloor()){
+                    if(player.anims.currentFrame.index >= 1){
+                        player.setVelocityY(-150)
+                    }
                 }
 
-               
+                player.once('animationcomplete', function (anim,frame) {
+                    player.emit('animationcomplete_' + anim.key, frame)
+                }, player)
+            
+
+            }, player) 
+
+        // Attack 5b
+            player.once('animationcomplete_pJump', function (anim,frame) {
+    
+                    
+                    player.play({key:'pHeavyAttack'},true);
+                    
+
+                    if (player.flipX){
+                        player.setVelocityX(-50)
+                    } else {
+                        player.setVelocityX(50)
+                    }
+
+                    player.body.maxVelocity.y = 500
+
+
+                    player.once('animationcomplete', function (anim,frame) {
+                        player.emit('animationcomplete_' + anim.key, frame)
+                        player.body.maxVelocity.y = 250
+                       
+                    }, player)
+            
+
+            }, player) 
+
+            // Dash back to position
+            player.once('animationcomplete_pHeavyAttack', function (anim,frame) {
+    
+                    
+            player.play({key:'pBackDash', frameRate: 6},true);
+            
+
+                player.setVelocityX(Phaser.Math.GetSpeed(width * 1.75 - player.x, 1) * 1500)
+            
+
+            player.once('animationcomplete', function (anim,frame) {
+                player.emit('animationcomplete_' + anim.key, frame)
+                
+                
+            }, player)
+
+
+            }, player)
+
+            // Return to Idle
+            player.once('animationcomplete_pBackDash', function (anim,frame) {
+    
+                    
+            player.play({key:'pIdle', frameRate: 8},true);
+            playerAttacking = false
+            
+            enemy1GetInBattlePosition()
+
+            player.once('animationcomplete', function (anim,frame) {
+                player.emit('animationcomplete_' + anim.key, frame)
+                
+            }, player)
+
+
+            }, player)
+
+        } else {
+            // Dash back to position
+            player.once('animationcomplete_pAttack1', function (anim,frame) {
+                
+                                
+                player.play({key:'pBackDash', frameRate: 6},true);
+                
+
+                    player.setVelocityX(Phaser.Math.GetSpeed(width * 1.75 - player.x, 1) * 1500)
+                
+
+                player.once('animationcomplete', function (anim,frame) {
+                    player.emit('animationcomplete_' + anim.key, frame)
+                    
+                    
+                }, player)
+
+
+                }, player)
+
+                // Return to Idle
+                player.once('animationcomplete_pBackDash', function (anim,frame) {
+
+                        
+                player.play({key:'pIdle', frameRate: 8},true);
+                playerAttacking = false
+                
+                enemy1GetInBattlePosition()
 
                 player.once('animationcomplete', function (anim,frame) {
                     player.emit('animationcomplete_' + anim.key, frame)
                     
                 }, player)
-            } else {
-            playerAttacking = false
-            chargePower = 0
-            }
 
-                
 
-        }, player) 
+                }, player)
+        }
 
-    // Attack 5c
-    player.once('animationcomplete_pDash', function (anim,frame) {
+    }
+
+    function playerS2Combo(){
+
+    // Player Jumps to enemy
         
-        if (currentEnergy > 0){
+        player.play({key:'pJump',frameRate: 10},true);
+        
+        player.setVelocityY(-275)
+
+        if(player.anims.getName() == 'pJump' ){
+            fireTowardsTarget(player,enemy1,1,true)
             
-            player.play({key:'pAttack2',frameRate: 12},true);
+                
+        }
+
+        player.once('animationcomplete', function (anim,frame) {
+            player.emit('animationcomplete_' + anim.key, frame)
+        }, player)
+    
+
+    // Player floats in air
+        player.once('animationcomplete_pJump', function (anim,frame) {
+        
+        
+            player.play({key:'pUptoFall',frameRate: 10, repeat : 2},true);
+
+            player.setVelocityY(5)
+
+
+            player.once('animationcomplete', function (anim,frame) {
+                player.emit('animationcomplete_' + anim.key, frame)
+            }, player)
+        
+
+        }, player)
+        
+    // Attack 1
+    player.once('animationcomplete_pUptoFall', function (anim,frame) {
+        
+        
+        player.play({key:'pHeavyAttack',frameRate: 16},true);
+
+        if(player.anims.currentFrame.index >= 1){
+
+        player.setVelocityY(75)
+        }
+
+
+        player.once('animationcomplete', function (anim,frame) {
+            player.emit('animationcomplete_' + anim.key, frame)
+        }, player)
+
+
+    }, player) 
+
+    
+    /// Empowered    
+
+    if (attackChargePower / income >= 0.5){
+        // Attack 4
+            player.once('animationcomplete_pHeavyAttack', function (anim,frame) {
+            
+            
+                player.play({key:'pAttack2'},true);
+
+                player.once('animationcomplete', function (anim,frame) {
+                    player.emit('animationcomplete_' + anim.key, frame)
+                }, player)
             
 
-            if (player.flipX){
-                player.setVelocityX(-100 * devicePixelRatio)
-            } else {
-                player.setVelocityX(100 * devicePixelRatio)
-            }
+            }, player)
+        
+        // Attack 5
+            player.once('animationcomplete_pAttack2', function (anim,frame) {
+            
+            
+                player.play({key:'pDoubleAttack'},true);
 
-           
+                player.once('animationcomplete', function (anim,frame) {
+                    player.emit('animationcomplete_' + anim.key, frame)
+                }, player)
+            
+
+            }, player) 
+
+        
+
+            // Dash back to position
+            player.once('animationcomplete_pDoubleAttack', function (anim,frame) {
+
+                    
+            player.play({key:'pBackDash', frameRate: 6},true);
+            
+
+                player.setVelocityX((Phaser.Math.GetSpeed(Math.abs(Phaser.Math.FloatBetween(width * 1.6,width * 1.75)) - player.x, 1) * 1500))
+            
 
             player.once('animationcomplete', function (anim,frame) {
                 player.emit('animationcomplete_' + anim.key, frame)
                 
             }, player)
-        } else {
-            playerAttacking = false
-            chargePower = 0
-        }
 
+
+            }, player)
+
+            // Return to Idle
+            player.once('animationcomplete_pBackDash', function (anim,frame) {
+
+                    
+            player.play({key:'pIdle', frameRate: 8},true);
+            playerAttacking = false
             
+            enemy1GetInBattlePosition()
 
-    }, player) 
+            player.once('animationcomplete', function (anim,frame) {
+                player.emit('animationcomplete_' + anim.key, frame)
+                
+            }, player)
 
-    
-    } else {
-            playerAttacking = false
-            chargePower = 0
-    }
+
+            }, player)
+
+        } else {
+            // Dash back to position
+            player.once('animationcomplete_pHeavyAttack', function (anim,frame) {
+                
+                                
+                player.play({key:'pBackDash', frameRate: 6},true);
+                
+
+                    player.setVelocityX((Phaser.Math.GetSpeed(Math.abs(Phaser.Math.FloatBetween(width * 1.6,width * 1.75)) - player.x, 1) * 1500))
+                
+
+                player.once('animationcomplete', function (anim,frame) {
+                    player.emit('animationcomplete_' + anim.key, frame)
+                    
+                    
+                }, player)
+
+
+                }, player)
+
+                // Return to Idle
+                player.once('animationcomplete_pBackDash', function (anim,frame) {
+
+                        
+                player.play({key:'pIdle', frameRate: 8},true);
+                playerAttacking = false
+                
+                enemy1GetInBattlePosition()
+
+                player.once('animationcomplete', function (anim,frame) {
+                    player.emit('animationcomplete_' + anim.key, frame)
+                    
+                }, player)
+
+
+                }, player)
+        }
 
     }
 
@@ -1294,7 +1327,7 @@
     {
         
 
-        if (!playerAttacking && !playerDefending && !playerDodging && !playerCharging && !skillTreeOpen && !gameOver){
+        if (!playerChargingEnergyAttack && !playerDefending && !playerDodging && !playerCharging && !skillTreeOpen && !gameOver){
 
             
         playerVitals.decreaseLife(-lifeRegen / 5) 
@@ -1641,7 +1674,7 @@
 
         this.anims.create({
             key: 'pCrouch',
-            frames: this.anims.generateFrameNames('heroF',{prefix: 'Warrior_Crouch_', start: 1, end: 6, suffix: '.png'}),
+            frames: this.anims.generateFrameNames('heroF',{prefix: 'Warrior_Crouch_', start: 1, end: 5, suffix: '.png'}),
             frameRate: 12,
             repeat: 0
         });
@@ -1669,9 +1702,9 @@
         });
 
         this.anims.create({
-            key: 'pSpecial1',
-            frames: this.anims.generateFrameNames('heroF',{prefix: 'Warrior_Dash_', start: 5, end: 7, suffix: '.png'}),
-            frameRate: 4,
+            key: 'pDownStance',
+            frames: this.anims.generateFrameNames('heroF',{prefix: 'Warrior_Dash-Attack_', start: 1, end: 3, suffix: '.png'}),
+            frameRate: 6,
             repeat: 0,
             //delay: 1
         });
@@ -1741,8 +1774,17 @@
         });
 
         this.anims.create({
-            key: 'pChargeAttack',
+            key: 'pStance0',
             frames: this.anims.generateFrameNames('heroF',{prefix: 'Warrior_Attack_', start: 1, end: 3, suffix: '.png'}),
+            frameRate: 6,
+            repeat: 0,
+            //yoyo: true,
+            //delay: 1
+        });
+
+        this.anims.create({
+            key: 'pStance1',
+            frames: this.anims.generateFrameNames('heroF',{prefix: 'Warrior_Attack_', start: 1, end: 4, suffix: '.png'}),
             frameRate: 6,
             repeat: 0,
             //yoyo: true,
@@ -2137,12 +2179,16 @@
             player.setDragX(300)
         } else if (playerEntangled && inBattle) {
 
-            player.setDragX(1000)
+            player.setDragX(2000)
 
+        } else if (player.x > width * 1.75 && !playerAttacking){
+
+            player.setDragX(2000)
         } else {
 
-            player.setDragX(100)
+        player.setDragX(100)
         }
+
 
         if (enemy1.body.onFloor()){
             enemy1.setDragX(300)
@@ -2158,8 +2204,8 @@
                     player.once('animationcomplete', function () {
 
                     playerLanded = true
-                    player.play('pIdle',true)
-
+                    
+                    player.play({key:'pIdle'},true);
 
                     }, this);
 
@@ -2338,16 +2384,20 @@
         // console.log('Player Energy Regen: ' + energyRegen)
 
        
-        console.log('Velocity to reach Target: ' + -(Phaser.Math.GetSpeed(player.x - enemy1.x, 1) * 1500) * devicePixelRatio)
-        console.log('Player Drag X: ' + player.body.drag.x)
+        //console.log('Velocity to reach Target: ' + -(Phaser.Math.GetSpeed(player.x - enemy1.x, 1) * 1500) * devicePixelRatio)
+        //console.log('Player Drag X: ' + player.body.drag.x)
 
-        console.log('Player Entangled: ' + playerEntangled)
+        //console.log('Player Entangled: ' + playerEntangled)
 
-        console.log('Combatant Distance: ' + Math.abs(player.x - enemy1.x))
+        //console.log('Combatant Distance: ' + Math.abs(player.x - enemy1.x))
 
-        console.log('Enemy 1 Hit: ' + enemy1IsHit)
+        //console.log('Enemy 1 Hit: ' + enemy1IsHit)
 
-        console.log('Player Attack Charge: ' + attackChargePower) 
+        console.log('Attack Charge Power: ' + attackChargePower) 
+
+        console.log('Player Stance: ' + playerStance) 
+
+        console.log('Player Drag: ' + player.body.drag.x) 
 
         
 
@@ -2448,9 +2498,9 @@
   
         } else if (inBattle) {
 
-            this.woodsl2.tilePositionX = (camera.x * 0.3) * devicePixelRatio
-            this.woodsl3.tilePositionX = (camera.x * 0.6) * devicePixelRatio
-            this.woodsl4.tilePositionX = (camera.x) * devicePixelRatio
+            this.woodsl2.tilePositionX = (camera.x * 0.3) 
+            this.woodsl3.tilePositionX = (camera.x * 0.6) 
+            this.woodsl4.tilePositionX = (camera.x) 
 
             this.woodsl4.setAlpha(0.75)
 
@@ -2497,8 +2547,8 @@
                 //if(Phaser.Input.Keyboard.JustDown(cursors.up)){
                     player.chain([{key:'pJump',frameRate: 12},true,{key:'pUptoFall',frameRate: 12}],true); 
                     this.physics.moveTo(player,width * 1.45,75)
-                    player.setVelocityY(player.body.velocity.y - (175 * devicePixelRatio))
-                    //enemy1.setVelocity(-15 * devicePixelRatio)
+                    player.setVelocityY(player.body.velocity.y - 175)
+                    
                 //}
 
   
@@ -2617,101 +2667,153 @@
                     finish();
                  }, this);
             } 
+
+            if (playerStance == -1 && playerLanded && !playerAttacking){
+                player.play('pIdle',true)
+            }
   
-            // Charge Move - Energy
-
-                    // Touch controls
-
-                    energy.on('pointerdown', function(pointer){
-                        
-                        //playerStandardCombo()
-                        
-                     },this)
- 
-                     energy.on('pointerup', function(pointer){
-                         
-                         if (playerChargingEnergyAttack){
-
-                            if(attackChargePower < 50){
-                            
-                            playerStandardCombo()
-
-                            player.once('animationcomplete', function () {
-
-                                playerChargingEnergyAttack = false
-                                
-
-                            }, this);
-                                
-                        } else {
-
-                            playerDirectionalCombo()
-                            player.once('animationcomplete', function () {
-
-                            playerAttacking = false
-
-
-                            }, this);
-                            
-                        }
-
-                        attackChargePower = 0
-
-                        }
- 
-                     }, this);
-
+       
                     // Keyboard Controls
 
                     if (keyA.isDown  && (currentEnergy > 0)){
 
-                        playerChargingEnergyAttack = true
+                       
+                       if (Phaser.Input.Keyboard.JustDown(keyA) && playerStance == -1){
+                        playerStance = 0
+                        player.play({key:'pStance0', frameRate: 6},true)
+                       }
                         
+                       playerChargingEnergyAttack = true
 
-                        if (currentEnergy > 0){
-                            playerVitals.decreaseEnergy((income / 75) * (attackChargePower / 100))
+                        if (currentEnergy > 0 && playerStance == 0){
+                            playerVitals.decreaseEnergy(maxEnergy * 0.008)
+                            attackChargePower += maxEnergy * 0.008
+                        } else if (currentFocus > 0 && playerStance != 0){
+                            playerVitals.decreaseFocus(maxFocus * 0.008)
+                            attackChargePower += maxFocus * 0.008
                         }
 
-                        if(Phaser.Input.Keyboard.JustDown(keyA)){
-                        player.play('pChargeAttack',true)
-                        }
+
+                    } else if (Phaser.Input.Keyboard.JustUp(keyA)) {
                             
-                        if(attackChargePower < 100){
-                                attackChargePower += 0.5
-                        }
+                        playerAttacking = true
 
-                          
-        
-                    } else if (Phaser.Input.Keyboard.JustUp(keyA) && playerChargingEnergyAttack) {
+                            if (playerStance == 0){
+                                playerS0Combo()
+
+                            } else if (playerStance == 1){
+                                
+                            } else if (playerStance == 2){
+                                playerS2Combo()
+                            } else if (playerStance == 3){
+                                
+                            } else if (playerStance == 4){
+                                
+                            }
                         
-
-                        if(attackChargePower < 50){
                             
-                            playerStandardCombo()
 
                             player.once('animationcomplete', function () {
 
+                               
+
+                                //playerStance = 0
+                                attackChargePower = 0
                                 playerChargingEnergyAttack = false
                                 
-
-                            }, this);
                                 
-                        } else {
-
-                            playerDirectionalCombo()
-                            player.once('animationcomplete', function () {
-
-                            playerAttacking = false
-
 
                             }, this);
-                            
-                        }
 
-                        attackChargePower = 0
-                        
-      
                     }
+
+                        // Stance Selection - each character/class has 1 attack & 4 specials, each with a empowered versions (attack has multiple empowerings)
+
+                            // 1 - Left 
+                            cursors.left.on('down', function(){
+                                player.play({key:'pStance1', frameRate: 6},true)
+                                playerStance = 1
+                            })
+
+                            cursors.left.on('up', function(){
+
+                                if(!playerChargingEnergyAttack){
+                                player.stop()
+                                player.playReverse({key:'pStance1', frameRate: 6},true)
+
+                                player.once('animationcomplete', function () {
+
+                                    playerStance = -1
+
+
+                                }, this);
+                            }
+
+                                
+                            })
+
+                            
+
+
+                            // 2 - Up
+
+                            cursors.up.on('down', function(){
+                                player.play({key:'pCrouch', frameRate: 8},true)
+                                playerStance = 2
+                            })
+
+                            cursors.up.on('up', function(){
+                                player.stop()
+                                player.playReverse({key:'pCrouch', frameRate: 8},true)
+                                player.once('animationcomplete', function () {
+
+                                 playerStance = -1
+
+
+                                }, this);
+                            })
+
+                            // 3 - Right
+
+                            cursors.right.on('down', function(){
+                                player.playReverse({key:'pBackDash',frameRate:6},true)
+                                playerStance = 3
+                            })
+
+                            cursors.right.on('up', function(){
+                                player.stop()
+                                player.play({key:'pBackDash',frameRate:6},true)
+                                player.once('animationcomplete', function () {
+
+                                    playerStance = -1
+
+
+                                }, this);
+                            })
+
+
+                            // 4 - Down
+
+                            cursors.down.on('down', function(){
+                                player.play({key:'pDownStance', frameRate: 6},true)
+                                playerStance = 4
+                            })
+
+                            cursors.down.on('up', function(){
+                                player.stop()
+                                player.playReverse({key:'pDownStance', frameRate: 6},true)
+                                player.once('animationcomplete', function () {
+
+                                    playerStance = -1
+
+
+                                }, this);
+                            })
+
+                        
+
+                            
+                        
 
      
             // Focus MoveSet
