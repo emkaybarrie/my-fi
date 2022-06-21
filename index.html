@@ -1887,29 +1887,29 @@
         this.input.on('gameobjectdown', function (pointer, gameObject) {
         
 
-            gameObject.setAlpha(1);
+             gameObject.setAlpha(1);
             
-            if (gameObject == up){
-                cursors.up.isDown = true
-                cursors.up.isUp = false
-            }
+            // if (gameObject == up){
+            //     cursors.up.isDown = true
+            //     cursors.up.isUp = false
+            // }
 
-            if (gameObject == down){
-                cursors.down.isDown = true
-                cursors.down.isUp = false
+            // if (gameObject == down){
+            //     cursors.down.isDown = true
+            //     cursors.down.isUp = false
                 
                 
-            }
+            // }
 
-            if (gameObject == left){
-                cursors.left.isDown = true
-                cursors.left.isUp = false
-            } 
+            // if (gameObject == left){
+            //     cursors.left.isDown = true
+            //     cursors.left.isUp = false
+            // } 
 
-            if (gameObject == right){
-                cursors.right.isDown = true
-                cursors.right.isUp = false
-            }
+            // if (gameObject == right){
+            //     cursors.right.isDown = true
+            //     cursors.right.isUp = false
+            // }
 
             if (gameObject == energy){
                 keyA.isDown = true
@@ -1918,11 +1918,11 @@
                 
             }
 
-            if (gameObject == focusB){
-                cursors.space.isDown = true
-                // player.anims.play({key:'pChargeAttack',frameRate: 16},true);
-                cursors.space.isUp = false
-            }
+            // if (gameObject == focusB){
+            //     cursors.space.isDown = true
+            //     // player.anims.play({key:'pChargeAttack',frameRate: 16},true);
+            //     cursors.space.isUp = false
+            // }
 
             if (gameObject == skillTreeLifeIcon){
 
@@ -2003,38 +2003,38 @@
 
         gameObject.setAlpha(0.5);
 
-        if (gameObject == up){
-            cursors.up.isDown = false
-            cursors.up.isUp = true
-        }
+        // if (gameObject == up){
+        //     cursors.up.isDown = false
+        //     cursors.up.isUp = true
+        // }
 
-        if (gameObject == down){
-            cursors.down.isDown = false
-            cursors.down.isUp = true
-        }
+        // if (gameObject == down){
+        //     cursors.down.isDown = false
+        //     cursors.down.isUp = true
+        // }
 
-        if (gameObject == left){
-            cursors.left.isDown = false
-            cursors.left.isUp = true
-        }
+        // if (gameObject == left){
+        //     cursors.left.isDown = false
+        //     cursors.left.isUp = true
+        // }
 
-        if (gameObject == right){
-            cursors.right.isDown = false
-            cursors.right.isUp = true
-        }
+        // if (gameObject == right){
+        //     cursors.right.isDown = false
+        //     cursors.right.isUp = true
+        // }
 
         if (gameObject == energy){
             keyA.isDown = false
             keyA.isUp = true
         }
 
-        if (gameObject == focusB){
-            cursors.space.isDown = false
-            cursors.space.isUp = true
-            playerCharging = false
-            spotlight.intensity = 0.25
-            // keyA.isUp = true
-        }
+        // if (gameObject == focusB){
+        //     cursors.space.isDown = false
+        //     cursors.space.isUp = true
+        //     playerCharging = false
+        //     spotlight.intensity = 0.25
+        //     // keyA.isUp = true
+        // }
 
         });
 
@@ -2042,31 +2042,31 @@
 
             gameObject.setAlpha(0.5);
 
-            if (gameObject == up){
-                cursors.up.isDown = false
-            }
+            // if (gameObject == up){
+            //     cursors.up.isDown = false
+            // }
 
-            if (gameObject == down){
-                cursors.down.isDown = false
-            }
+            // if (gameObject == down){
+            //     cursors.down.isDown = false
+            // }
 
-            if (gameObject == left){
-                cursors.left.isDown = false
-            }
+            // if (gameObject == left){
+            //     cursors.left.isDown = false
+            // }
 
-            if (gameObject == right){
-                cursors.right.isDown = false
-            }
+            // if (gameObject == right){
+            //     cursors.right.isDown = false
+            // }
 
             if (gameObject == energy){
                 keyA.isDown = false
                 keyA.isUp = true
             }
 
-            if (gameObject == focusB){
-                cursors.space.isDown = false
-                // keyA.isUp = true
-            }
+            // if (gameObject == focusB){
+            //     cursors.space.isDown = false
+            //     // keyA.isUp = true
+            // }
 
             });
             
@@ -2676,24 +2676,16 @@
                     // Power Selection
 
                     // Touch
-                    energy.on('down', function(){
+                    energy.on('pointerdown', function(){
                         if (playerStance == -1){
                         playerStance = 0
                         player.play({key:'pStance0', frameRate: 6},true)
                        }
                         
-                       playerChargingEnergyAttack = true
-
-                        if (currentEnergy > 0 && playerStance == 0){
-                            playerVitals.decreaseEnergy(maxEnergy * 0.008)
-                            attackChargePower += maxEnergy * 0.008
-                        } else if (currentFocus > 0 && playerStance != 0){
-                            playerVitals.decreaseFocus(maxFocus * 0.008)
-                            attackChargePower += maxFocus * 0.008
-                        }
+                    
                     })
 
-                    energy.on('up', function(){
+                    energy.on('pointerup', function(){
                         playerAttacking = true
 
                         if (playerStance == 0){
@@ -2715,7 +2707,7 @@
 
                         
 
-                            //playerStance = 0
+                      
                             attackChargePower = 0
                             playerChargingEnergyAttack = false
                             
@@ -2807,12 +2799,12 @@
 
                             // Touch
 
-                            left.on('down', function(){
+                            left.on('pointerdown', function(){
                                 player.play({key:'pStance1', frameRate: 6},true)
                                 playerStance = 1
                             })
 
-                            left.on('up', function(){
+                            left.on('pointerup', function(){
 
                                 if(!playerChargingEnergyAttack){
                                 player.stop()
@@ -2851,12 +2843,12 @@
                             })
 
                             // Touch
-                            up.on('down', function(){
+                            up.on('pointerdown', function(){
                                 player.play({key:'pCrouch', frameRate: 8},true)
                                 playerStance = 2
                             })
 
-                            up.on('up', function(){
+                            up.on('pointerup', function(){
                                 player.stop()
                                 player.playReverse({key:'pCrouch', frameRate: 8},true)
                                 player.once('animationcomplete', function () {
@@ -2888,12 +2880,12 @@
 
                             // Touch
 
-                            right.on('down', function(){
+                            right.on('pointerdown', function(){
                                 player.playReverse({key:'pBackDash',frameRate:6},true)
                                 playerStance = 3
                             })
 
-                            right.on('up', function(){
+                            right.on('pointerup', function(){
                                 player.stop()
                                 player.play({key:'pBackDash',frameRate:6},true)
                                 player.once('animationcomplete', function () {
@@ -2925,12 +2917,12 @@
                             })
 
                             // Touch
-                            down.on('down', function(){
+                            down.on('pointerdown', function(){
                                 player.play({key:'pDownStance', frameRate: 6},true)
                                 playerStance = 4
                             })
 
-                            down.on('up', function(){
+                            down.on('pointerup', function(){
                                 player.stop()
                                 player.playReverse({key:'pDownStance', frameRate: 6},true)
                                 player.once('animationcomplete', function () {
