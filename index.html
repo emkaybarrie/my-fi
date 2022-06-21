@@ -39,8 +39,8 @@
             pixelArt: 0,
             autoCenter: Phaser.Scale.CENTER_BOTH,
             width:  DEFAULT_WIDTH, //592, //window.innerWidth * window.devicePixelRatio
-            height: DEFAULT_HEIGHT, //272, //window.innerHeight * window.devicePixelRatio
-            resolution: window.devicePixelRatio || 1
+            height: DEFAULT_HEIGHT //272, //window.innerHeight * window.devicePixelRatio
+            //resolution: window.devicePixelRatio || 1
         },
         input: {
             keyboard: true,
@@ -1450,7 +1450,7 @@
     function create ()
     {
 
-        songChoice = 8 // Math.floor(Phaser.Math.Between(1,8))
+        songChoice = Math.floor(Phaser.Math.Between(1,8))
         bgMusic = this.sound.add("bgMusic"+songChoice, { loop: true, volume: 0.75});
 
 
