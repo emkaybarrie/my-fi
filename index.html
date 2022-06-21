@@ -934,16 +934,18 @@
 
     // Player Jumps to enemy
         
-        player.play({key:'pJump',frameRate: 10},true);
+        player.play({key:'pJump',frameRate: 8},true);
+        
         
         player.setVelocityY(-275)
-        
 
         if(player.anims.getName() == 'pJump'){
             fireTowardsTarget(player,enemy1,1,true)
             
                 
         }
+
+        
 
         player.once('animationcomplete', function (anim,frame) {
             player.emit('animationcomplete_' + anim.key, frame)
@@ -954,9 +956,8 @@
         player.once('animationcomplete_pJump', function (anim,frame) {
         
         
-            player.play({key:'pUptoFall',frameRate: 10, repeat : 2},true);
+            player.play({key:'pUptoFall',frameRate: 10, repeat : 1},true);
 
-            player.setVelocityY(-10)
 
 
             player.once('animationcomplete', function (anim,frame) {
@@ -970,11 +971,12 @@
     player.once('animationcomplete_pUptoFall', function (anim,frame) {
         
         
-        player.play({key:'pHeavyAttack',frameRate: 16},true);
+        player.play({key:'pHeavyAttack',frameRate: 12},true);
 
         if(player.anims.currentFrame.index >= 1){
 
-        player.setVelocityY(75)
+        player.setVelocityY(125)
+        //player.setVelocityX(-125)
         }
 
 
@@ -1462,7 +1464,7 @@
         charge = this.sound.add("charge",{volume: 0.5})
         
 
-        this.physics.world.setBounds(0, -200, width * 3,  height + 200);
+        this.physics.world.setBounds(0, 0, width * 3,  height);
         
         this.woodsl1 = this.add.tileSprite(0,0, width * 3, height, 'woodsl1').setOrigin(0,0).setScrollFactor(0)
         this.woodsl2 = this.add.tileSprite(0,0, width * 3, height, 'woodsl2').setOrigin(0,0).setScrollFactor(0.25)
@@ -1489,7 +1491,7 @@
         
         player.setBounceY(0.15);
         player.setCollideWorldBounds(true);
-        player.body.setBoundsRectangle(new Phaser.Geom.Rectangle(width, -200, width, height + 200));
+        player.body.setBoundsRectangle(new Phaser.Geom.Rectangle(width, 0, width, height));
 
        
 
@@ -2182,7 +2184,7 @@
 
             player.setDragX(2000)
 
-        } else if (player.x > width * 1.75 && !playerAttacking){
+        } else if (player.x > width * 1.85 ){
 
             player.setDragX(2000)
         } else {
@@ -2832,6 +2834,7 @@
                             })
 
                             cursors.up.on('up', function(){
+                                if(!playerChargingEnergyAttack){
                                 player.stop()
                                 player.playReverse({key:'pCrouch', frameRate: 8},true)
                                 player.once('animationcomplete', function () {
@@ -2840,6 +2843,7 @@
 
 
                                 }, this);
+                            }
                             })
 
                             // Touch
@@ -2849,6 +2853,7 @@
                             })
 
                             up.on('pointerup', function(){
+                                if(!playerChargingEnergyAttack){
                                 player.stop()
                                 player.playReverse({key:'pCrouch', frameRate: 8},true)
                                 player.once('animationcomplete', function () {
@@ -2857,6 +2862,7 @@
 
 
                                 }, this);
+                            }
                             })
 
                             // 3 - Right
@@ -2868,6 +2874,7 @@
                             })
 
                             cursors.right.on('up', function(){
+                                if(!playerChargingEnergyAttack){
                                 player.stop()
                                 player.play({key:'pBackDash',frameRate:6},true)
                                 player.once('animationcomplete', function () {
@@ -2876,6 +2883,7 @@
 
 
                                 }, this);
+                            }
                             })
 
                             // Touch
@@ -2886,6 +2894,7 @@
                             })
 
                             right.on('pointerup', function(){
+                                if(!playerChargingEnergyAttack){
                                 player.stop()
                                 player.play({key:'pBackDash',frameRate:6},true)
                                 player.once('animationcomplete', function () {
@@ -2894,6 +2903,7 @@
 
 
                                 }, this);
+                            }
                             })
 
 
@@ -2906,6 +2916,7 @@
                             })
 
                             cursors.down.on('up', function(){
+                                if(!playerChargingEnergyAttack){
                                 player.stop()
                                 player.playReverse({key:'pDownStance', frameRate: 6},true)
                                 player.once('animationcomplete', function () {
@@ -2914,6 +2925,7 @@
 
 
                                 }, this);
+                            }
                             })
 
                             // Touch
@@ -2923,6 +2935,7 @@
                             })
 
                             down.on('pointerup', function(){
+                                if(!playerChargingEnergyAttack){
                                 player.stop()
                                 player.playReverse({key:'pDownStance', frameRate: 6},true)
                                 player.once('animationcomplete', function () {
@@ -2931,6 +2944,7 @@
 
 
                                 }, this);
+                            }
                             })
 
                         
