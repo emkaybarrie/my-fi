@@ -2673,7 +2673,57 @@
                 player.play('pIdle',true)
             }
   
-       
+                    // Power Selection
+
+                    // Touch
+                    energy.on('down', function(){
+                        if (playerStance == -1){
+                        playerStance = 0
+                        player.play({key:'pStance0', frameRate: 6},true)
+                       }
+                        
+                       playerChargingEnergyAttack = true
+
+                        if (currentEnergy > 0 && playerStance == 0){
+                            playerVitals.decreaseEnergy(maxEnergy * 0.008)
+                            attackChargePower += maxEnergy * 0.008
+                        } else if (currentFocus > 0 && playerStance != 0){
+                            playerVitals.decreaseFocus(maxFocus * 0.008)
+                            attackChargePower += maxFocus * 0.008
+                        }
+                    })
+
+                    energy.on('up', function(){
+                        playerAttacking = true
+
+                        if (playerStance == 0){
+                            playerS0Combo()
+
+                        } else if (playerStance == 1){
+                            
+                        } else if (playerStance == 2){
+                            playerS2Combo()
+                        } else if (playerStance == 3){
+                            
+                        } else if (playerStance == 4){
+                            
+                        }
+
+
+
+                        player.once('animationcomplete', function () {
+
+                        
+
+                            //playerStance = 0
+                            attackChargePower = 0
+                            playerChargingEnergyAttack = false
+                            
+                            
+
+                        }, this);
+                    })
+
                     // Keyboard Controls
 
                     if (keyA.isDown  && (currentEnergy > 0)){
@@ -2731,6 +2781,9 @@
                         // Stance Selection - each character/class has 1 attack & 4 specials, each with a empowered versions (attack has multiple empowerings)
 
                             // 1 - Left 
+
+                            // Keyboard
+
                             cursors.left.on('down', function(){
                                 player.play({key:'pStance1', frameRate: 6},true)
                                 playerStance = 1
@@ -2749,8 +2802,30 @@
 
                                 }, this);
                             }
+  
+                            })
 
-                                
+                            // Touch
+
+                            left.on('down', function(){
+                                player.play({key:'pStance1', frameRate: 6},true)
+                                playerStance = 1
+                            })
+
+                            left.on('up', function(){
+
+                                if(!playerChargingEnergyAttack){
+                                player.stop()
+                                player.playReverse({key:'pStance1', frameRate: 6},true)
+
+                                player.once('animationcomplete', function () {
+
+                                    playerStance = -1
+
+
+                                }, this);
+                            }
+  
                             })
 
                             
@@ -2758,6 +2833,7 @@
 
                             // 2 - Up
 
+                            // Keyboard
                             cursors.up.on('down', function(){
                                 player.play({key:'pCrouch', frameRate: 8},true)
                                 playerStance = 2
@@ -2774,8 +2850,26 @@
                                 }, this);
                             })
 
+                            // Touch
+                            up.on('down', function(){
+                                player.play({key:'pCrouch', frameRate: 8},true)
+                                playerStance = 2
+                            })
+
+                            up.on('up', function(){
+                                player.stop()
+                                player.playReverse({key:'pCrouch', frameRate: 8},true)
+                                player.once('animationcomplete', function () {
+
+                                 playerStance = -1
+
+
+                                }, this);
+                            })
+
                             // 3 - Right
 
+                            // Keyboard
                             cursors.right.on('down', function(){
                                 player.playReverse({key:'pBackDash',frameRate:6},true)
                                 playerStance = 3
@@ -2792,15 +2886,51 @@
                                 }, this);
                             })
 
+                            // Touch
+
+                            right.on('down', function(){
+                                player.playReverse({key:'pBackDash',frameRate:6},true)
+                                playerStance = 3
+                            })
+
+                            right.on('up', function(){
+                                player.stop()
+                                player.play({key:'pBackDash',frameRate:6},true)
+                                player.once('animationcomplete', function () {
+
+                                    playerStance = -1
+
+
+                                }, this);
+                            })
+
 
                             // 4 - Down
 
+                            // Keyboard
                             cursors.down.on('down', function(){
                                 player.play({key:'pDownStance', frameRate: 6},true)
                                 playerStance = 4
                             })
 
                             cursors.down.on('up', function(){
+                                player.stop()
+                                player.playReverse({key:'pDownStance', frameRate: 6},true)
+                                player.once('animationcomplete', function () {
+
+                                    playerStance = -1
+
+
+                                }, this);
+                            })
+
+                            // Touch
+                            down.on('down', function(){
+                                player.play({key:'pDownStance', frameRate: 6},true)
+                                playerStance = 4
+                            })
+
+                            down.on('up', function(){
                                 player.stop()
                                 player.playReverse({key:'pDownStance', frameRate: 6},true)
                                 player.once('animationcomplete', function () {
