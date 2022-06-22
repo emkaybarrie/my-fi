@@ -2087,7 +2087,7 @@ if (attackChargePower / income >= 0.5){
             frames: this.anims.generateFrameNames('doomsayer',{prefix: 'death', start: 1, end: 10}),
             frameRate: 12,
             repeat: 0,
-            hideOnComplete: true
+            hideOnComplete: false
             
         });
 
@@ -2921,9 +2921,6 @@ if (attackChargePower / income >= 0.5){
                 enemy1.anims.play({key:'eRun',frameRate: 12},true);
 
 
-
-
-                
                 modeSwitch()
 
             }
