@@ -1585,9 +1585,9 @@
         spendingBuffIcon = this.add.image(growingBuffIcon.x + 95,camera.scrollY + 25,'spendingBuffIcon').setDepth(4).setScale(0.5)
 
         moveBox = this.add.image(0, 0, 'energyMoveBox2').setDepth(4).setAlpha(0).setScale(0).setOrigin(0,0)
-        moveNameText = this.add.text(0, 0, "Deadly Combat Assualt").setFontFamily('Revalia').setFontSize(11).setColor('#FFFFFF').setDepth(4).setOrigin(0,0);
-        moveText = this.add.text(0, 0, "Move descripotion line 1\nMove description line 2").setFontFamily('Revalia').setFontSize(11).setColor('#FFFFFF').setDepth(4);
-        moveTypeIcon = this.add.image(0,0,'spendingBuffIcon').setDepth(4).setScale(0.35).setOrigin(0,0)
+        moveNameText = this.add.text(0, 0, "Deadly Combat Assualt").setFontFamily('Revalia').setFontSize(11).setColor('#FFFFFF').setDepth(4).setOrigin(0,0).setAlpha(0);
+        moveText = this.add.text(0, 0, "Move descripotion line 1\nMove description line 2").setFontFamily('Revalia').setFontSize(11).setColor('#FFFFFF').setDepth(4).setAlpha(0);
+        moveTypeIcon = this.add.image(0,0,'spendingBuffIcon').setDepth(4).setScale(0.35).setOrigin(0,0).setAlpha(0)
         
 
         
@@ -2812,11 +2812,19 @@
                                 this.tweens.add({
                                     targets     : moveBox,
                                     alpha       : 1, 
-                                    scaleX       : 0.075,
+                                    scaleX       : 0.055,
                                     scaleY       : 0.075,
                                     ease        : 'Linear',
                                     duration    : 150,
                                 });
+
+                                this.tweens.add({
+                                    targets     : [moveTypeIcon,moveNameText,moveText],
+                                    alpha       : 1,
+                                    ease        : 'Linear',
+                                    duration    : 200,
+                                });
+
                             } else if (playerStance == -1){
                                 this.tweens.add({
                                     targets     : moveBox ,
@@ -2824,6 +2832,13 @@
                                     scaleX       : 0,
                                     ease        : 'Linear',
                                     duration    : 50,
+                                });
+
+                                this.tweens.add({
+                                    targets     : [moveTypeIcon,moveNameText,moveText],
+                                    alpha       : 0,
+                                    ease        : 'Linear',
+                                    duration    : 25,
                                 });
                             }
 
