@@ -90,6 +90,8 @@
     var playerStance = 0
     var playerEntangled = false
     var enableEntanglement = false
+
+    var powerSource
     
     var playerSpeed 
     var expToLevelUp = 100
@@ -724,7 +726,7 @@
         sprite.setVelocityX(-(Phaser.Math.GetSpeed(sprite.x - target.x, seconds) * (seconds * d)))
     }
 
-    function playerS0Combo(){
+    function playerS1Combo(){
 
     // Player runs to enemy
         var distance = Math.abs(player.x - enemy1.x)
@@ -2771,10 +2773,10 @@
                         
                        playerChargingEnergyAttack = true
 
-                        if (currentEnergy > 0 && playerStance == 0){
+                        if (currentEnergy > 0 && powerSource == 1){
                             playerVitals.decreaseEnergy(maxEnergy * 0.008)
                             attackChargePower += maxEnergy * 0.008
-                        } else if (currentFocus > 0 && playerStance != 0){
+                        } else if (currentFocus > 0 && powerSource == 2){
                             playerVitals.decreaseFocus(maxFocus * 0.008)
                             attackChargePower += maxFocus * 0.008
                         }
@@ -2785,10 +2787,10 @@
                         playerAttacking = true
 
                             if (playerStance == 0){
-                                playerS0Combo()
+                                
 
                             } else if (playerStance == 1){
-                                
+                                playerS1Combo()
                             } else if (playerStance == 2){
                                 playerS2Combo()
                             } else if (playerStance == 3){
@@ -2880,8 +2882,9 @@
                             cursors.left.on('down', function(){
                                 
                                 player.play({key:'pStance1', frameRate: 6},true)
-                                moveBox.setTexture('focusMoveBox2')
-                                moveTypeIcon.setTexture('growingBuffIcon')
+                                moveBox.setTexture('energyMoveBox2')
+                                moveTypeIcon.setTexture('spendingBuffIcon')
+                                powerSource = 1
                                 playerStance = 1
                             })
                             
@@ -2906,8 +2909,9 @@
 
                             left.on('pointerdown', function(){
                                 player.play({key:'pStance1', frameRate: 6},true)
-                                moveBox.setTexture('focusMoveBox2')
-                                moveTypeIcon.setTexture('growingBuffIcon')
+                                moveBox.setTexture('energyMoveBox2')
+                                moveTypeIcon.setTexture('spendingBuffIcon')
+                                powerSource = 1
                                 playerStance = 1
                             })
 
@@ -2938,6 +2942,7 @@
                                 player.play({key:'pCrouch', frameRate: 8},true)
                                 moveBox.setTexture('energyMoveBox2')
                                 moveTypeIcon.setTexture('spendingBuffIcon')
+                                powerSource = 1
                                 playerStance = 2
                             })
 
@@ -2959,6 +2964,7 @@
                                 player.play({key:'pCrouch', frameRate: 8},true)
                                 moveBox.setTexture('energyMoveBox2')
                                 moveTypeIcon.setTexture('spendingBuffIcon')
+                                powerSource = 1
                                 playerStance = 2
                             })
 
@@ -2982,6 +2988,7 @@
                                 player.playReverse({key:'pBackDash',frameRate:6},true)
                                 moveBox.setTexture('focusMoveBox2')
                                 moveTypeIcon.setTexture('growingBuffIcon')
+                                powerSource = 2
                                 playerStance = 3
                             })
 
@@ -3004,6 +3011,7 @@
                                 player.playReverse({key:'pBackDash',frameRate:6},true)
                                 moveBox.setTexture('focusMoveBox2')
                                 moveTypeIcon.setTexture('growingBuffIcon')
+                                powerSource = 2
                                 playerStance = 3
                             })
 
@@ -3026,8 +3034,9 @@
                             // Keyboard
                             cursors.down.on('down', function(){
                                 player.play({key:'pDownStance', frameRate: 6},true)
-                                moveBox.setTexture('energyMoveBox2')
-                                moveTypeIcon.setTexture('spendingBuffIcon')
+                                moveBox.setTexture('focusMoveBox2')
+                                moveTypeIcon.setTexture('growingBuffIcon')
+                                powerSource = 2
                                 playerStance = 4
                             })
 
@@ -3047,8 +3056,9 @@
                             // Touch
                             down.on('pointerdown', function(){
                                 player.play({key:'pDownStance', frameRate: 6},true)
-                                moveBox.setTexture('energyMoveBox2')
-                                moveTypeIcon.setTexture('spendingBuffIcon')
+                                moveBox.setTexture('focusMoveBox2')
+                                moveTypeIcon.setTexture('growingBuffIcon')
+                                powerSource = 2
                                 playerStance = 4
                             })
 
