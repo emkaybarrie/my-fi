@@ -1584,7 +1584,10 @@
         growingBuffIcon = this.add.image(storingBuffIcon.x + 100,camera.scrollY + 25,'growingBuffIcon').setDepth(4).setScale(0.5)
         spendingBuffIcon = this.add.image(growingBuffIcon.x + 95,camera.scrollY + 25,'spendingBuffIcon').setDepth(4).setScale(0.5)
 
-        moveBox = this.add.image(player.x, player.y, 'energyMoveBox2').setDepth(4).setAlpha(0).setScale(0)
+        moveBox = this.add.image(0, 0, 'energyMoveBox2').setDepth(4).setAlpha(0).setScale(0).setOrigin(0,0)
+        moveNameText = this.add.text(0, 0, "Deadly Combat Assualt").setFontFamily('Revalia').setFontSize(11).setColor('#FFFFFF').setDepth(4).setOrigin(0,0);
+        moveText = this.add.text(0, 0, "Move descripotion line 1\nMove description line 2").setFontFamily('Revalia').setFontSize(11).setColor('#FFFFFF').setDepth(4);
+        moveTypeIcon = this.add.image(0,0,'spendingBuffIcon').setDepth(4).setScale(0.35).setOrigin(0,0)
         
 
         
@@ -2321,8 +2324,19 @@
         highScoreText.y = camera.scrollY + (height - 57)
         highScoreText.setText('High Score: ' + Math.floor(highScore))
 
-        moveBox.x = player.x - 100
-        moveBox.y = player.y - 35
+        moveBox.x = player.x - 175
+        moveBox.y = player.y - 45
+
+        moveTypeIcon.x = moveBox.x 
+        moveTypeIcon.y = moveBox.y + 1
+
+        moveNameText.x = moveTypeIcon.x + 32.5
+        moveNameText.y = moveTypeIcon.y + 10
+
+        moveText.x = moveNameText.x
+        moveText.y = moveNameText.y + 22
+
+        
 
         
 
@@ -2793,22 +2807,23 @@
 
                             // Stance Selection Move Box animation
 
-                            if (playerStance >= 0){
+                            if (playerStance >= 0 && inBattle){
                                 
                                 this.tweens.add({
                                     targets     : moveBox,
                                     alpha       : 1, 
-                                    scale       : 0.05,
+                                    scaleX       : 0.075,
+                                    scaleY       : 0.075,
                                     ease        : 'Linear',
-                                    duration    : 250,
+                                    duration    : 150,
                                 });
                             } else if (playerStance == -1){
                                 this.tweens.add({
                                     targets     : moveBox ,
                                     alpha       : 0, 
-                                    scale       : 0,
+                                    scaleX       : 0,
                                     ease        : 'Linear',
-                                    duration    : 250,
+                                    duration    : 50,
                                 });
                             }
 
