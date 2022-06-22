@@ -726,6 +726,170 @@
         sprite.setVelocityX(-(Phaser.Math.GetSpeed(sprite.x - target.x, seconds) * (seconds * d)))
     }
 
+    function playerS0Combo(){
+
+// Player runs to enemy
+    var distance = Math.abs(player.x - enemy1.x)
+    
+    if (distance > 175){
+        player.play({key:'pRun',frameRate: 10},true);
+    } else {
+        player.play({key:'pDash',frameRate: 12},true);
+    }
+    
+
+    if(player.anims.getName() == 'pRun' || player.anims.getName() == 'pDash'){
+           fireTowardsTarget(player,enemy1,1)
+            
+    }
+
+    player.once('animationcomplete', function (anim,frame) {
+        player.emit('animationcomplete_' + anim.key, frame)
+    }, player)
+   
+
+// Attack 1a
+    player.once('animationcomplete_pRun', function (anim,frame) {
+    
+    
+        player.play({key:'pAttack1',frameRate: 10},true);
+
+
+        player.once('animationcomplete', function (anim,frame) {
+            player.emit('animationcomplete_' + anim.key, frame)
+        }, player)
+    
+
+    }, player)
+    
+// Attack 1b
+player.once('animationcomplete_pDash', function (anim,frame) {
+    
+    
+    player.play({key:'pAttack1',frameRate: 10},true);
+
+
+    player.once('animationcomplete', function (anim,frame) {
+        player.emit('animationcomplete_' + anim.key, frame)
+    }, player)
+
+
+}, player) 
+
+// Attack 2
+    player.once('animationcomplete_pAttack1', function (anim,frame) {
+    
+    
+        player.play({key:'pAttack2'},true);
+
+        if(player.anims.getName() == 'pAttack2'){
+            
+                player.setVelocityX(-15)
+              
+        }
+
+        player.once('animationcomplete', function (anim,frame) {
+            player.emit('animationcomplete_' + anim.key, frame)
+        }, player)
+    
+
+    }, player) 
+
+/// Empowered    
+
+if (attackChargePower / income >= 0.5){
+    // Attack 3
+        player.once('animationcomplete_pAttack2', function (anim,frame) {
+        
+        
+            player.play({key:'pHeavyAttack'},true);
+
+            player.once('animationcomplete', function (anim,frame) {
+                player.emit('animationcomplete_' + anim.key, frame)
+            }, player)
+        
+
+        }, player)
+    
+   
+
+        // Dash back to position
+        player.once('animationcomplete_pHeavyAttack', function (anim,frame) {
+
+                
+        player.play({key:'pBackDash', frameRate: 6},true);
+        
+
+            player.setVelocityX(Phaser.Math.GetSpeed(width * 1.75 - player.x, 1) * 1750)
+        
+
+        player.once('animationcomplete', function (anim,frame) {
+            player.emit('animationcomplete_' + anim.key, frame)
+            
+            
+        }, player)
+
+
+        }, player)
+
+        // Return to Idle
+        player.once('animationcomplete_pBackDash', function (anim,frame) {
+
+                
+        player.play({key:'pIdle', frameRate: 8},true);
+        playerAttacking = false
+        
+        enemy1GetInBattlePosition()
+
+        player.once('animationcomplete', function (anim,frame) {
+            player.emit('animationcomplete_' + anim.key, frame)
+            
+        }, player)
+
+
+        }, player)
+
+    } else {
+        // Dash back to position
+        player.once('animationcomplete_pHeavyAttack', function (anim,frame) {
+            
+                            
+            player.play({key:'pBackDash', frameRate: 6},true);
+            
+
+                player.setVelocityX(Phaser.Math.GetSpeed(width * 1.75 - player.x, 1) * 1750)
+            
+
+            player.once('animationcomplete', function (anim,frame) {
+                player.emit('animationcomplete_' + anim.key, frame)
+                
+                
+            }, player)
+
+
+            }, player)
+
+            // Return to Idle
+            player.once('animationcomplete_pBackDash', function (anim,frame) {
+
+                    
+            player.play({key:'pIdle', frameRate: 8},true);
+            playerAttacking = false
+            
+            enemy1GetInBattlePosition()
+
+            player.once('animationcomplete', function (anim,frame) {
+                player.emit('animationcomplete_' + anim.key, frame)
+                
+            }, player)
+
+
+            }, player)
+    }
+
+}
+
+
     function playerS1Combo(){
 
     // Player runs to enemy
@@ -866,7 +1030,7 @@
             player.play({key:'pBackDash', frameRate: 6},true);
             
 
-                player.setVelocityX(Phaser.Math.GetSpeed(width * 1.75 - player.x, 1) * 2000)
+                player.setVelocityX(Phaser.Math.GetSpeed(width * 1.75 - player.x, 1) * 1750)
             
 
             player.once('animationcomplete', function (anim,frame) {
@@ -903,7 +1067,7 @@
                 player.play({key:'pBackDash', frameRate: 6},true);
                 
 
-                    player.setVelocityX(Phaser.Math.GetSpeed(width * 1.75 - player.x, 1) * 2000)
+                    player.setVelocityX(Phaser.Math.GetSpeed(width * 1.75 - player.x, 1) * 1750)
                 
 
                 player.once('animationcomplete', function (anim,frame) {
@@ -1031,7 +1195,7 @@
             player.play({key:'pBackDash', frameRate: 6},true);
             
 
-                player.setVelocityX((Phaser.Math.GetSpeed(Math.abs(Phaser.Math.FloatBetween(width * 1.6,width * 1.75)) - player.x, 1) * 2000))
+                player.setVelocityX((Phaser.Math.GetSpeed(Math.abs(Phaser.Math.FloatBetween(width * 1.6,width * 1.75)) - player.x, 1) * 1750))
             
 
             player.once('animationcomplete', function (anim,frame) {
@@ -1067,7 +1231,7 @@
                 player.play({key:'pBackDash', frameRate: 6},true);
                 
 
-                    player.setVelocityX((Phaser.Math.GetSpeed(Math.abs(Phaser.Math.FloatBetween(width * 1.6,width * 1.75)) - player.x, 1) * 2000))
+                    player.setVelocityX((Phaser.Math.GetSpeed(Math.abs(Phaser.Math.FloatBetween(width * 1.6,width * 1.75)) - player.x, 1) * 1750))
                 
 
                 player.once('animationcomplete', function (anim,frame) {
@@ -1596,7 +1760,7 @@
         stance1Name = 'Deadly Combat Assault'
         stance1Text = "Unleash a deadly flurry of attacks\n\nIncreases in damage with \nconsecutive use"
         stance2Name = 'Eagle strike'
-        stance2Text = "Gain height before striking \ndown with deadly accuracy\n\nCan't be blocked"
+        stance2Text = "Gain height before striking \ndown with deadly accuracy\n\nCan't be evaded"
         stance3Name = 'Poised Strike'
         stance3Text = "Brace and counter the next hit\n\nIncreased crit chance and chance \nto Execute"
         stance4Name = 'Thunder Strike'
@@ -1920,27 +2084,27 @@
 
              gameObject.setAlpha(1);
             
-            // if (gameObject == up){
-            //     cursors.up.isDown = true
-            //     cursors.up.isUp = false
-            // }
+            if (gameObject == up){
+                cursors.up.isDown = true
+                cursors.up.isUp = false
+            }
 
-            // if (gameObject == down){
-            //     cursors.down.isDown = true
-            //     cursors.down.isUp = false
+            if (gameObject == down){
+                cursors.down.isDown = true
+                cursors.down.isUp = false
                 
                 
-            // }
+            }
 
-            // if (gameObject == left){
-            //     cursors.left.isDown = true
-            //     cursors.left.isUp = false
-            // } 
+            if (gameObject == left){
+                cursors.left.isDown = true
+                cursors.left.isUp = false
+            } 
 
-            // if (gameObject == right){
-            //     cursors.right.isDown = true
-            //     cursors.right.isUp = false
-            // }
+            if (gameObject == right){
+                cursors.right.isDown = true
+                cursors.right.isUp = false
+            }
 
             if (gameObject == energy){
                 keyA.isDown = true
@@ -2034,25 +2198,25 @@
 
         gameObject.setAlpha(0.5);
 
-        // if (gameObject == up){
-        //     cursors.up.isDown = false
-        //     cursors.up.isUp = true
-        // }
+        if (gameObject == up){
+            cursors.up.isDown = false
+            cursors.up.isUp = true
+        }
 
-        // if (gameObject == down){
-        //     cursors.down.isDown = false
-        //     cursors.down.isUp = true
-        // }
+        if (gameObject == down){
+            cursors.down.isDown = false
+            cursors.down.isUp = true
+        }
 
-        // if (gameObject == left){
-        //     cursors.left.isDown = false
-        //     cursors.left.isUp = true
-        // }
+        if (gameObject == left){
+            cursors.left.isDown = false
+            cursors.left.isUp = true
+        }
 
-        // if (gameObject == right){
-        //     cursors.right.isDown = false
-        //     cursors.right.isUp = true
-        // }
+        if (gameObject == right){
+            cursors.right.isDown = false
+            cursors.right.isUp = true
+        }
 
         if (gameObject == energy){
             keyA.isDown = false
@@ -2073,21 +2237,21 @@
 
             gameObject.setAlpha(0.5);
 
-            // if (gameObject == up){
-            //     cursors.up.isDown = false
-            // }
+            if (gameObject == up){
+                cursors.up.isDown = false
+            }
 
-            // if (gameObject == down){
-            //     cursors.down.isDown = false
-            // }
+            if (gameObject == down){
+                cursors.down.isDown = false
+            }
 
-            // if (gameObject == left){
-            //     cursors.left.isDown = false
-            // }
+            if (gameObject == left){
+                cursors.left.isDown = false
+            }
 
-            // if (gameObject == right){
-            //     cursors.right.isDown = false
-            // }
+            if (gameObject == right){
+                cursors.right.isDown = false
+            }
 
             if (gameObject == energy){
                 keyA.isDown = false
@@ -2724,6 +2888,7 @@
                     energy.on('pointerdown', function(){
                         if (playerStance == -1){
                         playerStance = 0
+                        powerSource = 1
                         player.play({key:'pStance0', frameRate: 6},true)
                        }
                         
@@ -2734,8 +2899,7 @@
                         playerAttacking = true
 
                         if (playerStance == 0){
-                            
-
+                            playerS0Combo()
                         } else if (playerStance == 1){
                             playerS1Combo()
                         } else if (playerStance == 2){
@@ -2768,6 +2932,7 @@
                        
                        if (Phaser.Input.Keyboard.JustDown(keyA) && playerStance == -1){
                         playerStance = 0
+                        powerSource = 1
                         player.play({key:'pStance0', frameRate: 6},true)
                        }
                         
@@ -2787,8 +2952,7 @@
                         playerAttacking = true
 
                             if (playerStance == 0){
-                                
-
+                                playerS0Combo()
                             } else if (playerStance == 1){
                                 playerS1Combo()
                             } else if (playerStance == 2){
@@ -2857,7 +3021,6 @@
                             if (playerStance == 0){
                                 moveNameText.setText(stance0Name)
                                 moveText.setText(stance0Text)
-
                             } else if (playerStance == 1){
                                 moveNameText.setText(stance1Name)
                                 moveText.setText(stance1Text)
