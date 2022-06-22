@@ -2851,6 +2851,7 @@
                                 
                                 player.play({key:'pStance1', frameRate: 6},true)
                                 moveBox.setTexture('focusMoveBox2')
+                                moveTypeIcon.setTexture('growingBuffIcon')
                                 playerStance = 1
                             })
                             
@@ -2876,6 +2877,7 @@
                             left.on('pointerdown', function(){
                                 player.play({key:'pStance1', frameRate: 6},true)
                                 moveBox.setTexture('focusMoveBox2')
+                                moveTypeIcon.setTexture('growingBuffIcon')
                                 playerStance = 1
                             })
 
@@ -2905,6 +2907,7 @@
                                 
                                 player.play({key:'pCrouch', frameRate: 8},true)
                                 moveBox.setTexture('energyMoveBox2')
+                                moveTypeIcon.setTexture('spendingBuffIcon')
                                 playerStance = 2
                             })
 
@@ -2925,6 +2928,7 @@
                             up.on('pointerdown', function(){
                                 player.play({key:'pCrouch', frameRate: 8},true)
                                 moveBox.setTexture('energyMoveBox2')
+                                moveTypeIcon.setTexture('spendingBuffIcon')
                                 playerStance = 2
                             })
 
@@ -2947,6 +2951,7 @@
                             cursors.right.on('down', function(){
                                 player.playReverse({key:'pBackDash',frameRate:6},true)
                                 moveBox.setTexture('focusMoveBox2')
+                                moveTypeIcon.setTexture('growingBuffIcon')
                                 playerStance = 3
                             })
 
@@ -2968,6 +2973,7 @@
                             right.on('pointerdown', function(){
                                 player.playReverse({key:'pBackDash',frameRate:6},true)
                                 moveBox.setTexture('focusMoveBox2')
+                                moveTypeIcon.setTexture('growingBuffIcon')
                                 playerStance = 3
                             })
 
@@ -2991,6 +2997,7 @@
                             cursors.down.on('down', function(){
                                 player.play({key:'pDownStance', frameRate: 6},true)
                                 moveBox.setTexture('energyMoveBox2')
+                                moveTypeIcon.setTexture('spendingBuffIcon')
                                 playerStance = 4
                             })
 
@@ -3011,6 +3018,7 @@
                             down.on('pointerdown', function(){
                                 player.play({key:'pDownStance', frameRate: 6},true)
                                 moveBox.setTexture('energyMoveBox2')
+                                moveTypeIcon.setTexture('spendingBuffIcon')
                                 playerStance = 4
                             })
 
