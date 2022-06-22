@@ -2098,13 +2098,19 @@ if (attackChargePower / income >= 0.5){
         // Touch Screen Support
         
         this.input.addPointer(8);
-        up = this.add.image(-100, -100, 'up').setInteractive().setDepth(3).setScale(0.75).setAlpha(0.5);
-        down = this.add.image(-100, -100, 'down').setInteractive().setDepth(3).setScale(0.75).setAlpha(0.5);
-        left = this.add.image(-100, -100, 'left').setInteractive().setDepth(3).setScale(0.75).setAlpha(0.5);
-        right = this.add.image(-100, -100, 'right').setInteractive().setDepth(3).setScale(0.75).setAlpha(0.5);
-        deadSpace = this.add.image(-100, -100, 'deadSpace').setDepth(4).setScale(0.75).setVisible(0);
-        charge = this.add.image(-100, -100, 'charge').setInteractive().setDepth(3).setScale(.75).setAlpha(0.5).setTint(0xd9e650);
-        //focusB = this.add.image(-100, -100, 'focus').setInteractive().setDepth(3).setScale(.75).setAlpha(0.5).setTint(0xf1c232);
+        //Anchor buttons
+        left = this.add.image(camera.scrollX + (width * 0.1), camera.scrollY + (height - 90), 'left').setInteractive().setDepth(3).setScale(0.75).setAlpha(0.5);
+        charge = this.add.image(camera.scrollX + (width * 0.825), camera.scrollY + (height - 106), 'charge').setInteractive().setDepth(3).setScale(.75).setAlpha(0.5).setTint(0xd9e650);
+
+        deadSpace = this.add.image(left.x + 35.5, left.y, 'deadSpace').setDepth(4).setScale(0.75).setVisible(0);
+        right = this.add.image(deadSpace.x + 35.5, deadSpace.y, 'right').setInteractive().setDepth(3).setScale(0.75).setAlpha(0.5);
+        up = this.add.image(deadSpace.x, deadSpace.y - 40.5, 'up').setInteractive().setDepth(3).setScale(0.75).setAlpha(0.5);
+        down = this.add.image(deadSpace.x, left.y + 40.5 , 'down').setInteractive().setDepth(3).setScale(0.75).setAlpha(0.5);
+        
+        
+        
+        
+        
 
         this.input.on('pointerdown', function (pointer) {
         
@@ -2558,7 +2564,7 @@ if (attackChargePower / income >= 0.5){
         right.setInteractive(1).setVisible(1)
         up.setInteractive(1).setVisible(1)
         down.setInteractive(1).setVisible(1)
-        //focusB.setInteractive(1).setVisible(1)
+     
 
         
         } else {
@@ -2567,7 +2573,7 @@ if (attackChargePower / income >= 0.5){
             right.disableInteractive().setVisible(0)
             up.disableInteractive().setVisible(0)
             down.disableInteractive().setVisible(0)
-            //focusB.disableInteractive().setVisible(0)
+            
 
         }
 
