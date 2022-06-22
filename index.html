@@ -108,7 +108,7 @@
    
     var finisherNext = false
    
-    var playerChargingEnergyAttack
+    
 
     var playerDefending = false
     var playerParrying = false
@@ -784,7 +784,7 @@ player.once('animationcomplete_pDash', function (anim,frame) {
 
         if(player.anims.getName() == 'pAttack2'){
             
-                player.setVelocityX(-15)
+                player.setVelocityX(-25)
               
         }
 
@@ -851,7 +851,7 @@ if (attackChargePower / income >= 0.5){
 
     } else {
         // Dash back to position
-        player.once('animationcomplete_pHeavyAttack', function (anim,frame) {
+        player.once('animationcomplete_pAttack2', function (anim,frame) {
             
                             
             player.play({key:'pBackDash', frameRate: 6},true);
@@ -1499,7 +1499,7 @@ if (attackChargePower / income >= 0.5){
     {
         
 
-        if (!playerChargingEnergyAttack && !playerDefending && !playerDodging && !playerCharging && !skillTreeOpen && !gameOver){
+        if (!playerDefending && !playerDodging && !playerCharging && !skillTreeOpen && !gameOver){
 
             
         playerVitals.decreaseLife(-lifeRegen / 5) 
@@ -2916,9 +2916,9 @@ if (attackChargePower / income >= 0.5){
 
                         
 
-                      
+                            playerStance = -1
                             attackChargePower = 0
-                            playerChargingEnergyAttack = false
+                            playerCharging = false
                             
                             
 
@@ -2936,7 +2936,7 @@ if (attackChargePower / income >= 0.5){
                         player.play({key:'pStance0', frameRate: 6},true)
                        }
                         
-                       playerChargingEnergyAttack = true
+                       playerCharging = true
 
                         if (currentEnergy > 0 && powerSource == 1){
                             playerVitals.decreaseEnergy(maxEnergy * 0.008)
@@ -2971,7 +2971,7 @@ if (attackChargePower / income >= 0.5){
 
                                 playerStance = -1
                                 attackChargePower = 0
-                                playerChargingEnergyAttack = false
+                                playerCharging = false
                                 
                                 
 
@@ -3054,7 +3054,7 @@ if (attackChargePower / income >= 0.5){
 
                             cursors.left.on('up', function(){
 
-                                if(!playerChargingEnergyAttack && playerStance == 1){
+                                if(!playerCharging && playerStance == 1){
                                 player.stop()
                                 player.playReverse({key:'pStance1', frameRate: 12},true)
 
@@ -3080,7 +3080,7 @@ if (attackChargePower / income >= 0.5){
 
                             left.on('pointerup', function(){
 
-                                if(!playerChargingEnergyAttack && playerStance == 1){
+                                if(!playerCharging && playerStance == 1){
                                 player.stop()
                                 player.playReverse({key:'pStance1', frameRate: 12},true)
 
@@ -3110,7 +3110,7 @@ if (attackChargePower / income >= 0.5){
                             })
 
                             cursors.up.on('up', function(){
-                                if(!playerChargingEnergyAttack && playerStance == 2){
+                                if(!playerCharging && playerStance == 2){
                                 player.stop()
                                 player.playReverse({key:'pCrouch', frameRate: 16},true)
                                 player.once('animationcomplete', function () {
@@ -3132,7 +3132,7 @@ if (attackChargePower / income >= 0.5){
                             })
 
                             up.on('pointerup', function(){
-                                if(!playerChargingEnergyAttack && playerStance == 2){
+                                if(!playerCharging && playerStance == 2){
                                 player.stop()
                                 player.playReverse({key:'pCrouch', frameRate: 16},true)
                                 player.once('animationcomplete', function () {
@@ -3156,7 +3156,7 @@ if (attackChargePower / income >= 0.5){
                             })
 
                             cursors.right.on('up', function(){
-                                if(!playerChargingEnergyAttack && playerStance == 3){
+                                if(!playerCharging && playerStance == 3){
                                 player.stop()
                                 player.play({key:'pBackDash',frameRate:12},true)
                                 player.once('animationcomplete', function () {
@@ -3179,7 +3179,7 @@ if (attackChargePower / income >= 0.5){
                             })
 
                             right.on('pointerup', function(){
-                                if(!playerChargingEnergyAttack && playerStance == 3){
+                                if(!playerCharging && playerStance == 3){
                                 player.stop()
                                 player.play({key:'pBackDash',frameRate:12},true)
                                 player.once('animationcomplete', function () {
@@ -3204,7 +3204,7 @@ if (attackChargePower / income >= 0.5){
                             })
 
                             cursors.down.on('up', function(){
-                                if(!playerChargingEnergyAttack && playerStance == 4){
+                                if(!playerCharging && playerStance == 4){
                                 player.stop()
                                 player.playReverse({key:'pDownStance', frameRate: 12},true)
                                 player.once('animationcomplete', function () {
@@ -3226,7 +3226,7 @@ if (attackChargePower / income >= 0.5){
                             })
 
                             down.on('pointerup', function(){
-                                if(!playerChargingEnergyAttack && playerStance == 4){
+                                if(!playerCharging && playerStance == 4){
                                 player.stop()
                                 player.playReverse({key:'pDownStance', frameRate: 12},true)
                                 player.once('animationcomplete', function () {
