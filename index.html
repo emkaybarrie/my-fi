@@ -2258,7 +2258,7 @@ if (attackChargePower / income >= 0.5){
             cursors.right.isUp = true
         }
 
-        if (gameObject == energy){
+        if (gameObject == charge){
             keyA.isDown = false
             keyA.isUp = true
         }
@@ -2293,7 +2293,7 @@ if (attackChargePower / income >= 0.5){
                 cursors.right.isDown = false
             }
 
-            if (gameObject == energy){
+            if (gameObject == charge){
                 keyA.isDown = false
                 keyA.isUp = true
             }
@@ -2910,11 +2910,15 @@ if (attackChargePower / income >= 0.5){
 
                     // Touch
                     charge.on('pointerdown', function(){
+
+
                         if (playerStance == -1){
                         playerStance = 0
                         powerSource = 1
                         player.play({key:'pStance0', frameRate: 6},true)
                        }
+
+                       playerCharging = true
                         
                     
                     })
