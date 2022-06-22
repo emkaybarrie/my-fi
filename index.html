@@ -1584,8 +1584,8 @@ if (attackChargePower / income >= 0.5){
         this.load.image('deadSpace', 'assets/controls/buttonDeadSpace.png');
         this.load.image('left', 'assets/controls/shadedDark05.png');
         this.load.image('right', 'assets/controls/shadedDark06.png');
-        this.load.image('energy', 'assets/controls/shadedDark36.png');
-        this.load.image('focus', 'assets/controls/shadedDark37.png');
+        this.load.image('charge', 'assets/controls/ach_00005.png');
+        
 
         this.load.image('energyMoveBox1', 'assets/energyMoveBox2.png');
         this.load.image('energyMoveBox2', 'assets/energyMoveBox2.png');
@@ -2069,8 +2069,8 @@ if (attackChargePower / income >= 0.5){
         left = this.add.image(-100, -100, 'left').setInteractive().setDepth(3).setScale(0.75).setAlpha(0.5);
         right = this.add.image(-100, -100, 'right').setInteractive().setDepth(3).setScale(0.75).setAlpha(0.5);
         deadSpace = this.add.image(-100, -100, 'deadSpace').setDepth(4).setScale(0.75).setVisible(0);
-        energy = this.add.image(-100, -100, 'energy').setInteractive().setDepth(3).setScale(.75).setAlpha(0.5).setTint(0x93c47d);
-        focusB = this.add.image(-100, -100, 'focus').setInteractive().setDepth(3).setScale(.75).setAlpha(0.5).setTint(0xf1c232);
+        charge = this.add.image(-100, -100, 'charge').setInteractive().setDepth(3).setScale(.75).setAlpha(0.5).setTint(0xd9e650);
+        //focusB = this.add.image(-100, -100, 'focus').setInteractive().setDepth(3).setScale(.75).setAlpha(0.5).setTint(0xf1c232);
 
         this.input.on('pointerdown', function (pointer) {
         
@@ -2106,7 +2106,7 @@ if (attackChargePower / income >= 0.5){
                 cursors.right.isUp = false
             }
 
-            if (gameObject == energy){
+            if (gameObject == charge){
                 keyA.isDown = true
                 
                 keyA.isUp = false
@@ -2519,21 +2519,21 @@ if (attackChargePower / income >= 0.5){
         if(IS_TOUCH){
         left.setInteractive(1).setVisible(1)
         left.setInteractive(1).setVisible(1)
-        energy.setInteractive(1).setVisible(1)
+        charge.setInteractive(1).setVisible(1)
 
         right.setInteractive(1).setVisible(1)
         up.setInteractive(1).setVisible(1)
         down.setInteractive(1).setVisible(1)
-        focusB.setInteractive(1).setVisible(1)
+        //focusB.setInteractive(1).setVisible(1)
 
         
         } else {
             left.disableInteractive().setVisible(0)
-            energy.disableInteractive().setVisible(0)
+            charge.disableInteractive().setVisible(0)
             right.disableInteractive().setVisible(0)
             up.disableInteractive().setVisible(0)
             down.disableInteractive().setVisible(0)
-            focusB.disableInteractive().setVisible(0)
+            //focusB.disableInteractive().setVisible(0)
 
         }
 
@@ -2549,22 +2549,22 @@ if (attackChargePower / income >= 0.5){
         
 
         left.x = camera.scrollX + (width * 0.1)
-        energy.x = camera.scrollX + (width * 0.9) 
+        charge.x = camera.scrollX + (width * 0.9) 
 
         deadSpace.x = left.x + 35.5
         right.x = deadSpace.x + 35.5
         up.x = deadSpace.x
         down.x = deadSpace.x
-        focusB.x = energy.x - 75
+        //focusB.x = charge.x - 75
 
         left.y = camera.scrollY + (height - 85)
-        energy.y = camera.scrollY + (height - 106)
+        charge.y = camera.scrollY + (height - 106)
 
         deadSpace.y = left.y
         right.y = deadSpace.y
         up.y = deadSpace.y - 40.5
         down.y = left.y + 40.5
-        focusB.y = energy.y + 53
+        //focusB.y = charge.y + 53
 
  
         if (exp >= expToLevelUp){
@@ -2885,7 +2885,7 @@ if (attackChargePower / income >= 0.5){
                     // Power Selection
 
                     // Touch
-                    energy.on('pointerdown', function(){
+                    charge.on('pointerdown', function(){
                         if (playerStance == -1){
                         playerStance = 0
                         powerSource = 1
@@ -2895,7 +2895,7 @@ if (attackChargePower / income >= 0.5){
                     
                     })
 
-                    energy.on('pointerup', function(){
+                    charge.on('pointerup', function(){
                         playerAttacking = true
 
                         if (playerStance == 0){
