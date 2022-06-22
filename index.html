@@ -537,6 +537,7 @@
    function modeSwitch(){
 
             hideHUD()
+            IS_TOUCH = false
 
             if (inBattle){
                     
@@ -567,6 +568,22 @@
                     playerIcon.x = camera.scrollX + 85
                     playerIcon.y = camera.scrollY + 55
 
+                    // Anchor buttons
+                    left.x = camera.scrollX + (width * 0.15)
+                    charge.x = camera.scrollX + (width * 0.825) 
+                    left.y = camera.scrollY + (height - 90)
+                    charge.y = camera.scrollY + (height - 106)
+                    // Remaining buttons reference anchor buttons
+                    deadSpace.x = left.x + 35.5
+                    right.x = deadSpace.x + 35.5
+                    up.x = deadSpace.x
+                    down.x = deadSpace.x
+
+                    deadSpace.y = left.y
+                    right.y = deadSpace.y
+                    up.y = deadSpace.y - 40.5
+                    down.y = left.y + 40.5 
+
                     camera.flash(250,1000)
                     camera.on('cameraflashcomplete', function () {
                     playerStance = -1
@@ -574,8 +591,25 @@
                     },this)
                     
                 } else {
+                    
                     playerIcon.x = camera.scrollX + 25
                     playerIcon.y = camera.scrollY + 35
+
+                    // Anchor buttons
+                    left.x = camera.scrollX + (width * 0.1)
+                    charge.x = camera.scrollX + (width * 0.825) 
+                    left.y = camera.scrollY + (height - 90)
+                    charge.y = camera.scrollY + (height - 106)
+                    // Remaining buttons reference anchor buttons
+                    deadSpace.x = left.x + 35.5
+                    right.x = deadSpace.x + 35.5
+                    up.x = deadSpace.x
+                    down.x = deadSpace.x
+
+                    deadSpace.y = left.y
+                    right.y = deadSpace.y
+                    up.y = deadSpace.y - 40.5
+                    down.y = left.y + 40.5 
                     
                     showHUD()
                     
@@ -2377,7 +2411,7 @@ if (attackChargePower / income >= 0.5){
 
             player.setDragX(2000)
 
-        } else if (player.x > width * 1.85 ){
+        } else if (player.x > width * 1.75 ){
 
             player.setDragX(2000)
         } else {
@@ -2547,24 +2581,8 @@ if (attackChargePower / income >= 0.5){
         }
 
         
-
-        left.x = camera.scrollX + (width * 0.1)
-        charge.x = camera.scrollX + (width * 0.9) 
-
-        deadSpace.x = left.x + 35.5
-        right.x = deadSpace.x + 35.5
-        up.x = deadSpace.x
-        down.x = deadSpace.x
-        //focusB.x = charge.x - 75
-
-        left.y = camera.scrollY + (height - 85)
-        charge.y = camera.scrollY + (height - 106)
-
-        deadSpace.y = left.y
-        right.y = deadSpace.y
-        up.y = deadSpace.y - 40.5
-        down.y = left.y + 40.5
-        //focusB.y = charge.y + 53
+        
+       
 
  
         if (exp >= expToLevelUp){
