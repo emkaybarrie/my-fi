@@ -153,9 +153,9 @@
     var playerIsHit = false
     var enemy1IsHit = false
    
-    var enemy1Life = (income * 0.3)
+    var enemy1Life = (income * 0.8)
     var enemy1Alive
-    var e1MaxLife = (income * 0.3)
+    var e1MaxLife = (income * 0.8)
     
 
     function reset(){
@@ -221,8 +221,8 @@
         playerIsHit = false
         enemy1IsHit = false
     
-        enemy1Life = (income * 0.3)
-        e1MaxLife = (income * 0.3)
+        enemy1Life = (income * 0.8)
+        e1MaxLife = (income * 0.8)
         enemy1Alive = true
         
     }
@@ -1529,7 +1529,7 @@ if (attackChargePower / income >= 0.5){
 
        if (inBattle == false) {
 
-        e1MaxLife = (income * 0.3) * chaosFactor
+        e1MaxLife = (income * 0.8) * chaosFactor
         enemy1Life = e1MaxLife
         enemy1Vitals.p = 38 / e1MaxLife
 
@@ -2921,7 +2921,7 @@ if (attackChargePower / income >= 0.5){
                 enemy1.y = height - 85
                 
                 
-                e1MaxLife = Phaser.Math.Between(income * 0.3, (income * 0.3) * chaosFactor)
+                e1MaxLife = Phaser.Math.Between(income * 0.8, (income * 0.8) * chaosFactor)
                 enemy1Life = e1MaxLife
                 enemy1Vitals.p = 38 / e1MaxLife
                 enemy1Alive = true
