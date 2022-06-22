@@ -2324,13 +2324,13 @@
         highScoreText.y = camera.scrollY + (height - 57)
         highScoreText.setText('High Score: ' + Math.floor(highScore))
 
-        moveBox.x = player.x - 175
-        moveBox.y = player.y - 45
+        moveBox.x = player.x - 200
+        moveBox.y = player.y - 75
 
-        moveTypeIcon.x = moveBox.x 
-        moveTypeIcon.y = moveBox.y + 1
+        moveTypeIcon.x = moveBox.x + 5
+        moveTypeIcon.y = moveBox.y + 5
 
-        moveNameText.x = moveTypeIcon.x + 32.5
+        moveNameText.x = moveTypeIcon.x + 50
         moveNameText.y = moveTypeIcon.y + 10
 
         moveText.x = moveNameText.x
@@ -2811,9 +2811,9 @@
                                 
                                 this.tweens.add({
                                     targets     : moveBox,
-                                    alpha       : 1, 
-                                    scaleX       : 0.055,
-                                    scaleY       : 0.075,
+                                    alpha       : 0.75, 
+                                    scaleX       : 0.065,
+                                    scaleY       : 0.085,
                                     ease        : 'Linear',
                                     duration    : 150,
                                 });
