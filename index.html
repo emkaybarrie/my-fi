@@ -1421,6 +1421,12 @@
         this.load.image('energy', 'assets/controls/shadedDark36.png');
         this.load.image('focus', 'assets/controls/shadedDark37.png');
 
+        this.load.image('energyMoveBox1', 'assets/energyMoveBox2.png');
+        this.load.image('energyMoveBox2', 'assets/energyMoveBox2.png');
+        this.load.image('focusMoveBox1', 'assets/focusMoveBox1.png');
+        this.load.image('focusMoveBox2', 'assets/focusMoveBox2.png');
+
+
         this.load.image('dawnl1', 'assets/dawn1.png');
         this.load.image('dawnl2', 'assets/dawn2.png');
         this.load.image('dawnl3', 'assets/dawn3.png');
@@ -1578,6 +1584,9 @@
         growingBuffIcon = this.add.image(storingBuffIcon.x + 100,camera.scrollY + 25,'growingBuffIcon').setDepth(4).setScale(0.5)
         spendingBuffIcon = this.add.image(growingBuffIcon.x + 95,camera.scrollY + 25,'spendingBuffIcon').setDepth(4).setScale(0.5)
 
+        moveBox = this.add.image(player.x, player.y, 'energyMoveBox2').setDepth(4).setAlpha(0).setScale(0)
+        
+
         
 
         if (storingBuffTier == 0){
@@ -1617,6 +1626,8 @@
         skillTreeLifeIcon = this.add.image(width * 0.25, height / 2,'storingBuffIcon').setDepth(4).setScale(1).setVisible(0).setAlpha(0.75)
         skillTreeFocusIcon = this.add.image(width * 0.5 , height / 2,'growingBuffIcon').setDepth(4).setScale(1).setVisible(0).setAlpha(0.75)
         skillTreeEnergyIcon = this.add.image(width * 0.75, height / 2,'spendingBuffIcon').setDepth(4).setScale(1).setVisible(0).setAlpha(0.75)
+
+        
 
         // 96 seconds = 1 year
         // 8 seconds = 1 month
@@ -2310,6 +2321,9 @@
         highScoreText.y = camera.scrollY + (height - 57)
         highScoreText.setText('High Score: ' + Math.floor(highScore))
 
+        moveBox.x = player.x - 100
+        moveBox.y = player.y - 35
+
         
 
         if(IS_TOUCH){
@@ -2777,6 +2791,27 @@
 
                         // Stance Selection - each character/class has 1 attack & 4 specials, each with a empowered versions (attack has multiple empowerings)
 
+                            // Stance Selection Move Box animation
+
+                            if (playerStance >= 0){
+                                
+                                this.tweens.add({
+                                    targets     : moveBox,
+                                    alpha       : 1, 
+                                    scale       : 0.05,
+                                    ease        : 'Linear',
+                                    duration    : 250,
+                                });
+                            } else if (playerStance == -1){
+                                this.tweens.add({
+                                    targets     : moveBox ,
+                                    alpha       : 0, 
+                                    scale       : 0,
+                                    ease        : 'Linear',
+                                    duration    : 250,
+                                });
+                            }
+
                             // 1 - Left 
 
                             // Keyboard
@@ -2785,6 +2820,7 @@
                             cursors.left.on('down', function(){
                                 
                                 player.play({key:'pStance1', frameRate: 6},true)
+                                moveBox.setTexture('focusMoveBox2')
                                 playerStance = 1
                             })
                             
@@ -2809,6 +2845,7 @@
 
                             left.on('pointerdown', function(){
                                 player.play({key:'pStance1', frameRate: 6},true)
+                                moveBox.setTexture('focusMoveBox2')
                                 playerStance = 1
                             })
 
@@ -2835,8 +2872,9 @@
 
                             // Keyboard
                             cursors.up.on('down', function(){
-                                player.stop()
+                                
                                 player.play({key:'pCrouch', frameRate: 8},true)
+                                moveBox.setTexture('energyMoveBox2')
                                 playerStance = 2
                             })
 
@@ -2856,6 +2894,7 @@
                             // Touch
                             up.on('pointerdown', function(){
                                 player.play({key:'pCrouch', frameRate: 8},true)
+                                moveBox.setTexture('energyMoveBox2')
                                 playerStance = 2
                             })
 
@@ -2877,6 +2916,7 @@
                             // Keyboard
                             cursors.right.on('down', function(){
                                 player.playReverse({key:'pBackDash',frameRate:6},true)
+                                moveBox.setTexture('focusMoveBox2')
                                 playerStance = 3
                             })
 
@@ -2897,6 +2937,7 @@
 
                             right.on('pointerdown', function(){
                                 player.playReverse({key:'pBackDash',frameRate:6},true)
+                                moveBox.setTexture('focusMoveBox2')
                                 playerStance = 3
                             })
 
@@ -2919,6 +2960,7 @@
                             // Keyboard
                             cursors.down.on('down', function(){
                                 player.play({key:'pDownStance', frameRate: 6},true)
+                                moveBox.setTexture('energyMoveBox2')
                                 playerStance = 4
                             })
 
@@ -2938,6 +2980,7 @@
                             // Touch
                             down.on('pointerdown', function(){
                                 player.play({key:'pDownStance', frameRate: 6},true)
+                                moveBox.setTexture('energyMoveBox2')
                                 playerStance = 4
                             })
 
