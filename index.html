@@ -541,6 +541,7 @@
                     inBattle = false
                     camera.zoomTo(1,2000)
                     camera.centerOn(width * 1.5, 0)
+                    player.body.setBoundsRectangle(new Phaser.Geom.Rectangle(width, 0, width, height));
                     
                     
             } else if (!inBattle) {
@@ -550,6 +551,8 @@
                     camera.centerOn(width * 1.5, 0)
                     enemy1GetInBattlePosition()
                     playerGetInBattlePosition()
+                    player.body.setBoundsRectangle(new Phaser.Geom.Rectangle(width * 1.1, 0, width * 0.8, height));
+                    
                     
 
             }
@@ -976,7 +979,7 @@
         if(player.anims.currentFrame.index >= 1){
 
         player.setVelocityY(125)
-        //player.setVelocityX(-125)
+        
         }
 
 
@@ -2762,7 +2765,7 @@
 
                                
 
-                                //playerStance = 0
+                                playerStance = -1
                                 attackChargePower = 0
                                 playerChargingEnergyAttack = false
                                 
@@ -2778,14 +2781,17 @@
 
                             // Keyboard
 
+                            
                             cursors.left.on('down', function(){
+                                
                                 player.play({key:'pStance1', frameRate: 6},true)
                                 playerStance = 1
                             })
+                            
 
                             cursors.left.on('up', function(){
 
-                                if(!playerChargingEnergyAttack){
+                                if(!playerChargingEnergyAttack && playerStance == 1){
                                 player.stop()
                                 player.playReverse({key:'pStance1', frameRate: 6},true)
 
@@ -2808,7 +2814,7 @@
 
                             left.on('pointerup', function(){
 
-                                if(!playerChargingEnergyAttack){
+                                if(!playerChargingEnergyAttack && playerStance == 1){
                                 player.stop()
                                 player.playReverse({key:'pStance1', frameRate: 6},true)
 
@@ -2829,12 +2835,13 @@
 
                             // Keyboard
                             cursors.up.on('down', function(){
+                                player.stop()
                                 player.play({key:'pCrouch', frameRate: 8},true)
                                 playerStance = 2
                             })
 
                             cursors.up.on('up', function(){
-                                if(!playerChargingEnergyAttack){
+                                if(!playerChargingEnergyAttack && playerStance == 2){
                                 player.stop()
                                 player.playReverse({key:'pCrouch', frameRate: 8},true)
                                 player.once('animationcomplete', function () {
@@ -2853,7 +2860,7 @@
                             })
 
                             up.on('pointerup', function(){
-                                if(!playerChargingEnergyAttack){
+                                if(!playerChargingEnergyAttack && playerStance == 2){
                                 player.stop()
                                 player.playReverse({key:'pCrouch', frameRate: 8},true)
                                 player.once('animationcomplete', function () {
@@ -2874,7 +2881,7 @@
                             })
 
                             cursors.right.on('up', function(){
-                                if(!playerChargingEnergyAttack){
+                                if(!playerChargingEnergyAttack && playerStance == 3){
                                 player.stop()
                                 player.play({key:'pBackDash',frameRate:6},true)
                                 player.once('animationcomplete', function () {
@@ -2894,7 +2901,7 @@
                             })
 
                             right.on('pointerup', function(){
-                                if(!playerChargingEnergyAttack){
+                                if(!playerChargingEnergyAttack && playerStance == 3){
                                 player.stop()
                                 player.play({key:'pBackDash',frameRate:6},true)
                                 player.once('animationcomplete', function () {
@@ -2916,7 +2923,7 @@
                             })
 
                             cursors.down.on('up', function(){
-                                if(!playerChargingEnergyAttack){
+                                if(!playerChargingEnergyAttack && playerStance == 4){
                                 player.stop()
                                 player.playReverse({key:'pDownStance', frameRate: 6},true)
                                 player.once('animationcomplete', function () {
@@ -2935,7 +2942,7 @@
                             })
 
                             down.on('pointerup', function(){
-                                if(!playerChargingEnergyAttack){
+                                if(!playerChargingEnergyAttack && playerStance == 4){
                                 player.stop()
                                 player.playReverse({key:'pDownStance', frameRate: 6},true)
                                 player.once('animationcomplete', function () {
