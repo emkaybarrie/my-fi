@@ -1585,11 +1585,21 @@
         spendingBuffIcon = this.add.image(growingBuffIcon.x + 95,camera.scrollY + 25,'spendingBuffIcon').setDepth(4).setScale(0.5)
 
         moveBox = this.add.image(0, 0, 'energyMoveBox2').setDepth(4).setAlpha(0).setScale(0).setOrigin(0,0)
-        moveNameText = this.add.text(0, 0, "Deadly Combat Assualt").setFontFamily('Revalia').setFontSize(11).setColor('#FFFFFF').setDepth(4).setOrigin(0,0).setAlpha(0);
-        moveText = this.add.text(0, 0, "Move descripotion line 1\nMove description line 2").setFontFamily('Revalia').setFontSize(11).setColor('#FFFFFF').setDepth(4).setAlpha(0);
+        moveNameText = this.add.text(0, 0, "Deadly Combat Assault").setFontFamily('Revalia').setFontSize(12).setColor('#FFFFFF').setDepth(4).setOrigin(0,0).setAlpha(0);
+        moveText = this.add.text(0, 0, "Move descripotion line 1\nMove description line 2").setFontFamily('Revalia').setFontSize(10).setColor('#FFFFFF').setDepth(4).setAlpha(0);
         moveTypeIcon = this.add.image(0,0,'spendingBuffIcon').setDepth(4).setScale(0.35).setOrigin(0,0).setAlpha(0)
         
-
+        stance0Name = 'Normal Attack'
+        stance0Text = "When in doubt, swinging the \npointy end never fails\n\nCan start a combo"
+        stance1Name = 'Deadly Combat Assault'
+        stance1Text = "Unleash a deadly flurry \nof attacks\n\nIncreases in damage with consecutive use"
+        stance2Name = 'Eagle strike'
+        stance2Text = "Gain height before striking \ndown with deadly accuracy\n\nCan't be blocked"
+        stance3Name = 'Poised Strike'
+        stance3Text = "Brace and counter the next hit\n\nIncreased crit chance and \nchance to Execute"
+        stance4Name = 'Thunder Strike'
+        stance4Text = "Rain thunderous rage down on \nenemies in an area\n\nCan shock"
+   
         
 
         if (storingBuffTier == 0){
@@ -2813,7 +2823,7 @@
                                     targets     : moveBox,
                                     alpha       : 0.75, 
                                     scaleX       : 0.065,
-                                    scaleY       : 0.085,
+                                    scaleY       : 0.1,
                                     ease        : 'Linear',
                                     duration    : 150,
                                 });
@@ -2841,6 +2851,26 @@
                                     duration    : 25,
                                 });
                             }
+
+                            if (playerStance == 0){
+                                moveNameText.setText(stance0Name)
+                                moveText.setText(stance0Text)
+
+                            } else if (playerStance == 1){
+                                moveNameText.setText(stance1Name)
+                                moveText.setText(stance1Text)
+                            } else if (playerStance == 2){
+                                moveNameText.setText(stance2Name)
+                                moveText.setText(stance2Text)
+                            } else if (playerStance == 3){
+                                moveNameText.setText(stance3Name)
+                                moveText.setText(stance3Text)
+                            } else if (playerStance == 4){
+                                moveNameText.setText(stance4Name)
+                                moveText.setText(stance4Text)
+                            }
+
+                            
 
                             // 1 - Left 
 
