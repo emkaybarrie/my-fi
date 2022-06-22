@@ -3049,18 +3049,34 @@ if (attackChargePower / income >= 0.5){
                             if (playerStance == 0){
                                 moveNameText.setText(stance0Name)
                                 moveText.setText(stance0Text)
+
+                                moveBox.setTexture('energyMoveBox2')
+                                moveTypeIcon.setTexture('spendingBuffIcon')
                             } else if (playerStance == 1){
                                 moveNameText.setText(stance1Name)
                                 moveText.setText(stance1Text)
+
+                                moveBox.setTexture('energyMoveBox2')
+                                moveTypeIcon.setTexture('spendingBuffIcon')
+
                             } else if (playerStance == 2){
                                 moveNameText.setText(stance2Name)
                                 moveText.setText(stance2Text)
+
+                                moveBox.setTexture('energyMoveBox2')
+                                moveTypeIcon.setTexture('spendingBuffIcon')
                             } else if (playerStance == 3){
                                 moveNameText.setText(stance3Name)
                                 moveText.setText(stance3Text)
+
+                                moveBox.setTexture('focusMoveBox2')
+                                moveTypeIcon.setTexture('growingBuffIcon')
                             } else if (playerStance == 4){
                                 moveNameText.setText(stance4Name)
                                 moveText.setText(stance4Text)
+
+                                moveBox.setTexture('focusMoveBox2')
+                                moveTypeIcon.setTexture('growingBuffIcon')
                             }
 
                             
@@ -3073,8 +3089,6 @@ if (attackChargePower / income >= 0.5){
                             cursors.left.on('down', function(){
                                 
                                 player.play({key:'pStance1', frameRate: 6},true)
-                                moveBox.setTexture('energyMoveBox2')
-                                moveTypeIcon.setTexture('spendingBuffIcon')
                                 powerSource = 1
                                 playerStance = 1
                             })
@@ -3100,8 +3114,7 @@ if (attackChargePower / income >= 0.5){
 
                             left.on('pointerdown', function(){
                                 player.play({key:'pStance1', frameRate: 6},true)
-                                moveBox.setTexture('energyMoveBox2')
-                                moveTypeIcon.setTexture('spendingBuffIcon')
+
                                 powerSource = 1
                                 playerStance = 1
                             })
@@ -3131,8 +3144,7 @@ if (attackChargePower / income >= 0.5){
                             cursors.up.on('down', function(){
                                 
                                 player.play({key:'pCrouch', frameRate: 8},true)
-                                moveBox.setTexture('energyMoveBox2')
-                                moveTypeIcon.setTexture('spendingBuffIcon')
+
                                 powerSource = 1
                                 playerStance = 2
                             })
@@ -3153,8 +3165,7 @@ if (attackChargePower / income >= 0.5){
                             // Touch
                             up.on('pointerdown', function(){
                                 player.play({key:'pCrouch', frameRate: 8},true)
-                                moveBox.setTexture('energyMoveBox2')
-                                moveTypeIcon.setTexture('spendingBuffIcon')
+
                                 powerSource = 1
                                 playerStance = 2
                             })
@@ -3177,8 +3188,7 @@ if (attackChargePower / income >= 0.5){
                             // Keyboard
                             cursors.right.on('down', function(){
                                 player.playReverse({key:'pBackDash',frameRate:6},true)
-                                moveBox.setTexture('focusMoveBox2')
-                                moveTypeIcon.setTexture('growingBuffIcon')
+                            
                                 powerSource = 2
                                 playerStance = 3
                             })
@@ -3200,8 +3210,7 @@ if (attackChargePower / income >= 0.5){
 
                             right.on('pointerdown', function(){
                                 player.playReverse({key:'pBackDash',frameRate:6},true)
-                                moveBox.setTexture('focusMoveBox2')
-                                moveTypeIcon.setTexture('growingBuffIcon')
+
                                 powerSource = 2
                                 playerStance = 3
                             })
@@ -3225,8 +3234,7 @@ if (attackChargePower / income >= 0.5){
                             // Keyboard
                             cursors.down.on('down', function(){
                                 player.play({key:'pDownStance', frameRate: 6},true)
-                                moveBox.setTexture('focusMoveBox2')
-                                moveTypeIcon.setTexture('growingBuffIcon')
+
                                 powerSource = 2
                                 playerStance = 4
                             })
@@ -3247,8 +3255,7 @@ if (attackChargePower / income >= 0.5){
                             // Touch
                             down.on('pointerdown', function(){
                                 player.play({key:'pDownStance', frameRate: 6},true)
-                                moveBox.setTexture('focusMoveBox2')
-                                moveTypeIcon.setTexture('growingBuffIcon')
+
                                 powerSource = 2
                                 playerStance = 4
                             })
