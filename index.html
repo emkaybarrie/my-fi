@@ -541,6 +541,7 @@
 
             if (inBattle){
                     
+                    player.flipX = false
                     inBattle = false
                     camera.zoomTo(1,2000)
                     camera.centerOn(width * 1.5, 0)
@@ -873,7 +874,7 @@ if (attackChargePower / income >= 0.5){
         player.play({key:'pIdle', frameRate: 8},true);
         playerAttacking = false
         
-        enemy1GetInBattlePosition()
+   
 
         player.once('animationcomplete', function (anim,frame) {
             player.emit('animationcomplete_' + anim.key, frame)
@@ -910,7 +911,7 @@ if (attackChargePower / income >= 0.5){
             player.play({key:'pIdle', frameRate: 8},true);
             playerAttacking = false
             
-            enemy1GetInBattlePosition()
+         
 
             player.once('animationcomplete', function (anim,frame) {
                 player.emit('animationcomplete_' + anim.key, frame)
@@ -1083,7 +1084,7 @@ if (attackChargePower / income >= 0.5){
             player.play({key:'pIdle', frameRate: 8},true);
             playerAttacking = false
             
-            enemy1GetInBattlePosition()
+         
 
             player.once('animationcomplete', function (anim,frame) {
                 player.emit('animationcomplete_' + anim.key, frame)
@@ -1120,7 +1121,7 @@ if (attackChargePower / income >= 0.5){
                 player.play({key:'pIdle', frameRate: 8},true);
                 playerAttacking = false
                 
-                enemy1GetInBattlePosition()
+               
 
                 player.once('animationcomplete', function (anim,frame) {
                     player.emit('animationcomplete_' + anim.key, frame)
@@ -1247,7 +1248,7 @@ if (attackChargePower / income >= 0.5){
             player.play({key:'pIdle', frameRate: 8},true);
             playerAttacking = false
             
-            enemy1GetInBattlePosition()
+           
 
             player.once('animationcomplete', function (anim,frame) {
                 player.emit('animationcomplete_' + anim.key, frame)
@@ -1284,7 +1285,7 @@ if (attackChargePower / income >= 0.5){
                 player.play({key:'pIdle', frameRate: 8},true);
                 playerAttacking = false
                 
-                enemy1GetInBattlePosition()
+                
 
                 player.once('animationcomplete', function (anim,frame) {
                     player.emit('animationcomplete_' + anim.key, frame)
@@ -1308,7 +1309,7 @@ if (attackChargePower / income >= 0.5){
         
         player.x -= 0.5
 
-        enemyChase(2.5)
+        enemyChase(Phaser.Math.FloatBetween(3,5))
     } 
     
     }
@@ -1453,7 +1454,9 @@ if (attackChargePower / income >= 0.5){
     function enemy1Recover(){
 
         if (enemy1IsHit){
-            enemy1IsHit  = false 
+            enemy1IsHit  = false
+            enemy1.anims.play({key:'eIdle',frameRate: 12},true); 
+                
         }
 
     }
@@ -2490,9 +2493,28 @@ if (attackChargePower / income >= 0.5){
         if (enemy1IsHit){
                 enemy1.anims.play({key:'eHurt',frameRate: 12},true); 
                 enemy1.once('animationcomplete', function () {
-                    enemy1Recover();
+                    
+                        enemy1Recover();
+                    
+                    
                 }, this);
         }
+
+        // Check for enemy death
+
+        if (enemy1Life <= 0 && !enemy1IsHit){
+                        enemy1.anims.play({key:'eDeath',frameRate: 12},true);
+                        
+                        enemy1.once('animationcomplete', function (anim,frame) {
+                            enemy1.emit('animationcomplete_' + anim.key, frame)
+                        }, enemy1)
+
+
+
+        }
+        enemy1.once('animationcomplete_eDeath', function () {
+                        enemy1Alive = false
+        },this)
 
         
             
@@ -2846,7 +2868,7 @@ if (attackChargePower / income >= 0.5){
                 pSFX.setDepth(2)
                 pSFX.setVisible(true)
                 pSFX.play('chargeEnergy',true)
-                charge.play()
+                //charge.play()
                 if (spotlight.intensity < 1.25){
                     spotlight.intensity += 0.01
                 }
@@ -2891,13 +2913,22 @@ if (attackChargePower / income >= 0.5){
                 enemy1.y = height - 85
                 
                 
-                e1MaxLife = (income * 0.3) * chaosFactor
+                e1MaxLife = Phaser.Math.Between(income * 0.3, (income * 0.3) * chaosFactor)
                 enemy1Life = e1MaxLife
                 enemy1Vitals.p = 38 / e1MaxLife
                 enemy1Alive = true
+                
+                enemy1.anims.play({key:'eRun',frameRate: 12},true);
+
+
+
+
+                
                 modeSwitch()
 
             }
+
+            
 
 
  
