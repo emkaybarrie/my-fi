@@ -541,8 +541,10 @@
 
             if (inBattle){
                     
-                    player.flipX = false
+                    
                     inBattle = false
+                    player.flipX = false
+                    playerStance = -2
                     camera.zoomTo(1,2000)
                     camera.centerOn(width * 1.5, 0)
                     player.body.setBoundsRectangle(new Phaser.Geom.Rectangle(width, 0, width, height));
@@ -873,6 +875,7 @@ if (attackChargePower / income >= 0.5){
                 
         player.play({key:'pIdle', frameRate: 8},true);
         playerAttacking = false
+        attackChargePower = 0
         
    
 
@@ -910,6 +913,7 @@ if (attackChargePower / income >= 0.5){
                     
             player.play({key:'pIdle', frameRate: 8},true);
             playerAttacking = false
+            attackChargePower = 0
             
          
 
@@ -1083,6 +1087,7 @@ if (attackChargePower / income >= 0.5){
                     
             player.play({key:'pIdle', frameRate: 8},true);
             playerAttacking = false
+            attackChargePower = 0
             
          
 
@@ -1120,6 +1125,7 @@ if (attackChargePower / income >= 0.5){
                         
                 player.play({key:'pIdle', frameRate: 8},true);
                 playerAttacking = false
+                attackChargePower = 0
                 
                
 
@@ -1247,6 +1253,7 @@ if (attackChargePower / income >= 0.5){
                     
             player.play({key:'pIdle', frameRate: 8},true);
             playerAttacking = false
+            attackChargePower = 0
             
            
 
@@ -1284,7 +1291,7 @@ if (attackChargePower / income >= 0.5){
                         
                 player.play({key:'pIdle', frameRate: 8},true);
                 playerAttacking = false
-                
+                attackChargePower = 0
                 
 
                 player.once('animationcomplete', function (anim,frame) {
@@ -2468,7 +2475,7 @@ if (attackChargePower / income >= 0.5){
                     if (player.anims.currentFrame.index >= 6 && player.anims.currentFrame.index < 12){
                         
                         sword.body.checkCollision.none = false
-                        damage = (income * 0.01)
+                        damage = (income * (attackChargePower/100)) * 1
                     } else {
                         sword.body.checkCollision.none = true
                     }
@@ -2480,7 +2487,7 @@ if (attackChargePower / income >= 0.5){
                     if (player.anims.currentFrame.index >= 4 && player.anims.currentFrame.index < 6){
                         
                     sword.body.checkCollision.none = false
-                    damage = (income * 0.01) + (income * 0.015 * chargePower) 
+                    damage = (income * (attackChargePower/100)) * 2 
                     } else {
                         sword.body.checkCollision.none = true
                     }
@@ -2645,7 +2652,7 @@ if (attackChargePower / income >= 0.5){
         // console.log('Player Focus Regen: ' + focusRegen)
         // console.log('Player Energy Regen: ' + energyRegen)
 
-        console.log('Velocity : ' + player.body.velocity.x)
+        //console.log('Velocity : ' + player.body.velocity.x)
         //console.log('Velocity to reach Target: ' + -(Phaser.Math.GetSpeed(player.x - enemy1.x, 1) * 1500) * devicePixelRatio)
         //console.log('Player Drag X: ' + player.body.drag.x)
 
@@ -2655,16 +2662,17 @@ if (attackChargePower / income >= 0.5){
 
         //console.log('Enemy 1 Hit: ' + enemy1IsHit)
 
-        //console.log('Attack Charge Power: ' + attackChargePower) 
+        console.log('Attack Charge Power: ' + attackChargePower) 
+        console.log('Damage: ' + damage) 
 
-        console.log('Player Stance: ' + playerStance) 
+        //console.log('Player Stance: ' + playerStance) 
 
-        console.log('Player Drag: ' + player.body.drag.x) 
+        //console.log('Player Drag: ' + player.body.drag.x) 
 
         
 
 
-        //  console.log('Enemy Max HP: ' + e1MaxLife)
+          console.log('Enemy Max HP: ' + e1MaxLife)
 
           
        
@@ -2979,7 +2987,7 @@ if (attackChargePower / income >= 0.5){
                         
 
                             playerStance = -1
-                            attackChargePower = 0
+                            
                             playerCharging = false
                             
                             
@@ -3032,7 +3040,7 @@ if (attackChargePower / income >= 0.5){
                                
 
                                 playerStance = -1
-                                attackChargePower = 0
+                               
                                 playerCharging = false
                                 
                                 
