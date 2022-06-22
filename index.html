@@ -2417,13 +2417,19 @@ if (attackChargePower / income >= 0.5){
 
             player.setDragX(2000)
 
-        } else if (player.x > width * 1.75 ){
-
-            player.setDragX(2000)
+        
         } else {
 
         player.setDragX(100)
         }
+
+        // Stop player if sliding past anhor point
+
+    if (player.x > width * 1.8){
+
+        player.setVelocityX(0)
+        player.x = width * 1.79
+    }
 
 
         if (enemy1.body.onFloor()){
@@ -2617,7 +2623,7 @@ if (attackChargePower / income >= 0.5){
         // console.log('Player Focus Regen: ' + focusRegen)
         // console.log('Player Energy Regen: ' + energyRegen)
 
-       
+        console.log('Velocity : ' + player.body.velocity.x)
         //console.log('Velocity to reach Target: ' + -(Phaser.Math.GetSpeed(player.x - enemy1.x, 1) * 1500) * devicePixelRatio)
         //console.log('Player Drag X: ' + player.body.drag.x)
 
@@ -2627,7 +2633,7 @@ if (attackChargePower / income >= 0.5){
 
         //console.log('Enemy 1 Hit: ' + enemy1IsHit)
 
-        console.log('Attack Charge Power: ' + attackChargePower) 
+        //console.log('Attack Charge Power: ' + attackChargePower) 
 
         console.log('Player Stance: ' + playerStance) 
 
