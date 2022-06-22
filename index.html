@@ -698,6 +698,7 @@
                 }, player)
                 battleStart = true
                 enableEntanglement = true
+                player.flipX = true
             }, player) 
 
 
@@ -2448,22 +2449,7 @@ if (attackChargePower / income >= 0.5){
             enemy1.setDragX(100)
         }
 
-        // Players crouch animation when player lands back on ground
-        if (!playerLanded){
-            if(player.body.deltaY() > 0 && player.body.onFloor()){
-                    player.play({key:'pCrouch'},true);
-
-                    player.once('animationcomplete', function () {
-
-                    playerLanded = true
-                    
-                    player.play({key:'pIdle'},true);
-
-                    }, this);
-
-                    
-            }
-        }
+        
 
         // Enable player sword collision detection
 
@@ -2475,7 +2461,7 @@ if (attackChargePower / income >= 0.5){
                     if (player.anims.currentFrame.index >= 6 && player.anims.currentFrame.index < 12){
                         
                         sword.body.checkCollision.none = false
-                        damage = 0.5 + (maxEnergy * (attackChargePower/100))
+                        damage = 0.5 + ((maxEnergy * (attackChargePower/100)) / 25)
                     } else {
                         sword.body.checkCollision.none = true
                     }
@@ -2487,7 +2473,7 @@ if (attackChargePower / income >= 0.5){
                     if (player.anims.currentFrame.index >= 4 && player.anims.currentFrame.index < 6){
                         
                     sword.body.checkCollision.none = false
-                    damage = 0.5 + (maxEnergy * (attackChargePower/100))
+                    damage = 0.5 + ((maxEnergy * (attackChargePower/100)) / 25)
                     } else {
                         sword.body.checkCollision.none = true
                     }
@@ -2662,12 +2648,12 @@ if (attackChargePower / income >= 0.5){
 
         //console.log('Enemy 1 Hit: ' + enemy1IsHit)
 
-        console.log('Attack Charge Power: ' + attackChargePower) 
-        console.log('Damage: ' + damage) 
+        //console.log('Attack Charge Power: ' + attackChargePower) 
+        //console.log('Damage: ' + damage) 
 
-        //console.log('Player Stance: ' + playerStance) 
+        console.log('Player Stance: ' + playerStance) 
 
-        //console.log('Player Drag: ' + player.body.drag.x) 
+        console.log('In Battle: ' + inBattle) 
 
         
 
@@ -2824,7 +2810,7 @@ if (attackChargePower / income >= 0.5){
   
 
                 
-            } else if (cursors.space.isDown && currentFocus > ((income) / 50) && playerIsHit == false){
+            } else if (keyA.isDown && currentFocus > ((income) / 50) && playerIsHit == false){
                 this.vines.body.checkCollision.none = true
 
                 treeTrunk.body.checkCollision.none = true
@@ -2932,6 +2918,23 @@ if (attackChargePower / income >= 0.5){
                 modeSwitch()
 
             }
+
+            // Players crouch animation when player lands back on ground
+        if (!playerLanded){
+            if(player.body.deltaY() > 0 && player.body.onFloor()){
+                    player.play({key:'pCrouch'},true);
+
+                    player.once('animationcomplete', function () {
+
+                    playerLanded = true
+                    
+                    player.play({key:'pIdle'},true);
+
+                    }, this);
+
+                    
+            }
+        }
 
             
 
@@ -3184,11 +3187,14 @@ if (attackChargePower / income >= 0.5){
 
                             // Keyboard
                             cursors.up.on('down', function(){
+
+                                if (inBattle){
                                 
                                 player.play({key:'pCrouch', frameRate: 8},true)
 
                                 powerSource = 1
                                 playerStance = 2
+                                }
                             })
 
                             cursors.up.on('up', function(){
@@ -3314,23 +3320,6 @@ if (attackChargePower / income >= 0.5){
                                 }, this);
                             }
                             })
-
-                        
-
-                            
-                        
-
-     
-            // Focus MoveSet
-
-
-                    
-
-
-            // Movement
-
-                    
-     
 
             }
 
