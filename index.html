@@ -2475,7 +2475,7 @@ if (attackChargePower / income >= 0.5){
                     if (player.anims.currentFrame.index >= 6 && player.anims.currentFrame.index < 12){
                         
                         sword.body.checkCollision.none = false
-                        damage = (income * (attackChargePower/100)) * 1
+                        damage = 0.5 + (maxEnergy * (attackChargePower/100))
                     } else {
                         sword.body.checkCollision.none = true
                     }
@@ -2487,7 +2487,7 @@ if (attackChargePower / income >= 0.5){
                     if (player.anims.currentFrame.index >= 4 && player.anims.currentFrame.index < 6){
                         
                     sword.body.checkCollision.none = false
-                    damage = (income * (attackChargePower/100)) * 2 
+                    damage = 0.5 + (maxEnergy * (attackChargePower/100))
                     } else {
                         sword.body.checkCollision.none = true
                     }
