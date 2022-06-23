@@ -569,7 +569,7 @@
                         },this)
                     }, this)
     } else if (mode == 1){
-        chaserCam = false 
+            chaserCam = false 
             inBattle = true      
             camera.resetFX()
             hideHUD()
@@ -3217,10 +3217,11 @@ if (attackChargePower / income >= 0.5){
 
                             
                             cursors.left.on('down', function(){
-                                
+                                if (inBattle){
                                 player.play({key:'pStance1', frameRate: 6},true)
                                 powerSource = 1
                                 playerStance = 1
+                                }
                             })
                             
 
@@ -3243,10 +3244,11 @@ if (attackChargePower / income >= 0.5){
                             // Touch
 
                             left.on('pointerdown', function(){
+                                if (inBattle){
                                 player.play({key:'pStance1', frameRate: 6},true)
-
                                 powerSource = 1
                                 playerStance = 1
+                                }
                             })
 
                             left.on('pointerup', function(){
@@ -3320,10 +3322,11 @@ if (attackChargePower / income >= 0.5){
 
                             // Keyboard
                             cursors.right.on('down', function(){
+                                if (inBattle){
                                 player.playReverse({key:'pBackDash',frameRate:6},true)
-                            
                                 powerSource = 2
                                 playerStance = 3
+                                }
                             })
 
                             cursors.right.on('up', function(){
@@ -3342,10 +3345,11 @@ if (attackChargePower / income >= 0.5){
                             // Touch
 
                             right.on('pointerdown', function(){
+                                if (inBattle){
                                 player.playReverse({key:'pBackDash',frameRate:6},true)
-
                                 powerSource = 2
                                 playerStance = 3
+                                }
                             })
 
                             right.on('pointerup', function(){
@@ -3366,10 +3370,11 @@ if (attackChargePower / income >= 0.5){
 
                             // Keyboard
                             cursors.down.on('down', function(){
+                                if (inBattle){
                                 player.play({key:'pDownStance', frameRate: 6},true)
-
                                 powerSource = 2
                                 playerStance = 4
+                                }
                             })
 
                             cursors.down.on('up', function(){
@@ -3387,10 +3392,11 @@ if (attackChargePower / income >= 0.5){
 
                             // Touch
                             down.on('pointerdown', function(){
+                                if (inBattle){
                                 player.play({key:'pDownStance', frameRate: 6},true)
-
                                 powerSource = 2
                                 playerStance = 4
+                                }
                             })
 
                             down.on('pointerup', function(){
