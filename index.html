@@ -544,7 +544,7 @@
             inBattle = false
             player.flipX = false
             
-            camera.zoomTo(1,500)
+            camera.zoomTo(1,750)
 
                     camera.once('camerazoomcomplete', function () {
 
@@ -558,15 +558,15 @@
                         charge.y = camera.scrollY + (height - 106)
 
 
-                        camera.flash(250,1000)
+                        //camera.flash(250,1000)
                     
-                        camera.once('cameraflashcomplete', function () {
+                        //camera.once('cameraflashcomplete', function () {
                             playerStance = -2
                             player.body.setBoundsRectangle(new Phaser.Geom.Rectangle(width, 0, width, height));
                             showHUD()
                             chaserCam = true
                             
-                        },this)
+                        //},this)
                     }, this)
     } else if (mode == 1){
             chaserCam = false 
