@@ -554,16 +554,12 @@
                         left.y = camera.scrollY + (height - 90)
                         charge.y = camera.scrollY + (height - 106)
 
-
-                        //camera.flash(250,1000)
-                    
-                        //camera.once('cameraflashcomplete', function () {
                             playerStance = -2
                             player.body.setBoundsRectangle(new Phaser.Geom.Rectangle(width, 0, width, height));
                             showHUD()
                             chaserCam = true
                             
-                        //},this)
+                     
                     }, this)
     } else if (mode == 1){
             chaserCam = false 
@@ -590,6 +586,12 @@
 
                             playerIcon.x = camera.scrollX + 90
                             playerIcon.y = camera.scrollY + 55
+
+                            // Anchor buttons
+                        left.x = camera.scrollX + (width * 0.15)
+                        charge.x = camera.scrollX + (width * 0.8) 
+                        left.y = camera.scrollY + (height - 90)
+                        charge.y = camera.scrollY + (height - 106)
 
 
                             camera.flash(250,1000)
@@ -2041,13 +2043,13 @@ if (attackChargePower / income >= 0.5){
         
         this.input.addPointer(8);
         //Anchor buttons
-        left = this.add.image(camera.scrollX + (width * 0.1), camera.scrollY + (height - 90), 'left').setInteractive().setDepth(3).setScale(0.75).setAlpha(0.5);
-        charge = this.add.image(camera.scrollX + (width * 0.825), camera.scrollY + (height - 106), 'charge').setInteractive().setDepth(3).setScale(.75).setAlpha(0.5).setTint(0xd9e650);
+        left = this.add.image(camera.scrollX + (width * 0.1), camera.scrollY + (height - 90), 'left').setInteractive().setDepth(3).setScale(0.75).setAlpha(0.15);
+        charge = this.add.image(camera.scrollX + (width * 0.825), camera.scrollY + (height - 106), 'charge').setInteractive().setDepth(3).setScale(.75).setAlpha(0.15).setTint(0xd9e650);
 
         deadSpace = this.add.image(left.x + 35.5, left.y, 'deadSpace').setDepth(4).setScale(0.75).setVisible(0);
-        right = this.add.image(deadSpace.x + 35.5, deadSpace.y, 'right').setInteractive().setDepth(3).setScale(0.75).setAlpha(0.5);
-        up = this.add.image(deadSpace.x, deadSpace.y - 40.5, 'up').setInteractive().setDepth(3).setScale(0.75).setAlpha(0.5);
-        down = this.add.image(deadSpace.x, left.y + 40.5 , 'down').setInteractive().setDepth(3).setScale(0.75).setAlpha(0.5);
+        right = this.add.image(deadSpace.x + 35.5, deadSpace.y, 'right').setInteractive().setDepth(3).setScale(0.75).setAlpha(0.15);
+        up = this.add.image(deadSpace.x, deadSpace.y - 40.5, 'up').setInteractive().setDepth(3).setScale(0.75).setAlpha(0.15);
+        down = this.add.image(deadSpace.x, left.y + 40.5 , 'down').setInteractive().setDepth(3).setScale(0.75).setAlpha(0.15);
         
         
         
@@ -2178,7 +2180,7 @@ if (attackChargePower / income >= 0.5){
 
         this.input.on('gameobjectup', function (pointer, gameObject) {
 
-        gameObject.setAlpha(0.5);
+        gameObject.setAlpha(0.15);
 
         if (gameObject == up){
             cursors.up.isDown = false
@@ -2217,7 +2219,7 @@ if (attackChargePower / income >= 0.5){
 
         this.input.on('gameobjectout', function (pointer, gameObject) {
 
-            gameObject.setAlpha(0.5);
+            gameObject.setAlpha(0.15);
 
             if (gameObject == up){
                 cursors.up.isDown = false
@@ -2605,7 +2607,14 @@ if (attackChargePower / income >= 0.5){
         playerEntangled = false
 
                                 
-            
+        deadSpace.x = left.x + 35.5
+        deadSpace.y =left.y
+        right.x = deadSpace.x + 35.5
+        right.y = deadSpace.y
+        up.x = deadSpace.x
+        up.y = deadSpace.y - 40.5
+        down.x = deadSpace.x
+        down.y = left.y + 40.5    
        
         
 
@@ -2703,6 +2712,13 @@ if (attackChargePower / income >= 0.5){
 
            playerIcon.x = camera.scrollX + 35
            playerIcon.y = camera.scrollY + 35
+
+           // Anchor buttons
+                        left.x = camera.scrollX + 35
+                        charge.x = camera.scrollX + 500 
+                        left.y = camera.scrollY + (height - 90)
+                        charge.y = camera.scrollY + (height - 106)
+                        
             
 
            
@@ -2726,6 +2742,8 @@ if (attackChargePower / income >= 0.5){
             player.flipX = true
             enemy1.flipX = true
            }
+
+           
 
            
 
