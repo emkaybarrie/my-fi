@@ -110,11 +110,8 @@
     var playerComboStarted = false
    
     var finisherNext = false
-   
-    
 
-    var playerDefending = false
-    var playerParrying = false
+
     var playerDodging = false
     var playerCharging = false
     var finishedplayererDefense = true
@@ -190,8 +187,8 @@
 
         playerAttacking = false 
         playerReleaseAttack = false  
-        playerDefending = false
-        playerParrying = false
+
+
         playerDodging = false
         playerCharging = false
         finishedplayererDefense = true
@@ -599,6 +596,7 @@
                                 camera.once('cameraflashcomplete', function () {
                                     playerStance = -1
                                     player.body.setBoundsRectangle(new Phaser.Geom.Rectangle(width * 1.1,0, width * 0.9, height));
+                                    player.flipX = true
                                     showHUD()
                                     
                                     
@@ -608,86 +606,7 @@
     }
    }
 
-   function switchToRunning(){
-
-            
-            hideHUD()
-            IS_TOUCH = false
-            inBattle = false
-            player.flipX = false
-            
-            camera.zoomTo(1,500)
-
-                    camera.on('camerazoomcomplete', function () {
-
-                        playerIcon.x = camera.scrollX + 35
-                        playerIcon.y = camera.scrollY + 35
-
-                        // Anchor buttons
-                        left.x = camera.scrollX + (width * 0.1)
-                        charge.x = camera.scrollX + (width * 0.825) 
-                        left.y = camera.scrollY + (height - 90)
-                        charge.y = camera.scrollY + (height - 106)
-
-
-                        camera.flash(250,1000)
-                    
-                        camera.on('cameraflashcomplete', function () {
-                            playerStance = -2
-                            player.body.setBoundsRectangle(new Phaser.Geom.Rectangle(width, 0, width, height));
-                            showHUD()
-                        
-                            chaserCam = true
-                            
-                        },this)
-                    }, this)
-                          
-            
-        }
-         
-    function switchToBattle(){
-            
-            chaserCam = false 
-            inBattle = true      
-            camera.resetFX()
-            hideHUD()
-            IS_TOUCH = false
-            
-                
-                
-                   
-                    camera.pan(width * 1.5,0,1000)
-                    
-                    enemy1GetInBattlePosition()
-                    playerGetInBattlePosition()
-
-                    camera.once('camerapancomplete', function () {
-                   
-                    if(inBattle){
-                    camera.zoomTo(1.25,1000)
-                    }
-
-                        camera.once('camerazoomcomplete', function () {
-
-                            playerIcon.x = camera.scrollX + 90
-                            playerIcon.y = camera.scrollY + 55
-
-
-                            camera.flash(250,1000)
-                                camera.once('cameraflashcomplete', function () {
-                                    playerStance = -1
-                                    player.body.setBoundsRectangle(new Phaser.Geom.Rectangle(width * 1.1,0, width * 0.9, height));
-                                    showHUD()
-                                    
-                                    
-                                },this)
-                        }, this)
-                    },this)
-
-
-            
-
-   }
+  
 
     function grabbed(){
 
@@ -1379,7 +1298,7 @@ if (attackChargePower / income >= 0.5){
         
         
         player.x -= 0.5
-        enemyChase(Phaser.Math.FloatBetween(1,2))
+        enemyChase(Phaser.Math.FloatBetween(10,15))
     } 
     
     }
@@ -1392,74 +1311,24 @@ if (attackChargePower / income >= 0.5){
         
         player.x -= 1
 
-        enemyChase(Phaser.Math.FloatBetween(2,5))
+        enemyChase(Phaser.Math.FloatBetween(15,20))
     } 
 
     }
 
     function playerEnemyHit(){
 
-    if (inBattle){
-        
-        if (playerDefending){
-            if (playerParrying == false){
-            playerVitals.decreaseLife(e1MaxLife * 1.5 / 150)
-            camera.shake(20,0.0025)
-            if (player.flipX){
-                player.setVelocityX(50)
-            } else {
-                player.setVelocityX(-50)
-            }
-            
-            }
+        if (inBattle){
 
-        } else if (playerParrying == false && finishedplayererDefense) {
             playerIsHit = true
             playerVitals.decreaseLife((e1MaxLife * 1.5) / 50)
             maxEnergy *= 1 - (0.04 / 12 / 50)
             income *= 1 - (0.02 / 12 / 50)
-        }
-            
-            
-        //} 
-        
-    }   
+
+        }   
     }
     
-    function playerParry(){
 
-    if (inBattle){
-    
-    if (playerParrying) {
-            hideHUD()
-            
- 
-            camera.flash()
-
-            camera.on('cameraflashcomplete', function () {
-                playerVitals.decreaseLife(-e1MaxLife / 120)
-                playerVitals.decreaseFocus(-e1MaxLife / 80)
-                playerVitals.decreaseEnergy(-e1MaxLife / 40)
-                showHUD()
- 
-            }, this);
-
-
-            if (enemy1.flipX){
-                enemy1.setVelocityX(-100)
-            } else {
-                enemy1.setVelocityX(100)
-            }
-            
-            
-   
-        }
-        
-        
-    }  
-
-
-    }
 
     function playerRecover(){
 
@@ -1474,9 +1343,6 @@ if (attackChargePower / income >= 0.5){
         enemy1IsHit = true
 
         if (inBattle) {   
- 
-            
-            
 
             var chaos = Phaser.Math.FloatBetween(0.00,1.00)
             if (chaos < 0.025){
@@ -1539,7 +1405,7 @@ if (attackChargePower / income >= 0.5){
     {
        if (inBattle == false) {
         
-        enemy1.x += (velocityBoost * chaosFactor)
+        enemy1.setVelocity((velocityBoost * chaosFactor))
         
 
         }
@@ -1554,7 +1420,7 @@ if (attackChargePower / income >= 0.5){
        if (inBattle == false) {
 
         income *= 0.96
-        enemyChase(10)
+        enemyChase(250)
         enemy1.setScale(Phaser.Math.FloatBetween(1.65,1.8),Phaser.Math.FloatBetween(1.2,1.3))
 
         }
@@ -1582,17 +1448,15 @@ if (attackChargePower / income >= 0.5){
             enemy1Life = e1MaxLife
             enemy1Vitals.p = 38 / e1MaxLife
             
-            enemyChase(5)
+            enemyChase(Phaser.Math.Between(-50,100))
 
-        } else if (inBattle){
-            //enemy1.x = (Phaser.Math.Between(width * 1.1, width * 1.4))
-        }
-
+        } 
     }
 
     function runWeeklyFunctions()
     {
-       enemyChase(-2)
+       
+        enemy1.setVelocity(enemy1.body.velocity.x - 18)
 
        if (inBattle == false) {
 
@@ -1610,7 +1474,7 @@ if (attackChargePower / income >= 0.5){
     {
         
 
-        if (!playerDefending && !playerDodging && !playerCharging && !skillTreeOpen && !gameOver){
+        if (!playerDodging && !playerCharging && !skillTreeOpen && !gameOver){
 
             
         playerVitals.decreaseLife(-lifeRegen / 5) 
@@ -1629,7 +1493,7 @@ if (attackChargePower / income >= 0.5){
             
         } else {
             if (score > 0){
-                score -= (50 / 60)
+                score -= (25 / 60)
             } else {
                 score = 0
             }
@@ -1782,9 +1646,9 @@ if (attackChargePower / income >= 0.5){
        
 
         // Show Player Bounds
-        this.add.graphics()
-        .lineStyle(5, 0x674EA7, 0.5)
-        .strokeRectShape(player.body.customBoundsRectangle).setDepth(4)
+        // this.add.graphics()
+        // .lineStyle(5, 0x674EA7, 0.5)
+        // .strokeRectShape(player.body.customBoundsRectangle).setDepth(4)
         
 
         sword = this.add.rectangle(player.x, player.y, 60, 60);
@@ -1841,7 +1705,7 @@ if (attackChargePower / income >= 0.5){
             eSword.body.setAllowGravity(false).setOffset(0,5)
             eSword.body.checkCollision.none = true
             this.physics.add.overlap(eSword, player, playerEnemyHit);
-            this.physics.add.overlap(eSword, sword, playerParry);
+          
 
             
         camera = this.cameras.main.centerOn(width * 1.5,0) //.startFollow(player, false, 0.05, 0.05)
@@ -2739,7 +2603,8 @@ if (attackChargePower / income >= 0.5){
  
         playerEntangled = false
 
-        
+                                
+            
        
         
 
@@ -2834,6 +2699,9 @@ if (attackChargePower / income >= 0.5){
                 camera.pan(width * 1 +  ((width * 0.75) - enemy1.x ),0,4000)
             }
            // }
+
+           playerIcon.x = camera.scrollX + 35
+           playerIcon.y = camera.scrollY + 35
             
 
            
@@ -2850,6 +2718,12 @@ if (attackChargePower / income >= 0.5){
 
             this.woodsl4.setAlpha(0.75)
 
+            if(player.x < enemy1.x){
+            player.flipX = false
+           } else {
+            player.flipX = true
+           }
+
 
         }
 
@@ -2864,6 +2738,21 @@ if (attackChargePower / income >= 0.5){
                 this.vines.body.checkCollision.none = false
                 treeTrunk.body.checkCollision.none = false
             }
+
+            this.tweens.add({
+                                    targets     : moveBox ,
+                                    alpha       : 0, 
+                                    scaleX       : 0,
+                                    ease        : 'Linear',
+                                    duration    : 50,
+                                });
+
+                                this.tweens.add({
+                                    targets     : [moveTypeIcon,moveNameText,moveText],
+                                    alpha       : 0,
+                                    ease        : 'Linear',
+                                    duration    : 25,
+            });
             
 
             
@@ -2945,17 +2834,16 @@ if (attackChargePower / income >= 0.5){
                 
                 
                     playerVitals.decreaseEnergy((income * 0.25) / 50 )
-                    playerVitals.decreaseLife(-(income * 0.25)  / 50 )
+                    playerVitals.decreaseLife(-(income * 0.25)  / 55 )
+                    enemyChase(30)
                 
 
                 pSFX.setTint(0xcc0000)
                 pSFX.setDepth(2)
                 pSFX.setVisible(true)
                 pSFX.play('chargeEnergy',true)
-                //charge.play()
-                if (spotlight.intensity < 1.25){
-                    spotlight.intensity += 0.01
-                }
+                
+                
                 camera.shake(50, 0.0005);
 
                 this.physics.moveTo(player,width * 1.1,height - 90,90)
@@ -3160,7 +3048,7 @@ if (attackChargePower / income >= 0.5){
                                     duration    : 200,
                                 });
 
-                            } else if (playerStance == -1){
+                            } else if (playerStance <= -1){
                                 this.tweens.add({
                                     targets     : moveBox ,
                                     alpha       : 0, 
