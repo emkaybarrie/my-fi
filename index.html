@@ -688,13 +688,14 @@
 
     function enemy1GetInBattlePosition(){
 
+        fireTowardsTarget(enemy1,width * 1.25,1)
 
     // Enemy steps to position
         enemy1.play({key:'eRun',frameRate: 10},true);
 
             if(enemy1.anims.getName() == 'eRun'){
                 
-                enemy1.setVelocityX((Phaser.Math.GetSpeed(Phaser.Math.Between(width * 1.15, width * 1.45) - enemy1.x, 1) * 1500))
+                
                 
             }
             enemy1.once('animationcomplete', function (anim,frame) {
@@ -734,16 +735,16 @@
 
     }
 
-    function fireTowardsTarget(sprite,target,seconds,inAir){
+    function fireTowardsTarget(sprite,targetPosition,seconds,inAir){
 
         if (inAir){
-            var d = 1000
+            var d = Phaser.Math.Between(1000,1250)
         } else {
-            var d = 1500
+            var d = Phaser.Math.Between(1500,2000)
         }
          
 
-        sprite.setVelocityX(-(Phaser.Math.GetSpeed(sprite.x - target.x, seconds) * (seconds * d)))
+        sprite.setVelocityX(-(Phaser.Math.GetSpeed(sprite.x - targetPosition, seconds) * (seconds * d)))
     }
 
     function playerS0Combo(){
@@ -759,7 +760,7 @@
     
 
     if(player.anims.getName() == 'pRun' || player.anims.getName() == 'pDash'){
-           fireTowardsTarget(player,enemy1,1)
+           fireTowardsTarget(player,enemy1.x,1)
             
     }
 
@@ -925,7 +926,7 @@ if (attackChargePower / income >= 0.5){
         
 
         if(player.anims.getName() == 'pRun' || player.anims.getName() == 'pDash'){
-               fireTowardsTarget(player,enemy1,1)
+               fireTowardsTarget(player,enemy1.x,1)
                 
         }
 
@@ -1133,7 +1134,7 @@ if (attackChargePower / income >= 0.5){
         player.setVelocityY(-275)
 
         if(player.anims.getName() == 'pJump'){
-            fireTowardsTarget(player,enemy1,1,true)
+            fireTowardsTarget(player,enemy1.x,1,true)
             
                 
         }
@@ -2358,7 +2359,7 @@ if (attackChargePower / income >= 0.5){
             player.setDragX(300)
         } else if (playerEntangled && inBattle) {
 
-            player.setDragX(2000)
+            player.setDragX(1000)
 
         
         } else {
@@ -2720,9 +2721,13 @@ if (attackChargePower / income >= 0.5){
 
             if(player.x < enemy1.x){
             player.flipX = false
+            enemy1.flipX = false
            } else {
             player.flipX = true
+            enemy1.flipX = true
            }
+
+           
 
 
         }
@@ -2835,7 +2840,7 @@ if (attackChargePower / income >= 0.5){
                 
                     playerVitals.decreaseEnergy((income * 0.25) / 50 )
                     playerVitals.decreaseLife(-(income * 0.25)  / 55 )
-                    enemyChase(30)
+                    enemyChase(150)
                 
 
                 pSFX.setTint(0xcc0000)
@@ -2966,6 +2971,7 @@ if (attackChargePower / income >= 0.5){
                             playerStance = -1
                             
                             playerCharging = false
+                            fireTowardsTarget(enemy1,width * 1.25,1)
                             
                             
 
@@ -3019,7 +3025,7 @@ if (attackChargePower / income >= 0.5){
                                 playerStance = -1
                                
                                 playerCharging = false
-                                
+                                fireTowardsTarget(enemy1,width * 1.25,1)
                                 
 
                             }, this);
