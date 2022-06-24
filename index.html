@@ -2882,12 +2882,12 @@
                     // Action Key - Power Selection/Charge - Player charges move from selected stance with power (energy/focus) to carry out move/combo (more charge = more damage/potency/duration)
                     
                         // Keyboard alt contorls
-                        if (keyA.isDown && player.body.onFloor()){
+                        if (keyA.isDown){
 
                             playerAttacking = true
 
                                 // Activate selected attack, running animation whilst action key held
-                                if (Phaser.Input.Keyboard.JustDown(keyA)){
+                                if (Phaser.Input.Keyboard.JustDown(keyA) && player.body.onFloor()){
 
                                     if (playerStance == 0){
                                             playerS0Combo()
