@@ -243,6 +243,7 @@
 
         
             if(!playerTurnStarted){
+                playerStance = 0
                 playerTurnStarted = true
                 currentEnergy -=1
                 camera.pan(width * 1.55,height - 85,250)
@@ -335,6 +336,7 @@
                 playerTurn = false
                 playerTurnStarted = false
                 regenActive = true
+                playerStance = 0
                 turnComplete = false
             }
             
@@ -1614,7 +1616,7 @@
 
         if (inBattle == false){
             if (skillTreeOpen == false){
-                //playerExperience.increaseExp((100 / 60))
+                playerExperience.increaseExp((100 / 60))
                 score += (100 / 60)
             }
             
@@ -1900,15 +1902,15 @@
         }
 
  
-        //playerExperience = new ExperienceBar(this,exp, camera.scrollX + width * 0.33, camera.scrollY + (height - 85));
+        playerExperience = new ExperienceBar(this,exp, camera.scrollX + width * 0.33, camera.scrollY + (height - 85));
 
         playerActionTimeBar = new ActionTimeBar(this,remActionTime, player.x, player.y + 40);
 
         
 
-        //levelText = this.add.text(camera.scrollX + (width - 140), camera.scrollY + (height - 57), 'Level: ' + Math.floor(level)).setFontFamily('Arial').setFontSize(12).setColor('#674EA7').setDepth(4);
-        //scoreText = this.add.text(camera.scrollX + (width - 140), camera.scrollY + (height - 57), 'Score: ' + Math.floor(score)).setFontFamily('Arial').setFontSize(12).setColor('#674EA7').setDepth(4);
-        //highScoreText = this.add.text(camera.scrollX + (width - 340), camera.scrollY + (height - 57), 'High Score: ' + Math.floor(highScore)).setFontFamily('Arial').setFontSize(12).setColor('#674EA7').setDepth(4);
+        levelText = this.add.text(camera.scrollX + (width - 140), camera.scrollY + (height - 57), 'Level: ' + Math.floor(level)).setFontFamily('Arial').setFontSize(12).setColor('#674EA7').setDepth(4);
+        scoreText = this.add.text(camera.scrollX + (width - 140), camera.scrollY + (height - 57), 'Score: ' + Math.floor(score)).setFontFamily('Arial').setFontSize(12).setColor('#674EA7').setDepth(4);
+        highScoreText = this.add.text(camera.scrollX + (width - 340), camera.scrollY + (height - 57), 'High Score: ' + Math.floor(highScore)).setFontFamily('Arial').setFontSize(12).setColor('#674EA7').setDepth(4);
         
         skillTreeLifeIcon = this.add.image(width * 0.25, height / 2,'storingBuffIcon').setDepth(4).setScale(1).setVisible(0).setAlpha(0.75)
         skillTreeFocusIcon = this.add.image(width * 0.5 , height / 2,'growingBuffIcon').setDepth(4).setScale(1).setVisible(0).setAlpha(0.75)
@@ -2460,7 +2462,7 @@
             
         chaosMultiplierMin *= 1.1
         expToLevelUp *= 1.08
-        //playerExperience.p = 233 / expToLevelUp
+        playerExperience.p = 233 / expToLevelUp
         
         
     }
@@ -2633,21 +2635,21 @@
         playerActionTimeBar.draw()
         
 
-        //playerExperience.x = camera.scrollX + width * 0.3
-        //playerExperience.y = camera.scrollY + (height * 0.85)
-        //playerExperience.draw()
+        playerExperience.x = camera.scrollX + width * 0.3
+        playerExperience.y = camera.scrollY + (height * 0.85)
+        playerExperience.draw()
 
-        //levelText.x = camera.scrollX + width * 0.3
-        //levelText.y = camera.scrollY + (height - 57)
-        //levelText.setText('Level: ' + Math.floor(level))
+        levelText.x = camera.scrollX + width * 0.3
+        levelText.y = camera.scrollY + (height - 57)
+        levelText.setText('Level: ' + Math.floor(level))
 
-        //scoreText.x = levelText.x + 75
-        //scoreText.y = camera.scrollY + (height - 57)
-        //scoreText.setText('Score: ' + Math.floor(score))
+        scoreText.x = levelText.x + 75
+        scoreText.y = camera.scrollY + (height - 57)
+        scoreText.setText('Score: ' + Math.floor(score))
 
-        //highScoreText.x = scoreText.x + 75
-        //highScoreText.y = camera.scrollY + (height - 57)
-        //highScoreText.setText('High Score: ' + Math.floor(highScore))
+        highScoreText.x = scoreText.x + 75
+        highScoreText.y = camera.scrollY + (height - 57)
+        highScoreText.setText('High Score: ' + Math.floor(highScore))
 
         moveBox.x = player.x - 50 //- 200
         moveBox.y = player.y - 125 //- 75
@@ -2734,12 +2736,12 @@
 
         //console.log('Combatant Distance: ' + Math.abs(player.x - enemy1.x))
 
-        console.log('Regen Active: ' + remActionTime)
+        console.log('Player Turn: ' + playerTurn)
 
         //console.log('Attack Charge Power: ' + attackChargePower) 
         //console.log('Damage: ' + damage) 
 
-        //console.log('Player Stance: ' + playerStance) 
+        console.log('Player Stance: ' + playerStance) 
 
         //console.log('Chaser Cam: ' + chaserCam) 
         //console.log('In Battle: ' + inBattle) 
@@ -2843,6 +2845,12 @@
          
         
         if (inBattle == false){
+
+            playerExperience.bg.setVisible(1)
+            playerExperience.experienceBar.setVisible(1)
+            levelText.setVisible(1)
+            scoreText.setVisible(1)
+            highScoreText.setVisible(1)
             
 
             this.woodsl2.tilePositionX += 1 * (playerSpeed)
@@ -2904,6 +2912,12 @@
 
   
         } else if (inBattle) {
+
+            playerExperience.bg.setVisible()
+            playerExperience.experienceBar.setVisible()
+            levelText.setVisible()
+            scoreText.setVisible()
+            highScoreText.setVisible()
 
             
 
@@ -3250,11 +3264,13 @@
                                 
                                 // Cancels current animation when action key released
                                 player.anims.stop()
+                                playerStance = 0
                                 
 
                                 // Play cancel animation and half player velocity (allow drag to stop motion fully)
                                 player.play({key:'pBackDash', frameRate: 6},true);
-                                player.setVelocityX(player.body.velocity.x / 2)
+                                
+                                player.setVelocityX(-player.body.velocity.x / 2)
                                 player.setVelocityY(player.body.velocity.y / 2)
                                 sword.body.checkCollision.none = true
                                 
@@ -3265,6 +3281,7 @@
                                 player.once('animationcomplete', function () {
 
                                     playerAttacking = false
+                                    playerStance = 0
                                     
 
 
@@ -3306,7 +3323,8 @@
 
                                 // Play cancel animation and half player velocity (allow drag to stop motion fully)
                                 player.play({key:'pBackDash', frameRate: 6},true);
-                                player.setVelocityX(player.body.velocity.x / 2)
+                                
+                                player.setVelocityX(-player.body.velocity.x / 2)
                                 player.setVelocityY(player.body.velocity.y / 2)
                                 sword.body.checkCollision.none = true
                                 
@@ -3369,6 +3387,7 @@
                            
 
                             if (playerStance == 0){
+                                powerSource = 1
                                 //moveNameText.setText(stance0Name)
                                 //moveText.setText(stance0Text)
 
