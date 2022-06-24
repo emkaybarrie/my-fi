@@ -533,6 +533,36 @@
 
         kianovaBuffIcon.setVisible(0)
     }
+
+    function showTierIcons() {
+        // playerIcon.setVisible(1)
+        // playerVitals.show()
+        storingBuffIcon.setVisible(1)
+        storingBuffTierIcon.setVisible(1)
+        
+        growingBuffIcon.setVisible(1)
+        growingBuffTierIcon.setVisible(1) 
+
+        spendingBuffIcon.setVisible(1)
+        spendingBuffTierIcon.setVisible(1)
+
+        kianovaBuffIcon.setVisible(1)
+    }
+
+    function hideTierIcons() {
+        // playerIcon.setVisible(0)
+        // playerVitals.hide()
+        storingBuffIcon.setVisible(0)
+        storingBuffTierIcon.setVisible(0)
+        
+        growingBuffIcon.setVisible(0)
+        growingBuffTierIcon.setVisible(0) 
+
+        spendingBuffIcon.setVisible(0)
+        spendingBuffTierIcon.setVisible(0)
+
+        kianovaBuffIcon.setVisible(0)
+    }
      
    function modeSwitch(mode){
     if (mode == 0){
@@ -602,6 +632,7 @@
                                     player.body.setBoundsRectangle(new Phaser.Geom.Rectangle(width * 1.1,0, width * 0.9, height));
                                     player.flipX = true
                                     showHUD()
+                                    hideTierIcons()
                                     
                                     
                                 },this)
@@ -1337,7 +1368,7 @@
             enemyChase(Phaser.Math.Between(-50,100))
 
         }  else {
-            enemy1.x = Phaser.Math.Between(width*1.1,width*1.6)
+            enemy1.x = Phaser.Math.Between(width*1.1,width*1.4)
         }
     }
 
@@ -2372,8 +2403,8 @@
         highScoreText.y = camera.scrollY + (height - 57)
         highScoreText.setText('High Score: ' + Math.floor(highScore))
 
-        moveBox.x = player.x - 200
-        moveBox.y = player.y - 75
+        moveBox.x = player.x - 50 //- 200
+        moveBox.y = player.y - 125 //- 75
 
         moveTypeIcon.x = moveBox.x + 5
         moveTypeIcon.y = moveBox.y + 5
