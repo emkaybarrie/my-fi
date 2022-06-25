@@ -199,7 +199,7 @@
          playerTurnStarted = false
         playerActionBarActive = false
          remActionTime = 0
-         maxActionTime = 60 * 2
+         maxActionTime = 60 * 4
          turnComplete = false
 
          expToLevelUp = 100
@@ -262,7 +262,7 @@
 
     function runTurn(){
 
-        regenActive = false
+        regenActive = true
 
         
             if(!playerTurnStarted){
@@ -293,10 +293,14 @@
                 playerActionTimeBar.draw()
                 if(!playerAttacking){
                     
-
-                playerActionTimeBar.decreaseActionTime(1)
+                if (playerStance > 0){
+                    playerActionTimeBar.decreaseActionTime(0.75)
+                } else {
+                    playerActionTimeBar.decreaseActionTime(1)
+                }
+                
                 } else if (playerAttacking){
-
+                    playerActionTimeBar.decreaseActionTime(0.25)
 
                 }
             }
@@ -391,11 +395,11 @@
                 } else {
                     camera.pan(player.x + Math.abs((player.x - enemy1.x) * 0.5),0,1500)
                 }
-                currentEnergy = 0
+                //currentEnergy = 0
                 
                 playerTurn = false
                 playerTurnStarted = false
-                regenActive = true
+                // regenActive = true
                 playerStance = 0
                 playerAttacking = false
                 turnComplete = false
@@ -846,6 +850,7 @@
     } else if (mode == 1){
             camera.resetFX()
             chaserCam = false 
+            playerIsHit = false
             inBattle = true      
             
             hideHUD()
@@ -853,9 +858,10 @@
             playerExperience.experienceBar.setVisible()
             IS_TOUCH = false
             
-
+                    //camera.pan(width * 1.5,0,500)
                     
                     enemy1GetInBattlePosition()
+                    player.stop()
                     playerGetInBattlePosition()
 
                     camera.once('camerapancomplete', function () {
@@ -2800,12 +2806,14 @@
 
         console.log('Player Turn: ' + playerTurn)
 
+        console.log('enemy Turn: ' + enemyTurn)
+
         //console.log('Attack Charge Power: ' + attackChargePower) 
         //console.log('Damage: ' + damage) 
 
-        console.log('Player Stance: ' + playerStance) 
+        console.log('Player Action Bar Active: ' + playerActionBarActive) 
 
-        console.log('Player Attacking: ' + playerAttacking) 
+        //console.log('Player Attacking: ' + playerAttacking) 
         //console.log('In Battle: ' + inBattle) 
 
         
@@ -2959,12 +2967,13 @@
 
 
             // Dynamic Panning based on chaser distance to player
-            
-            if (enemy1.x <= width * 0.25){
+            if (chaserCam){
+            if (enemy1.x <= width * 0.85){
                 camera.pan(width * 1.5,0,1000) 
             } else {
-                camera.pan(width * 1 +  ((width * 0.75) - enemy1.x ),0,3000)
+                camera.pan(width * 1.5 - ((width * 1.6) - enemy1.x ),0,2500)
             }
+        }
 
             
       
@@ -2999,14 +3008,26 @@
                         charge.y = camera.scrollY + (height - 106)
 
             
-
-            this.tweens.add({
+            
+                if (playerActionBarActive){
+                    this.tweens.add({
                                     targets     : [playerActionTimeBar.bg,playerActionTimeBar.actionTimeBar],
                                     alpha       : 1,
                                     //scaleX      : 1,
                                     ease        : 'Linear',
-                                    duration    : 1000,
-            })
+                                    duration    : 50,
+                    })
+                } else {
+                    this.tweens.add({
+                                    targets     : [playerActionTimeBar.bg,playerActionTimeBar.actionTimeBar],
+                                    alpha       : 0.5,
+                                    //scaleX      : 1,
+                                    ease        : 'Linear',
+                                    duration    : 25,
+                    })
+                }
+            
+            
 
             
 
@@ -3033,6 +3054,8 @@
 
            if (playerTurn){
             runTurn()
+           } else {
+            remActionTime = maxActionTime * (currentEnergy/maxEnergy)
            }
 
            
@@ -3308,6 +3331,7 @@
                         if (keyA.isDown && playerActionBarActive){
 
                             playerAttacking = true
+                            regenActive = false
 
                                 // Activate selected attack, running animation whilst action key held
                                 if (Phaser.Input.Keyboard.JustDown(keyA) && player.body.onFloor()){
@@ -3365,6 +3389,7 @@
                                 player.once('animationcomplete', function () {
 
                                     playerAttacking = false
+                                    regenActive = false
                                    
                                     
 
@@ -3378,6 +3403,7 @@
                         charge.on('pointerdown', function(){
                             
                             playerAttacking = true
+                            regenActive = true
 
                                 // Activate selected attack, running animation whilst action key held
                                     if (playerStance == 0){
@@ -3419,6 +3445,7 @@
                                 player.once('animationcomplete', function () {
 
                                     playerAttacking = false
+                                    regenActive = false
                                     
 
                                 }, this);
