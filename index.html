@@ -833,14 +833,7 @@
 
                     camera.once('camerazoomcomplete', function () {
 
-                        playerIcon.x = camera.scrollX + 35
-                        playerIcon.y = camera.scrollY + 35
-
-                        // Anchor buttons
-                        left.x = camera.scrollX + (width * 0.1)
-                        charge.x = camera.scrollX + (width * 0.825) 
-                        left.y = camera.scrollY + (height - 90)
-                        charge.y = camera.scrollY + (height - 106)
+                        
 
                             
                             player.body.setBoundsRectangle(new Phaser.Geom.Rectangle(width, 0, width, height));
@@ -876,14 +869,7 @@
 
                         camera.once('camerazoomcomplete', function () {
 
-                            playerIcon.x = camera.scrollX + 90
-                            playerIcon.y = camera.scrollY + 55
-
-                            // Anchor buttons
-                        left.x = camera.scrollX + (width * 0.15)
-                        charge.x = camera.scrollX + (width * 0.8) 
-                        left.y = camera.scrollY + (height - 90)
-                        charge.y = camera.scrollY + (height - 106)
+                           
 
 
                             camera.flash(250,1000)
@@ -2379,7 +2365,7 @@
 
         this.input.on('gameobjectup', function (pointer, gameObject) {
 
-        gameObject.setAlpha(0.15);
+        gameObject.setAlpha(0.25);
 
         if (gameObject == up){
             cursors.up.isDown = false
@@ -2412,7 +2398,7 @@
 
         this.input.on('gameobjectout', function (pointer, gameObject) {
 
-            gameObject.setAlpha(0.15);
+            gameObject.setAlpha(0.25);
 
             if (gameObject == up){
                 cursors.up.isDown = false
@@ -2923,6 +2909,15 @@
             levelText.setVisible(1)
             scoreText.setVisible(1)
             highScoreText.setVisible(1)
+
+            playerIcon.x = camera.scrollX + 35
+                        playerIcon.y = camera.scrollY + 35
+
+                        // Anchor buttons
+                        left.x = camera.scrollX + (width * 0.1)
+                        charge.x = camera.scrollX + (width * 0.825) 
+                        left.y = camera.scrollY + (height - 90)
+                        charge.y = camera.scrollY + (height - 106)
             
 
             this.woodsl2.tilePositionX += 1 * (playerSpeed)
@@ -2990,6 +2985,15 @@
             levelText.setVisible()
             scoreText.setVisible()
             highScoreText.setVisible()
+
+            playerIcon.x = camera.scrollX + 45
+                            playerIcon.y = camera.scrollY + 45
+
+                            // Anchor buttons
+                        left.x = camera.scrollX + (width * 0.15)
+                        charge.x = camera.scrollX + (width * 0.8) 
+                        left.y = camera.scrollY + (height - 90)
+                        charge.y = camera.scrollY + (height - 106)
 
             
 
