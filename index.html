@@ -409,7 +409,7 @@
 
     class HealthBar {
 
-        constructor (scene,startLife, x, y)
+        constructor (scene,startLife, x, y,scaleX,scaleY)
         {
             this.bg = new Phaser.GameObjects.Graphics(scene).setDepth(4);
             
@@ -418,8 +418,8 @@
             this.energyBar = new Phaser.GameObjects.Graphics(scene).setDepth(4);
             
 
-            this.scaleX = 3
-            this.scaleY = 3
+            this.scaleX = scaleX
+            this.scaleY = scaleY
 
             this.x = x;
             this.y = y;
@@ -837,6 +837,7 @@
 
 
                             player.body.setBoundsRectangle(new Phaser.Geom.Rectangle(width, 0, width, height));
+                            playerMiniVitals.hide()
                             showHUD()
                             chaserCam = true
                             
@@ -877,7 +878,9 @@
                                     
                                     player.body.setBoundsRectangle(new Phaser.Geom.Rectangle(width * 1.1,0, width * 0.9, height));
                                     player.flipX = true
+                                    playerMiniVitals.show()
                                     showHUD()
+                                    playerVitals.hide()
                                     hideTierIcons()
                                     regenActive = true
                                     playerStance = 0
@@ -1898,7 +1901,11 @@
 
         playerIcon = this.add.image(camera.scrollX + 30,camera.scrollY + 35,'playerIcon').setDepth(4).setScale(2.5)
 
-        playerVitals = new HealthBar(this,startLife, playerIcon.x + 30, playerIcon.x + 20);
+        playerVitals = new HealthBar(this,startLife, playerIcon.x + 30, playerIcon.x + 20,3,3);
+
+        playerMiniVitals = new HealthBar(this,startLife, playerIcon.x + 30, playerIcon.x + 20,1,1);
+
+        playerMiniVitals.hide()
 
         storingBuffIcon = this.add.image(playerVitals.x + 120,camera.scrollY + 25,'storingBuffIcon').setDepth(4).setScale(0.5)
         growingBuffIcon = this.add.image(storingBuffIcon.x + 100,camera.scrollY + 25,'growingBuffIcon').setDepth(4).setScale(0.5)
@@ -2845,13 +2852,13 @@
             playerVitals.y = playerIcon.y - 20
             playerVitals.draw()
 
-            if (inBattle){
-                storingBuffIcon.x = playerVitals.x + 145
-            } else {
-                storingBuffIcon.x = playerVitals.x + 155
-            }
-            
+            playerMiniVitals.x = player.x + 30
+            playerMiniVitals.y = player.y - 20
+            playerMiniVitals.draw()
 
+        
+            
+            storingBuffIcon.x = playerVitals.x + 155
             storingBuffIcon.y = playerIcon.y
             growingBuffIcon.x = storingBuffIcon.x + 100
             growingBuffIcon.y =  playerIcon.y
