@@ -844,10 +844,10 @@
                      
                     }, this)
     } else if (mode == 1){
-            
+            camera.resetFX()
             chaserCam = false 
             inBattle = true      
-            camera.resetFX()
+            
             hideHUD()
             playerExperience.bg.setVisible()
             playerExperience.experienceBar.setVisible()
@@ -1860,7 +1860,7 @@
         treeTrunk.body.setSize(150,57).setOffset(5,10)
 
 
-            enemy1 = this.physics.add.sprite(width, height - 85, 'doomsayer').setScale(1.75, 1.2).setPipeline('Light2D');
+            enemy1 = this.physics.add.sprite(0, height - 85, 'doomsayer').setScale(1.75, 1.2).setPipeline('Light2D');
             
             enemy1.setDepth(0)
             enemy1.flipX = true
