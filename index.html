@@ -83,6 +83,8 @@
     var spotlight
 
     var playerPosition 
+    var focusModeActive = false
+    var scanningForDanger = true
 
     var battleTransitionComplete 
     var chaserCam = true
@@ -1217,6 +1219,67 @@
         sprite.setVelocityX(-(Phaser.Math.GetSpeed(sprite.x - targetPosition, seconds) * (seconds * d)))
     }
 
+    function runningAttack(){
+        
+        
+        //focusModeActive = true
+        
+        if(scanningForDanger){
+            
+        if (Math.abs(treeTrunk.x - player.x) < Math.abs((vines.x - player.x)) && treeTrunk.x - player.x > -250 && treeTrunk.x - player.x < 50){
+            scanningForDanger = false
+            if(player.body.onFloor() ){
+            player.setVelocityY(-175)
+            }
+            player.setDragX(10)
+            fireTowardsTarget(player,treeTrunk.x + 100,8)
+            
+            
+            player.play({key:'pJump',frameRate:4},true)
+            
+            player.once('animationcomplete', function(){
+               
+                    player.play({key:'pDash',frameRate:4},true)
+                    player.once('animationcomplete', function(){
+                        
+                        
+                        scanningForDanger = true
+                    },this)
+              
+            },this)
+            
+        } else if (Math.abs(vines.x - player.x) < Math.abs((treeTrunk.x - player.x)) && vines.x - player.x > -200 && vines.x - player.x < 50){
+            scanningForDanger = false
+            player.play({key:'pSlide',frameRate:4},true)
+            player.setDragX(10)
+            fireTowardsTarget(player,vines.x + 100,8)
+            player.once('animationcomplete', function(){
+               
+                
+                scanningForDanger = true
+            },this)
+        
+        } else {
+            //scanningForDanger = false
+            player.play({key:'pRun',frameRate:6},true)
+            if(player.x > width * 1.35)
+            player.x -= 1
+            player.once('animationcomplete', function(){
+                //fireTowardsTarget(player,width * 1.3,12)
+                
+            
+            },this)
+            scanningForDanger = true
+        }
+        }
+
+    }
+        
+        
+        
+    
+    
+
     function playerS0Combo(){
 
     // Player runs to enemy
@@ -2021,12 +2084,12 @@
         
         this.physics.add.collider(player,platforms);
 
-        this.vines = this.add.image(player.x,player.y - 120, 'vines').setOrigin(0,0).setDepth(1).setScale(0.35,0.5).setTint(0x38761d)
+        vines = this.add.image(player.x,player.y - 120, 'vines').setOrigin(0,0).setDepth(1).setScale(0.35,0.5).setTint(0x38761d)
 
-        this.physics.add.existing(this.vines,false)
-        this.vines.body.setAllowGravity(false)
-        this.physics.add.overlap(player,this.vines, playerVineHit);
-        this.vines.body.setSize(474,175).setOffset(0,-7.5)
+        this.physics.add.existing(vines,false)
+        vines.body.setAllowGravity(false)
+        this.physics.add.overlap(player,vines, playerVineHit);
+        vines.body.setSize(474,175).setOffset(0,-7.5)
 
         treeTrunk = this.add.image(0,height - 110, 'treeTrunk').setOrigin(0,0).setDepth(1)
 
@@ -2077,7 +2140,7 @@
         
         camera.fadeIn(3000)
 
-        playerIcon = this.add.image(camera.scrollX + 30,camera.scrollY + 40,'playerIcon').setDepth(4).setScale(2.5)
+        playerIcon = this.add.image(camera.scrollX + 30,camera.scrollY + 40,'playerIcon').setDepth(3).setScale(3.5)
 
         
 
@@ -2092,9 +2155,9 @@
 
         
 
-        gloryIcon = this.add.image(levelIcon.x + 100,camera.scrollY + 20,'gloryIcon').setDepth(4).setScale(0.4)
+        gloryIcon = this.add.image(levelIcon.x + 100,camera.scrollY + 20,'gloryIcon').setDepth(4).setScale(0.35)
         gloryText = this.add.text(gloryIcon + 20, gloryIcon.y, Math.floor(level)).setFontFamily('Arial').setFontSize(36).setColor('#BC3823').setDepth(4);
-        goldIcon = this.add.image(gloryIcon.x + 130,camera.scrollY + 60,'goldIcon').setDepth(4).setScale(0.4)
+        goldIcon = this.add.image(gloryIcon.x + 130,camera.scrollY + 60,'goldIcon').setDepth(4).setScale(0.35)
         goldText = this.add.text(goldIcon, goldIcon.y, Math.floor(glory)).setFontFamily('Arial').setFontSize(36).setColor('#ffd700').setDepth(4);
 
         storingBuffIcon = this.add.image(0,0,'storingBuffIcon').setDepth(4).setScale(0.5)
@@ -2853,11 +2916,42 @@
             gameOver = false
         }
 
-        if (Phaser.Input.Keyboard.JustDown(keyX)){
+        // if (Phaser.Input.Keyboard.JustDown(keyX)){
    
-            level = 10
+        //     level = 10
       
+        // }
+
+        if(keyA.isDown){
+
+            playerSpeed = 0.5
+            vines.body.checkCollision.none = true
+
+                treeTrunk.body.checkCollision.none = true
+                
+                if (Phaser.Input.Keyboard.JustDown(keyA)){
+            
+                    focusModeActive = true
+                    scanningForDanger = true
+                }
+                if(focusModeActive){
+                runningAttack()
+                }
+
+            // if (Phaser.Input.Keyboard.JustDown(keyX)){
+            //     focusModeActive = true
+            
+        
+            // //runningAttack()
+            // }
+
+        } else if (Phaser.Input.Keyboard.JustUp(keyA)){
+            player.stop()
+            focusModeActive = false
+            scanningForDanger = false
         }
+
+    
 
         
         playerActionTimeBar.draw()
@@ -2869,23 +2963,25 @@
 
         playerIcon.x = camera.scrollX + 50
         if (!inBattle){
+            playerIcon.x = camera.scrollX + (width * 0.075)
             playerIcon.y = camera.scrollY + 40
         } else {
+            playerIcon.x = camera.scrollX + 60
             playerIcon.y = camera.scrollY + 50
         }
         
 
-        levelIcon.x = playerIcon.x + 60
+        levelIcon.x = playerIcon.x + 70
         levelIcon.y = playerIcon.y
         levelText.x = levelIcon.x + 50
         levelText.y = levelIcon.y
         levelText.setText(Math.floor(level))
 
-        playerVitals.x = levelText.x + 30
+        playerVitals.x = levelText.x + 45
         playerVitals.y = playerIcon.y - 20
         playerVitals.draw()
  
-        gloryIcon.x = camera.scrollX + (width * 0.75)
+        gloryIcon.x = camera.scrollX + (width * 0.8)
         gloryIcon.y = playerIcon.y - 20
         gloryText.x = gloryIcon.x + 30
         gloryText.y = gloryIcon.y - 20
@@ -2897,7 +2993,7 @@
         goldText.y = goldIcon.y - 20
         goldText.setText(Math.floor(gold))
 
-        playerExperience.x = levelText.x + 30
+        playerExperience.x = playerVitals.x
         playerExperience.y = camera.scrollY + (height * 0.85)
 
         
@@ -2998,16 +3094,16 @@
 
         //console.log('Player Entangled: ' + playerEntangled)
 
-        //console.log('Combatant Distance: ' + Math.abs(player.x - enemy1.x))
+        console.log('Key X duration: ' + (treeTrunk.x - player.x))
 
-        console.log('Player Turn: ' + playerTurn)
+        //console.log('Player Turn: ' + playerTurn)
 
-        console.log('enemy Turn: ' + enemyTurn)
+        //console.log('enemy Turn: ' + enemyTurn)
 
         //console.log('Attack Charge Power: ' + attackChargePower) 
         //console.log('Damage: ' + damage) 
 
-        console.log('Player Action Bar Active: ' + playerActionBarActive) 
+        //console.log('Player Action Bar Active: ' + playerActionBarActive) 
 
         //console.log('Player Attacking: ' + playerAttacking) 
         //console.log('In Battle: ' + inBattle) 
@@ -3051,8 +3147,9 @@
 
         playerPosition = player.x
         
+        if(!keyX.isDown){
         playerSpeed = playerPosition / (width * 1.2)
-
+        }
             
 
             playerMiniVitals.x = player.x + 30
@@ -3245,10 +3342,10 @@
         if (inBattle == false){
 
             if (skillTreeOpen){
-                this.vines.body.checkCollision.none = true
+                vines.body.checkCollision.none = true
                 treeTrunk.body.checkCollision.none = true
-            } else {
-                this.vines.body.checkCollision.none = false
+            } else if(!keyX.isDown) {
+                vines.body.checkCollision.none = false
                 treeTrunk.body.checkCollision.none = false
             }
 
@@ -3265,7 +3362,7 @@
 
             
 
-            moveVines(this.vines, 4.5 * (playerSpeed))
+            moveVines(vines, 4.5 * (playerSpeed))
 
             moveTreeTrunk(treeTrunk, 4.5 * (playerSpeed))
             
@@ -3291,14 +3388,14 @@
 
                 
             } else if (keyA.isDown && currentFocus > ((income) / 50) && playerIsHit == false){
-                this.vines.body.checkCollision.none = true
+                vines.body.checkCollision.none = true
 
                 treeTrunk.body.checkCollision.none = true
 
 
                 playerVitals.decreaseFocus((income) / 50)
 
-                player.anims.play({key:'pDash',frameRate: 12},true);
+                //player.anims.play({key:'pDash',frameRate: 12},true);
 
                 if (player.flipX){
                         pSFX.x = player.x + 20
@@ -3311,7 +3408,7 @@
                 pSFX.setAlpha(0.85)
                 pSFX.setDepth(0)
                 pSFX.play('chargeDash',true)
-                this.physics.moveTo(player,width * 1.75,player.y,110)
+                //this.physics.moveTo(player,width * 1.75,player.y,110)
                 
                 enemyChase(-7.5)
                 
@@ -3320,7 +3417,7 @@
                 
             } else if (cursors.down.isDown && currentEnergy > ((income * 0.25) / 25) && player.body.onFloor()){
 
-                this.vines.body.checkCollision.none = true
+                vines.body.checkCollision.none = true
  
                 playerVitals.decreaseEnergy((income * 0.25) / 25)
                 enemyChase(1)
@@ -3366,15 +3463,16 @@
                 player.body.checkCollision.none = false
                 spotlight.intensity = 0.5
 
-
+                if (!keyX.isDown){
                 if (player.body.onFloor()){
                     if(skillTreeOpen){
                         this.physics.moveTo(player,width * 1.5,height - 90,150)
                     } else {
-                        this.physics.moveTo(player,width * 1.3,height - 90,150)
+                       this.physics.moveTo(player,width * 1.3,height - 90,150)
                     }
                     
                     player.anims.play({key:'pRun',frameRate: 12},true);
+                }
                 }
                 
  
