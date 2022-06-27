@@ -1420,7 +1420,12 @@
         
 
         if(player.anims.getName() == 'pRun' || player.anims.getName() == 'pDash'){
-               fireTowardsTarget(player,enemy1.x,1)
+            if (player.flipX){
+                fireTowardsTarget(player,enemy1.x - 50,1)
+            } else {
+                fireTowardsTarget(player,enemy1.x + 50,1)
+            }  
+            
                 
         }
 
@@ -1588,7 +1593,11 @@
         player.setVelocityY(-275)
 
         if(player.anims.getName() == 'pJump'){
-            fireTowardsTarget(player,enemy1.x - 100,1,true)
+            if (player.flipX){
+                fireTowardsTarget(player,enemy1.x - 50,1)
+            } else {
+                fireTowardsTarget(player,enemy1.x + 50,1)
+            }
             
                 
         }
@@ -3147,7 +3156,7 @@
 
         playerPosition = player.x
         
-        if(!keyX.isDown){
+        if(!keyA.isDown){
         playerSpeed = playerPosition / (width * 1.2)
         }
             
@@ -3344,7 +3353,7 @@
             if (skillTreeOpen){
                 vines.body.checkCollision.none = true
                 treeTrunk.body.checkCollision.none = true
-            } else if(!keyX.isDown) {
+            } else if(!keyA.isDown) {
                 vines.body.checkCollision.none = false
                 treeTrunk.body.checkCollision.none = false
             }
@@ -3463,7 +3472,7 @@
                 player.body.checkCollision.none = false
                 spotlight.intensity = 0.5
 
-                if (!keyX.isDown){
+                if (!keyA.isDown){
                 if (player.body.onFloor()){
                     if(skillTreeOpen){
                         this.physics.moveTo(player,width * 1.5,height - 90,150)
