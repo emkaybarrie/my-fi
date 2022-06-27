@@ -2933,57 +2933,7 @@
       
         // }
 
-        if(keyA.isDown){
-
-            if (currentFocus  > 0){
-            playerFocusing = true
-         
-
-
-            playerSpeed = 0.5
-            vines.body.checkCollision.none = true
-
-                treeTrunk.body.checkCollision.none = true
-                
-                if (Phaser.Input.Keyboard.JustDown(keyA)){
-            
-                    focusModeActive = true
-                    scanningForDanger = true
-                }
-                if(focusModeActive){
-                runningAttack()
-                }
-            } else {
-                playerFocusing = false
-                
-                
-            }
-
-            // if (Phaser.Input.Keyboard.JustDown(keyX)){
-            //     focusModeActive = true
-            
         
-            // //runningAttack()
-            // }
-
-        } else if (Phaser.Input.Keyboard.JustUp(keyA)){
-            player.stop()
-            playerFocusing = false
-            focusModeActive = false
-            scanningForDanger = false
-        }
-
-        charge.once('pointerdown',function(){
-            focusModeActive = true
-            scanningForDanger = true
-        },this)
-
-        charge.once('pointerup',function(){
-            player.stop()
-            playerFocusing = false
-            focusModeActive = false
-            scanningForDanger = false
-        },this)
 
     
 
@@ -3181,9 +3131,9 @@
 
         playerPosition = player.x
         
-        if(!playerFocusing){
-        playerSpeed = playerPosition / (width * 1.2)
-        }
+        
+
+       
             
 
             playerMiniVitals.x = player.x + 30
@@ -3193,15 +3143,7 @@
         
             
 
-        if (!playerFocusing){
-            player.setTintFill()
-            spotlight.intensity = 0.5
-            spotlight.setColor(0xffffff)
-            spotlight.x = player.x
-            spotlight.y = player.y
-            pSFX.setVisible(false)
-            
-        }
+        
         
             if (player.flipX){
                 sword.x = player.x - 10
@@ -3224,6 +3166,64 @@
          
         
         if (inBattle == false){
+
+            if(keyA.isDown){
+
+            if (currentFocus  > 0){
+            playerFocusing = true
+
+
+
+            playerSpeed = 0.5
+            vines.body.checkCollision.none = true
+
+                treeTrunk.body.checkCollision.none = true
+                
+                if (Phaser.Input.Keyboard.JustDown(keyA)){
+
+                    focusModeActive = true
+                    scanningForDanger = true
+                }
+                if(focusModeActive){
+                runningAttack()
+                }
+            } else {
+                playerFocusing = false
+                
+                
+            }
+
+
+
+            } else if (Phaser.Input.Keyboard.JustUp(keyA)){
+            player.stop()
+            playerFocusing = false
+            focusModeActive = false
+            scanningForDanger = false
+            }
+
+            charge.once('pointerdown',function(){
+            focusModeActive = true
+            scanningForDanger = true
+            },this)
+
+            charge.once('pointerup',function(){
+            player.stop()
+            playerFocusing = false
+            focusModeActive = false
+            scanningForDanger = false
+            },this)
+
+            if (!playerFocusing){
+            playerSpeed = playerPosition / (width * 1.2)
+            player.setTintFill()
+            spotlight.intensity = 0.5
+            spotlight.setColor(0xffffff)
+            spotlight.x = player.x
+            spotlight.y = player.y
+            pSFX.setVisible(false)
+            
+        }
 
            
 
