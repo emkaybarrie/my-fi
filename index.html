@@ -65,7 +65,8 @@
     var game = new Phaser.Game(config);
     var gameOver = false
     var gameRestart = false
-    var score = 0
+    var glory = 1000
+    var gold = 0
     var highScore = parseInt(localStorage.getItem('highScore')) || 0;
 
     var storingBuffTier = 0
@@ -99,6 +100,7 @@
     var playerTurn = false
     var playerTurnStarted = false
     var playerActionBarActive = false
+    var playerActionBarRegen = false
     var remActionTime = 0
     var maxActionTime = 60 * 2
     var turnComplete = false
@@ -172,7 +174,7 @@
 
         gameOver = false
         gameRestart = false
-         score = 0
+        glory = 0
         
 
          storingBuffTier = 0
@@ -198,6 +200,7 @@
          playerTurn = false
          playerTurnStarted = false
         playerActionBarActive = false
+        playerActionBarRegen = false
          remActionTime = 0
          maxActionTime = 60 * 4
          turnComplete = false
@@ -268,7 +271,7 @@
             if(!playerTurnStarted){
                 
                 playerTurnStarted = true
-                currentEnergy -=1
+                playerActionBarRegen = true
                 if (player.x > enemy1.x){
                     camera.pan(enemy1.x + Math.abs((player.x - enemy1.x) * 0.7),0,250)
                 } else {
@@ -277,10 +280,9 @@
                 
                 camera.once('camerapancomplete', function(){
                     
-                    remActionTime = maxActionTime
-                    camera.flash(500,120,81,169)
+                    //remActionTime = maxActionTime
+                    camera.flash(250,120,81,169)
                     camera.once('cameraflashcomplete', function(){
-                    
                     
                     playerActionBarActive = true
                     },this)
@@ -290,11 +292,11 @@
                 
             if (playerActionBarActive){
                 
-                playerActionTimeBar.draw()
+                playerActionBarRegen = false
                 if(!playerAttacking){
                     
                 if (playerStance > 0){
-                    playerActionTimeBar.decreaseActionTime(0.75)
+                    playerActionTimeBar.decreaseActionTime(0.5)
                 } else {
                     playerActionTimeBar.decreaseActionTime(1)
                 }
@@ -345,6 +347,7 @@
                         
                         
                         enemyTurn = true
+                        playerActionBarRegen = true
                         },this)
 
                         
@@ -417,6 +420,7 @@
         {
             this.bg = new Phaser.GameObjects.Graphics(scene).setDepth(4);
             
+            
             this.lifeBar = new Phaser.GameObjects.Graphics(scene).setDepth(4);
             this.focusBar = new Phaser.GameObjects.Graphics(scene).setDepth(4);
             this.energyBar = new Phaser.GameObjects.Graphics(scene).setDepth(4);
@@ -428,9 +432,11 @@
             this.x = x;
             this.y = y;
             
-            this.pL =  (38 * this.scaleX) / maxLife
-            this.pF =  (38 * this.scaleX)  / maxFocus 
-            this.pE =  (38 * this.scaleX)  / maxEnergy
+            this.pL =  (39.5 * this.scaleX) / maxLife
+            this.pF =  (39.5 * this.scaleX)  / maxFocus 
+            this.pE =  (39.5 * this.scaleX)  / maxEnergy
+
+            
             
 
             this.draw();
@@ -525,40 +531,197 @@
 
             //  BG
             this.bg.fillStyle(0x000000);
-            this.bg.fillRect(this.x, this.y, (40 * this.scaleX), 13 * this.scaleY);
+            this.bg.fillRect(this.x, this.y, (40 * this.scaleX), 13.25 * this.scaleY);
 
             //  Health
 
             this.lifeBar.fillStyle(0xffffff);
-            this.lifeBar.fillRect(this.x + (1 * this.scaleX), this.y + (1 * this.scaleY), 38 * this.scaleX, 3 * this.scaleY);
+            this.lifeBar.fillRect(this.x + 1 , this.y + 1, 39.5 * this.scaleX, 4 * this.scaleY);
             this.lifeBar.fillStyle(0xcc0000);
 
 
             var d = Math.floor(this.pL * currentLife);
 
-            this.lifeBar.fillRect(this.x + (1 * this.scaleX), this.y + (1 * this.scaleY), d , 3 * this.scaleY);
+            this.lifeBar.fillRect(this.x + 1 , this.y + 1 , d , 4 * this.scaleY);
 
             //  Focus
 
             this.focusBar.fillStyle(0xffffff);
-            this.focusBar.fillRect(this.x + (1 * this.scaleX), this.y + (5 * this.scaleY), 38 * this.scaleX, 3 * this.scaleY);
+            this.focusBar.fillRect(this.x + 1 , (this.y + 2 + (4 * this.scaleY)) , 39.5 * this.scaleX, 4 * this.scaleY);
             this.focusBar.fillStyle(0xf1c232);
             
 
             var d = Math.floor(this.pF * currentFocus);
 
-            this.focusBar.fillRect(this.x + (1 * this.scaleX), this.y + (5 * this.scaleY), d  , 3 * this.scaleY);
+            this.focusBar.fillRect(this.x + 1 , (this.y + 2 + (4 * this.scaleY)), d  , 4 * this.scaleY);
 
             //  Energy
 
             this.energyBar.fillStyle(0xffffff);
-            this.energyBar.fillRect(this.x + (1 * this.scaleX), this.y + (9 * this.scaleY) , 38 * this.scaleX , 3 * this.scaleY);
-            this.energyBar.fillStyle(0x93c47d);
+            this.energyBar.fillRect(this.x + 1 , (this.y + 3 + ((4 * this.scaleY) * 2)) , 39.5 * this.scaleX , 4 * this.scaleY);
+            this.energyBar.fillStyle(0x00a86b);
         
 
             var d = Math.floor(this.pE * currentEnergy);
 
-            this.energyBar.fillRect(this.x + (1 * this.scaleX), this.y + (9 * this.scaleY), d , 3 * this.scaleY);
+            this.energyBar.fillRect(this.x + 1 , (this.y + 3 + ((4 * this.scaleY) * 2)), d , 4 * this.scaleY);
+
+            
+        }
+
+    }
+
+    class MiniHealthBar {
+
+        constructor (scene,startLife, x, y,scaleX,scaleY)
+        {
+            this.bg = new Phaser.GameObjects.Graphics(scene).setDepth(4);
+            
+            
+            this.lifeBar = new Phaser.GameObjects.Graphics(scene).setDepth(4);
+            this.focusBar = new Phaser.GameObjects.Graphics(scene).setDepth(4);
+            this.energyBar = new Phaser.GameObjects.Graphics(scene).setDepth(4);
+            
+
+            this.scaleX = scaleX
+            this.scaleY = scaleY
+
+            this.x = x;
+            this.y = y;
+            
+            this.pL =  (38 * this.scaleX) / maxLife
+            this.pF =  (38 * this.scaleX)  / maxFocus 
+            this.pE =  (38 * this.scaleX)  / maxEnergy
+
+            
+            
+
+            this.draw();
+
+            scene.add.existing(this.bg)
+            scene.add.existing(this.lifeBar);
+            scene.add.existing(this.focusBar);
+            scene.add.existing(this.energyBar);
+            
+        }
+
+        decreaseLife (amount)
+        {
+            currentLife -= amount;
+
+            if (currentLife > maxLife){
+                currentLife = maxLife
+            }
+
+        
+
+            if (currentLife < 0)
+            {
+                currentLife = 0;
+            }
+
+            this.draw();
+
+            return (currentLife === 0);
+        }
+
+        decreaseEnergy (amount)
+        {
+            currentEnergy -= amount;
+
+            if (currentEnergy > maxEnergy){
+                currentEnergy = maxEnergy
+            }
+
+            if (currentEnergy < 0)
+            {
+                currentEnergy = 0;
+            }
+            
+
+            this.draw();
+
+            return (currentEnergy === 0);
+        }
+
+        decreaseFocus (amount)
+        {
+            currentFocus -= amount;
+
+            if (currentFocus > maxFocus){
+                currentFocus = maxFocus
+            }
+
+            if (currentFocus < 0)
+            {
+                currentFocus = 0;
+            }
+
+            this.draw();
+
+            return (currentFocus === 0);
+        }
+
+        hide ()
+        {
+            this.bg.setVisible(0)
+            this.lifeBar.setVisible(0)
+            this.energyBar.setVisible(0)
+            this.focusBar.setVisible(0)
+        }
+
+        show ()
+        {
+            this.bg.setVisible(1)
+            this.lifeBar.setVisible(1)
+            this.energyBar.setVisible(1)
+            this.focusBar.setVisible(1)
+        }
+
+        draw ()
+        {
+            this.bg.clear()
+            this.lifeBar.clear();
+            this.focusBar.clear();
+            this.energyBar.clear();
+            
+
+            //  BG
+            this.bg.fillStyle(0x000000);
+            this.bg.fillRect(this.x, this.y, (40 * this.scaleX), 16 * this.scaleY);
+
+            //  Health
+
+            this.lifeBar.fillStyle(0xffffff);
+            this.lifeBar.fillRect(this.x + 1 , this.y + 1, 38 * this.scaleX, 4 * this.scaleY);
+            this.lifeBar.fillStyle(0xcc0000);
+
+
+            var d = Math.floor(this.pL * currentLife);
+
+            this.lifeBar.fillRect(this.x + 1 , this.y + 1 , d , 4 * this.scaleY);
+
+            //  Focus
+
+            this.focusBar.fillStyle(0xffffff);
+            this.focusBar.fillRect(this.x + 1 , (this.y + 2 + (4 * this.scaleY)) , 38 * this.scaleX, 4 * this.scaleY);
+            this.focusBar.fillStyle(0xf1c232);
+            
+
+            var d = Math.floor(this.pF * currentFocus);
+
+            this.focusBar.fillRect(this.x + 1 , (this.y + 2 + (4 * this.scaleY)), d  , 4 * this.scaleY);
+
+            //  Energy
+
+            this.energyBar.fillStyle(0xffffff);
+            this.energyBar.fillRect(this.x + 1 , (this.y + 3 + ((4 * this.scaleY) * 2)) , 38 * this.scaleX , 4 * this.scaleY);
+            this.energyBar.fillStyle(0x00a86b);
+
+
+            var d = Math.floor(this.pE * currentEnergy);
+
+            this.energyBar.fillRect(this.x + 1 , (this.y + 3 + ((4 * this.scaleY) * 2)), d , 4 * this.scaleY);
 
             
         }
@@ -634,7 +797,7 @@
         this.x = x;
         this.y = y;
         
-        this.p =  233 / expToLevelUp
+        this.p =  (39.5 * playerVitals.scaleX) / expToLevelUp
 
         this.draw();
 
@@ -658,9 +821,6 @@
     }
 
     
-
-        
-
         draw ()
         {
             this.bg.clear()
@@ -669,18 +829,17 @@
 
             //  BG
             this.bg.fillStyle(0x000000);
-            this.bg.fillRect(this.x, this.y, 235, 20);
+            this.bg.fillRect(this.x, this.y, (40 * playerVitals.scaleX), 20);
 
             //  Exp
 
             this.experienceBar.fillStyle(0xffffff);
-            this.experienceBar.fillRect(this.x + 1, this.y + 1, 233, 18);
+            this.experienceBar.fillRect(this.x + 1 , this.y + 1, 39.5 * playerVitals.scaleX, 18);
             this.experienceBar.fillStyle(0x674EA7);
-
 
             var d = Math.floor(this.p * exp);
 
-            this.experienceBar.fillRect(this.x + 1, this.y + 1, d, 18);
+            this.experienceBar.fillRect(this.x + 1 , this.y + 1, d, 18);
 
             
         }
@@ -752,7 +911,7 @@
 
                 this.actionTimeBar.fillStyle(0xffffff);
                 this.actionTimeBar.fillRect(this.x + 1, this.y + 1, 233, 18);
-                this.actionTimeBar.fillStyle(0xB4A7D6);
+                this.actionTimeBar.fillStyle(0x00CED1);
 
 
                 var d = Math.floor(this.p * remActionTime);
@@ -764,34 +923,36 @@
 
         }
 
-    function showHUD() {
+    function showRunningHUD() {
         playerIcon.setVisible(1)
         playerVitals.show()
-        storingBuffIcon.setVisible(1)
-        storingBuffTierIcon.setVisible(1)
+
+        levelIcon.setVisible(1)
+        levelText.setVisible(1)
         
-        growingBuffIcon.setVisible(1)
-        growingBuffTierIcon.setVisible(1) 
+        gloryIcon.setVisible(1)
+        gloryText.setVisible(1)
 
-        spendingBuffIcon.setVisible(1)
-        spendingBuffTierIcon.setVisible(1)
+        goldIcon.setVisible(1)
+        goldText.setVisible(1)
+        
 
-        kianovaBuffIcon.setVisible(1)
     }
 
-    function hideHUD() {
+    function hideRunningHUD() {
         playerIcon.setVisible(0)
         playerVitals.hide()
-        storingBuffIcon.setVisible(0)
-        storingBuffTierIcon.setVisible(0)
+
+        levelIcon.setVisible(0)
+        levelText.setVisible(0)
         
-        growingBuffIcon.setVisible(0)
-        growingBuffTierIcon.setVisible(0) 
+        gloryIcon.setVisible(0)
+        gloryText.setVisible(0)
 
-        spendingBuffIcon.setVisible(0)
-        spendingBuffTierIcon.setVisible(0)
+        goldIcon.setVisible(0)
+        goldText.setVisible(0)
 
-        kianovaBuffIcon.setVisible(0)
+  
     }
 
     function showTierIcons() {
@@ -826,7 +987,7 @@
      
    function modeSwitch(mode){
     if (mode == 0){
-        hideHUD()
+        hideRunningHUD()
         playerExperience.bg.setVisible(1)
         playerExperience.experienceBar.setVisible(1)
             
@@ -842,7 +1003,7 @@
 
                             player.body.setBoundsRectangle(new Phaser.Geom.Rectangle(width, 0, width, height));
                             playerMiniVitals.hide()
-                            showHUD()
+                            showRunningHUD()
                             chaserCam = true
                             
                      
@@ -853,7 +1014,7 @@
             playerIsHit = false
             inBattle = true      
             
-            hideHUD()
+            hideRunningHUD()
             playerExperience.bg.setVisible()
             playerExperience.experienceBar.setVisible()
             IS_TOUCH = false
@@ -885,11 +1046,11 @@
                                     player.body.setBoundsRectangle(new Phaser.Geom.Rectangle(width * 1.1,0, width * 0.9, height));
                                     player.flipX = true
                                     playerMiniVitals.show()
-                                    showHUD()
+                                    showRunningHUD()
                                     playerVitals.hide()
-                                    hideTierIcons()
                                     regenActive = true
                                     playerStance = 0
+                                    playerActionBarRegen = true
                                     
                                     
                                 },this)
@@ -1513,8 +1674,14 @@
 
             playerIsHit = true
             playerVitals.decreaseLife((e1MaxLife * 1.5) / 50)
+            playerActionTimeBar.decreaseActionTime((e1MaxLife * 0.25) / 50)
             maxEnergy *= 1 - (0.04 / 12 / 50)
-            score -= (25 / 60)
+            if(glory - (25/60) < 0){
+                glory = 0
+            } else {
+                glory -= (25 / 60)
+            }
+            
             //income *= 1 - (0.02 / 12 / 50)
 
         }   
@@ -1682,7 +1849,7 @@
         if (inBattle == false){
             if (skillTreeOpen == false){
                 playerExperience.increaseExp((100 / 60))
-                score += (100 / 60)
+                glory += (100 / 60)
             }
             
         } 
@@ -1698,8 +1865,8 @@
     }
 
     function updateHighScore(){
-        if (highScore < score){
-            highScore = score
+        if (highScore < glory){
+            highScore = glory
         }
 
         
@@ -1740,6 +1907,10 @@
 
         this.load.image('t1KianovaBuffIcon', 'assets/ach_00122.png');
         this.load.image('t2KianovaBuffIcon', 'assets/ach_00091.png');
+
+        this.load.image('levelIcon', 'assets/ach_00006.png');
+        this.load.image('gloryIcon', 'assets/ach_00035.png');
+        this.load.image('goldIcon', 'assets/ach_00040.png');
 
         this.load.image('up', 'assets/controls/shadedDark03.png');
         this.load.image('down', 'assets/controls/shadedDark10.png');
@@ -1906,17 +2077,29 @@
         
         camera.fadeIn(3000)
 
-        playerIcon = this.add.image(camera.scrollX + 30,camera.scrollY + 35,'playerIcon').setDepth(4).setScale(2.5)
+        playerIcon = this.add.image(camera.scrollX + 30,camera.scrollY + 40,'playerIcon').setDepth(4).setScale(2.5)
 
-        playerVitals = new HealthBar(this,startLife, playerIcon.x + 30, playerIcon.x + 20,3,3);
+        
 
-        playerMiniVitals = new HealthBar(this,startLife, playerIcon.x + 30, playerIcon.x + 20,1,1);
+        
 
+        levelIcon = this.add.image(playerIcon.x + 50,playerIcon.y,'levelIcon').setDepth(4).setScale(0.5).setOrigin(0.5,0.5)
+        levelText = this.add.text(levelIcon + 10, levelIcon.y, Math.floor(level)).setFontFamily('Arial').setFontSize(36).setColor('#674EA7').setDepth(4).setOrigin(0.5,0.5)
+
+        playerVitals = new HealthBar(this,startLife, levelIcon.x + 30, playerIcon.y + 20,5,3)
+        playerMiniVitals = new MiniHealthBar(this,startLife, playerIcon.x + 30, playerIcon.x + 20,1,1);
         playerMiniVitals.hide()
 
-        storingBuffIcon = this.add.image(playerVitals.x + 120,camera.scrollY + 25,'storingBuffIcon').setDepth(4).setScale(0.5)
-        growingBuffIcon = this.add.image(storingBuffIcon.x + 100,camera.scrollY + 25,'growingBuffIcon').setDepth(4).setScale(0.5)
-        spendingBuffIcon = this.add.image(growingBuffIcon.x + 95,camera.scrollY + 25,'spendingBuffIcon').setDepth(4).setScale(0.5)
+        
+
+        gloryIcon = this.add.image(levelIcon.x + 100,camera.scrollY + 20,'gloryIcon').setDepth(4).setScale(0.4)
+        gloryText = this.add.text(gloryIcon + 20, gloryIcon.y, Math.floor(level)).setFontFamily('Arial').setFontSize(36).setColor('#BC3823').setDepth(4);
+        goldIcon = this.add.image(gloryIcon.x + 130,camera.scrollY + 60,'goldIcon').setDepth(4).setScale(0.4)
+        goldText = this.add.text(goldIcon, goldIcon.y, Math.floor(glory)).setFontFamily('Arial').setFontSize(36).setColor('#ffd700').setDepth(4);
+
+        storingBuffIcon = this.add.image(0,0,'storingBuffIcon').setDepth(4).setScale(0.5)
+        growingBuffIcon = this.add.image(0,0,'growingBuffIcon').setDepth(4).setScale(0.5)
+        spendingBuffIcon = this.add.image(0,0,'spendingBuffIcon').setDepth(4).setScale(0.5)
 
         moveBox = this.add.image(0, 0, 'energyMoveBox2').setDepth(4).setAlpha(0).setScale(0).setOrigin(0,0)
         moveNameText = this.add.text(0, 0, "Deadly Combat Assault").setFontFamily('Revalia').setFontSize(12).setColor('#ff9900').setDepth(4).setOrigin(0,0).setAlpha(0);
@@ -1936,43 +2119,42 @@
    
         
 
-        if (storingBuffTier == 0){
+        // if (storingBuffTier == 0){
 
-            storingBuffTierIcon = this.add.image(camera.scrollX + 275,camera.scrollY + 25,'t1BuffIcon').setDepth(4).setScale(0.5).setAlpha(0.25)
-        } else {
-            storingBuffTierIcon = this.add.image(camera.scrollX + 275,camera.scrollY + 25,'t'+storingBuffTier+'BuffIcon').setDepth(4).setScale(0.5)
-        }
+        //     storingBuffTierIcon = this.add.image(camera.scrollX + 275,camera.scrollY + 25,'t1BuffIcon').setDepth(4).setScale(0.5).setAlpha(0.25)
+        // } else {
+        //     storingBuffTierIcon = this.add.image(camera.scrollX + 275,camera.scrollY + 25,'t'+storingBuffTier+'BuffIcon').setDepth(4).setScale(0.5)
+        // }
 
-        if (growingBuffTier == 0){
-            growingBuffTierIcon = this.add.image(camera.scrollX + 400,camera.scrollY + 25,'t1BuffIcon').setDepth(4).setScale(0.5).setAlpha(0.25)
-        } else {
-            growingBuffTierIcon = this.add.image(camera.scrollX + 400,camera.scrollY + 25,'t'+spendingBuffTier+'BuffIcon').setDepth(4).setScale(0.5)
-        }
+        // if (growingBuffTier == 0){
+        //     growingBuffTierIcon = this.add.image(camera.scrollX + 400,camera.scrollY + 25,'t1BuffIcon').setDepth(4).setScale(0.5).setAlpha(0.25)
+        // } else {
+        //     growingBuffTierIcon = this.add.image(camera.scrollX + 400,camera.scrollY + 25,'t'+spendingBuffTier+'BuffIcon').setDepth(4).setScale(0.5)
+        // }
 
-        if (spendingBuffTier == 0){
-            spendingBuffTierIcon = this.add.image(camera.scrollX + 525,camera.scrollY + 25,'t1BuffIcon').setDepth(4).setScale(0.5).setAlpha(0.25)
-        } else {
-            spendingBuffTierIcon = this.add.image(camera.scrollX + 525,camera.scrollY + 25,'t'+growingBuffTier+'BuffIcon').setDepth(4).setScale(0.5)
-        }
+        // if (spendingBuffTier == 0){
+        //     spendingBuffTierIcon = this.add.image(camera.scrollX + 525,camera.scrollY + 25,'t1BuffIcon').setDepth(4).setScale(0.5).setAlpha(0.25)
+        // } else {
+        //     spendingBuffTierIcon = this.add.image(camera.scrollX + 525,camera.scrollY + 25,'t'+growingBuffTier+'BuffIcon').setDepth(4).setScale(0.5)
+        // }
 
-        if (kianovaBuffTier == 0){
-            kianovaBuffIcon = this.add.image(camera.scrollX + 525,camera.scrollY + 25,'t1KianovaBuffIcon').setDepth(4).setScale(0.65).setAlpha(0.25)
-        } else if (kianovaBuffTier == 2) {
-            kianovaBuffIcon = this.add.image(camera.scrollX + 525,camera.scrollY + 25,'t'+kianovaBuffTier+'KianovaBuffIcon').setDepth(4).setScale(0.2)
-        } else {
-            kianovaBuffIcon = this.add.image(camera.scrollX + 525,camera.scrollY + 25,'t'+kianovaBuffTier+'KianovaBuffIcon').setDepth(4).setScale(0.5)
-        }
+        // if (kianovaBuffTier == 0){
+        //     kianovaBuffIcon = this.add.image(camera.scrollX + 525,camera.scrollY + 25,'t1KianovaBuffIcon').setDepth(4).setScale(0.65).setAlpha(0.25)
+        // } else if (kianovaBuffTier == 2) {
+        //     kianovaBuffIcon = this.add.image(camera.scrollX + 525,camera.scrollY + 25,'t'+kianovaBuffTier+'KianovaBuffIcon').setDepth(4).setScale(0.2)
+        // } else {
+        //     kianovaBuffIcon = this.add.image(camera.scrollX + 525,camera.scrollY + 25,'t'+kianovaBuffTier+'KianovaBuffIcon').setDepth(4).setScale(0.5)
+        // }
 
  
-        playerExperience = new ExperienceBar(this,exp, camera.scrollX + width * 0.33, camera.scrollY + (height - 85));
+        playerExperience = new ExperienceBar(this,exp, camera.scrollX + width * 0.33, camera.scrollY + (height - 85),5,1);
 
         playerActionTimeBar = new ActionTimeBar(this,remActionTime, player.x, player.y + 40);
 
         
 
-        levelText = this.add.text(camera.scrollX + (width - 140), camera.scrollY + (height - 57), 'Level: ' + Math.floor(level)).setFontFamily('Arial').setFontSize(12).setColor('#674EA7').setDepth(4);
-        scoreText = this.add.text(camera.scrollX + (width - 140), camera.scrollY + (height - 57), 'Score: ' + Math.floor(score)).setFontFamily('Arial').setFontSize(12).setColor('#674EA7').setDepth(4);
-        highScoreText = this.add.text(camera.scrollX + (width - 340), camera.scrollY + (height - 57), 'High Score: ' + Math.floor(highScore)).setFontFamily('Arial').setFontSize(12).setColor('#674EA7').setDepth(4);
+        
+
         
         skillTreeLifeIcon = this.add.image(width * 0.25, height / 2,'storingBuffIcon').setDepth(4).setScale(1).setVisible(0).setAlpha(0.75)
         skillTreeFocusIcon = this.add.image(width * 0.5 , height / 2,'growingBuffIcon').setDepth(4).setScale(1).setVisible(0).setAlpha(0.75)
@@ -2659,28 +2841,8 @@
                         }, enemy1)
 
 
-
         }
 
-      
-
-        
-            
-         
-
-         // v2 Player runs on spot, and tween 
-
-        // Player uses energy (auto via budget) to set velocity and coast on momentum, and to avoid incoming obstacles (budget/some stat determines auto dodge)
-
-        // Enemies spawn and charge at intervals relating to a [month]
-
-        // Player auto clears incoming obstacles provided they have enough energy (has a cost, identifiable visually), can use focus instead manually.  Challenge is balancing with monster chasing, requiring energy expenditure to avoid.  Obstacles cover the baseline outgoings per month, monster reps unexpected.  Remaining energy can be 'invested' (mechanics tbc) or is swept into savings each cycle -
-
-        // enemy constantly eating a random amount of player energy (or at set intervals)
-        // Income - budget = energy regen
-        // As time passes, energy regen decreases by 4% (inflation) + x% (diffuclty ramp) per interval, and more enemies of higher chaos multipliers appear)
-        // Enemy can sprint, rep unexpected cost, accelratin up to player (higher accelration = larger unexpected cost)  
-        // Player can expend further energy to accelerate, and while sprinting cuts enemy accelration
         
         updateHighScore()
 
@@ -2692,32 +2854,66 @@
         }
 
         if (Phaser.Input.Keyboard.JustDown(keyX)){
-            //toggleSkillTree()
-            playerTurn = true
+   
+            level = 10
       
         }
 
         
         playerActionTimeBar.draw()
         playerActionTimeBar.x = playerExperience.x
-        playerActionTimeBar.y = playerExperience.y
+        playerActionTimeBar.y = playerExperience.y + 5
         
 
-        //playerExperience.x = camera.scrollX + width * 0.3
-        //playerExperience.y = camera.scrollY + (height * 0.85)
         playerExperience.draw()
 
-        levelText.x = playerExperience.x
-        levelText.y = playerExperience.y - 17.5
-        levelText.setText('Level: ' + Math.floor(level))
+        playerIcon.x = camera.scrollX + 50
+        if (!inBattle){
+            playerIcon.y = camera.scrollY + 40
+        } else {
+            playerIcon.y = camera.scrollY + 50
+        }
+        
 
-        scoreText.x = levelText.x + 75
-        scoreText.y = levelText.y
-        scoreText.setText('Score: ' + Math.floor(score))
+        levelIcon.x = playerIcon.x + 60
+        levelIcon.y = playerIcon.y
+        levelText.x = levelIcon.x + 50
+        levelText.y = levelIcon.y
+        levelText.setText(Math.floor(level))
 
-        highScoreText.x = scoreText.x + 75
-        highScoreText.y = scoreText.y
-        highScoreText.setText('High Score: ' + Math.floor(highScore))
+        playerVitals.x = levelText.x + 30
+        playerVitals.y = playerIcon.y - 20
+        playerVitals.draw()
+ 
+        gloryIcon.x = camera.scrollX + (width * 0.75)
+        gloryIcon.y = playerIcon.y - 20
+        gloryText.x = gloryIcon.x + 30
+        gloryText.y = gloryIcon.y - 20
+        gloryText.setText(Math.floor(glory))
+
+        goldIcon.x = gloryIcon.x
+        goldIcon.y = playerIcon.y + 20
+        goldText.x = goldIcon.x + 30
+        goldText.y = goldIcon.y - 20
+        goldText.setText(Math.floor(gold))
+
+        playerExperience.x = levelText.x + 30
+        playerExperience.y = camera.scrollY + (height * 0.85)
+
+        
+        
+        
+
+        
+        
+        
+
+        
+        
+
+        
+        
+
 
         moveBox.x = player.x - 50 //- 200
         moveBox.y = player.y - 125 //- 75
@@ -2732,7 +2928,9 @@
         moveText.y = moveNameText.y + 22
 
         
-
+        skillTreeLifeIcon.x = camera.scrollX + (width * 0.25)
+        skillTreeFocusIcon.x = camera.scrollX + (width * 0.5)
+        skillTreeEnergyIcon.x = camera.scrollX + (width * 0.75)
         
 
         if(IS_TOUCH){
@@ -2771,7 +2969,7 @@
 
  
         if (exp >= expToLevelUp){
-            score += (100 / 60) * 10
+            glory += (100 / 60) * 10
             levelUp()
 
         }
@@ -2782,9 +2980,7 @@
 
         
 
-        skillTreeLifeIcon.x = camera.scrollX + (width * 0.25)
-        skillTreeFocusIcon.x = camera.scrollX + (width * 0.5)
-        skillTreeEnergyIcon.x = camera.scrollX + (width * 0.75)
+        
 
         
         
@@ -2857,9 +3053,7 @@
         
         playerSpeed = playerPosition / (width * 1.2)
 
-            playerVitals.x = playerIcon.x + 30
-            playerVitals.y = playerIcon.y - 20
-            playerVitals.draw()
+            
 
             playerMiniVitals.x = player.x + 30
             playerMiniVitals.y = player.y - 20
@@ -2867,22 +3061,7 @@
 
         
             
-            storingBuffIcon.x = playerVitals.x + 155
-            storingBuffIcon.y = playerIcon.y
-            growingBuffIcon.x = storingBuffIcon.x + 100
-            growingBuffIcon.y =  playerIcon.y
-            spendingBuffIcon.x = growingBuffIcon.x + 95
-            spendingBuffIcon.y =  playerIcon.y
 
-            storingBuffTierIcon.x = storingBuffIcon.x + 50
-            storingBuffTierIcon.y = playerIcon.y
-            growingBuffTierIcon.x = growingBuffIcon.x + 50
-            growingBuffTierIcon.y = playerIcon.y
-            spendingBuffTierIcon.x = spendingBuffIcon.x + 45
-            spendingBuffTierIcon.y = playerIcon.y
-
-            kianovaBuffIcon.x = spendingBuffIcon.x + 102
-            kianovaBuffIcon.y = playerIcon.y + 2
 
             player.setTint()
         
@@ -2917,19 +3096,6 @@
         if (inBattle == false){
 
            
-            levelText.setVisible(1)
-            scoreText.setVisible(1)
-            highScoreText.setVisible(1)
-
-            playerExperience.x = camera.scrollX + width * 0.3
-            playerExperience.y = camera.scrollY + (height * 0.89)
-
-            
-
-         
-
-            playerIcon.x = camera.scrollX + 35
-            playerIcon.y = camera.scrollY + 35
 
                         // Anchor buttons
                         left.x = camera.scrollX + (width * 0.05)
@@ -2954,7 +3120,7 @@
                                     targets     : [moveTypeIcon,moveNameText,moveText],
                                     alpha       : 0,
                                     ease        : 'Linear',
-                                    duration    : 25,
+                                    duration    : 500,
             });
 
             this.tweens.add({
@@ -2962,7 +3128,15 @@
                                     alpha       : 0,
                                     //scaleX      : 0,
                                     ease        : 'Linear',
-                                    duration    : 25,
+                                    duration    : 0,
+            })
+
+            this.tweens.add({
+                                    targets     : [playerExperience.bg, playerExperience.experienceBar],
+                                    alpha       : 1,
+                                    //scaleX      : 0,
+                                    ease        : 'Linear',
+                                    duration    : 250,
             })
 
 
@@ -2988,24 +3162,29 @@
   
         } else if (inBattle) {
 
-            
-            levelText.setVisible(1)
-            scoreText.setVisible(1)
-            highScoreText.setVisible(1)
 
             playerExperience.x = camera.scrollX + width * 0.3
-            playerExperience.y = camera.scrollY + (height * 0.9)
+            playerExperience.y = camera.scrollY + (height * 0.85)
 
            
 
-            playerIcon.x = camera.scrollX + 50
-                            playerIcon.y = camera.scrollY + 40
+           
 
+           
+            
                             // Anchor buttons
                         left.x = camera.scrollX + (width * 0.075)
                         charge.x = camera.scrollX + (width * 0.9) 
                         left.y = camera.scrollY + (height - 90)
                         charge.y = camera.scrollY + (height - 106)
+
+                        this.tweens.add({
+                                    targets     : [playerExperience.bg, playerExperience.experienceBar],
+                                    alpha       : 0,
+                                    //scaleX      : 0,
+                                    ease        : 'Linear',
+                                    duration    : 0,
+                        })
 
             
             
@@ -3013,17 +3192,15 @@
                     this.tweens.add({
                                     targets     : [playerActionTimeBar.bg,playerActionTimeBar.actionTimeBar],
                                     alpha       : 1,
-                                    //scaleX      : 1,
                                     ease        : 'Linear',
-                                    duration    : 50,
+                                    duration    : 250,
                     })
                 } else {
                     this.tweens.add({
                                     targets     : [playerActionTimeBar.bg,playerActionTimeBar.actionTimeBar],
-                                    alpha       : 0.5,
-                                    //scaleX      : 1,
+                                    alpha       : 0.25,
                                     ease        : 'Linear',
-                                    duration    : 25,
+                                    duration    : 250,
                     })
                 }
             
@@ -3048,19 +3225,17 @@
            }
 
            // Turn Start Phase - Player
-           if (currentEnergy >= maxEnergy){
+           if (remActionTime >= maxActionTime){
             playerTurn = true
            }
 
            if (playerTurn){
             runTurn()
-           } else {
-            remActionTime = maxActionTime * (currentEnergy/maxEnergy)
-           }
+           } 
 
-           
-
-           
+           if(remActionTime < maxActionTime && playerActionBarRegen){
+            playerActionTimeBar.decreaseActionTime(-0.5) //remActionTime = maxActionTime * (currentEnergy/maxEnergy)
+            }
 
 
         }
@@ -3156,16 +3331,16 @@
 
                 this.physics.moveTo(player,width * 1.25,height - 90,30)
             
-            } else if (cursors.left.isDown && currentEnergy > ((income * 0.25) / 50 ) && playerIsHit == false && player.body.onFloor()){
+            } else if (cursors.left.isDown && currentFocus > ((income * 0.25) / 50 ) && playerIsHit == false && player.body.onFloor()){
 
                 
                 
-                    playerVitals.decreaseEnergy((income * 0.25) / 50 )
-                    playerVitals.decreaseLife(-(income * 0.25)  / 55 )
-                    enemyChase(3.5)
+                    playerVitals.decreaseFocus((income * 0.25) / 50 )
+                    playerVitals.decreaseEnergy(-(income * 0.25)  / 55 )
+                    enemyChase(4)
                 
 
-                pSFX.setTint(0xcc0000)
+                pSFX.setTint(0xf1c232)
                 pSFX.setDepth(2)
                 pSFX.setVisible(true)
                 pSFX.play('chargeEnergy',true)
@@ -3182,7 +3357,8 @@
                 playerVitals.decreaseEnergy((income * 0.25) / 50)
                 this.physics.moveTo(player,width * 1.5,height - 90,90)
                 player.anims.play({key:'pRun',frameRate: 16},true);
-                enemyChase(-2.5)
+                enemyChase(1)
+                glory += (5 / 60)
         
                  
             } else if(playerIsHit == false) {
