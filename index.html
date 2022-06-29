@@ -86,6 +86,11 @@
     var playerFocusing = false
     var focusModeActive = false
     var scanningForDanger = true
+    var playerAttacking = false 
+    var attackModeActive = false
+    var usingPower = false
+    var source
+    
 
     var battleTransitionComplete 
     var chaserCam = true
@@ -120,7 +125,7 @@
 
     var level = 0
 
-    var playerAttacking = false 
+    
     var playerReleaseAttack = false 
     var playerComboStarted = false
    
@@ -329,7 +334,7 @@
                 
                 },this)
                 
-                fireTowardsTarget(player,width*1.75,1)
+                fireTowardsTarget(player,player.x + 50,1)
                 fireTowardsTarget(enemy1,width*1.25,1)
 
                 
@@ -1278,33 +1283,92 @@
         
         
         
-    
+    function playerBattleAction(){
+        
+        
+        if(usingPower){
+            
+        if (player.x <= enemy1.x + 75){
+            usingPower = false
+            if (playerStance == 0){
+                                            playerS0Combo()
+                                            
+                                        } else if (playerStance == 1){
+                                            playerS1Combo()
+                                            
+                                        } else if (playerStance == 2){
+                                            playerS2Combo()
+                                            
+                                        } else if (playerStance == 3){
+                                            
+                                        } else if (playerStance == 4){
+                                            
+                                    }
+            
+            
+                        
+                        
+                        
+                    
+            
+        } else if (player.x > enemy1.x + 75 && player.x < enemy1.x + 150){
+            usingPower = false
+            player.play({key:'pDash',frameRate:12},true)
+            //player.setDragX(0)
+            fireTowardsTarget(player,enemy1.x,1)
+            player.once('animationcomplete', function(){
+               
+                
+                usingPower = true
+            },this)
+        
+        } else {
+            
+            player.play({key:'pRun',frameRate:6},true)
+            player.x -= 5
+            player.once('animationcomplete', function(){
+                //fireTowardsTarget(player,width * 1.3,12)
+                
+            usingPower = true
+            },this)
+
+            //usingPower = true
+            
+        }
+        }
+
+    }
+        
+        
+      
     
 
     function playerS0Combo(){
 
-    // Player runs to enemy
-        var distance = Math.abs(player.x - enemy1.x)
+    // // In Range Movement
+    //     var distance = Math.abs(player.x - enemy1.x)
         
-        if (distance > 175){
-            player.play({key:'pRun',frameRate: 10},true);
-        } else {
-            player.play({key:'pDash',frameRate: 12},true);
-        }
+    //     if (distance > 175){
+    //         player.play({key:'pRun',frameRate: 10},true);
+    //     } else {
+    //         player.play({key:'pDash',frameRate: 12},true);
+    //     }
         
 
-        if(player.anims.getName() == 'pRun' || player.anims.getName() == 'pDash'){
-            fireTowardsTarget(player,enemy1.x,1)
+    //     if(player.anims.getName() == 'pRun' || player.anims.getName() == 'pDash'){
+    //         fireTowardsTarget(player,enemy1.x,1)
                 
-        }
+    //     }
 
-        player.once('animationcomplete', function (anim,frame) {
-            player.emit('animationcomplete_' + anim.key, frame)
-        }, player)
+    //     player.once('animationcomplete', function (anim,frame) {
+    //         player.emit('animationcomplete_' + anim.key, frame)
+    //     }, player)
     
+    
+    // Attack / Skill
 
     // Attack 1a
-        player.once('animationcomplete_pRun', function (anim,frame) {
+       
         
         
             player.play({key:'pAttack1',frameRate: 10},true);
@@ -1315,7 +1379,7 @@
             }, player)
         
 
-        }, player)
+        
         
     // Attack 1b
     player.once('animationcomplete_pDash', function (anim,frame) {
@@ -1373,7 +1437,7 @@
             player.play({key:'pBackDash', frameRate: 6},true);
             
 
-                player.setVelocityX(Phaser.Math.GetSpeed(width * 1.75 - player.x, 1) * 1750)
+                fireTowardsTarget(player,player.x + 100,1)
             
 
             player.once('animationcomplete', function (anim,frame) {
@@ -1410,33 +1474,31 @@
 
     function playerS1Combo(){
     
-    // Player runs to enemy
-        var distance = Math.abs(player.x - enemy1.x)
+    // // In Range Movement
+    //     var distance = Math.abs(player.x - enemy1.x)
         
-        if (distance > 175){
-            player.play({key:'pRun',frameRate: 10},true);
-        } else {
-            player.play({key:'pDash',frameRate: 12},true);
-        }
+    //     if (distance > 175){
+    //         player.play({key:'pRun',frameRate: 10},true);
+    //     } else {
+    //         player.play({key:'pDash',frameRate: 12},true);
+    //     }
         
 
-        if(player.anims.getName() == 'pRun' || player.anims.getName() == 'pDash'){
-            if (player.flipX){
-                fireTowardsTarget(player,enemy1.x - 50,1)
-            } else {
-                fireTowardsTarget(player,enemy1.x + 50,1)
-            }  
-            
+    //     if(player.anims.getName() == 'pRun' || player.anims.getName() == 'pDash'){
+    //         fireTowardsTarget(player,enemy1.x,1)
                 
-        }
+    //     }
 
-        player.once('animationcomplete', function (anim,frame) {
-            player.emit('animationcomplete_' + anim.key, frame)
-        }, player)
+    //     player.once('animationcomplete', function (anim,frame) {
+    //         player.emit('animationcomplete_' + anim.key, frame)
+    //     }, player)
+    
+    
+    // Attack / Skill
        
 
     // Attack 1a
-        player.once('animationcomplete_pRun', function (anim,frame) {
+        // player.once('animationcomplete_pRun', function (anim,frame) {
         
         
             player.play({key:'pDoubleAttack',frameRate: 16},true);
@@ -1447,7 +1509,7 @@
             }, player)
         
 
-        }, player)
+        //}, player)
         
     // Attack 1b
     player.once('animationcomplete_pDash', function (anim,frame) {
@@ -1551,7 +1613,7 @@
             player.play({key:'pBackDash', frameRate: 6},true);
             
 
-                player.setVelocityX(Phaser.Math.GetSpeed(width * 1.75 - player.x, 1) * 1750)
+            fireTowardsTarget(player,player.x + 100,1)
             
 
             player.once('animationcomplete', function (anim,frame) {
@@ -1586,12 +1648,21 @@
 
     function playerS2Combo(){
 
-    // Player Jumps to enemy
-        
+    // In Range Movement
+
+    // Player Crouches
+
+    player.play({key:'pCrouch',frameRate: 8},true);
+
+    player.once('animationcomplete', function (anim,frame) {
+            player.emit('animationcomplete_' + anim.key, frame)
+        }, player)
+    // Player Jumps up
+        player.once('animationcomplete_pCrouch', function (anim,frame) {
         player.play({key:'pJump',frameRate: 8},true);
         
         
-        player.setVelocityY(-275)
+        player.setVelocityY(-250)
 
         if(player.anims.getName() == 'pJump'){
             if (player.flipX){
@@ -1608,13 +1679,15 @@
         player.once('animationcomplete', function (anim,frame) {
             player.emit('animationcomplete_' + anim.key, frame)
         }, player)
+
+    },player)
     
 
     // Player floats in air
         player.once('animationcomplete_pJump', function (anim,frame) {
         
         
-            player.play({key:'pUptoFall',frameRate: 10, repeat : 1},true);
+            player.play({key:'pUptoFall',frameRate: 10},true);
 
 
 
@@ -1624,7 +1697,10 @@
         
 
         }, player)
-        
+
+    
+    // Attack / Skill
+
     // Attack 1
     player.once('animationcomplete_pUptoFall', function (anim,frame) {
         
@@ -1681,7 +1757,7 @@
             player.play({key:'pBackDash', frameRate: 6},true);
             
 
-                player.setVelocityX((Phaser.Math.GetSpeed(Math.abs(Phaser.Math.FloatBetween(width * 1.6,width * 1.75)) - player.x, 1) * 1750))
+            fireTowardsTarget(player,player.x + 100,1)
             
 
             player.once('animationcomplete', function (anim,frame) {
@@ -1971,6 +2047,7 @@
         this.load.audio("bgMusic6", ["assets/music/Ludum_Dare_38_Track_2.wav"]);
         this.load.audio("bgMusic7", ["assets/music/Night_(Instrumental).mp3"]);
         this.load.audio("bgMusic8", ["assets/music/Smile.mp3"]);
+        this.load.audio("bgMusic9", ["assets/music/Tripwire.mp3"]);
 
         
         
@@ -2050,7 +2127,7 @@
     function create ()
     {
 
-        songChoice = Math.floor(Phaser.Math.Between(1,8))
+        songChoice = Math.floor(Phaser.Math.Between(1,9))
         bgMusic = this.sound.add("bgMusic"+songChoice, { loop: true, volume: 0.75});
 
 
@@ -2204,7 +2281,7 @@
         stance0Text = "When in doubt, swinging the \npointy end never fails\n\nCan start a combo"
         stance1Name = 'Deadly Combat Assault'
         stance1Text = "Unleash a deadly flurry of attacks\n\nIncreases in damage with \nconsecutive use"
-        stance2Name = 'Eagle strike'
+        stance2Name = 'Eagle Strike'
         stance2Text = "Gain height before striking \ndown with deadly accuracy\n\nCan't be evaded"
         stance3Name = 'Poised Strike'
         stance3Text = "Brace and counter the next hit\n\nIncreased crit chance and chance \nto Execute"
@@ -2592,10 +2669,12 @@
 
             if (gameObject == skillTreeLifeIcon){
 
-                maxLife *= 1.025
-                lifeRegenAllocation += (0.01 + (0.005 * tier))
+                 
                 
                 var tier = storingBuffTier += 1
+
+                maxLife *= 1.025
+                lifeRegenAllocation += 0.01
 
                 if (tier >= 5){
                     tier = 5
@@ -2618,10 +2697,12 @@
 
             if (gameObject == skillTreeFocusIcon){
 
-                focusRegenAllocation *= 1.1
-                maxFocus *= (1.0 + (0.025 * tier))
+                
 
                 var tier = growingBuffTier += 1
+
+                focusRegenAllocation *= 1.10
+                maxFocus *= 1.05
 
                 if (tier >= 5){
                     tier = 5
@@ -2634,7 +2715,7 @@
                 }
 
                 //growingBuffTierIcon.setTexture('t'+ tier +'BuffIcon').setAlpha(alpha)
-                playerVitals.pF = (38 * playerVitals.scaleX) / maxFocus
+                playerVitals.pF = (39.5 * playerVitals.scaleX) / maxFocus
                 playerVitals.draw()
 
                 toggleSkillTree()
@@ -2647,8 +2728,7 @@
                 var tier = spendingBuffTier
 
                 energyRegenAllocation *= 1.20
-                maxEnergy *= (1.0 + (0.05 * tier))
-
+                maxEnergy *= 1.1
                 tier = spendingBuffTier += 1
 
                 if (tier >= 5){
@@ -2969,11 +3049,11 @@
             gameOver = false
         }
 
-        // if (Phaser.Input.Keyboard.JustDown(keyX)){
+        if (Phaser.Input.Keyboard.JustDown(keyX)){
    
-        //     level = 10
+            enemyChase(600)
       
-        // }
+        }
 
         
 
@@ -3120,7 +3200,8 @@
 
         //console.log('Player Entangled: ' + playerEntangled)
 
-        console.log('Key X duration: ' + (treeTrunk.x - player.x))
+        console.log('Enemy 1 X Psotion: ' + enemy1.x)
+        console.log( 'Playere X Psotion: ' + player.x)
 
         //console.log('Player Turn: ' + playerTurn)
 
@@ -3696,127 +3777,147 @@
                     // Action Key - Power Selection/Charge - Player charges move from selected stance with power (energy/focus) to carry out move/combo (more charge = more damage/potency/duration)
                     
                         // Keyboard alt contorls
-                        if (keyA.isDown && playerActionBarActive){
+                        // if (keyA.isDown && playerActionBarActive){
 
-                            playerAttacking = true
-                            regenActive = false
+                        //     playerAttacking = true
+                        //     regenActive = false
 
-                                // Activate selected attack, running animation whilst action key held
-                                if (Phaser.Input.Keyboard.JustDown(keyA) && player.body.onFloor()){
+                        //         // Activate selected attack, running animation whilst action key held
+                        //         if (Phaser.Input.Keyboard.JustDown(keyA) && player.body.onFloor()){
 
-                                    if (playerStance == 0){
-                                            playerS0Combo()
-                                        } else if (playerStance == 1){
-                                            playerS1Combo()
-                                        } else if (playerStance == 2){
-                                            playerS2Combo()
-                                        } else if (playerStance == 3){
+                        //             if (playerStance == 0){
+                        //                     playerS0Combo()
+                        //                 } else if (playerStance == 1){
+                        //                     playerS1Combo()
+                        //                 } else if (playerStance == 2){
+                        //                     playerS2Combo()
+                        //                 } else if (playerStance == 3){
                                             
-                                        } else if (playerStance == 4){
+                        //                 } else if (playerStance == 4){
                                             
-                                    }
-                                }
+                        //             }
+                        //         }
 
-                                // Determine Power Source... 
-                                if (currentEnergy > 0 && powerSource == 1){
-                                    playerVitals.decreaseEnergy(maxEnergy * 0.006)
-                                    attackChargePower += maxEnergy * 0.008
-                                } else if (currentFocus > 0 && powerSource == 2){
-                                    playerVitals.decreaseFocus(maxFocus * 0.008)
-                                    attackChargePower += maxFocus * 0.008
-                                }
+                        //         // Determine Power Source... 
+                        //         if (currentEnergy > 0 && powerSource == 1){
+                        //             playerVitals.decreaseEnergy(maxEnergy * 0.006)
+                        //             attackChargePower += maxEnergy * 0.008
+                        //         } else if (currentFocus > 0 && powerSource == 2){
+                        //             playerVitals.decreaseFocus(maxFocus * 0.008)
+                        //             attackChargePower += maxFocus * 0.008
+                        //         }
 
-                                // ...and drains life if source depleted
-                                if(currentEnergy <= 0 && powerSource == 1) {
-                                    playerVitals.decreaseLife(maxEnergy * 0.008)
-                                    attackChargePower += maxEnergy * 0.008
-                                } else if (currentFocus <= 0 && powerSource == 2){
-                                    playerVitals.decreaseLife(maxFocus * 0.008)
-                                    attackChargePower += maxFocus * 0.008
-                                }
+                        //         // ...and drains life if source depleted
+                        //         if(currentEnergy <= 0 && powerSource == 1) {
+                        //             playerVitals.decreaseLife(maxEnergy * 0.008)
+                        //             attackChargePower += maxEnergy * 0.008
+                        //         } else if (currentFocus <= 0 && powerSource == 2){
+                        //             playerVitals.decreaseLife(maxFocus * 0.008)
+                        //             attackChargePower += maxFocus * 0.008
+                        //         }
 
 
-                        } else if (Phaser.Input.Keyboard.JustUp(keyA) && playerTurn) {
+                        // } else if (Phaser.Input.Keyboard.JustUp(keyA) && playerTurn) {
                                 
-                                // Cancels current animation when action key released
-                                player.anims.stop()
+                        //         // Cancels current animation when action key released
+                        //         player.anims.stop()
                                 
 
 
-                                // Play cancel animation and half player velocity (allow drag to stop motion fully)
-                                player.play({key:'pBackDash', frameRate: 6},true);
+                        //         // Play cancel animation and half player velocity (allow drag to stop motion fully)
+                        //         player.play({key:'pBackDash', frameRate: 6},true);
                                 
-                                player.setVelocityX((-player.body.velocity.x / 2) + 100)
-                                player.setVelocityY(player.body.velocity.y / 2)
-                                sword.body.checkCollision.none = true
+                        //         player.setVelocityX((-player.body.velocity.x / 2) + 100)
+                        //         player.setVelocityY(player.body.velocity.y / 2)
+                        //         sword.body.checkCollision.none = true
                                 
-                                // Push enemy towards base point
-                                fireTowardsTarget(enemy1,width * 1.25,4)
+                        //         // Push enemy towards base point
+                        //         fireTowardsTarget(enemy1,width * 1.25,4)
 
-                                // Turn off player attacking state
-                                player.once('animationcomplete', function () {
+                        //         // Turn off player attacking state
+                        //         player.once('animationcomplete', function () {
 
-                                    playerAttacking = false
-                                    regenActive = false
+                        //             playerAttacking = false
+                        //             regenActive = false
                                    
                                     
 
 
-                                }, this);
+                        //         }, this);
                                     
+                        // }
 
-                        }
+                        // Keyboard alt contorls #2
+
+                        if(keyA.isDown && playerActionBarActive){
+
+                            
+                            if (powerSource == 1){
+                                source = currentEnergy
+                            } else {
+                                source = currentFocus
+                            }
+
+                            if (source > 0){
+                                playerAttacking = true
+                                regenActive = false
+
+                                if (powerSource== 1){
+                                     playerVitals.decreaseEnergy(maxEnergy * 0.006)
+                                     attackChargePower += maxEnergy * 0.008
+                                 } else if (powerSource == 2){
+                                    playerVitals.decreaseFocus(maxFocus * 0.008)
+                                     attackChargePower += maxFocus * 0.008
+                                 }
+                                
+                                if (Phaser.Input.Keyboard.JustDown(keyA)){
+
+                                    attackModeActive = true
+                                    usingPower = true
+                                }
+                                if(attackModeActive){
+                                playerBattleAction()
+                                }
+                            } else {
+                                player.stop()
+                                playerAttacking = false
+                                attackModeActive = false
+                                usingPower = false
+                                
+                                
+                            }
+
+
+
+                            } else if (Phaser.Input.Keyboard.JustUp(keyA)){
+                            if(playerActionBarActive){
+                            player.stop()
+                            player.play('pBackDash',true)
+                            fireTowardsTarget(player, player.x + 125,1)
+                            }
+                            playerAttacking = false
+                            attackModeActive = false
+                            usingPower = false
+                            }
 
                         // Touch Controls
-                        charge.on('pointerdown', function(){
+                        charge.once('pointerdown', function(){
                             
-                            playerAttacking = true
-                            regenActive = true
-
-                                // Activate selected attack, running animation whilst action key held
-                                    if (playerStance == 0){
-                                            playerS0Combo()
-                                        } else if (playerStance == 1){
-                                            playerS1Combo()
-                                        } else if (playerStance == 2){
-                                            playerS2Combo()
-                                        } else if (playerStance == 3){
-                                            
-                                        } else if (playerStance == 4){
-                                            
-                                    }
-                                
-
-                                // Determine Power Source... 
-                                    // Picked up due to linkage to Keyboard controls (pointerdown = KeyA.isDown)
-
-                                // ...and drains life if source depleted
-                                    // Picked up due to linkage to Keyboard controls (pointerdown = KeyA.isDown)
-
-                        
+                            attackModeActive = true
+                            usingPower = true
+  
                         })
 
                         charge.on('pointerup', function(){
                             player.anims.stop()
-
-                                // Play cancel animation and half player velocity (allow drag to stop motion fully)
-                                player.play({key:'pBackDash', frameRate: 6},true);
-                                
-                                player.setVelocityX(-player.body.velocity.x / 2)
-                                player.setVelocityY(player.body.velocity.y / 2)
-                                sword.body.checkCollision.none = true
-                                
-                                // Push enemy towards base point
-                                fireTowardsTarget(enemy1,width * 1.25,4)
-
-                                // Turn off player attacking state
-                                player.once('animationcomplete', function () {
-
-                                    playerAttacking = false
-                                    regenActive = false
-                                    
-
-                                }, this);
+                            if(playerActionBarActive){
+                            player.stop()
+                            player.play('pBackDash',true)
+                            fireTowardsTarget(player, player.x + 125,1)
+                            }
+                            playerAttacking = false
+                            attackModeActive = false
+                            usingPower = false
                         })
 
                     // Directional Keys - Stance Selection - each character/class has 4 moves
@@ -3909,9 +4010,16 @@
                             cursors.left.on('down', function(){
                                 if (inBattle){
                                 
+                                if(!playerAttacking){
                                 player.play({key:'pStance1', frameRate: 6},true)
+                                }
                                 powerSource = 2
                                 playerStance = 1
+                                
+                                cursors.left.once('down', function(){
+                                usingPower = true
+                                },this)
+                            
                                 
                             }
                             })
@@ -3929,6 +4037,11 @@
 
 
                                     }, this);
+                                } else if(playerAttacking && playerStance == 1){
+                                    playerStance = 0
+                                    player.stop()
+                                    usingPower = true
+                                     
                                 }
   
                             })
@@ -3940,6 +4053,12 @@
                                 player.play({key:'pStance1', frameRate: 6},true)
                                 powerSource = 2
                                 playerStance = 1
+
+                                left.once('pointerdown', function(){
+                                usingPower = true
+                                },this)
+
+                                
                                 }
                             })
 
@@ -3968,9 +4087,15 @@
                             cursors.up.on('down', function(){
 
                                 if (inBattle){
-                                player.play({key:'pCrouch', frameRate: 8},true)
+                                    if(!playerAttacking){
+                                    player.play({key:'pCrouch', frameRate: 8},true)
+                                    }
                                 powerSource = 1
                                 playerStance = 2
+
+                                cursors.up.once('down', function(){
+                                usingPower = true
+                                },this)
                                 }
 
                             })
@@ -3985,15 +4110,25 @@
 
 
                                 }, this);
+                            } else if (playerAttacking && playerStance == 2){
+                                playerStance = 0
+                                player.stop()
+                                usingPower = true
                             }
                             })
 
                             // Touch
                             up.on('pointerdown', function(){
                                 if (inBattle){
+                                    if(!playerAttacking){
                                 player.play({key:'pCrouch', frameRate: 8},true)
+                                    }
                                 powerSource = 1
                                 playerStance = 2
+
+                                up.once('pointerdown', function(){
+                                usingPower = true
+                                },this)
                                 }
                             })
 
@@ -4007,6 +4142,10 @@
 
 
                                 }, this);
+                            } else if (playerAttacking && playerStance == 2){
+                                playerStance = 0
+                                player.stop()
+                                usingPower = true
                             }
                             })
 
@@ -4015,9 +4154,15 @@
                             // Keyboard
                             cursors.right.on('down', function(){
                                 if (inBattle){
+                                    if(!playerAttacking){
                                 player.playReverse({key:'pBackDash',frameRate:6},true)
+                                    }
                                 powerSource = 2
                                 playerStance = 3
+
+                                cursors.right.once('down', function(){
+                                usingPower = true
+                                },this)
                                 }
                             })
 
@@ -4031,6 +4176,10 @@
 
 
                                 }, this);
+                            } else if (playerAttacking && playerStance == 3){
+                                playerStance = 0
+                                player.stop()
+                                usingPower = true
                             }
                             })
 
@@ -4038,9 +4187,15 @@
 
                             right.on('pointerdown', function(){
                                 if (inBattle){
+                                    if(!playerAttacking){
                                 player.playReverse({key:'pBackDash',frameRate:6},true)
+                                    }
                                 powerSource = 2
                                 playerStance = 3
+
+                                right.once('pointerdown', function(){
+                                usingPower = true
+                                },this)
                                 }
                             })
 
@@ -4054,6 +4209,10 @@
 
 
                                 }, this);
+                            } else if (playerAttacking && playerStance == 3){
+                                playerStance = 0
+                                player.stop()
+                                usingPower = true
                             }
                             })
 
@@ -4063,9 +4222,15 @@
                             // Keyboard
                             cursors.down.on('down', function(){
                                 if (inBattle){
+                                    if(!playerAttacking){
                                 player.play({key:'pDownStance', frameRate: 6},true)
+                                    }
                                 powerSource = 2
                                 playerStance = 4
+
+                                cursors.down.once('down', function(){
+                                usingPower = true
+                                },this)
                                 }
                             })
 
@@ -4079,15 +4244,25 @@
 
 
                                 }, this);
+                            } else if (playerAttacking && playerStance == 4){
+                                playerStance = 0
+                                player.stop()
+                                usingPower = true
                             }
                             })
 
                             // Touch
                             down.on('pointerdown', function(){
                                 if (inBattle){
+                                    if(!playerAttacking){
                                 player.play({key:'pDownStance', frameRate: 6},true)
+                                    }
                                 powerSource = 2
                                 playerStance = 4
+
+                                down.once('pointerdown', function(){
+                                usingPower = true
+                                },this)
                                 }
                             })
 
@@ -4101,6 +4276,10 @@
 
 
                                 }, this);
+                            } else if (playerAttacking && playerStance == 4){
+                                playerStance = 0
+                                player.stop()
+                                usingPower = true
                             }
                             })
 
