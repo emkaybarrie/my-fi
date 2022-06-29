@@ -3719,7 +3719,7 @@
 
                                 // Determine Power Source... 
                                 if (currentEnergy > 0 && powerSource == 1){
-                                    playerVitals.decreaseEnergy(maxEnergy * 0.008)
+                                    playerVitals.decreaseEnergy(maxEnergy * 0.006)
                                     attackChargePower += maxEnergy * 0.008
                                 } else if (currentFocus > 0 && powerSource == 2){
                                     playerVitals.decreaseFocus(maxFocus * 0.008)
@@ -3741,7 +3741,7 @@
                                 // Cancels current animation when action key released
                                 player.anims.stop()
                                 
-                                
+
 
                                 // Play cancel animation and half player velocity (allow drag to stop motion fully)
                                 player.play({key:'pBackDash', frameRate: 6},true);
