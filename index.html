@@ -1742,7 +1742,7 @@
     function playerEnemyHit(){
 
         if (inBattle){
-
+            camera.shake(250, 0.0025);
             playerIsHit = true
             playerVitals.decreaseLife((e1MaxLife * 1.5) / 50)
             playerActionTimeBar.decreaseActionTime((e1MaxLife * 0.25) / 50)
@@ -1774,6 +1774,19 @@
 
         if (inBattle) {   
 
+            if (player.x >= enemy1.x){
+                chaserVFX.angle = 180
+            } else {
+                chaserVFX.angle = 0
+            }
+
+            if (powerSource == 1){
+                chaserVFX.play('greenSlashHit',true)
+            } else {
+                chaserVFX.play('orangeSlashHit',true)
+            }
+            
+
             var chaos = Phaser.Math.FloatBetween(0.00,1.00)
             if (chaos < 0.025){
            
@@ -1800,6 +1813,7 @@
                 enemy1.x -= Phaser.Math.Between(-2.5,-1.5)
             }
             } else {
+                camera.shake(250, 0.0025);
                 damage *= Phaser.Math.Between(0.85,1.1)
                 enemy1Vitals.decreaseEnemyLife(damage)
                 if (player.flipX){
@@ -2023,7 +2037,10 @@
         this.load.atlas('heroM', 'assets/heroM.png','assets/heroM.json');
 
         this.load.spritesheet('chargeEnergy', 'assets/animations/17_felspell_spritesheet.png', { frameWidth: 100, frameHeight: 100});
-        this.load.spritesheet('chargeDash', 'assets/animations/chargeDash.png', { frameWidth: 128.5, frameHeight: 128.6});
+        this.load.spritesheet('chargeDash', 'assets/animations/chargeDash.png', { frameWidth: 128, frameHeight: 128});
+        this.load.spritesheet('greenSmear', 'assets/greenSmear.png', { frameWidth: 48, frameHeight: 48});
+        this.load.spritesheet('orangeSmear', 'assets/orangeSmear.png', { frameWidth: 48, frameHeight: 48});
+        
   
 
     }
@@ -2090,6 +2107,8 @@
 
         pSFX = this.add.sprite(player.x, player.y)
         pSFX.setAlpha(0.75).setDepth(1).setPipeline('Light2D')
+
+        
         
         this.physics.add.collider(player,platforms);
 
@@ -2116,7 +2135,8 @@
             enemy1.body.maxVelocity.x = 500
             enemy1.setCollideWorldBounds(true)
             enemy1.body.setAllowGravity(true)
-            //enemy1.setVelocityX(100)
+            chaserVFX = this.add.sprite(enemy1.x, enemy1.y)
+            chaserVFX.setDepth(1).setScale(3)//.setPipeline('Light2D')
             
             
             this.physics.add.overlap(enemy1, player, grabbed);
@@ -2246,7 +2266,8 @@
         weeklyFunctionsTimer = this.time.addEvent({delay: 1250, callback: runWeeklyFunctions, args: [], callbackScope: this, loop: true});
 
         secondsTimer = this.time.addEvent({delay: 1000, callback: runSecondsFunctions, args: [], callbackScope: this, loop: true});
-
+        
+        // VFX
         this.anims.create({
             key: 'chargeEnergy',
             frames: this.anims.generateFrameNumbers('chargeEnergy', { start:0, end: 91}),
@@ -2254,6 +2275,7 @@
             repeat: 0,
             //yoyo: true
         });
+
 
         this.anims.create({
             key: 'chargeDash',
@@ -2263,6 +2285,26 @@
             //yoyo: true
         });
 
+        this.anims.create({
+            key: 'greenSlashHit',
+            frames: this.anims.generateFrameNumbers('greenSmear', { start:0, end: 5}),
+            frameRate: 16,
+            repeat: 0,
+            showOnStart: 1,
+            hideOnComplete: 1
+        });
+
+        this.anims.create({
+            key: 'orangeSlashHit',
+            frames: this.anims.generateFrameNumbers('orangeSmear', { start:0, end: 5}),
+            frameRate: 16,
+            repeat: 0,
+            showOnStart: 1,
+            hideOnComplete: 1
+        });
+
+
+        // Player Animations
         this.anims.create({
             key: 'pIdle',
             frames: this.anims.generateFrameNames('heroF',{prefix: 'Warrior_Idle_', start: 1, end: 6, suffix: '.png'}),
@@ -3126,6 +3168,8 @@
         enemy1Vitals.x = enemy1.x + 25
         enemy1Vitals.y = enemy1.y - 20
         enemy1Vitals.draw()
+        chaserVFX.x = enemy1.x
+        chaserVFX.y = enemy1.y
 
         playerPosition = player.x
         
@@ -3232,6 +3276,7 @@
             pSFX.y = player.y
             
         }
+
 
 
                         // Anchor buttons
