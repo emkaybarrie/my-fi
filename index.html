@@ -1783,9 +1783,9 @@
             }
 
             if (powerSource == 1){
-                chaserVFX.play('greenSlashHit',true)
+                chaserVFX.play('whiteHitSmear',true)
             } else {
-                chaserVFX.play('orangeSlashHit',true)
+                chaserVFX.play('orangeHitSmear',true)
             }
             
 
@@ -2040,8 +2040,8 @@
 
         this.load.spritesheet('chargeEnergy', 'assets/animations/17_felspell_spritesheet.png', { frameWidth: 100, frameHeight: 100});
         this.load.spritesheet('chargeDash', 'assets/animations/chargeDash.png', { frameWidth: 128, frameHeight: 128});
-        this.load.spritesheet('greenSmear', 'assets/greenSmear.png', { frameWidth: 48, frameHeight: 48});
-        this.load.spritesheet('orangeSmear', 'assets/orangeSmear.png', { frameWidth: 48, frameHeight: 48});
+        this.load.spritesheet('whiteHitSmear', 'assets/whiteHitSmear.png', { frameWidth: 1048, frameHeight: 1048});
+        this.load.spritesheet('orangeHitSmear', 'assets/orangeHitSmear.png', { frameWidth: 1048, frameHeight: 1048});
         
   
 
@@ -2138,7 +2138,7 @@
             enemy1.setCollideWorldBounds(true)
             enemy1.body.setAllowGravity(true)
             chaserVFX = this.add.sprite(enemy1.x, enemy1.y)
-            chaserVFX.setDepth(1).setScale(3)//.setPipeline('Light2D')
+            chaserVFX.setDepth(1).setScale(0.25)//.setPipeline('Light2D')
             
             
             this.physics.add.overlap(enemy1, player, grabbed);
@@ -2288,8 +2288,8 @@
         });
 
         this.anims.create({
-            key: 'greenSlashHit',
-            frames: this.anims.generateFrameNumbers('greenSmear', { start:0, end: 5}),
+            key: 'whiteHitSmear',
+            frames: this.anims.generateFrameNumbers('whiteHitSmear', { start:0, end: 16}),
             frameRate: 16,
             repeat: 0,
             showOnStart: 1,
@@ -2297,9 +2297,9 @@
         });
 
         this.anims.create({
-            key: 'orangeSlashHit',
-            frames: this.anims.generateFrameNumbers('orangeSmear', { start:0, end: 5}),
-            frameRate: 16,
+            key: 'orangeHitSmear',
+            frames: this.anims.generateFrameNumbers('orangeHitSmear', { start:0, end: 16}),
+            frameRate: 20,
             repeat: 0,
             showOnStart: 1,
             hideOnComplete: 1
