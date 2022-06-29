@@ -3438,12 +3438,6 @@
 
                 treeTrunk.body.checkCollision.none = true
 
-
-                
-
-                //player.anims.play({key:'pDash',frameRate: 12},true);
-
-               
                 pSFX.y = player.y + 17.5
                 pSFX.x = player.x - 87.5
                 pSFX.setVisible(true)
@@ -3835,8 +3829,8 @@
                                 moveNameText.setText(stance1Name)
                                 moveText.setText(stance1Text)
 
-                                moveBox.setTexture('energyMoveBox2')
-                                moveTypeIcon.setTexture('spendingBuffIcon')
+                                moveBox.setTexture('focusMoveBox2')
+                                moveTypeIcon.setTexture('growingBuffIcon')
 
                             } else if (playerStance == 2){
                                 moveNameText.setText(stance2Name)
@@ -3848,8 +3842,8 @@
                                 moveNameText.setText(stance3Name)
                                 moveText.setText(stance3Text)
 
-                                moveBox.setTexture('focusMoveBox2')
-                                moveTypeIcon.setTexture('growingBuffIcon')
+                                moveBox.setTexture('energyMoveBox2')
+                                moveTypeIcon.setTexture('spendingBuffIcon')
                             } else if (playerStance == 4){
                                 moveNameText.setText(stance4Name)
                                 moveText.setText(stance4Text)
@@ -3869,7 +3863,7 @@
                                 if (inBattle){
                                 
                                 player.play({key:'pStance1', frameRate: 6},true)
-                                powerSource = 1
+                                powerSource = 2
                                 playerStance = 1
                                 
                             }
@@ -3897,7 +3891,7 @@
                             left.on('pointerdown', function(){
                                 if (inBattle){
                                 player.play({key:'pStance1', frameRate: 6},true)
-                                powerSource = 1
+                                powerSource = 2
                                 playerStance = 1
                                 }
                             })
