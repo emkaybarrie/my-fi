@@ -1223,8 +1223,6 @@
     function runningAttack(){
         
         
-        //focusModeActive = true
-        
         if(scanningForDanger){
             
         if (Math.abs(treeTrunk.x - player.x) < Math.abs((vines.x - player.x)) && treeTrunk.x - player.x > -250 && treeTrunk.x - player.x < 50){
@@ -3214,6 +3212,13 @@
             scanningForDanger = false
             },this)
 
+            charge.once('pointerout',function(){
+            player.stop()
+            playerFocusing = false
+            focusModeActive = false
+            scanningForDanger = false
+            },this)
+
             if (!playerFocusing){
             playerSpeed = playerPosition / (width * 1.2)
             player.setTintFill()
@@ -3228,8 +3233,6 @@
             
         }
 
-        
-           
 
                         // Anchor buttons
                         left.x = camera.scrollX + (width * 0.05)
@@ -3429,7 +3432,7 @@
                 
             } else if (keyA.isDown && playerIsHit == false){
                 
-                playerVitals.decreaseFocus((income) / 500)
+                playerVitals.decreaseFocus((income) / 50)
                 if(currentFocus > 0){
                 vines.body.checkCollision.none = true
 
