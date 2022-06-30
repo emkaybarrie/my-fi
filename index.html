@@ -2775,8 +2775,8 @@
                 
                 var tier = storingBuffTier += 1
 
-                maxLife *= 1.025
-                lifeRegenAllocation += 0.01
+                maxLife *= 1.05
+                lifeRegenAllocation += 0.015
 
                 if (tier >= 5){
                     tier = 5
@@ -2804,8 +2804,8 @@
 
                 var tier = growingBuffTier += 1
 
-                focusRegenAllocation *= 1.10
-                maxFocus *= 1.05
+                focusRegenAllocation *= 1.15
+                maxFocus *= 1.1
 
                 if (tier >= 5){
                     tier = 5
@@ -2832,7 +2832,7 @@
                 var tier = spendingBuffTier
 
                 energyRegenAllocation *= 1.20
-                maxEnergy *= 1.1
+                maxEnergy *= 1.15
                 tier = spendingBuffTier += 1
 
                 if (tier >= 5){
