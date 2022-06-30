@@ -150,9 +150,9 @@
     var playerIsHit = false
     var enemy1IsHit = false
    
-    var enemy1Life = (income * 0.8)
+    var enemy1Life = (income * 0.8) * 12
     var enemy1Alive // Can be removed
-    var e1MaxLife = (income * 0.8)
+    var e1MaxLife = (income * 0.8) * 12
     
 
     function reset(){
@@ -239,8 +239,8 @@
          playerIsHit = false
          enemy1IsHit = false
     
-         enemy1Life = (income * 0.8)
-         e1MaxLife = (income * 0.8)
+         enemy1Life = (income * 0.8) * 12
+         e1MaxLife = (income * 0.8) * 12
         
     }
 
@@ -988,6 +988,7 @@
             IS_TOUCH = false
             inBattle = false
             player.flipX = false
+            support.flipX = false
             regenActive = true
             
             camera.zoomTo(1,750)
@@ -1090,7 +1091,9 @@
 
                 if(player.anims.getName() == 'pSlide'){
                     
-                        player.setVelocityX((400 * ((width * 1.25) / player.x)) )
+                        fireTowardsTarget(player,width * 1.75,4)
+                        support.play({key:'sRoll',repeat: 1},true)
+                        fireTowardsTarget(support,width * 1.8,4)
                       
                 }
                 player.once('animationcomplete', function (anim,frame) {
@@ -1101,7 +1104,8 @@
             player.once('animationcomplete_pSlide', function (anim,frame) {
 
                 camera.pan(player.x ,0,1000)
-            
+                
+                
                 
                 player.play({key:'pJump',frameRate: 12},true);
 
@@ -1114,6 +1118,9 @@
                 }
 
                 player.once('animationcomplete', function (anim,frame) {
+                    support.flipX = true
+
+                    support.play('sIdle',true)
                     player.emit('animationcomplete_' + anim.key, frame)
                 }, player)
             
@@ -1282,13 +1289,27 @@
             usingPower = false
             if (playerStance == 0){
                                             playerS0Combo()
-                                            
+                                            if (supportArrow.visible){
+                                                support.play('sIdle',true)
+                                            } else {
+                                                support.play('sShoot',true)
+                                                support.once('animationcomplete',function(){
+                                                    support.play('sIdle',true)
+                                                },this)
+                                            }
                                         } else if (playerStance == 1){
                                             playerS1Combo()
                                             
                                         } else if (playerStance == 2){
                                             playerS2Combo()
-                                            
+                                            if (supportArrow.visible){
+                                                support.play('sIdle',true)
+                                            } else {
+                                                support.play('sShoot',true)
+                                                support.once('animationcomplete',function(){
+                                                    support.play('sIdle',true)
+                                                },this)
+                                            }
                                         } else if (playerStance == 3){
                                             
                                         } else if (playerStance == 4){
@@ -1446,6 +1467,7 @@
             player.play({key:'pIdle', frameRate: 8},true);
             
             attackChargePower = 0
+            usingPower = true
             
     
 
@@ -1812,7 +1834,7 @@
         if (inBattle){
             camera.shake(250, 0.0025);
             playerIsHit = true
-            playerVitals.decreaseLife((e1MaxLife * 1.5) / 50)
+            playerVitals.decreaseLife((e1MaxLife * 0.5) / 50)
             playerActionTimeBar.decreaseActionTime((e1MaxLife * 0.25) / 50)
             maxEnergy *= 1 - (0.04 / 12 / 50)
             if(glory - (25/60) < 0){
@@ -1834,6 +1856,34 @@
         playerIsHit = false 
     }
 
+    }
+
+    function enemy1SupportHit(){
+        enemy1IsHit = true
+
+        if (inBattle) {   
+
+            if (support.x >= enemy1.x){
+                chaserS1VFX.angle = 0 
+            } else {
+                chaserS1VFX.angle = 180
+            }
+
+                chaserS1VFX.setTint(0x301934)
+                chaserS1VFX.play('whiteHitSmear2',true)
+                damage = .01 * attackChargePower
+                enemy1Vitals.decreaseEnemyLife(damage)
+                chaserS1VFX.on('animationcomplete',function(){
+                    supportArrow.setVisible(0)
+                    chaserS1VFX.setTint()
+                },this)
+
+
+                
+            
+
+            fireTowardsTarget(enemy1,enemy1.x - 250,1)
+        }
     }
 
     function enemy1Hit(){
@@ -1860,7 +1910,7 @@
            
             camera.flash(150);
             camera.shake(500, 0.0075);
-            damage *= Phaser.Math.Between(1.75,2.75)
+            damage *= Phaser.Math.Between(1.75,2.25)
             enemy1Vitals.decreaseEnemyLife(damage)
             if (player.flipX){
                 enemy1.x -= Phaser.Math.Between(15,25)
@@ -1872,7 +1922,7 @@
             } else
             if (chaos < 0.075){
             camera.shake(500, 0.0025);
-            damage *= Phaser.Math.Between(1.15,1.75)
+            damage *= Phaser.Math.Between(1.25,1.55)
             enemy1Vitals.decreaseEnemyLife(damage)
             if (player.flipX){
                 enemy1.x -= Phaser.Math.Between(1.5,2.5)
@@ -1956,7 +2006,7 @@
 
         if (inBattle == false) {
 
-            e1MaxLife = (income * 0.3) * chaosFactor
+            e1MaxLife *= chaosFactor
             enemy1Life = e1MaxLife
             enemy1Vitals.p = 38 / e1MaxLife
             
@@ -1972,16 +2022,6 @@
        
         enemyChase(-10)
 
-       if (inBattle == false) {
-
-        e1MaxLife = (income * 0.8) * chaosFactor
-        enemy1Life = e1MaxLife
-        enemy1Vitals.p = 38 / e1MaxLife
-
-        }
-
-        
-    
     }
 
     function runSecondsFunctions()
@@ -2104,10 +2144,13 @@
         this.load.atlas('doomsayer', 'assets/doomsayer.png','assets/doomsayersprites.json');
         this.load.atlas('heroF', 'assets/heroF.png','assets/heroF.json');
         this.load.atlas('heroM', 'assets/heroM.png','assets/heroM.json');
+        this.load.spritesheet('arcaneArcher', 'assets/arcaneArcher.png', { frameWidth: 64, frameHeight: 64});
+        this.load.image('arcaneArcherArrow', 'assets/arcaneArcherArrow.png');
 
         this.load.spritesheet('chargeEnergy', 'assets/animations/17_felspell_spritesheet.png', { frameWidth: 100, frameHeight: 100});
         this.load.spritesheet('chargeDash', 'assets/animations/chargeDash.png', { frameWidth: 128, frameHeight: 128});
         this.load.spritesheet('whiteHitSmear', 'assets/whiteHitSmear.png', { frameWidth: 1048, frameHeight: 1048});
+        this.load.spritesheet('whiteHitSmear2', 'assets/whiteHitSmear2.png', { frameWidth: 1048, frameHeight: 1048});
         this.load.spritesheet('orangeHitSmear', 'assets/orangeHitSmear.png', { frameWidth: 1048, frameHeight: 1048});
         
   
@@ -2157,9 +2200,10 @@
         //player.body.maxVelocity.x = 3000
        // player.body.maxVelocity.y = 3000
         
-        player.setBounceY(0.15);
+        player.setBounceY(0.1);
         player.setCollideWorldBounds(true);
         player.body.setBoundsRectangle(new Phaser.Geom.Rectangle(width, 0, width, height));
+        this.physics.add.collider(player,platforms);
 
        
 
@@ -2177,9 +2221,21 @@
         pSFX = this.add.sprite(player.x, player.y)
         pSFX.setAlpha(0.75).setDepth(1).setPipeline('Light2D')
 
+        // Support
+
+
+        support = this.physics.add.sprite(width * 1.3, height - 90 ,'arcaneArcher').setScale(2.1).setPipeline('Light2D');
+        support.body.setSize(15, 35).setAllowDrag(true).setOffset(25,18)
+        support.setDepth(0)
+        support.setCollideWorldBounds(true);
+        this.physics.add.collider(support,platforms);
+        supportArrow = this.add.image(support.x - 30,support.y - 15, 'arcaneArcherArrow').setOrigin(0,0.5).setDepth(0).setScale(2).setPipeline('Light2D').setVisible(0)
+        this.physics.add.existing(supportArrow,false)
+        supportArrow.body.setAllowGravity(false)
+        supportArrow.body.checkCollision.none = true
         
         
-        this.physics.add.collider(player,platforms);
+        
 
         vines = this.add.image(player.x,player.y - 120, 'vines').setOrigin(0,0).setDepth(1).setScale(0.35,0.5).setTint(0x38761d)
 
@@ -2206,16 +2262,19 @@
             enemy1.body.setAllowGravity(true)
             chaserVFX = this.add.sprite(enemy1.x, enemy1.y)
             chaserVFX.setDepth(1).setScale(0.25)//.setPipeline('Light2D')
+            chaserS1VFX = this.add.sprite(enemy1.x, enemy1.y)
+            chaserS1VFX.setDepth(1).setScale(0.25)//.setPipeline('Light2D')
             
             
             this.physics.add.overlap(enemy1, player, grabbed);
             
             this.physics.add.overlap(sword, enemy1, enemy1Hit)
+            this.physics.add.overlap(supportArrow,enemy1, enemy1SupportHit);
             this.physics.add.collider(platforms,enemy1);
             
             enemy1.body.setAllowDrag(true)
            
-            enemy1Life = (income * 0.3) * Phaser.Math.Between(0.8,1.7)
+            enemy1Life = (income * 0.3) * Phaser.Math.Between(0.8,1.7) * 12
             e1MaxLife = enemy1Life
             enemy1Alive = true
 
@@ -2226,6 +2285,7 @@
             eSword.body.setAllowGravity(false).setOffset(0,5)
             eSword.body.checkCollision.none = true
             this.physics.add.overlap(eSword, player, playerEnemyHit);
+            
           
 
             
@@ -2364,6 +2424,15 @@
         });
 
         this.anims.create({
+            key: 'whiteHitSmear2',
+            frames: this.anims.generateFrameNumbers('whiteHitSmear2', { start:0, end: 16}),
+            frameRate: 16,
+            repeat: 0,
+            showOnStart: 1,
+            hideOnComplete: 1
+        });
+
+        this.anims.create({
             key: 'orangeHitSmear',
             frames: this.anims.generateFrameNumbers('orangeHitSmear', { start:0, end: 16}),
             frameRate: 20,
@@ -2377,7 +2446,7 @@
         this.anims.create({
             key: 'pIdle',
             frames: this.anims.generateFrameNames('heroF',{prefix: 'Warrior_Idle_', start: 1, end: 6, suffix: '.png'}),
-            frameRate: 6,
+            frameRate: 8,
             repeat: -1
         });
 
@@ -2541,7 +2610,46 @@
             //delay: 500
         });
 
+        // Support Animation
 
+        this.anims.create({
+            key: 'sIdle',
+            frames: this.anims.generateFrameNumbers('arcaneArcher', { start:40, end: 43}),
+            frameRate: 10,
+            repeat:-1
+        });
+
+        this.anims.create({
+            key: 'sRun',
+            frames: this.anims.generateFrameNumbers('arcaneArcher', { start:0, end: 7}),
+            frameRate: 12,
+            repeat:-1
+        });
+
+        this.anims.create({
+            key: 'sRoll',
+            frames: this.anims.generateFrameNumbers('arcaneArcher', { start:16, end: 23}),
+            frameRate: 12,
+            repeat: 0
+        });
+
+        this.anims.create({
+            key: 'sJump',
+            frames: this.anims.generateFrameNumbers('arcaneArcher', { start:56, end: 57}),
+            frameRate: 4,
+            repeat: 0
+        });
+
+        this.anims.create({
+            key: 'sShoot',
+            frames: this.anims.generateFrameNumbers('arcaneArcher', { start:24, end: 30}),
+            frameRate: 6,
+            repeat: 0
+        });
+
+
+
+        // Chaser Animation
         this.anims.create({
             key: 'eIdle',
             frames: this.anims.generateFrameNames('doomsayer',{prefix: 'idle', start: 1, end: 8}),
@@ -2912,9 +3020,11 @@
 
         if (player.body.onFloor() && !playerEntangled){
             player.setDragX(300)
+            support.setDragX(300)
         } else if (playerEntangled && inBattle) {
 
             player.setDragX(1000)
+            support.setDragX(1000)
             
 
         
@@ -2923,12 +3033,33 @@
         player.setDragX(100)
         }
 
+        if (support.body.onFloor() && !playerEntangled){
+            
+            support.setDragX(300)
+        } else if (playerEntangled && inBattle) {
+
+
+            support.setDragX(1000)
+            
+
+        
+        } else {
+
+        support.setDragX(100)
+        }
+
         // Stop player if sliding past anhor point
 
     if (player.x > width * 1.8 && inBattle){
 
         player.setVelocityX(0)
         player.x = width * 1.79
+    }
+
+    if (support.x > width * 1.85 && inBattle){
+
+        support.setVelocityX(0)
+        support.x = width * 1.85
     }
 
 
@@ -2954,7 +3085,26 @@
         }
 
 
+        // Support
 
+        if (support.anims.getName() == 'sShoot'){
+                    //playerSwordSwing.play()
+                    
+                    if (support.anims.currentFrame.index >= 7 && !enemy1IsHit){
+                        
+                        supportArrow.setVisible(1)
+                        supportArrow.body.setVelocityX(-250)
+                    } else {
+                        //sword.body.checkCollision.none = true
+                    }
+
+                    if (supportArrow.visible){
+                        supportArrow.body.checkCollision.none = false
+                    } else {
+                        supportArrow.body.checkCollision.none = true
+                    }
+
+        } 
         
 
         // Enable player sword collision detection
@@ -2967,19 +3117,19 @@
                     if (player.anims.currentFrame.index >= 6 && player.anims.currentFrame.index < 12){
                         
                         sword.body.checkCollision.none = false
-                        damage = 0.5 + (maxEnergy * (attackChargePower/100))
+                        damage = 1 * (maxEnergy * (attackChargePower/100)) * 0.1
                     } else {
                         sword.body.checkCollision.none = true
                     }
 
-                } else if (player.anims.getName() == 'pHeavyAttack'){
+        } else if (player.anims.getName() == 'pHeavyAttack'){
                     playerHeavySwordSwing.play()
 
                       
                     if (player.anims.currentFrame.index >= 4 && player.anims.currentFrame.index < 6){
                         
                     sword.body.checkCollision.none = false
-                    damage =  0.5 + (maxEnergy * (attackChargePower/100))
+                    damage =  1.5 * (maxEnergy * (attackChargePower/100)) * 0.1
                     } else {
                         sword.body.checkCollision.none = true
                     }
@@ -3002,6 +3152,8 @@
                     }
         }
 
+        
+
         // Enemy detects collision with player sword
 
         if (enemy1IsHit){
@@ -3021,7 +3173,7 @@
                         
                         enemy1.once('animationcomplete', function (anim,frame) {
                             enemy1.x = 0
-                            e1MaxLife = Phaser.Math.Between(income * 0.8, (income * 0.8) * chaosFactor)
+                            e1MaxLife = Phaser.Math.Between(income * 0.8, (income * 0.8) * chaosFactor) * 12
                             enemy1Life = e1MaxLife
                             enemy1Vitals.p = 38 / e1MaxLife
 
@@ -3044,7 +3196,8 @@
 
         if (Phaser.Input.Keyboard.JustDown(keyX)){
    
-            enemyChase(600)
+            enemyChase(1000)
+            
       
         }
 
@@ -3096,20 +3249,6 @@
         playerExperience.y = camera.scrollY + (height * 0.85)
 
         
-        
-        
-
-        
-        
-        
-
-        
-        
-
-        
-        
-
-
         moveBox.x = player.x - 50 //- 200
         moveBox.y = player.y - 125 //- 75
 
@@ -3199,31 +3338,34 @@
 
         
 
-        //console.log('Attack Charge Power: ' + attackChargePower) 
-        //console.log('Damage: ' + damage) 
+        // console.log('Attack Charge Power: ' + attackChargePower) 
+        // console.log('Damage: ' + damage) 
 
-        console.log('In Battle: ' + inBattle) 
+        // console.log('In Battle: ' + inBattle) 
 
-        console.log('Player Turn: ' + playerTurn)
+        // console.log('Player Turn: ' + playerTurn)
 
-        console.log('Player Action Bar Active: ' + playerActionBarActive) 
+        // console.log('Player Action Bar Active: ' + playerActionBarActive) 
 
-        console.log('Rem Action Time: ' + remActionTime) 
+        // console.log('Rem Action Time: ' + remActionTime) 
 
-        console.log('Max Action Time: ' + maxActionTime) 
+        // console.log('Max Action Time: ' + maxActionTime) 
 
-        console.log('Player Attacking: ' + playerAttacking) 
-        console.log('Player Attack Mode: ' + attackModeActive) 
-        console.log('Stance Using Power: ' + usingPower) 
+        // console.log('Player Attacking: ' + playerAttacking) 
+        // console.log('Player Attack Mode: ' + attackModeActive) 
+        // console.log('Stance Using Power: ' + usingPower) 
 
-        console.log('Enemy 1 Turn: ' + enemyTurn)
-
-        
+        // console.log('Enemy 1 Turn: ' + enemyTurn)
 
         
 
+        
 
-          //console.log('Enemy Max HP: ' + e1MaxLife)
+
+        //   console.log('Enemy Max HP: ' + e1MaxLife)
+
+          console.log('Support Arrow Visisble: ' + supportArrow.visible)
+          console.log('Support Arrow x: ' + supportArrow.x)
 
           
        
@@ -3259,6 +3401,9 @@
         chaserVFX.x = enemy1.x
         chaserVFX.y = enemy1.y
 
+        chaserS1VFX.x = enemy1.x
+        chaserS1VFX.y = enemy1.y
+
         
         
 
@@ -3280,6 +3425,21 @@
             } else {
                 sword.x = player.x + 10
                 sword.y = player.y - 15
+            }
+
+            if (!supportArrow.visible){
+                
+            if (support.flipX){
+                supportArrow.flipX = true
+                supportArrow.x = support.x - 94
+                
+            } else {
+                supportArrow.flipX = false
+                supportArrow.x = support.x + 30
+            
+            }
+                supportArrow.y = support.y - 12.5
+                supportArrow.body.checkCollision.none = true
             }
 
             
@@ -3554,8 +3714,12 @@
 
                 //if(Phaser.Input.Keyboard.JustDown(cursors.up)){
                     player.chain([{key:'pJump',frameRate: 12},true,{key:'pUptoFall',frameRate: 12}],true); 
+                    support.play('sJump',true)
                     this.physics.moveTo(player,width * 1.45,75)
-                    player.setVelocityY(player.body.velocity.y - 175)
+                    player.setVelocityY(-175)
+                    player.setVelocityX(75)
+                    support.setVelocityY(-205)
+                    support.setVelocityX(100)
                     enemy1.setVelocityX(enemy1.body.velocity.x + 50)
                     
                 //}
@@ -3604,6 +3768,7 @@
                 
 
                 player.anims.play({key:'pSlide',frameRate: 6},true);
+                support.play('sRoll',true)
 
                 this.physics.moveTo(player,width * 1.25,height - 90,30)
             
@@ -3649,9 +3814,14 @@
                         this.physics.moveTo(player,width * 1.5,height - 90,150)
                     } else {
                        this.physics.moveTo(player,width * 1.3,height - 90,150)
+                       this.physics.moveTo(support,width * 1.2,height - 90,150)
                     }
                     
                     player.anims.play({key:'pRun',frameRate: 12},true);
+                    
+                        support.play('sRun',true)
+                    
+                    
                 }
                 }
                 
@@ -3868,8 +4038,8 @@
                                 regenActive = false
 
                                 if (powerSource== 1){
-                                     playerVitals.decreaseEnergy(maxEnergy * 0.006)
-                                     attackChargePower += maxEnergy * 0.006
+                                     playerVitals.decreaseEnergy(maxEnergy * 0.004)
+                                     attackChargePower += maxEnergy * 0.004
                                  } else if (powerSource == 2){+
                                     playerVitals.decreaseFocus(maxFocus * 0.006)
                                      attackChargePower += maxFocus * 0.006
@@ -3884,8 +4054,8 @@
                                 playerBattleAction()
                                 }
                             } else {
-                                player.stop()
-                                playerAttacking = false
+                                //player.stop()
+                                sword.body.checkCollision.none = true
                                 attackModeActive = false
                                 usingPower = false
                                 
