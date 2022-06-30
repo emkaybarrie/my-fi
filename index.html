@@ -383,6 +383,7 @@
                 
                 playerTurn = false
                 playerTurnStarted = false
+                playerActionBarActive = false
                 // regenActive = true
                 playerStance = 0
                 playerAttacking = false
@@ -971,6 +972,16 @@
    function modeSwitch(mode){
     if (mode == 0){
         hideRunningHUD()
+        playerTurn = false
+                playerTurnStarted = false
+                playerActionBarActive = false
+                // regenActive = true
+                playerStance = 0
+                playerAttacking = false
+                sword.body.checkCollision.none = true
+                eSword.body.checkCollision.none = true
+                turnComplete = false
+       
         playerExperience.bg.setVisible(1)
         playerExperience.experienceBar.setVisible(1)
             
@@ -992,19 +1003,22 @@
                      
                     }, this)
     } else if (mode == 1){
-            remActionTime = (currentLife/maxLife) * maxActionTime
-            camera.resetFX()
-            chaserCam = false 
+            inBattle = true 
             playerIsHit = false
-            inBattle = true      
+            remActionTime = (currentLife/maxLife) * maxActionTime
+            playerActionBarActive = false
+            playerStance = -1
+            chaserCam = false 
+            
+                  
             
             hideRunningHUD()
             playerExperience.bg.setVisible()
             playerExperience.experienceBar.setVisible()
             IS_TOUCH = false
             
-                    //camera.pan(width * 1.5,0,500)
                     
+                    camera.resetFX()
                     enemy1GetInBattlePosition()
                     player.stop()
                     playerGetInBattlePosition()
@@ -1034,6 +1048,7 @@
                                     playerVitals.hide()
                                     regenActive = true
                                     playerStance = 0
+                                    playerTurn = false
                                     playerActionBarRegen = true
                                     
                                     
@@ -1050,6 +1065,7 @@
     
             if (!inBattle){
             income *= 1 - (0.04 / 12)
+            remActionTime -= 1
             currentEnergy *= 0.9
             playerEntangled = false
             enemy1Entangled = false
@@ -1626,14 +1642,14 @@
 
     // Player Crouches
 
-    player.play({key:'pCrouch',frameRate: 8},true);
+    player.play({key:'pCrouch',frameRate: 14},true);
 
     player.once('animationcomplete', function (anim,frame) {
             player.emit('animationcomplete_' + anim.key, frame)
         }, player)
     // Player Jumps up
         player.once('animationcomplete_pCrouch', function (anim,frame) {
-        player.play({key:'pJump',frameRate: 8},true);
+        player.play({key:'pJump',frameRate: 10},true);
         
         
         player.setVelocityY(-250)
@@ -1661,7 +1677,7 @@
         player.once('animationcomplete_pJump', function (anim,frame) {
         
         
-            player.play({key:'pUptoFall',frameRate: 10},true);
+            player.play({key:'pUptoFall',frameRate: 12},true);
 
 
 
@@ -3177,20 +3193,32 @@
 
         //console.log('Player Entangled: ' + playerEntangled)
 
-        console.log('Enemy 1 X Psotion: ' + enemy1.x)
-        console.log( 'Playere X Psotion: ' + player.x)
+        
 
-        //console.log('Player Turn: ' + playerTurn)
+        
 
-        //console.log('enemy Turn: ' + enemyTurn)
+        
 
         //console.log('Attack Charge Power: ' + attackChargePower) 
         //console.log('Damage: ' + damage) 
 
-        //console.log('Player Action Bar Active: ' + playerActionBarActive) 
+        console.log('In Battle: ' + inBattle) 
 
-        //console.log('Player Attacking: ' + playerAttacking) 
-        //console.log('In Battle: ' + inBattle) 
+        console.log('Player Turn: ' + playerTurn)
+
+        console.log('Player Action Bar Active: ' + playerActionBarActive) 
+
+        console.log('Rem Action Time: ' + remActionTime) 
+
+        console.log('Max Action Time: ' + maxActionTime) 
+
+        console.log('Player Attacking: ' + playerAttacking) 
+        console.log('Player Attack Mode: ' + attackModeActive) 
+        console.log('Stance Using Power: ' + usingPower) 
+
+        console.log('Enemy 1 Turn: ' + enemyTurn)
+
+        
 
         
 
