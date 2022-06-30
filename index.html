@@ -2155,6 +2155,7 @@
         this.load.spritesheet('whiteHitSmear', 'assets/whiteHitSmear.png', { frameWidth: 1048, frameHeight: 1048});
         this.load.spritesheet('whiteHitSmear2', 'assets/whiteHitSmear2.png', { frameWidth: 1048, frameHeight: 1048});
         this.load.spritesheet('orangeHitSmear', 'assets/orangeHitSmear.png', { frameWidth: 1048, frameHeight: 1048});
+        this.load.spritesheet('thunderStrike', 'assets/thunderStrike.png', { frameWidth: 64, frameHeight: 64});
         
   
 
@@ -4106,7 +4107,7 @@
 
                             // Stance Selection Move Box animation
 
-                            if (!playerAttacking && inBattle && playerStance >= 1){
+                            if (!playerAttacking && inBattle && playerStance >= 1 && playerStance <= 2){
                                 
                                 this.tweens.add({
                                     targets     : moveBox,
@@ -4127,7 +4128,7 @@
                                 
 
 
-                            } else if (playerAttacking || playerStance <= 0){
+                            } else if (playerAttacking || playerStance <= 0 || playerStance >= 3 ){
                                 this.tweens.add({
                                     targets     : moveBox ,
                                     alpha       : 0, 
