@@ -110,7 +110,7 @@
     var turnComplete = false
 
     var playerSpeed 
-    var expToLevelUp = Phaser.Math.Between(75,100)
+    var expToLevelUp = Phaser.Math.Between(25,50)
     var exp = 0
     
     var inBattle = 0
@@ -198,7 +198,7 @@
          maxActionTime = 60 * 4
          turnComplete = false
 
-         expToLevelUp = 100
+         expToLevelUp = 75
          exp = 0
 
         inBattle = 0
@@ -1291,14 +1291,7 @@
             usingPower = false
             if (playerStance == 0){
                                             playerS0Combo()
-                                            if (supportArrow.visible){
-                                                support.play('sIdle',true)
-                                            } else {
-                                                support.play('sShoot',true)
-                                                support.once('animationcomplete',function(){
-                                                    support.play('sIdle',true)
-                                                },this)
-                                            }
+                                            
                                         } else if (playerStance == 1){
                                             playerS1Combo()
                                             
@@ -1327,6 +1320,14 @@
         } else if (player.x > enemy1.x + 75 && player.x < enemy1.x + 150){
             usingPower = false
             player.play({key:'pDash',frameRate:12},true)
+            if (supportArrow.visible){
+                                                support.play('sIdle',true)
+                                            } else {
+                                                support.play('sShoot',true)
+                                                support.once('animationcomplete',function(){
+                                                    support.play('sIdle',true)
+                                                },this)
+                                            }
             //player.setDragX(0)
             fireTowardsTarget(player,enemy1.x,1)
             player.once('animationcomplete', function(){
@@ -1813,7 +1814,7 @@
         
         
         player.x -= 0.25
-        enemyChase(Phaser.Math.FloatBetween(4,6))
+        enemyChase(Phaser.Math.FloatBetween(2,4))
     } 
     
     }
@@ -1826,7 +1827,7 @@
         
         player.x -= 0.05
 
-        enemyChase(Phaser.Math.FloatBetween(6,8))
+        enemyChase(Phaser.Math.FloatBetween(3,6))
     } 
 
     }
@@ -1873,7 +1874,7 @@
 
                 chaserS1VFX.setTint(0x301934)
                 chaserS1VFX.play('whiteHitSmear2',true)
-                damage = .1 * attackChargePower
+                damage = energyRegen * attackChargePower
                 enemy1Vitals.decreaseEnemyLife(damage)
                 chaserS1VFX.on('animationcomplete',function(){
                     supportArrow.setVisible(0)
@@ -2645,7 +2646,7 @@
         this.anims.create({
             key: 'sShoot',
             frames: this.anims.generateFrameNumbers('arcaneArcher', { start:24, end: 30}),
-            frameRate: 6,
+            frameRate: 8,
             repeat: 0
         });
 
@@ -3123,7 +3124,7 @@
                     if (player.anims.currentFrame.index >= 6 && player.anims.currentFrame.index < 12){
                         
                         sword.body.checkCollision.none = false
-                        damage = 1 * (maxEnergy * (attackChargePower/100)) * 0.5
+                        damage = 1 * (maxEnergy * (attackChargePower/100)) 
                     } else {
                         sword.body.checkCollision.none = true
                     }
@@ -3135,7 +3136,7 @@
                     if (player.anims.currentFrame.index >= 4 && player.anims.currentFrame.index < 6){
                         
                     sword.body.checkCollision.none = false
-                    damage =  1.5 * (maxEnergy * (attackChargePower/100)) * 0.5
+                    damage =  1.5 * (maxEnergy * (attackChargePower/100)) 
                     } else {
                         sword.body.checkCollision.none = true
                     }
@@ -3783,7 +3784,7 @@
                 
                 
                     playerVitals.decreaseFocus((income * 0.25) / 100 )
-                    playerVitals.decreaseLife(-(income * 0.25)  / 101 )
+                    playerVitals.decreaseLife(-(income * 0.25)  / 50 )
                     enemyChase(2)
                 
 
@@ -3805,7 +3806,7 @@
                 playerVitals.decreaseEnergy((income * 0.25) / 50)
                 this.physics.moveTo(player,width * 1.5,height - 90,90)
                 player.anims.play({key:'pRun',frameRate: 16},true);
-                enemyChase(Phaser.Math.FloatBetween(-1.5,0))
+                enemyChase(Phaser.Math.FloatBetween(-2.5,0))
                 glory += (5 / 60)
         
                  
