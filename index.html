@@ -980,6 +980,8 @@
                 playerAttacking = false
                 sword.body.checkCollision.none = true
                 eSword.body.checkCollision.none = true
+                supportArrow.body.checkCollision.none = true
+                supportArrow.setVisible(0)
                 turnComplete = false
        
         playerExperience.bg.setVisible(1)
@@ -1871,7 +1873,7 @@
 
                 chaserS1VFX.setTint(0x301934)
                 chaserS1VFX.play('whiteHitSmear2',true)
-                damage = .01 * attackChargePower
+                damage = .05 * attackChargePower
                 enemy1Vitals.decreaseEnemyLife(damage)
                 chaserS1VFX.on('animationcomplete',function(){
                     supportArrow.setVisible(0)
@@ -3117,7 +3119,7 @@
                     if (player.anims.currentFrame.index >= 6 && player.anims.currentFrame.index < 12){
                         
                         sword.body.checkCollision.none = false
-                        damage = 1 * (maxEnergy * (attackChargePower/100)) * 0.1
+                        damage = 1 * (maxEnergy * (attackChargePower/100)) * 0.5
                     } else {
                         sword.body.checkCollision.none = true
                     }
@@ -3129,7 +3131,7 @@
                     if (player.anims.currentFrame.index >= 4 && player.anims.currentFrame.index < 6){
                         
                     sword.body.checkCollision.none = false
-                    damage =  1.5 * (maxEnergy * (attackChargePower/100)) * 0.1
+                    damage =  1.5 * (maxEnergy * (attackChargePower/100)) * 0.5
                     } else {
                         sword.body.checkCollision.none = true
                     }
