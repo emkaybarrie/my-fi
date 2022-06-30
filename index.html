@@ -150,9 +150,9 @@
     var playerIsHit = false
     var enemy1IsHit = false
    
-    var enemy1Life = (income * 0.8) * 12
+    var enemy1Life = (income * 0.8) 
     var enemy1Alive // Can be removed
-    var e1MaxLife = (income * 0.8) * 12
+    var e1MaxLife = (income * 0.8) 
     
 
     function reset(){
@@ -239,8 +239,8 @@
          playerIsHit = false
          enemy1IsHit = false
     
-         enemy1Life = (income * 0.8) * 12
-         e1MaxLife = (income * 0.8) * 12
+         enemy1Life = (income * 0.8) 
+         e1MaxLife = (income * 0.8) 
         
     }
 
@@ -1813,7 +1813,7 @@
         
         
         player.x -= 0.25
-        enemyChase(Phaser.Math.FloatBetween(2,3))
+        enemyChase(Phaser.Math.FloatBetween(4,6))
     } 
     
     }
@@ -1826,7 +1826,7 @@
         
         player.x -= 0.05
 
-        enemyChase(Phaser.Math.FloatBetween(3,5))
+        enemyChase(Phaser.Math.FloatBetween(6,8))
     } 
 
     }
@@ -1836,7 +1836,7 @@
         if (inBattle){
             camera.shake(250, 0.0025);
             playerIsHit = true
-            playerVitals.decreaseLife((e1MaxLife * 0.5) / 50)
+            playerVitals.decreaseLife((e1MaxLife * 0.1) / 300)
             playerActionTimeBar.decreaseActionTime((e1MaxLife * 0.25) / 50)
             maxEnergy *= 1 - (0.04 / 12 / 50)
             if(glory - (25/60) < 0){
@@ -1873,7 +1873,7 @@
 
                 chaserS1VFX.setTint(0x301934)
                 chaserS1VFX.play('whiteHitSmear2',true)
-                damage = .05 * attackChargePower
+                damage = .1 * attackChargePower
                 enemy1Vitals.decreaseEnemyLife(damage)
                 chaserS1VFX.on('animationcomplete',function(){
                     supportArrow.setVisible(0)
@@ -2008,7 +2008,7 @@
 
         if (inBattle == false) {
 
-            e1MaxLife *= chaosFactor
+            e1MaxLife = 2 + (income * chaosFactor) * 12
             enemy1Life = e1MaxLife
             enemy1Vitals.p = 38 / e1MaxLife
             
@@ -2276,7 +2276,7 @@
             
             enemy1.body.setAllowDrag(true)
            
-            enemy1Life = (income * 0.3) * Phaser.Math.Between(0.8,1.7) * 12
+            enemy1Life = (income * 0.3) * Phaser.Math.Between(0.8,1.7) 
             e1MaxLife = enemy1Life
             enemy1Alive = true
 
@@ -3095,7 +3095,11 @@
                     if (support.anims.currentFrame.index >= 7 && !enemy1IsHit){
                         
                         supportArrow.setVisible(1)
-                        supportArrow.body.setVelocityX(-250)
+                        if(support.x > enemy1.x){
+                        supportArrow.body.setVelocityX(-350)
+                        } else {
+                            supportArrow.body.setVelocityX(350)
+                        }
                     } else {
                         //sword.body.checkCollision.none = true
                     }
@@ -3175,7 +3179,7 @@
                         
                         enemy1.once('animationcomplete', function (anim,frame) {
                             enemy1.x = 0
-                            e1MaxLife = Phaser.Math.Between(income * 0.8, (income * 0.8) * chaosFactor) * 12
+                            e1MaxLife = Phaser.Math.Between(income * 0.8, (income * 0.8) * chaosFactor) 
                             enemy1Life = e1MaxLife
                             enemy1Vitals.p = 38 / e1MaxLife
 
@@ -3364,10 +3368,10 @@
         
 
 
-        //   console.log('Enemy Max HP: ' + e1MaxLife)
+           console.log('Enemy Max HP: ' + e1MaxLife)
 
-          console.log('Support Arrow Visisble: ' + supportArrow.visible)
-          console.log('Support Arrow x: ' + supportArrow.x)
+          //console.log('Support Arrow Visisble: ' + supportArrow.visible)
+          //console.log('Support Arrow x: ' + supportArrow.x)
 
           
        
@@ -3778,9 +3782,9 @@
 
                 
                 
-                    playerVitals.decreaseFocus((income * 0.25) / 50 )
-                    playerVitals.decreaseLife(-(income * 0.25)  / 75 )
-                    enemyChase(1.5)
+                    playerVitals.decreaseFocus((income * 0.25) / 100 )
+                    playerVitals.decreaseLife(-(income * 0.25)  / 101 )
+                    enemyChase(2)
                 
 
                 pSFX.setTint(0xcc0000)
