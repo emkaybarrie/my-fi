@@ -253,7 +253,7 @@
 
         
             if(!playerTurnStarted){
-                powerSource = 0
+                powerSource = 2
                 playerStance = 1
                 
                 playerTurnStarted = true
@@ -1949,7 +1949,7 @@
 
             if (powerSource == 1){
                 chaserVFX.play('whiteHitSmear',true)
-            } else {
+            } else if (powerSource == 2) {
                 chaserVFX.play('orangeHitSmear',true)
             }
             
@@ -4228,6 +4228,7 @@
                             
                         
                             source = currentEnergy
+                            powerSource = 1
                             
 
                             if (source > 0){
