@@ -1093,9 +1093,9 @@
 
                 if(player.anims.getName() == 'pSlide'){
                     
-                        fireTowardsTarget(player,width * 1.75,4)
+                        fireTowardsTarget(player,Phaser.Math.FloatBetween(width * 1.5, width * 1.8),4)
                         support.play({key:'sRoll',repeat: 1},true)
-                        fireTowardsTarget(support,width * 1.8,4)
+                        fireTowardsTarget(support,Phaser.Math.FloatBetween(width * 1.5, width * 1.9),4)
                       
                 }
                 player.once('animationcomplete', function (anim,frame) {
@@ -2114,6 +2114,7 @@
         this.load.image('deadSpace', 'assets/controls/buttonDeadSpace.png');
         this.load.image('left', 'assets/controls/shadedDark05.png');
         this.load.image('right', 'assets/controls/shadedDark06.png');
+        this.load.image('defaultAction', 'assets/controls/ach_00022.png');
         this.load.image('charge', 'assets/controls/ach_00005.png');
         
 
@@ -2204,7 +2205,7 @@
         //player.body.maxVelocity.x = 3000
        // player.body.maxVelocity.y = 3000
         
-        player.setBounceY(0.1);
+        player.setBounceY(0.05);
         player.setCollideWorldBounds(true);
         player.body.setBoundsRectangle(new Phaser.Geom.Rectangle(width, 0, width, height));
         this.physics.add.collider(player,platforms);
@@ -2715,8 +2716,10 @@
         this.input.addPointer(8);
         //Anchor buttons
         left = this.add.image(camera.scrollX + (width * 0.1), camera.scrollY + (height - 90), 'left').setInteractive().setDepth(3).setScale(0.75).setAlpha(0.15);
-        charge = this.add.image(camera.scrollX + (width * 0.825), camera.scrollY + (height - 106), 'charge').setInteractive().setDepth(3).setScale(.75).setAlpha(0.15).setTint(0xd9e650);
-
+        defaultAction = this.add.image(camera.scrollX + (width * 0.85), camera.scrollY + (height - 126), 'defaultAction').setInteractive().setDepth(3).setScale(.75).setAlpha(0.15).setTint(0x00a86b);
+        charge = this.add.image(camera.scrollX + (width * 0.75), camera.scrollY + (height - 86), 'charge').setInteractive().setDepth(3).setScale(.65).setAlpha(0.15).setTint();//Focus - 0xf1c232
+        
+        
         deadSpace = this.add.image(left.x + 35.5, left.y, 'deadSpace').setDepth(4).setScale(0.75).setVisible(0);
         right = this.add.image(deadSpace.x + 35.5, deadSpace.y, 'right').setInteractive().setDepth(3).setScale(0.75).setAlpha(0.15);
         up = this.add.image(deadSpace.x, deadSpace.y - 40.5, 'up').setInteractive().setDepth(3).setScale(0.75).setAlpha(0.15);
@@ -2761,10 +2764,17 @@
                 cursors.right.isUp = false
             }
 
-            if (gameObject == charge){
+            if (gameObject == defaultAction){
                 keyA.isDown = true
                 
                 keyA.isUp = false
+                
+            }
+
+            if (gameObject == charge){
+                cursors.space.isDown = true
+                
+                cursors.space.isUp = false
                 
             }
 
@@ -2878,9 +2888,14 @@
             cursors.right.isUp = true
         }
 
-        if (gameObject == charge){
+        if (gameObject == defaultAction){
             keyA.isDown = false
             keyA.isUp = true
+        }
+
+        if (gameObject == charge){
+            cursors.space.isDown = false
+            cursors.space.isUp = true
         }
 
       
@@ -2907,11 +2922,16 @@
                 cursors.right.isDown = false
             }
 
-            if (gameObject == charge){
+            if (gameObject == defaultAction){
                 keyA.isDown = false
                 keyA.isUp = true
             }
 
+            if (gameObject == charge){
+                cursors.space.isDown = false
+                cursors.space.isUp = true
+            }
+            cursors.space
 
 
             });
@@ -3278,6 +3298,7 @@
         if(IS_TOUCH){
         left.setInteractive(1).setVisible(1)
         left.setInteractive(1).setVisible(1)
+        defaultAction.setInteractive(1).setVisible(1)
         charge.setInteractive(1).setVisible(1)
 
         right.setInteractive(1).setVisible(1)
@@ -3288,6 +3309,7 @@
         
         } else {
             left.disableInteractive().setVisible(0)
+            defaultAction.setInteractive().setVisible(0)
             charge.disableInteractive().setVisible(0)
             right.disableInteractive().setVisible(0)
             up.disableInteractive().setVisible(0)
@@ -3464,7 +3486,9 @@
         
         if (inBattle == false){
 
-            if(keyA.isDown){
+            charge.setTint(0xf1c232)
+
+            if(cursors.space.isDown){
 
             if (currentFocus  > 0){
             playerFocusing = true
@@ -3476,7 +3500,7 @@
 
                 treeTrunk.body.checkCollision.none = true
                 
-                if (Phaser.Input.Keyboard.JustDown(keyA)){
+                if (Phaser.Input.Keyboard.JustDown(cursors.space)){
 
                     focusModeActive = true
                     scanningForDanger = true
@@ -3492,7 +3516,7 @@
 
 
 
-            } else if (Phaser.Input.Keyboard.JustUp(keyA)){
+            } else if (Phaser.Input.Keyboard.JustUp(cursors.space)){
             player.stop()
             playerFocusing = false
             focusModeActive = false
@@ -3518,7 +3542,7 @@
             scanningForDanger = false
             },this)
 
-            if (!playerFocusing){
+            if (!playerFocusing && keyA.isUp){
             playerSpeed = player.x / (width * 1.2)
             player.setTintFill()
             spotlight.intensity = 0.5
@@ -3536,14 +3560,19 @@
 
                         // Anchor buttons
                         left.x = camera.scrollX + (width * 0.05)
-                        charge.x = camera.scrollX + (width * 0.925) 
+                        defaultAction.x = camera.scrollX + (width * 0.925)
+                        charge.x = camera.scrollX + (width * 0.825) 
                         left.y = camera.scrollY + (height - 90)
-                        charge.y = camera.scrollY + (height - 106)
-            
+                        defaultAction.y = camera.scrollY + (height - 136)
+                        charge.y = camera.scrollY + (height - 76)
 
+            
+            
+            
             this.woodsl2.tilePositionX += 1 * (playerSpeed)
             this.woodsl3.tilePositionX += 2 * (playerSpeed)
             this.woodsl4.tilePositionX += 4.5 * (playerSpeed)
+            
 
             this.tweens.add({
                                     targets     : moveBox ,
@@ -3598,6 +3627,12 @@
 
   
         } else if (inBattle) {
+
+            if (powerSource == 1){
+                charge.setTint(0x00a86b)
+            } else {
+                charge.setTint(0xf1c232)
+            }
             spotlight.intensity = 0.5
 
             spotlight.x = player.x
@@ -3614,9 +3649,12 @@
             
                             // Anchor buttons
                         left.x = camera.scrollX + (width * 0.075)
-                        charge.x = camera.scrollX + (width * 0.9) 
+                        defaultAction.x = camera.scrollX + (width * 0.9)
+                        charge.x = camera.scrollX + (width * 0.8) 
                         left.y = camera.scrollY + (height - 90)
-                        charge.y = camera.scrollY + (height - 106)
+                        defaultAction.y = camera.scrollY + (height - 136)
+                        charge.y = camera.scrollY + (height - 76)
+                        
 
                         this.tweens.add({
                                     targets     : [playerExperience.bg, playerExperience.experienceBar],
@@ -3708,6 +3746,38 @@
             moveVines(vines, 4.5 * (playerSpeed))
 
             moveTreeTrunk(treeTrunk, 4.5 * (playerSpeed))
+
+            defaultAction.once('pointerdown',function(){
+
+                var attackChoice = Phaser.Math.Between(1,2)
+                    playerVitals.decreaseEnergy(income * 0.05)
+
+                if(attackChoice == 1){
+                   player.play({key:'pDash',frameRate:18},true)
+                   fireTowardsTarget(player,player.x + 100,1)
+                   player.setVelocityY(Phaser.Math.Between(-125,-150))
+                   player.once('animationcomplete',function(){
+                    player.play({key:'pHeavyAttack',frameRate:16},true)
+                    player.setVelocityY(Phaser.Math.Between(100,150))
+                    player.once('animationcomplete',function(){
+                        player.play({key:'pRun',repeat:-1},true)
+                   },this)
+                   },this)
+                   
+                } else if (attackChoice == 2) {
+                    player.play('pDash',true)
+                    fireTowardsTarget(player,player.x + 100,1)
+                    player.setVelocityY(Phaser.Math.Between(-75,-100))
+                    player.once('animationcomplete',function(){
+                    player.play('pAttack2',true)
+                    player.setVelocityY(Phaser.Math.Between(-100,-150))
+                    player.once('animationcomplete',function(){
+                    player.play({key:'pRun',repeat:-1},true)
+                   },this)
+                   },this)
+                    
+                }
+            })
             
             if (playerIsHit){ 
                 player.anims.play({key:'pHurt',frameRate: 12},true); 
@@ -3715,9 +3785,9 @@
                     playerRecover();
                 }, this);
 
-            } else if (cursors.up.isDown && currentEnergy > (income * 0.1) && playerIsHit == false && player.body.onFloor()){ 
+            } else if (cursors.up.isDown && currentEnergy > (income * 0.2) && playerIsHit == false && player.body.onFloor()){ 
 
-                playerVitals.decreaseEnergy(income * 0.3)
+                playerVitals.decreaseEnergy(income * 0.2)
                 
 
                 //if(Phaser.Input.Keyboard.JustDown(cursors.up)){
@@ -3735,7 +3805,79 @@
   
 
                 
-            } else if (keyA.isDown && playerIsHit == false){
+            } else if (keyA.isDown && currentEnergy > (income * 0.05) && playerIsHit == false ){
+
+                if (Phaser.Input.Keyboard.JustDown(keyA)){
+                    var attackChoice = Phaser.Math.Between(1,2)
+                    playerVitals.decreaseEnergy(income * 0.05)
+                }
+
+                
+                if(attackChoice == 1){
+                   player.play({key:'pDash',frameRate:18},true)
+                   fireTowardsTarget(player,player.x + 100,1)
+                   player.setVelocityY(Phaser.Math.Between(-125,-150))
+                   player.once('animationcomplete',function(){
+                    player.play({key:'pHeavyAttack',frameRate:16},true)
+                    player.setVelocityY(Phaser.Math.Between(100,150))
+                    player.once('animationcomplete',function(){
+                        player.play({key:'pRun',repeat:-1},true)
+                   },this)
+                   },this)
+                   
+                } else if (attackChoice == 2) {
+                    player.play('pDash',true)
+                    fireTowardsTarget(player,player.x + 100,1)
+                    player.setVelocityY(Phaser.Math.Between(-75,-100))
+                    player.once('animationcomplete',function(){
+                    player.play('pAttack2',true)
+                    player.setVelocityY(Phaser.Math.Between(-100,-150))
+                    player.once('animationcomplete',function(){
+                    player.play({key:'pRun',repeat:-1},true)
+                   },this)
+                   },this)
+                    
+                }
+      
+                // Running Attack
+
+
+                playerSpeed = 0.9
+
+                // pSFX.y = player.y + 17.5
+                // pSFX.x = player.x - 87.5
+                // pSFX.setVisible(true)
+                // pSFX.setTint(0xf1c232)
+                // pSFX.setTintFill(0xf1c232)
+                // if(player.body.onFloor() ){
+                //     if(attackChoice == 1){
+                //     player.play('pHeavyAttack',true)
+                // } else if (attackChoice == 2) {
+                //     player.play('pDoubleAttack',true)
+                // } 
+                    
+                    
+                    
+                
+  
+  
+                // if(spotlight.intensity < 1.25){
+                // spotlight.intensity += 0.005
+                // spotlight.setColor(0xf1c232)
+                // }
+                // pSFX.angle = 270
+                // pSFX.setAlpha(0.75)
+                // pSFX.setDepth(0)
+                // pSFX.play('chargeDash',true)
+                // pSFX.setScale(0.5,1.25)
+                
+                enemyChase(Phaser.Math.FloatBetween(-5,+ 10))
+                
+                
+                
+                
+                
+            } else if (cursors.space.isDown && playerIsHit == false){
                 
                 playerVitals.decreaseFocus((income) / 50)
                 if(currentFocus > 0){
@@ -3766,7 +3908,7 @@
                 
                 
                 
-            } else if (cursors.down.isDown && currentEnergy > ((income * 0.25) / 25) && player.body.onFloor()){
+            } else if (cursors.down.isDown && currentEnergy > ((income * 0.15)) && player.body.onFloor()){
 
                 vines.body.checkCollision.none = true
  
