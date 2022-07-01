@@ -84,6 +84,7 @@
     var playerFocusing = false
     var focusModeActive = false
     var scanningForDanger = true
+    var showStanceInfo = false
     var playerAttacking = false 
     var attackModeActive = false
     var usingPower = false
@@ -252,6 +253,8 @@
 
         
             if(!playerTurnStarted){
+                powerSource = 0
+                playerStance = 0
                 
                 playerTurnStarted = true
                 playerActionBarRegen = true
@@ -1282,23 +1285,15 @@
 
     }
         
-        
-        
-    function playerBattleAction(){
+    function playerDefaultAction(){
         
         
         if(usingPower){
             
         if (player.x <= enemy1.x + 75){
             usingPower = false
-            if (playerStance == 0){
+            
                                             playerS0Combo()
-                                            
-                                        } else if (playerStance == 1){
-                                            playerS1Combo()
-                                            
-                                        } else if (playerStance == 2){
-                                            playerS2Combo()
                                             if (supportArrow.visible){
                                                 support.play('sIdle',true)
                                             } else {
@@ -1307,6 +1302,59 @@
                                                     support.play('sIdle',true)
                                                 },this)
                                             }
+                                            
+            
+            
+        } else if (player.x > enemy1.x + 75 && player.x < enemy1.x + 150){
+            usingPower = false
+            player.play({key:'pDash',frameRate:12},true)
+            if (supportArrow.visible){
+                                                support.play('sIdle',true)
+                                            } else {
+                                                support.play('sShoot',true)
+                                                support.once('animationcomplete',function(){
+                                                    support.play('sIdle',true)
+                                                },this)
+                                            }
+            //player.setDragX(0)
+            fireTowardsTarget(player,enemy1.x,1)
+            player.once('animationcomplete', function(){
+               
+                
+                usingPower = true
+            },this)
+        
+        } else {
+            
+            player.play({key:'pRun',frameRate:6},true)
+            player.x -= 5
+            player.once('animationcomplete', function(){
+                //fireTowardsTarget(player,width * 1.3,12)
+                
+            usingPower = true
+            },this)
+
+            //usingPower = true
+            
+        }
+        }
+
+    }
+        
+    
+    function playerBattleAction(){
+        
+        
+        if(usingPower){
+            
+        if (player.x <= enemy1.x + 75){
+            usingPower = false
+           if (playerStance == 1){
+                                            playerS1Combo()
+                                            
+                                        } else if (playerStance == 2){
+                                            playerS2Combo()
+                                            
                                         } else if (playerStance == 3){
                                             
                                         } else if (playerStance == 4){
@@ -1322,15 +1370,7 @@
         } else if (player.x > enemy1.x + 75 && player.x < enemy1.x + 150){
             usingPower = false
             player.play({key:'pDash',frameRate:12},true)
-            if (supportArrow.visible){
-                                                support.play('sIdle',true)
-                                            } else {
-                                                support.play('sShoot',true)
-                                                support.once('animationcomplete',function(){
-                                                    support.play('sIdle',true)
-                                                },this)
-                                            }
-            //player.setDragX(0)
+            
             fireTowardsTarget(player,enemy1.x,1)
             player.once('animationcomplete', function(){
                
@@ -1858,7 +1898,9 @@
     function playerRecover(){
 
     if (playerIsHit){
+        playerStance = -1
         playerIsHit = false 
+        player.play('pIdle',true)
     }
 
     }
@@ -3633,8 +3675,10 @@
 
             if (powerSource == 1){
                 charge.setTint(0x00a86b)
-            } else {
+            } else if (powerSource == 2) {
                 charge.setTint(0xf1c232)
+            } else {
+                charge.setTint()
             }
             spotlight.intensity = 0.5
 
@@ -4177,6 +4221,72 @@
 
                         // Keyboard alt contorls #2
 
+                        if(keyA.isDown && playerActionBarActive){
+
+                            
+                        
+                            source = currentEnergy
+                            
+
+                            if (source > 0){
+                                playerAttacking = true
+                                regenActive = false
+
+                                
+                                    playerVitals.decreaseEnergy(maxEnergy * 0.004)
+                                    attackChargePower += maxEnergy * 0.004
+                                
+                                
+                                if (Phaser.Input.Keyboard.JustDown(keyA)){
+
+                                    attackModeActive = true
+                                    usingPower = true
+                                }
+                                if(attackModeActive){
+                                playerDefaultAction()
+                                }
+                            } else {
+                                //player.stop()
+                                sword.body.checkCollision.none = true
+                                attackModeActive = false
+                                usingPower = false
+                                
+                                
+                            }
+
+
+
+                        } else if (Phaser.Input.Keyboard.JustUp(keyA)){
+                            if(playerActionBarActive){
+                            player.stop()
+                            player.play('pBackDash',true)
+                            fireTowardsTarget(player, player.x + 125,1)
+                            }
+                            playerAttacking = false
+                            attackModeActive = false
+                            usingPower = false
+                        }
+
+                        // Touch Controls
+                        defaultAction.once('pointerdown', function(){
+                            
+                            attackModeActive = true
+                            usingPower = true
+  
+                        })
+
+                        defaultAction.on('pointerup', function(){
+                            player.anims.stop()
+                            if(playerActionBarActive){
+                            player.stop()
+                            player.play('pBackDash',true)
+                            fireTowardsTarget(player, player.x + 125,1)
+                            }
+                            playerAttacking = false
+                            attackModeActive = false
+                            usingPower = false
+                        })
+
                         if(cursors.space.isDown && playerActionBarActive){
 
                             
@@ -4252,7 +4362,7 @@
 
                             // Stance Selection Move Box animation
 
-                            if (!playerAttacking && inBattle && playerStance >= 1 && playerStance <= 2){
+                            if (showStanceInfo && !playerAttacking && inBattle && playerStance >= 1 && playerStance <= 2){
                                 
                                 this.tweens.add({
                                     targets     : moveBox,
@@ -4273,7 +4383,7 @@
                                 
 
 
-                            } else if (playerAttacking || playerStance <= 0 || playerStance >= 3 ){
+                            } else if (!showStanceInfo || playerAttacking || playerStance <= 0 || playerStance >= 3 ){
                                 this.tweens.add({
                                     targets     : moveBox ,
                                     alpha       : 0, 
@@ -4295,7 +4405,7 @@
                            
 
                             if (playerStance == 0){
-                                powerSource = 1
+                                //powerSource = 1
                                 //moveNameText.setText(stance0Name)
                                 //moveText.setText(stance0Text)
 
@@ -4346,6 +4456,7 @@
                                 
                                 cursors.left.once('down', function(){
                                 usingPower = true
+                                showStanceInfo = true
                                 },this)
                             
                                 
@@ -4355,19 +4466,11 @@
 
                             cursors.left.on('up', function(){
 
-                                if(!playerAttacking && playerStance == 1){
-                                player.stop()
-                                player.playReverse({key:'pStance1', frameRate: 12},true)
-
-                                    player.once('animationcomplete', function () {
-
-                                        playerStance = 0
-
-
-                                    }, this);
+                                if(!playerAttacking ){
+                                
+                                    showStanceInfo = false
                                 } else if(playerAttacking && playerStance == 1){
-                                    playerStance = 0
-                                    player.stop()
+                                  
                                     usingPower = true
                                      
                                 }
@@ -4384,6 +4487,7 @@
 
                                 left.once('pointerdown', function(){
                                 usingPower = true
+                                showStanceInfo = true
                                 },this)
 
                                 
@@ -4392,17 +4496,14 @@
 
                             left.on('pointerup', function(){
 
-                                if(!playerAttacking && playerStance == 1){
-                                player.stop()
-                                player.playReverse({key:'pStance1', frameRate: 12},true)
-
-                                player.once('animationcomplete', function () {
-
-                                    playerStance = 0
-
-
-                                }, this);
-                            }
+                                if(!playerAttacking ){
+                                
+                                showStanceInfo = false
+                                } else if(playerAttacking && playerStance == 1){
+                                
+                                    usingPower = true
+                                    
+                                }
   
                             })
 
@@ -4423,24 +4524,17 @@
 
                                 cursors.up.once('down', function(){
                                 usingPower = true
+                                showStanceInfo = true
                                 },this)
                                 }
 
                             })
 
                             cursors.up.on('up', function(){
-                                if(!playerAttacking && playerStance == 2){
-                                player.stop()
-                                player.playReverse({key:'pCrouch', frameRate: 16},true)
-                                player.once('animationcomplete', function () {
-
-                                 playerStance = 0
-
-
-                                }, this);
+                                if(!playerAttacking){
+                                    showStanceInfo = false
                             } else if (playerAttacking && playerStance == 2){
-                                playerStance = 0
-                                player.stop()
+                              
                                 usingPower = true
                             }
                             })
@@ -4456,23 +4550,16 @@
 
                                 up.once('pointerdown', function(){
                                 usingPower = true
+                                showStanceInfo = true
                                 },this)
                                 }
                             })
 
                             up.on('pointerup', function(){
-                                if(!playerAttacking && playerStance == 2){
-                                player.stop()
-                                player.playReverse({key:'pCrouch', frameRate: 16},true)
-                                player.once('animationcomplete', function () {
-
-                                 playerStance = 0
-
-
-                                }, this);
+                                if(!playerAttacking){
+                                    showStanceInfo = false
                             } else if (playerAttacking && playerStance == 2){
-                                playerStance = 0
-                                player.stop()
+                              
                                 usingPower = true
                             }
                             })
@@ -4490,23 +4577,16 @@
 
                                 cursors.right.once('down', function(){
                                 usingPower = true
+                                showStanceInfo = true
                                 },this)
                                 }
                             })
 
                             cursors.right.on('up', function(){
-                                if(!playerAttacking && playerStance == 3){
-                                player.stop()
-                                player.play({key:'pBackDash',frameRate:12},true)
-                                player.once('animationcomplete', function () {
-
-                                    playerStance = 0
-
-
-                                }, this);
+                                if(!playerAttacking){
+                                    showStanceInfo = false
                             } else if (playerAttacking && playerStance == 3){
-                                playerStance = 0
-                                player.stop()
+                              
                                 usingPower = true
                             }
                             })
@@ -4523,23 +4603,16 @@
 
                                 right.once('pointerdown', function(){
                                 usingPower = true
+                                showStanceInfo = true
                                 },this)
                                 }
                             })
 
                             right.on('pointerup', function(){
-                                if(!playerAttacking && playerStance == 3){
-                                player.stop()
-                                player.play({key:'pBackDash',frameRate:12},true)
-                                player.once('animationcomplete', function () {
-
-                                    playerStance = 0
-
-
-                                }, this);
+                                if(!playerAttacking ){
+                                    showStanceInfo = false
                             } else if (playerAttacking && playerStance == 3){
-                                playerStance = 0
-                                player.stop()
+                              
                                 usingPower = true
                             }
                             })
@@ -4558,23 +4631,16 @@
 
                                 cursors.down.once('down', function(){
                                 usingPower = true
+                                showStanceInfo = true
                                 },this)
                                 }
                             })
 
                             cursors.down.on('up', function(){
-                                if(!playerAttacking && playerStance == 4){
-                                player.stop()
-                                player.playReverse({key:'pDownStance', frameRate: 12},true)
-                                player.once('animationcomplete', function () {
-
-                                    playerStance = 0
-
-
-                                }, this);
+                                if(!playerAttacking ){
+                                    showStanceInfo = false
                             } else if (playerAttacking && playerStance == 4){
-                                playerStance = 0
-                                player.stop()
+                              
                                 usingPower = true
                             }
                             })
@@ -4590,23 +4656,16 @@
 
                                 down.once('pointerdown', function(){
                                 usingPower = true
+                                showStanceInfo = true
                                 },this)
                                 }
                             })
 
                             down.on('pointerup', function(){
-                                if(!playerAttacking && playerStance == 4){
-                                player.stop()
-                                player.playReverse({key:'pDownStance', frameRate: 12},true)
-                                player.once('animationcomplete', function () {
-
-                                    playerStance = 0
-
-
-                                }, this);
+                                if(!playerAttacking ){
+                                    showStanceInfo = false
                             } else if (playerAttacking && playerStance == 4){
-                                playerStance = 0
-                                player.stop()
+                              
                                 usingPower = true
                             }
                             })
