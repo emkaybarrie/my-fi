@@ -254,7 +254,7 @@
         
             if(!playerTurnStarted){
                 powerSource = 0
-                playerStance = 0
+                playerStance = 1
                 
                 playerTurnStarted = true
                 playerActionBarRegen = true
@@ -302,7 +302,7 @@
                 player.play('pBackDash',true)
                 player.once('animationcomplete', function(){
                 
-                playerStance = 0
+                playerStance = 1
 
                 if (player.x > enemy1.x){
                     camera.pan(enemy1.x + Math.abs((player.x - enemy1.x) * 0.5),0,1500)
@@ -390,7 +390,7 @@
                 playerTurnStarted = false
                 playerActionBarActive = false
                 // regenActive = true
-                playerStance = 0
+                playerStance = 1
                 playerAttacking = false
                 sword.body.checkCollision.none = true
                 eSword.body.checkCollision.none = true
@@ -981,7 +981,7 @@
                 playerTurnStarted = false
                 playerActionBarActive = false
                 // regenActive = true
-                playerStance = 0
+                playerStance = 1
                 playerAttacking = false
                 sword.body.checkCollision.none = true
                 eSword.body.checkCollision.none = true
@@ -1055,7 +1055,7 @@
                                     showRunningHUD()
                                     playerVitals.hide()
                                     regenActive = true
-                                    playerStance = 0
+                                    playerStance = 1
                                     playerTurn = false
                                     playerActionBarRegen = true
                                     
@@ -1349,9 +1349,11 @@
             
         if (player.x <= enemy1.x + 75){
             usingPower = false
-           if (playerStance == 1){
-                                            playerS1Combo()
+                                    if(playerStance == 0){
+                                       
+                                    } else if (playerStance == 1){
                                             
+                                        playerS1Combo()
                                         } else if (playerStance == 2){
                                             playerS2Combo()
                                             
