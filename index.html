@@ -4450,10 +4450,17 @@
                             
                             cursors.left.on('down', function(){
                                 if (inBattle){
+
+                                  
+                                    
                                 
                                 if(!playerAttacking){
                                 player.play({key:'pStance1', frameRate: 6},true)
                                 }
+
+                                
+                                    
+                                    
                                 powerSource = 2
                                 playerStance = 1
                                 
@@ -4470,13 +4477,17 @@
                             cursors.left.on('up', function(){
 
                                 if(!playerAttacking ){
-                                
+                                    
                                     showStanceInfo = false
                                 } else if(playerAttacking && playerStance == 1){
                                   
                                     usingPower = true
                                      
                                 }
+                               
+                 
+                                
+                                
   
                             })
 
@@ -4484,6 +4495,8 @@
 
                             left.on('pointerdown', function(){
                                 if (inBattle){
+
+                                  
                                 player.play({key:'pStance1', frameRate: 6},true)
                                 powerSource = 2
                                 playerStance = 1
@@ -4507,6 +4520,8 @@
                                     usingPower = true
                                     
                                 }
+
+                           
   
                             })
 
@@ -4519,6 +4534,8 @@
                             cursors.up.on('down', function(){
 
                                 if (inBattle){
+
+                                    
                                     if(!playerAttacking){
                                     player.play({key:'pCrouch', frameRate: 8},true)
                                     }
@@ -4534,17 +4551,21 @@
                             })
 
                             cursors.up.on('up', function(){
+                                
                                 if(!playerAttacking){
                                     showStanceInfo = false
                             } else if (playerAttacking && playerStance == 2){
                               
                                 usingPower = true
                             }
+                          
+                           
                             })
 
                             // Touch
                             up.on('pointerdown', function(){
                                 if (inBattle){
+                                    
                                     if(!playerAttacking){
                                 player.play({key:'pCrouch', frameRate: 8},true)
                                     }
@@ -4559,12 +4580,16 @@
                             })
 
                             up.on('pointerup', function(){
+
+                                
                                 if(!playerAttacking){
                                     showStanceInfo = false
                             } else if (playerAttacking && playerStance == 2){
                               
                                 usingPower = true
                             }
+                            
+                           
                             })
 
                             // 3 - Right
@@ -4572,6 +4597,7 @@
                             // Keyboard
                             cursors.right.on('down', function(){
                                 if (inBattle){
+                                    
                                     if(!playerAttacking){
                                 player.playReverse({key:'pBackDash',frameRate:6},true)
                                     }
@@ -4592,12 +4618,15 @@
                               
                                 usingPower = true
                             }
+                           
+                           
                             })
 
                             // Touch
 
                             right.on('pointerdown', function(){
                                 if (inBattle){
+                                    
                                     if(!playerAttacking){
                                 player.playReverse({key:'pBackDash',frameRate:6},true)
                                     }
@@ -4618,6 +4647,8 @@
                               
                                 usingPower = true
                             }
+                            
+                         
                             })
 
 
@@ -4626,6 +4657,7 @@
                             // Keyboard
                             cursors.down.on('down', function(){
                                 if (inBattle){
+                                    
                                     if(!playerAttacking){
                                 player.play({key:'pDownStance', frameRate: 6},true)
                                     }
@@ -4646,11 +4678,14 @@
                               
                                 usingPower = true
                             }
+                            
+                        
                             })
 
                             // Touch
                             down.on('pointerdown', function(){
                                 if (inBattle){
+                                    
                                     if(!playerAttacking){
                                 player.play({key:'pDownStance', frameRate: 6},true)
                                     }
@@ -4671,6 +4706,8 @@
                               
                                 usingPower = true
                             }
+                            
+                    
                             })
 
             }
