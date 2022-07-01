@@ -88,6 +88,8 @@
     var playerAttacking = false 
     var attackModeActive = false
     var usingPower = false
+
+    var skillMultiplier = 1
     var source
 
     var chaserCam = true
@@ -142,7 +144,7 @@
   
     
     var startMaxEnergy = 100
-    var currentFocus = 100
+    var currentFocus = 200
     var maxFocus = maxEnergy * 3
 
     var chaosFactor = 0.0
@@ -1231,7 +1233,7 @@
         sprite.setVelocityX(-(Phaser.Math.GetSpeed(sprite.x - targetPosition, seconds) * (seconds * d)))
     }
 
-    function runningAttack(){
+    function runFocusMode(){
         
         
         if(scanningForDanger){
@@ -1239,10 +1241,10 @@
         if (Math.abs(treeTrunk.x - player.x) < Math.abs((vines.x - player.x)) && treeTrunk.x - player.x > -250 && treeTrunk.x - player.x < 50){
             scanningForDanger = false
             if(player.body.onFloor() ){
-            player.setVelocityY(-175)
+            player.setVelocityY(-250)
             }
             player.setDragX(10)
-            fireTowardsTarget(player,treeTrunk.x + 100,8)
+            fireTowardsTarget(player,treeTrunk.x + 50,6)
             
             
             player.play({key:'pJump',frameRate:6},true)
@@ -1360,7 +1362,7 @@
                                         } else if (playerStance == 3){
                                             
                                         } else if (playerStance == 4){
-                                            
+                                            thunderStrike()
                                     }
             
             
@@ -1402,6 +1404,10 @@
     
 
     function playerS0Combo(){
+
+        // Damage Stats
+
+        skillMultiplier = 0.5
 
     // // In Range Movement
     //     var distance = Math.abs(player.x - enemy1.x)
@@ -1532,6 +1538,10 @@
 
 
     function playerS1Combo(){
+
+        // Damage Stats
+
+        skillMultiplier = 0.75
     
     // // In Range Movement
     //     var distance = Math.abs(player.x - enemy1.x)
@@ -1707,6 +1717,10 @@
 
     function playerS2Combo(){
 
+        // Damage Stats
+
+        skillMultiplier = 1.5
+
     // In Range Movement
 
     // Player Crouches
@@ -1847,6 +1861,176 @@
 
 
     }
+
+    function thunderStrike(){
+
+        // Damage Stats
+
+        skillMultiplier = 2
+
+        // In Range Movement
+        
+
+        // Player Crouches
+
+        player.play({key:'pCrouch',frameRate: 10},true);
+
+        player.once('animationcomplete', function (anim,frame) {
+                player.emit('animationcomplete_' + anim.key, frame)
+            }, player)
+        // Player Jumps up
+            player.once('animationcomplete_pCrouch', function (anim,frame) {
+            player.play({key:'pJump',frameRate: 10},true);
+            
+            // player.tweens.add({
+            //                         targets     : player ,
+            //                         x           : enemy1.x, 
+            //                         y           : enemy1.y - 350,
+            //                         ease        : 'Linear',
+            //                         duration    : 1000,
+            // });
+
+            player.setVelocityY(-350)
+            player.setDragY(0)
+
+        
+
+            if(player.anims.getName() == 'pJump'){
+                if (player.flipX){
+                    player.setDragX(0)
+                    fireTowardsTarget(player,enemy1.x - 150,1)
+                } else {
+                    player.setDragX(0)
+                    fireTowardsTarget(player,enemy1.x + 150,1)
+                }
+                
+                    
+            }
+
+            
+
+            player.once('animationcomplete', function (anim,frame) {
+                player.emit('animationcomplete_' + anim.key, frame)
+            }, player)
+
+        },player)
+
+
+        // Player floats in air
+            player.once('animationcomplete_pJump', function (anim,frame) {
+            
+            
+                player.play({key:'pUptoFall',frameRate: 8},true);
+
+
+
+                player.once('animationcomplete', function (anim,frame) {
+                    player.emit('animationcomplete_' + anim.key, frame)
+                }, player)
+            
+
+            }, player)
+
+
+        // Attack / Skill
+
+        // Attack 1
+        player.once('animationcomplete_pUptoFall', function (anim,frame) {
+            
+            
+
+            player.play({key:'pHeavyAttack',frameRate: 12},true);
+
+            if(player.anims.currentFrame.index >= 1){
+
+            player.setVelocityY(500)
+            thunderStrikeVFX.x = enemy1.x
+                        thunderStrikeVFX.y = enemy1.y + 50
+                        camera.flash(500)      
+                        camera.once('cameraflashcomplete',function(){
+                                thunderStrikeVFX.play({key:'thunderStrike',frameRate:36},true)
+                                camera.shake(500,0.05)
+                                chaserVFX.angle = 0
+                                chaserVFX.play('thunderStrikeSmear')        
+                        },this)
+            
+            }
+
+
+            player.once('animationcomplete', function (anim,frame) {
+                
+                player.emit('animationcomplete_' + anim.key, frame)
+            }, player)
+
+
+        }, player) 
+
+
+            // Attack 2
+                player.once('animationcomplete_pHeavyAttack', function (anim,frame) {
+                
+                
+                    player.play({key:'pAttack2'},true);
+
+                    player.once('animationcomplete', function (anim,frame) {
+                        
+                        player.emit('animationcomplete_' + anim.key, frame)
+                    }, player)
+
+                    
+                
+
+                }, player)
+            
+            
+
+            
+
+                // Dash back to position
+                player.once('animationcomplete_pAttack2', function (anim,frame) {
+                    thunderStrikeVFX.x = enemy1.x
+                    thunderStrikeVFX.y = enemy1.y + 50
+                    camera.flash(500)      
+                        camera.once('cameraflashcomplete',function(){
+                                thunderStrikeVFX.play({key:'thunderStrike',frameRate:24},true)
+                                camera.shake(500,0.05)        
+                    },this)
+
+                        
+                player.play({key:'pBackDash', frameRate: 6},true);
+                
+
+                fireTowardsTarget(player,player.x + 250,1)
+                
+
+                player.once('animationcomplete', function (anim,frame) {
+                    player.emit('animationcomplete_' + anim.key, frame)
+                    
+                }, player)
+
+
+                }, player)
+
+                // Return to Idle
+                player.once('animationcomplete_pBackDash', function (anim,frame) {
+
+                        
+                player.play({key:'pIdle', frameRate: 8},true);
+                playerAttacking = false
+                attackChargePower = 0
+                
+            
+
+                player.once('animationcomplete', function (anim,frame) {
+                    player.emit('animationcomplete_' + anim.key, frame)
+                    
+                }, player)
+
+
+                }, player)
+
+
+        }
 
 
 
@@ -2200,9 +2384,14 @@
 
         this.load.spritesheet('chargeEnergy', 'assets/animations/17_felspell_spritesheet.png', { frameWidth: 100, frameHeight: 100});
         this.load.spritesheet('chargeDash', 'assets/animations/chargeDash.png', { frameWidth: 128, frameHeight: 128});
+        // VFX - Hit Animation
         this.load.spritesheet('whiteHitSmear', 'assets/whiteHitSmear.png', { frameWidth: 1048, frameHeight: 1048});
         this.load.spritesheet('whiteHitSmear2', 'assets/whiteHitSmear2.png', { frameWidth: 1048, frameHeight: 1048});
         this.load.spritesheet('orangeHitSmear', 'assets/orangeHitSmear.png', { frameWidth: 1048, frameHeight: 1048});
+        this.load.spritesheet('thunderStrikeSmear', 'assets/thunderStrikeSmear.png', { frameWidth: 1048, frameHeight: 1048});
+        
+
+        // VFX - Skills
         this.load.spritesheet('thunderStrike', 'assets/thunderStrike.png', { frameWidth: 64, frameHeight: 64});
         
   
@@ -2492,6 +2681,35 @@
             showOnStart: 1,
             hideOnComplete: 1
         });
+
+        // Thunder Strike
+
+        this.anims.create({
+            key: 'thunderStrike',
+            frames: this.anims.generateFrameNumbers('thunderStrike', { start:0, end: 12}),
+            frameRate: 24,
+            repeat: 0,
+            showOnStart: 1,
+            hideOnComplete: 1
+        });
+
+        this.anims.create({
+            key: 'thunderStrikeSmear',
+            frames: this.anims.generateFrameNumbers('thunderStrikeSmear', { start:0, end: 16}),
+            frameRate: 20,
+            repeat: 0,
+            showOnStart: 1,
+            hideOnComplete: 1
+        });
+
+        thunderStrikeVFX = this.add.sprite(enemy1.x, enemy1.y)
+        thunderStrikeVFX.setDepth(1).setScale(2,5).setOrigin(0.5,1)//.setPipeline('Light2D')
+        thunderStrikeLighting = this.lights.addLight(0, 0, 0).setIntensity(1.5)
+        thunderStrikeLighting.setColor(0xFFBF1F)
+        
+        thunderStrikeLighting.intensity = 2
+        thunderStrikeLighting.x = thunderStrikeVFX.x
+        thunderStrikeLighting.y = thunderStrikeVFX.y
 
 
         // Player Animations
@@ -2831,9 +3049,9 @@
                  
                 
                 var tier = storingBuffTier += 1
-
+                income *= 1.025
                 maxLife *= 1.05
-                lifeRegenAllocation += 0.015
+                lifeRegenAllocation += 0.05
 
                 if (tier >= 5){
                     tier = 5
@@ -2860,8 +3078,9 @@
                 
 
                 var tier = growingBuffTier += 1
-
-                focusRegenAllocation *= 1.15
+                income *= 1.025
+                focusRegenAllocation *= 1.20
+                focusRegenAllocation += 0.01
                 maxFocus *= 1.1
 
                 if (tier >= 5){
@@ -2887,8 +3106,9 @@
             if (gameObject == skillTreeEnergyIcon){
 
                 var tier = spendingBuffTier
-
-                energyRegenAllocation *= 1.20
+                income *= 1.025
+                energyRegenAllocation *= 1.30
+                energyRegenAllocation += 0.01
                 maxEnergy *= 1.15
                 tier = spendingBuffTier += 1
 
@@ -3192,7 +3412,7 @@
                     if (player.anims.currentFrame.index >= 6 && player.anims.currentFrame.index < 12){
                         
                         sword.body.checkCollision.none = false
-                        damage = 0.5 * (maxEnergy * (attackChargePower/100)) 
+                        damage = 0.5 * (maxEnergy * (attackChargePower/100)) * skillMultiplier
                     } else {
                         sword.body.checkCollision.none = true
                     }
@@ -3204,7 +3424,7 @@
                     if (player.anims.currentFrame.index >= 4 && player.anims.currentFrame.index < 6){
                         
                     sword.body.checkCollision.none = false
-                    damage =  1 * (maxEnergy * (attackChargePower/100)) 
+                    damage =  1 * (maxEnergy * (attackChargePower/100)) * skillMultiplier
                     } else {
                         sword.body.checkCollision.none = true
                     }
@@ -3269,12 +3489,20 @@
             gameOver = false
         }
 
-        if (Phaser.Input.Keyboard.JustDown(keyX)){
-   
+        
+        keyX.on('down',function(){
             enemyChase(1000)
             
+            
+
+        })
+            
+            
+            
+            
+            
       
-        }
+        
 
         
 
@@ -3431,6 +3659,7 @@
         // console.log('Player Attacking: ' + playerAttacking) 
         // console.log('Player Attack Mode: ' + attackModeActive) 
         // console.log('Stance Using Power: ' + usingPower) 
+         console.log('Player Stance: ' + playerStance) 
 
         // console.log('Enemy 1 Turn: ' + enemyTurn)
 
@@ -3480,6 +3709,14 @@
 
         chaserS1VFX.x = enemy1.x
         chaserS1VFX.y = enemy1.y
+
+        
+        thunderStrikeVFX.x = enemy1.x
+        thunderStrikeVFX.y = enemy1.y + 50
+
+        thunderStrikeLighting.x = enemy1.x
+        thunderStrikeLighting.y = enemy1.y + 50
+        thunderStrikeLighting.intensity = 4
 
         
         
@@ -3553,7 +3790,7 @@
                     scanningForDanger = true
                 }
                 if(focusModeActive){
-                runningAttack()
+                    runFocusMode()
                 }
             } else {
                 playerFocusing = false
@@ -3922,7 +4159,7 @@
                 // pSFX.play('chargeDash',true)
                 // pSFX.setScale(0.5,1.25)
                 
-                enemyChase(Phaser.Math.FloatBetween(-5,+ 10))
+                enemyChase(Phaser.Math.FloatBetween(-5,+ 1))
                 
                 
                 
@@ -3989,7 +4226,7 @@
                 pSFX.play('chargeEnergy',true)
                 
                 
-                camera.shake(50, 0.0005);
+                
 
                 this.physics.moveTo(player,width * 1.1,height - 90,90)
                 player.anims.play({key:'pRun',frameRate: 8},true);
@@ -4369,7 +4606,7 @@
 
                             // Stance Selection Move Box animation
 
-                            if (showStanceInfo && !playerAttacking && inBattle && playerStance >= 1 && playerStance <= 2){
+                            if (showStanceInfo && !playerAttacking && inBattle && playerStance >= 1 && playerStance != 3){
                                 
                                 this.tweens.add({
                                     targets     : moveBox,
@@ -4390,7 +4627,7 @@
                                 
 
 
-                            } else if (!showStanceInfo || playerAttacking || playerStance <= 0 || playerStance >= 3 ){
+                            } else if (!showStanceInfo || playerAttacking || playerStance <= 0 || playerStance == 3 ){
                                 this.tweens.add({
                                     targets     : moveBox ,
                                     alpha       : 0, 
