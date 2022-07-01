@@ -4262,6 +4262,7 @@
                         } else if (Phaser.Input.Keyboard.JustUp(keyA)){
                             if(playerActionBarActive){
                             player.stop()
+                            powerSource = 2
                             player.play('pBackDash',true)
                             fireTowardsTarget(player, player.x + 125,1)
                             }
@@ -4280,6 +4281,7 @@
 
                         defaultAction.on('pointerup', function(){
                             player.anims.stop()
+                            powerSource = 2
                             if(playerActionBarActive){
                             player.stop()
                             player.play('pBackDash',true)
