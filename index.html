@@ -1839,7 +1839,7 @@
         if (inBattle){
             camera.shake(250, 0.0025);
             playerIsHit = true
-            playerVitals.decreaseLife((e1MaxLife * 0.1) / 300)
+            playerVitals.decreaseLife((e1MaxLife * 0.1) / 50)
             playerActionTimeBar.decreaseActionTime((e1MaxLife * 0.25) / 50)
             maxEnergy *= 1 - (0.04 / 12 / 50)
             if(glory - (25/60) < 0){
