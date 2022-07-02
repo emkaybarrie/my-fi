@@ -256,7 +256,7 @@
         
             if(!playerTurnStarted){
                 powerSource = 2
-                playerStance = 1
+                
                 
                 playerTurnStarted = true
                 playerActionBarRegen = true
@@ -299,12 +299,10 @@
                 playerActionBarActive = false
                 
 
-                playerStance = -1
                 player.stop()
                 player.play('pBackDash',true)
                 player.once('animationcomplete', function(){
                 
-                playerStance = 1
 
                 if (player.x > enemy1.x){
                     camera.pan(enemy1.x + Math.abs((player.x - enemy1.x) * 0.5),0,1500)
@@ -392,7 +390,7 @@
                 playerTurnStarted = false
                 playerActionBarActive = false
                 // regenActive = true
-                playerStance = 1
+                
                 playerAttacking = false
                 sword.body.checkCollision.none = true
                 eSword.body.checkCollision.none = true
@@ -982,8 +980,7 @@
         playerTurn = false
                 playerTurnStarted = false
                 playerActionBarActive = false
-                // regenActive = true
-                playerStance = 1
+
                 playerAttacking = false
                 sword.body.checkCollision.none = true
                 eSword.body.checkCollision.none = true
@@ -1017,7 +1014,7 @@
             playerIsHit = false
             remActionTime = (currentLife/maxLife) * maxActionTime
             playerActionBarActive = false
-            playerStance = -1
+    
             chaserCam = false 
             
                   
@@ -1057,7 +1054,7 @@
                                     showRunningHUD()
                                     playerVitals.hide()
                                     regenActive = true
-                                    playerStance = 1
+                                 
                                     playerTurn = false
                                     playerActionBarRegen = true
                                     
@@ -2084,7 +2081,7 @@
     function playerRecover(){
 
     if (playerIsHit){
-        playerStance = -1
+        
         playerIsHit = false 
         player.play('pIdle',true)
     }
@@ -2092,6 +2089,7 @@
     }
 
     function s1CreepHit(){
+        glory += level + 1
         s1Creep.play('s1CreepDeath',true)
     }
 
@@ -2538,9 +2536,9 @@
             this.physics.add.overlap(eSword, player, playerEnemyHit);
 
             // Stage 1 Creeps
-            s1Creep = this.physics.add.sprite(width * 1.6, 0, 'nightBorne').setScale(3).setPipeline('Light2D').setOrigin(0.5,1);
-            s1Creep.body.setSize(45, 45)
-            s1Creep.play('s1CreepRun',true)
+            s1Creep = this.physics.add.sprite(0, 0, 'nightBorne').setScale(3).setPipeline('Light2D').setOrigin(0.5,1);
+            s1Creep.body.setSize(45, 50)
+            //s1Creep.play('s1CreepRun',true)
             
             s1Creep.setDepth(0)
             s1Creep.flipX = true
@@ -3005,7 +3003,16 @@
             key: 's1CreepRun',
             frames: this.anims.generateFrameNumbers('nightBorne', { start:23, end: 28}),
             frameRate: 10,
+            showOnStart: 1,
             repeat:-1
+        });
+
+        this.anims.create({
+            key: 's1CreepDeath',
+            frames: this.anims.generateFrameNumbers('nightBorne', { start:91, end: 115}),
+            frameRate: 23,
+            repeat:0,
+            hideOnComplete: false
         });
 
         
@@ -3032,6 +3039,7 @@
         
         
         if (this.sys.game.device.os.desktop){
+            
             IS_TOUCH = false;
         } else {
             IS_TOUCH = true;
@@ -3283,7 +3291,7 @@
     function moveVines (vine,speed){
     
         vine.x -= speed;
-        if (vine.x < Phaser.Math.Between(10,100)){
+        if (vine.x < Phaser.Math.Between(0,width * 0.2)){
             resetVines(vine)
         }
 
@@ -3293,7 +3301,7 @@
     function moveTreeTrunk (treeTrunk,speed){
     
     treeTrunk.x -= speed;
-    if (treeTrunk.x < Phaser.Math.Between(0,150)){
+    if (treeTrunk.x < Phaser.Math.Between(0,width * 0.1)){
         resetTreeTrunk(treeTrunk)
     }
 
@@ -3303,7 +3311,7 @@
     function moveS1Creep (speed){
     
     s1Creep.x -= speed;
-    if (s1Creep.x < Phaser.Math.Between(width * 0.5,width * 1)){
+    if (s1Creep.x < Phaser.Math.Between(0,width * 0.25)){
         resetS1Creep(s1Creep)
     }
 
@@ -3325,7 +3333,8 @@
     }
 
     function resetS1Creep (s1Creep){
-        s1Creep.x = Phaser.Math.Between(width * 2,width * 3)
+        s1Creep.x = Phaser.Math.Between(width * 2.5,width * 3)
+        s1Creep.play('s1CreepRun',true)
         var scaleXRandom = Phaser.Math.FloatBetween(1.9,3.1)
         var scaleYRandom = Phaser.Math.FloatBetween(1.8,3.2)
         s1Creep.setScale(scaleXRandom,scaleYRandom)
@@ -3369,7 +3378,13 @@
         
         console.log(this.sys.game.device.os)
 
-        s1Creep.play('s1CreepRun',true)
+        if (this.sys.game.device.os.desktop){
+            IS_TOUCH = false;
+        } else {
+            IS_TOUCH = true;
+        }
+
+        //s1Creep.play('s1CreepRun',true)
         
         // Set player drag based on if in air or on ground
 
@@ -4076,8 +4091,8 @@
                 vines.body.checkCollision.none = true
                 treeTrunk.body.checkCollision.none = true
             } else if(!playerFocusing) {
-                vines.body.checkCollision.none = false
-                treeTrunk.body.checkCollision.none = false
+                vines.body.checkCollision.none = true//false
+                treeTrunk.body.checkCollision.none = true//false
             }
 
             
@@ -4159,12 +4174,15 @@
                 
             } else if (keyA.isDown && currentEnergy > (income * 0.05) && playerIsHit == false ){
 
+                // Running Attack
+
                 if (Phaser.Input.Keyboard.JustDown(keyA)){
                     var attackChoice = Phaser.Math.Between(1,2)
                     //playerVitals.decreaseEnergy(income * 0.05)
                 }
 
                 playerVitals.decreaseEnergy(income * 0.005)
+
 
                 
                 if(attackChoice == 1){
@@ -4193,42 +4211,17 @@
                     
                 }
       
-                // Running Attack
+               
 
 
                 playerSpeed = 0.9
 
-                // pSFX.y = player.y + 17.5
-                // pSFX.x = player.x - 87.5
-                // pSFX.setVisible(true)
-                // pSFX.setTint(0xf1c232)
-                // pSFX.setTintFill(0xf1c232)
-                // if(player.body.onFloor() ){
-                //     if(attackChoice == 1){
-                //     player.play('pHeavyAttack',true)
-                // } else if (attackChoice == 2) {
-                //     player.play('pDoubleAttack',true)
-                // } 
-                    
-                    
-                    
-                
-  
-  
-                // if(spotlight.intensity < 1.25){
-                // spotlight.intensity += 0.005
-                // spotlight.setColor(0xf1c232)
-                // }
-                // pSFX.angle = 270
-                // pSFX.setAlpha(0.75)
-                // pSFX.setDepth(0)
-                // pSFX.play('chargeDash',true)
-                // pSFX.setScale(0.5,1.25)
+            
                 
                 enemyChase(Phaser.Math.FloatBetween(-5,+ 1))
                 
                 
-                
+                sword.body
                 
                 
             } else if (cursors.space.isDown && playerIsHit == false){
