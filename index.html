@@ -2389,7 +2389,8 @@
         this.load.atlas('doomsayer', 'assets/doomsayer.png','assets/doomsayersprites.json');
         this.load.spritesheet('nightBorne', 'assets/nightBorne.png', { frameWidth: 80, frameHeight: 80});
         
-
+        this.load.spritesheet('energyStance', 'assets/energyStance.png', { frameWidth: 96, frameHeight: 192});
+        this.load.spritesheet('focusStance', 'assets/focusStance.png', { frameWidth: 96, frameHeight: 192});
         this.load.spritesheet('chargeEnergy', 'assets/animations/17_felspell_spritesheet.png', { frameWidth: 100, frameHeight: 100});
         this.load.spritesheet('chargeDash', 'assets/animations/chargeDash.png', { frameWidth: 128, frameHeight: 128});
         // VFX - Hit Animation
@@ -2666,6 +2667,14 @@
         secondsTimer = this.time.addEvent({delay: 1000, callback: runSecondsFunctions, args: [], callbackScope: this, loop: true});
         
         // VFX
+        this.anims.create({
+            key: 'energyStance',
+            frames: this.anims.generateFrameNumbers('energyStance', { start:0, end: 35}),
+            frameRate: 100,
+            repeat: 0,
+            //yoyo: true
+        });
+
         this.anims.create({
             key: 'chargeEnergy',
             frames: this.anims.generateFrameNumbers('chargeEnergy', { start:0, end: 91}),
@@ -3571,6 +3580,13 @@
         
         keyX.on('down',function(){
             enemyChase(1000)
+            pSFX.setVisible(true)
+           
+                                pSFX.setScale(0.5) 
+                                pSFX.setAlpha(0.5) 
+                                pSFX.x=player.x+10
+                                pSFX.y=player.y
+                                pSFX.play('energyStance',true)
             
             
 
@@ -4751,7 +4767,7 @@
                             cursors.left.on('down', function(){
                                 if (inBattle){
 
-                                  
+                               
                                     
                                 
                                 if(!playerAttacking){
@@ -4775,7 +4791,7 @@
                             
 
                             cursors.left.on('up', function(){
-
+                                
                                 if(!playerAttacking ){
                                     
                                     showStanceInfo = false
@@ -4834,7 +4850,12 @@
                             cursors.up.on('down', function(){
 
                                 if (inBattle){
-
+                                    pSFX.setVisible(true)
+                                    pSFX.setScale(0.5) 
+                                    pSFX.setAlpha(0.5) 
+                                    pSFX.x=player.x+10
+                                    pSFX.y=player.y
+                                    pSFX.play('energyStance',true)
                                     
                                     if(!playerAttacking){
                                     player.play({key:'pCrouch', frameRate: 8},true)
@@ -4865,6 +4886,13 @@
                             // Touch
                             up.on('pointerdown', function(){
                                 if (inBattle){
+
+                                    pSFX.setVisible(true)
+                                    pSFX.setScale(0.5) 
+                                    pSFX.setAlpha(0.5) 
+                                    pSFX.x=player.x+10
+                                    pSFX.y=player.y
+                                    pSFX.play('energyStance',true)
                                     
                                     if(!playerAttacking){
                                 player.play({key:'pCrouch', frameRate: 8},true)
