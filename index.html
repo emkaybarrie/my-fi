@@ -74,7 +74,7 @@
     var growingBuffTier = 0
     var kianovaBuffTier = 0
 
-    var IS_TOUCH = false
+    var IS_TOUCH = true
     var skillTreeOpen = false
   
 
@@ -2091,6 +2091,10 @@
 
     }
 
+    function s1CreepHit(){
+        s1Creep.play('s1CreepDeath',true)
+    }
+
     function enemy1SupportHit(){
         enemy1IsHit = true
 
@@ -2376,11 +2380,17 @@
 
 
         this.load.atlas('logan', 'assets/loganv2.png','assets/loganspritesv2.json');
-        this.load.atlas('doomsayer', 'assets/doomsayer.png','assets/doomsayersprites.json');
+        
         this.load.atlas('heroF', 'assets/heroF.png','assets/heroF.json');
         this.load.atlas('heroM', 'assets/heroM.png','assets/heroM.json');
         this.load.spritesheet('arcaneArcher', 'assets/arcaneArcher.png', { frameWidth: 64, frameHeight: 64});
         this.load.image('arcaneArcherArrow', 'assets/arcaneArcherArrow.png');
+
+        // Enemies
+
+        this.load.atlas('doomsayer', 'assets/doomsayer.png','assets/doomsayersprites.json');
+        this.load.spritesheet('nightBorne', 'assets/nightBorne.png', { frameWidth: 80, frameHeight: 80});
+        
 
         this.load.spritesheet('chargeEnergy', 'assets/animations/17_felspell_spritesheet.png', { frameWidth: 100, frameHeight: 100});
         this.load.spritesheet('chargeDash', 'assets/animations/chargeDash.png', { frameWidth: 128, frameHeight: 128});
@@ -2526,6 +2536,26 @@
             eSword.body.setAllowGravity(false).setOffset(0,5)
             eSword.body.checkCollision.none = true
             this.physics.add.overlap(eSword, player, playerEnemyHit);
+
+            // Stage 1 Creeps
+            s1Creep = this.physics.add.sprite(width * 1.6, 0, 'nightBorne').setScale(3).setPipeline('Light2D').setOrigin(0.5,1);
+            s1Creep.body.setSize(45, 45)
+            s1Creep.play('s1CreepRun',true)
+            
+            s1Creep.setDepth(0)
+            s1Creep.flipX = true
+            s1Creep.body.maxVelocity.x = 500
+            s1Creep.setCollideWorldBounds(true)
+            s1Creep.body.setAllowGravity(true)
+            s1CreepVFX = this.add.sprite(s1Creep.x, s1Creep.y)
+            s1CreepVFX.setDepth(1).setScale(0.25)//.setPipeline('Light2D')
+            
+            //this.physics.add.overlap(s1Creep, player, playerCreepHit);
+            
+            this.physics.add.overlap(sword, s1Creep, s1CreepHit)
+            this.physics.add.collider(platforms,s1Creep);
+            
+            s1Creep.body.setAllowDrag(true)
             
           
 
@@ -2969,6 +2999,15 @@
             
         });
 
+        // S1 Enemies
+
+        this.anims.create({
+            key: 's1CreepRun',
+            frames: this.anims.generateFrameNumbers('nightBorne', { start:23, end: 28}),
+            frameRate: 10,
+            repeat:-1
+        });
+
         
         // Controllers online
         cursors = this.input.keyboard.createCursorKeys();
@@ -2992,7 +3031,11 @@
         
         
         
-        
+        if (this.sys.game.device.os.desktop){
+            IS_TOUCH = false;
+        } else {
+            IS_TOUCH = true;
+        }
         
 
         this.input.on('pointerdown', function (pointer) {
@@ -3257,6 +3300,16 @@
     
     }
 
+    function moveS1Creep (speed){
+    
+    s1Creep.x -= speed;
+    if (s1Creep.x < Phaser.Math.Between(width * 0.5,width * 1)){
+        resetS1Creep(s1Creep)
+    }
+
+    
+    }
+
     function resetVines (vine){
         vine.x = width * 3
         var scaleXRandom = Phaser.Math.FloatBetween(0.15,0.65)
@@ -3269,6 +3322,13 @@
         var scaleXRandom = Phaser.Math.FloatBetween(0.75,1.1)
         var scaleYRandom = Phaser.Math.FloatBetween(0.8,1.2)
         treeTrunk.setScale(scaleXRandom,scaleYRandom)
+    }
+
+    function resetS1Creep (s1Creep){
+        s1Creep.x = Phaser.Math.Between(width * 2,width * 3)
+        var scaleXRandom = Phaser.Math.FloatBetween(1.9,3.1)
+        var scaleYRandom = Phaser.Math.FloatBetween(1.8,3.2)
+        s1Creep.setScale(scaleXRandom,scaleYRandom)
     }
 
     function finish(){
@@ -3305,7 +3365,11 @@
 
     function update ()
     {
+
         
+        console.log(this.sys.game.device.os)
+
+        s1Creep.play('s1CreepRun',true)
         
         // Set player drag based on if in air or on ground
 
@@ -4032,6 +4096,8 @@
             moveVines(vines, 4.5 * (playerSpeed))
 
             moveTreeTrunk(treeTrunk, 4.5 * (playerSpeed))
+
+            moveS1Creep(6 * (playerSpeed))
 
             defaultAction.once('pointerdown',function(){
 
