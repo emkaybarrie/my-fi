@@ -3019,15 +3019,15 @@
         
         this.input.addPointer(8);
         //Anchor buttons
-        left = this.add.image(camera.scrollX + (width * 0.1), camera.scrollY + (height - 90), 'left').setInteractive().setDepth(3).setScale(0.75).setAlpha(0.15);
-        defaultAction = this.add.image(camera.scrollX + (width * 0.85), camera.scrollY + (height - 126), 'defaultAction').setInteractive().setDepth(3).setScale(.75).setAlpha(0.15).setTint(0x00a86b);
-        charge = this.add.image(camera.scrollX + (width * 0.75), camera.scrollY + (height - 86), 'charge').setInteractive().setDepth(3).setScale(.65).setAlpha(0.15).setTint();//Focus - 0xf1c232
+        left = this.add.image(camera.scrollX + (width * 0.1), camera.scrollY + (height - 90), 'left').setInteractive().setDepth(3).setScale(0.75).setAlpha(0.5);
+        defaultAction = this.add.image(camera.scrollX + (width * 0.85), camera.scrollY + (height - 126), 'defaultAction').setInteractive().setDepth(3).setScale(.75).setAlpha(0.5).setTint(0x00a86b);
+        charge = this.add.image(camera.scrollX + (width * 0.75), camera.scrollY + (height - 86), 'charge').setInteractive().setDepth(3).setScale(.65).setAlpha(0.5).setTint();//Focus - 0xf1c232
         
         
         deadSpace = this.add.image(left.x + 35.5, left.y, 'deadSpace').setDepth(4).setScale(0.75).setVisible(0);
-        right = this.add.image(deadSpace.x + 35.5, deadSpace.y, 'right').setInteractive().setDepth(3).setScale(0.75).setAlpha(0.15);
-        up = this.add.image(deadSpace.x, deadSpace.y - 40.5, 'up').setInteractive().setDepth(3).setScale(0.75).setAlpha(0.15);
-        down = this.add.image(deadSpace.x, left.y + 40.5 , 'down').setInteractive().setDepth(3).setScale(0.75).setAlpha(0.15);
+        right = this.add.image(deadSpace.x + 35.5, deadSpace.y, 'right').setInteractive().setDepth(3).setScale(0.75).setAlpha(0.5);
+        up = this.add.image(deadSpace.x, deadSpace.y - 40.5, 'up').setInteractive().setDepth(3).setScale(0.75).setAlpha(0.5);
+        down = this.add.image(deadSpace.x, left.y + 40.5 , 'down').setInteractive().setDepth(3).setScale(0.75).setAlpha(0.5);
         
         
         
@@ -3176,7 +3176,7 @@
 
         this.input.on('gameobjectup', function (pointer, gameObject) {
 
-        gameObject.setAlpha(0.25);
+        gameObject.setAlpha(0.5);
 
         if (gameObject == up){
             cursors.up.isDown = false
@@ -3214,7 +3214,7 @@
 
         this.input.on('gameobjectout', function (pointer, gameObject) {
 
-            gameObject.setAlpha(0.25);
+            gameObject.setAlpha(0.5);
 
             if (gameObject == up){
                 cursors.up.isDown = false
