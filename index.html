@@ -914,6 +914,7 @@
 
     function showRunningHUD() {
         playerIcon.setVisible(1)
+        playerIconBox.setVisible(1)
         playerVitals.show()
 
         levelIcon.setVisible(1)
@@ -930,6 +931,7 @@
 
     function hideRunningHUD() {
         playerIcon.setVisible(0)
+        playerIconBox.setVisible(0)
         playerVitals.hide()
 
         levelIcon.setVisible(0)
@@ -2326,8 +2328,9 @@
         this.load.audio("enemySwordSwing", ["assets/soundFX/SFX_Sword_Whoosh_01.mp3"]);
         this.load.audio("charge", ["assets/soundFX/SFX_Potion_01.mp3"]);
         
-
+        this.load.image('playerIconBox', 'assets/activeSkillBox.png');
         this.load.image('playerIcon', 'assets/playerIcon.png');
+        
 
         this.load.image('storingBuffIcon', 'assets/ach_00059.png');
         this.load.image('spendingBuffIcon', 'assets/ach_00046.png');
@@ -2582,6 +2585,7 @@
         camera.fadeIn(3000)
 
         playerIcon = this.add.image(camera.scrollX + 30,camera.scrollY + 40,'playerIcon').setDepth(3).setScale(3.5)
+        playerIconBox = this.add.image(playerIcon.x - 25,camera.scrollY + 40,'playerIconBox').setDepth(2).setScale(0.02585,0.079).setOrigin(0,0.5)
 
         
 
@@ -3630,14 +3634,19 @@
 
         playerExperience.draw()
 
-        playerIcon.x = camera.scrollX + 50
+        
+
         if (!inBattle){
             playerIcon.x = camera.scrollX + (width * 0.075)
             playerIcon.y = camera.scrollY + 40
         } else {
             playerIcon.x = camera.scrollX + 60
             playerIcon.y = camera.scrollY + 50
+  
         }
+
+        playerIconBox.x = playerIcon.x - 37.5
+        playerIconBox.y = playerIcon.y
         
 
         levelIcon.x = playerIcon.x + 70
