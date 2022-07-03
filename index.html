@@ -977,6 +977,7 @@
    function modeSwitch(mode){
     if (mode == 0){
         hideRunningHUD()
+        moveIcon.setVisible(0)
         playerTurn = false
                 playerTurnStarted = false
                 playerActionBarActive = false
@@ -1968,6 +1969,13 @@
                 
                 
                     player.play({key:'pAttack2',frameRate:8},true);
+                    thunderStrikeVFX.x = enemy1.x
+                    thunderStrikeVFX.y = enemy1.y + 50
+                    camera.flash(500)      
+                        camera.once('cameraflashcomplete',function(){
+                                thunderStrikeVFX.play({key:'thunderStrike',frameRate:24},true)
+                                camera.shake(500,0.05)  
+                            },this)
 
                     player.once('animationcomplete', function (anim,frame) {
                         
@@ -1985,13 +1993,8 @@
 
                 // Dash back to position
                 player.once('animationcomplete_pAttack2', function (anim,frame) {
-                    thunderStrikeVFX.x = enemy1.x
-                    thunderStrikeVFX.y = enemy1.y + 50
-                    camera.flash(500)      
-                        camera.once('cameraflashcomplete',function(){
-                                thunderStrikeVFX.play({key:'thunderStrike',frameRate:24},true)
-                                camera.shake(500,0.05)        
-                    },this)
+                          
+                    
 
                         
                 player.play({key:'pBackDash', frameRate: 6},true);
@@ -2397,11 +2400,20 @@
         this.load.spritesheet('whiteHitSmear', 'assets/whiteHitSmear.png', { frameWidth: 1048, frameHeight: 1048});
         this.load.spritesheet('whiteHitSmear2', 'assets/whiteHitSmear2.png', { frameWidth: 1048, frameHeight: 1048});
         this.load.spritesheet('orangeHitSmear', 'assets/orangeHitSmear.png', { frameWidth: 1048, frameHeight: 1048});
-        this.load.spritesheet('thunderStrikeSmear', 'assets/thunderStrikeSmear.png', { frameWidth: 1048, frameHeight: 1048});
+        
         
 
-        // VFX - Skills
-        this.load.spritesheet('thunderStrike', 'assets/thunderStrike.png', { frameWidth: 64, frameHeight: 64});
+        // Skills
+        this.load.spritesheet('thunderStrikeIcon', 'assets/thunderStrikeIcon.png', { frameWidth: 256, frameHeight: 256});
+        this.load.spritesheet('thunderStrike', 'assets/thunderStrike.png', { frameWidth: 64, frameHeight: 64}); 
+        this.load.spritesheet('thunderStrikeSmear', 'assets/thunderStrikeSmear.png', { frameWidth: 1048, frameHeight: 1048});
+
+        this.load.spritesheet('deadlyCombatAssaultIcon', 'assets/deadlyCombatAssaultIcon.png', { frameWidth: 256, frameHeight: 256});
+        this.load.spritesheet('orangeHitSmear', 'assets/orangeHitSmear.png', { frameWidth: 1048, frameHeight: 1048});
+
+        this.load.spritesheet('eagleStrikeIcon', 'assets/eagleStrikeIcon.png', { frameWidth: 256, frameHeight: 256});
+
+        this.load.spritesheet('combatHealIcon', 'assets/combatHealIcon.png', { frameWidth: 256, frameHeight: 256});
         
   
 
@@ -2592,9 +2604,12 @@
         growingBuffIcon = this.add.image(0,0,'growingBuffIcon').setDepth(4).setScale(0.5)
         spendingBuffIcon = this.add.image(0,0,'spendingBuffIcon').setDepth(4).setScale(0.5)
 
+        skillIcon = this.add.image(camera.scrollX + 300,camera.scrollY + 40).setDepth(3).setScale(0.15)
+
         moveBox = this.add.image(0, 0, 'energyMoveBox2').setDepth(4).setAlpha(0).setScale(0).setOrigin(0,0)
         moveNameText = this.add.text(0, 0, "Deadly Combat Assault").setFontFamily('Revalia').setFontSize(12).setColor('#ff9900').setDepth(4).setOrigin(0,0).setAlpha(0);
         moveText = this.add.text(0, 0, "Move descripotion line 1\nMove description line 2").setFontFamily('Revalia').setFontSize(10).setColor('#FFFFFF').setDepth(4).setAlpha(0);
+        moveIcon = this.add.image(0,0,'deadlyCombatAssaultIcon').setDepth(4).setScale(0.1).setOrigin(0,0).setAlpha(0)
         moveTypeIcon = this.add.image(0,0,'spendingBuffIcon').setDepth(4).setScale(0.35).setOrigin(0,0).setAlpha(0)
         
         stance0Name = 'Normal Attack'
@@ -3552,7 +3567,7 @@
         // Check for enemy death
 
         if (enemy1Life <= 0 && !enemy1IsHit){
-                        enemy1.anims.play({key:'eDeath',frameRate: 12},true);
+                        enemy1.anims.play({key:'eDeath',frameRate: 8},true);
                         
                         enemy1.once('animationcomplete', function (anim,frame) {
                             enemy1.x = 0
@@ -3646,15 +3661,21 @@
         playerExperience.x = playerVitals.x
         playerExperience.y = camera.scrollY + (height * 0.85)
 
+        skillIcon.x = camera.scrollX + 400
+        skillIcon.y =camera.scrollY + 45
+
         
         moveBox.x = player.x - 50 //- 200
         moveBox.y = player.y - 125 //- 75
 
-        moveTypeIcon.x = moveBox.x + 5
-        moveTypeIcon.y = moveBox.y + 5
+        moveIcon.x = moveBox.x + 10
+        moveIcon.y = moveBox.y + 15
 
-        moveNameText.x = moveTypeIcon.x + 40
-        moveNameText.y = moveTypeIcon.y + 10
+        moveTypeIcon.x = moveBox.x + 5
+        moveTypeIcon.y = moveBox.y + 45
+
+        moveNameText.x = moveIcon.x + 40
+        moveNameText.y = moveIcon.y 
 
         moveText.x = moveNameText.x
         moveText.y = moveNameText.y + 22
@@ -3962,7 +3983,7 @@
                                 });
 
                                 this.tweens.add({
-                                    targets     : [moveTypeIcon,moveNameText,moveText],
+                                    targets     : [moveIcon,moveTypeIcon,moveNameText,moveText],
                                     alpha       : 0,
                                     ease        : 'Linear',
                                     duration    : 500,
@@ -4022,12 +4043,10 @@
             playerExperience.x = camera.scrollX + width * 0.3
             playerExperience.y = camera.scrollY + (height * 0.85)
 
-           
-
-           
-
-           
             
+
+           
+
                             // Anchor buttons
                         left.x = camera.scrollX + (width * 0.075)
                         defaultAction.x = camera.scrollX + (width * 0.9)
@@ -4693,7 +4712,7 @@
                                 });
 
                                 this.tweens.add({
-                                    targets     : [moveTypeIcon,moveNameText,moveText],
+                                    targets     : [moveIcon,moveTypeIcon,moveNameText,moveText],
                                     alpha       : 1,
                                     ease        : 'Linear',
                                     duration    : 750,
@@ -4702,7 +4721,7 @@
                                 
 
 
-                            } else if (!showStanceInfo || playerAttacking || playerStance <= 0 || playerStance == 3 ){
+                            } else if (!showStanceInfo || playerAttacking || playerStance <= 0 || playerStance == 3 || !inBattle){
                                 this.tweens.add({
                                     targets     : moveBox ,
                                     alpha       : 0, 
@@ -4712,7 +4731,7 @@
                                 });
 
                                 this.tweens.add({
-                                    targets     : [moveTypeIcon,moveNameText,moveText],
+                                    targets     : [moveIcon,moveTypeIcon,moveNameText,moveText],
                                     alpha       : 0,
                                     ease        : 'Linear',
                                     duration    : 50,
@@ -4720,6 +4739,8 @@
 
                                 
                             }
+
+                            
 
                            
 
@@ -4731,29 +4752,43 @@
                                 //moveBox.setTexture('energyMoveBox2')
                                 //moveTypeIcon.setTexture('spendingBuffIcon')
                             } else if (playerStance == 1){
+                                skillIcon.setTexture('deadlyCombatAssaultIcon').setTint()
+
+                                
+
                                 moveNameText.setText(stance1Name)
                                 moveText.setText(stance1Text)
 
-                                moveBox.setTexture('focusMoveBox2')
+                                moveBox.setTexture('focusMoveBox2').setTint()
+                                moveIcon.setTexture('deadlyCombatAssaultIcon').setTint()
                                 moveTypeIcon.setTexture('growingBuffIcon')
 
                             } else if (playerStance == 2){
+                                skillIcon.setTexture('eagleStrikeIcon').setTint()
+
                                 moveNameText.setText(stance2Name)
                                 moveText.setText(stance2Text)
 
                                 moveBox.setTexture('energyMoveBox2')
+                                moveIcon.setTexture('eagleStrikeIcon').setTint()
                                 moveTypeIcon.setTexture('spendingBuffIcon')
                             } else if (playerStance == 3){
+                                skillIcon.setTexture('combatHealIcon').setTint()
+
                                 moveNameText.setText(stance3Name)
                                 moveText.setText(stance3Text)
 
                                 moveBox.setTexture('energyMoveBox2')
+                                moveIcon.setTexture('combatHealIcon').setTint()
                                 moveTypeIcon.setTexture('spendingBuffIcon')
                             } else if (playerStance == 4){
+                                skillIcon.setTexture('thunderStrikeIcon').setTint()
+
                                 moveNameText.setText(stance4Name)
                                 moveText.setText(stance4Text)
 
                                 moveBox.setTexture('focusMoveBox2')
+                                moveIcon.setTexture('thunderStrikeIcon').setTint()
                                 moveTypeIcon.setTexture('growingBuffIcon')
                             }
 
