@@ -977,7 +977,7 @@
    function modeSwitch(mode){
     if (mode == 0){
         hideRunningHUD()
-        moveIcon.setVisible(0)
+        
         playerTurn = false
                 playerTurnStarted = false
                 playerActionBarActive = false
@@ -1007,6 +1007,7 @@
                             playerMiniVitals.hide()
                             showRunningHUD()
                             chaserCam = true
+                            
                             
                      
                     }, this)
@@ -2353,7 +2354,7 @@
         this.load.image('defaultAction', 'assets/controls/ach_00022.png');
         this.load.image('charge', 'assets/controls/ach_00005.png');
         
-
+        this.load.image('activeSkillBox', 'assets/activeSkillBox.png');
         this.load.image('energyMoveBox1', 'assets/energyMoveBox2.png');
         this.load.image('energyMoveBox2', 'assets/energyMoveBox2.png');
         this.load.image('focusMoveBox1', 'assets/focusMoveBox1.png');
@@ -2604,7 +2605,10 @@
         growingBuffIcon = this.add.image(0,0,'growingBuffIcon').setDepth(4).setScale(0.5)
         spendingBuffIcon = this.add.image(0,0,'spendingBuffIcon').setDepth(4).setScale(0.5)
 
-        skillIcon = this.add.image(camera.scrollX + 300,camera.scrollY + 40).setDepth(3).setScale(0.15)
+        activeSkillBox = this.add.image(camera.scrollX + 300,camera.scrollY + 40,'activeSkillBox').setDepth(3).setScale(0.072,0.05).setOrigin(0,0.5)
+        skillIcon = this.add.image(camera.scrollX + 300,camera.scrollY + 40,'deadlyCombatAssaultIcon').setDepth(3).setScale(0.15).setOrigin(0,0.5)
+        skillNameText = this.add.text(0, 0, "Deadly Combat Assault").setFontFamily('Revalia').setFontSize(16).setColor('#ff9900').setDepth(4).setOrigin(0,0).setAlpha(0);
+        
 
         moveBox = this.add.image(0, 0, 'energyMoveBox2').setDepth(4).setAlpha(0).setScale(0).setOrigin(0,0)
         moveNameText = this.add.text(0, 0, "Deadly Combat Assault").setFontFamily('Revalia').setFontSize(12).setColor('#ff9900').setDepth(4).setOrigin(0,0).setAlpha(0);
@@ -3642,6 +3646,9 @@
         levelText.y = levelIcon.y
         levelText.setText(Math.floor(level))
 
+        activeSkillBox.x = levelText.x + 40
+        activeSkillBox.y = levelText.y
+
         playerVitals.x = levelText.x + 45
         playerVitals.y = playerIcon.y - 20
         playerVitals.draw()
@@ -3661,8 +3668,11 @@
         playerExperience.x = playerVitals.x
         playerExperience.y = camera.scrollY + (height * 0.85)
 
-        skillIcon.x = camera.scrollX + 400
-        skillIcon.y =camera.scrollY + 45
+        skillIcon.x = activeSkillBox.x + 5
+        skillIcon.y = activeSkillBox.y
+
+        skillNameText.x = skillIcon. x + 42.5
+        skillNameText.y = activeSkillBox.y - 7.5
 
         
         moveBox.x = player.x - 50 //- 200
@@ -3670,6 +3680,8 @@
 
         moveIcon.x = moveBox.x + 10
         moveIcon.y = moveBox.y + 15
+
+        
 
         moveTypeIcon.x = moveBox.x + 5
         moveTypeIcon.y = moveBox.y + 45
@@ -3983,7 +3995,7 @@
                                 });
 
                                 this.tweens.add({
-                                    targets     : [moveIcon,moveTypeIcon,moveNameText,moveText],
+                                    targets     : [skillIcon,skillNameText,moveIcon,moveTypeIcon,moveNameText,moveText],
                                     alpha       : 0,
                                     ease        : 'Linear',
                                     duration    : 500,
@@ -4081,6 +4093,14 @@
                                     duration    : 250,
                     })
                 }
+
+                this.tweens.add({
+                                    targets     : [skillIcon,skillNameText],
+                                    alpha       : 1,
+                                    ease        : 'Linear',
+                                    duration    : 2000,
+                });
+
             
             
 
@@ -4753,6 +4773,7 @@
                                 //moveTypeIcon.setTexture('spendingBuffIcon')
                             } else if (playerStance == 1){
                                 skillIcon.setTexture('deadlyCombatAssaultIcon').setTint()
+                                skillNameText.setText(stance1Name)
 
                                 
 
@@ -4765,6 +4786,7 @@
 
                             } else if (playerStance == 2){
                                 skillIcon.setTexture('eagleStrikeIcon').setTint()
+                                skillNameText.setText(stance2Name)
 
                                 moveNameText.setText(stance2Name)
                                 moveText.setText(stance2Text)
@@ -4774,6 +4796,7 @@
                                 moveTypeIcon.setTexture('spendingBuffIcon')
                             } else if (playerStance == 3){
                                 skillIcon.setTexture('combatHealIcon').setTint()
+                                skillNameText.setText(stance3Name)
 
                                 moveNameText.setText(stance3Name)
                                 moveText.setText(stance3Text)
@@ -4783,6 +4806,7 @@
                                 moveTypeIcon.setTexture('spendingBuffIcon')
                             } else if (playerStance == 4){
                                 skillIcon.setTexture('thunderStrikeIcon').setTint()
+                                skillNameText.setText(stance4Name)
 
                                 moveNameText.setText(stance4Name)
                                 moveText.setText(stance4Text)
