@@ -4292,8 +4292,8 @@
                 vines.body.checkCollision.none = true
                 treeTrunk.body.checkCollision.none = true
             } else if(!playerFocusing) {
-                vines.body.checkCollision.none = true//false
-                treeTrunk.body.checkCollision.none = true//false
+                vines.body.checkCollision.none = false
+                treeTrunk.body.checkCollision.none = false
             }
 
             
@@ -5135,7 +5135,7 @@
                                 player.playReverse({key:'pBackDash',frameRate:6},true)
                                     }
 
-                                    
+
                                 powerSource = 2
                                 playerStance = 3
 
