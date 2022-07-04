@@ -90,6 +90,7 @@
     var usingPower = false
 
     var skillMultiplier = 1
+    var supportProc = 100
     var supportArrowSpeedMultiplier = 1
     var source
 
@@ -253,10 +254,12 @@
     function runTurn(){
 
         regenActive = true
+        
 
         
             if(!playerTurnStarted){
                 powerSource = 2
+                supportProc = Phaser.Math.Between(0,100)
                 
                 
                 playerTurnStarted = true
@@ -391,10 +394,12 @@
                 playerTurnStarted = false
                 playerActionBarActive = false
                 // regenActive = true
+                supportArrow.visible = false
                 
                 playerAttacking = false
                 sword.body.checkCollision.none = true
                 eSword.body.checkCollision.none = true
+
                 turnComplete = false
             }
             
@@ -1293,34 +1298,50 @@
         
         
         if(usingPower){
+
+            
             
         if (player.x <= enemy1.x + 75){
             usingPower = false
+
+            if(supportProc <= 50){
+                if (!supportArrow.visible){
+                    support.play('sShoot',true)
+                    support.once('animationcomplete',function(){
+                        support.play('sIdle',true)
+                    },this)
+                }
+                                                    
+            } else {
+                support.play('sIdle',true)
+                                    
+            }
             
-                                            playerS0Combo()
-                                            if (supportArrow.visible){
-                                                support.play('sIdle',true)
-                                            } else {
-                                                support.play('sShoot',true)
-                                                support.once('animationcomplete',function(){
-                                                    support.play('sIdle',true)
-                                                },this)
-                                            }
+            playerS0Combo()
+
+            
+                                            
                                             
             
             
         } else if (player.x > enemy1.x + 75 && player.x < enemy1.x + 150){
             usingPower = false
             player.play({key:'pDash',frameRate:12},true)
-            if (supportArrow.visible){
-                                                support.play('sIdle',true)
-                                            } else {
-                                                support.play('sShoot',true)
-                                                support.once('animationcomplete',function(){
-                                                    support.play('sIdle',true)
-                                                },this)
-                                            }
-            //player.setDragX(0)
+
+            if(supportProc <= 25){
+                if (!supportArrow.visible){
+                    support.play('sShoot',true)
+                    support.once('animationcomplete',function(){
+                        support.play('sIdle',true)
+                    },this)
+                }
+                                                    
+            } else {
+                support.play('sIdle',true)
+                                    
+            }
+            
+                                    
             fireTowardsTarget(player,enemy1.x,1)
             player.once('animationcomplete', function(){
                
@@ -1329,8 +1350,22 @@
             },this)
         
         } else {
-            
+           
             player.play({key:'pRun',frameRate:6},true)
+            
+            if(supportProc <= 12.5){
+                if (!supportArrow.visible){
+                    support.play('sShoot',true)
+                    support.once('animationcomplete',function(){
+                        support.play('sIdle',true)
+                    },this)
+                }
+                                                    
+            } else {
+                support.play('sIdle',true)
+                                    
+            }
+                                            
             player.x -= 5
             player.once('animationcomplete', function(){
                 //fireTowardsTarget(player,width * 1.3,12)
@@ -2224,7 +2259,7 @@
     function playerRecover(){
 
     if (playerIsHit){
-        
+        playerStance = -1
         playerIsHit = false 
         player.play('pIdle',true)
     }
@@ -3933,16 +3968,18 @@
         // console.log('Player Attacking: ' + playerAttacking) 
         // console.log('Player Attack Mode: ' + attackModeActive) 
         // console.log('Stance Using Power: ' + usingPower) 
-         console.log('Player Stance: ' + playerStance) 
+        // console.log('Player Stance: ' + playerStance) 
+         console.log('supportProc: ' + supportProc) 
 
         // console.log('Enemy 1 Turn: ' + enemyTurn)
-
         
 
         
 
+        
 
-           console.log('Enemy Max HP: ' + e1MaxLife)
+
+          // console.log('Enemy Max HP: ' + e1MaxLife)
 
           //console.log('Support Arrow Visisble: ' + supportArrow.visible)
           //console.log('Support Arrow x: ' + supportArrow.x)
@@ -4746,6 +4783,7 @@
                                 }
                                 if(attackModeActive){
                                 playerDefaultAction()
+                                    
                                 }
                             } else {
                                 //player.stop()
@@ -4808,8 +4846,8 @@
                                      playerVitals.decreaseEnergy(maxEnergy * 0.004)
                                      attackChargePower += maxEnergy * 0.004
                                  } else if (powerSource == 2){+
-                                    playerVitals.decreaseFocus(maxFocus * 0.003)
-                                     attackChargePower += maxFocus * 0.003
+                                    playerVitals.decreaseFocus(maxFocus * 0.006)
+                                     attackChargePower += maxFocus * 0.006
                                  }
                                 
                                 if (Phaser.Input.Keyboard.JustDown(cursors.space)){
