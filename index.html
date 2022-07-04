@@ -90,6 +90,7 @@
     var usingPower = false
 
     var skillMultiplier = 1
+    var supportArrowSpeedMultiplier = 1
     var source
 
     var chaserCam = true
@@ -1361,7 +1362,11 @@
                                             playerS2Combo()
                                             
                                         } else if (playerStance == 3){
-                                            
+                                            coveringFire()
+                                            support.play({key:'sShoot',frameRate:12},true)
+                                                support.once('animationcomplete',function(){
+                                                    support.play('sIdle',true)
+                                                },this)
                                         } else if (playerStance == 4){
                                             thunderStrike()
                                     }
@@ -1374,6 +1379,14 @@
             
         } else if (player.x > enemy1.x + 75 && player.x < enemy1.x + 150){
             usingPower = false
+
+            if (playerStance == 3){
+                supportArrowSpeedMultiplier = 4
+                support.play({key:'sShoot',frameRate:12},true)
+                                                support.once('animationcomplete',function(){
+                                                    support.play('sIdle',true)
+                                                },this)
+            }
             player.play({key:'pDash',frameRate:12},true)
             
             fireTowardsTarget(player,enemy1.x,1)
@@ -1384,6 +1397,14 @@
             },this)
         
         } else {
+
+            if (playerStance == 3){
+                supportArrowSpeedMultiplier = 3
+                support.play({key:'sShoot',frameRate:12},true)
+                                                support.once('animationcomplete',function(){
+                                                    support.play('sIdle',true)
+                                                },this)
+            }
             
             player.play({key:'pRun',frameRate:6},true)
             player.x -= 5
@@ -1860,6 +1881,122 @@
 
             }, player)
 
+
+    }
+
+    function coveringFire(){
+
+    // Damage Stats
+
+    skillMultiplier = 0.1
+
+    supportArrowSpeedMultiplier = 2.5
+
+
+    // In Range Movement
+
+
+    // Attack / Skill
+
+    
+
+    // Attack 1
+   
+
+    player.play({key:'pAttack1',frameRate: 10},true);
+
+
+    player.once('animationcomplete', function (anim,frame) {
+
+        support.play('sShoot',true)
+    player.emit('animationcomplete_' + anim.key, frame)
+    }, player)
+
+
+    
+
+    // Attack 2
+    player.once('animationcomplete_pAttack1', function (anim,frame) {
+
+
+    player.play({key:'pAttack2'},true);
+
+    if(player.anims.getName() == 'pAttack2'){
+        
+            player.setVelocityX(-25)
+        
+    }
+
+    player.once('animationcomplete', function (anim,frame) {
+        support.play('sShoot',true)
+        player.emit('animationcomplete_' + anim.key, frame)
+    }, player)
+
+
+    }, player) 
+
+
+    // Attack 3
+    player.once('animationcomplete_pAttack2', function (anim,frame) {
+
+
+        player.play({key:'pHeavyAttack'},true);
+
+        player.once('animationcomplete', function (anim,frame) {
+            support.play('sShoot',true)
+            player.emit('animationcomplete_' + anim.key, frame)
+        }, player)
+
+
+    }, player)
+
+
+
+    // Dash back to position
+    player.once('animationcomplete_pHeavyAttack', function (anim,frame) {
+
+            
+    player.play({key:'pDash', frameRate: 12},true);
+
+        
+        if (player.x > enemy1.x){
+            fireTowardsTarget(player,enemy1.x - 15,2)
+        } else {
+            fireTowardsTarget(player,enemy1.x + 15,2)
+        }
+
+        
+
+
+    player.once('animationcomplete', function (anim,frame) {
+        support.play('sShoot',true)
+        player.emit('animationcomplete_' + anim.key, frame)
+        
+        
+    }, player)
+
+
+    }, player)
+
+    // Return to Idle
+    player.once('animationcomplete_pDash', function (anim,frame) {
+        support.play('sShoot',true)
+
+            
+    player.play({key:'pDoubleAttack', frameRate: 8},true);
+
+    attackChargePower = 0
+    usingPower = true
+
+
+
+    player.once('animationcomplete', function (anim,frame) {
+        player.emit('animationcomplete_' + anim.key, frame)
+        
+    }, player)
+
+
+    }, player)
 
     }
 
@@ -2417,7 +2554,7 @@
 
         this.load.spritesheet('eagleStrikeIcon', 'assets/eagleStrikeIcon.png', { frameWidth: 256, frameHeight: 256});
 
-        this.load.spritesheet('combatHealIcon', 'assets/combatHealIcon.png', { frameWidth: 256, frameHeight: 256});
+        this.load.spritesheet('coveringFireIcon', 'assets/coveringFireIcon.png', { frameWidth: 256, frameHeight: 256});
         
   
 
@@ -2626,8 +2763,8 @@
         stance1Text = "Unleash a deadly flurry of attacks\n\nIncreases in damage with \nconsecutive use"
         stance2Name = 'Eagle Strike'
         stance2Text = "Gain height before striking \ndown with deadly accuracy\n\nCan't be evaded"
-        stance3Name = 'Poised Strike'
-        stance3Text = "Brace and counter the next hit\n\nIncreased crit chance and chance \nto Execute"
+        stance3Name = 'Covering Fire'
+        stance3Text = "Charge the enemy under a \nbarrage of fire\n\nChance to inflict Suppression"
         stance4Name = 'Thunder Strike'
         stance4Text = "Rain thunderous rage down on \nenemies in an area\n\nCan cause Aftershock"
    
@@ -3496,9 +3633,9 @@
                         
                         supportArrow.setVisible(1)
                         if(support.x > enemy1.x){
-                        supportArrow.body.setVelocityX(-350)
+                        supportArrow.body.setVelocityX(-350 * supportArrowSpeedMultiplier)
                         } else {
-                            supportArrow.body.setVelocityX(350)
+                            supportArrow.body.setVelocityX(350 * supportArrowSpeedMultiplier)
                         }
                     } else {
                         //sword.body.checkCollision.none = true
@@ -4729,7 +4866,7 @@
 
                             // Stance Selection Move Box animation
 
-                            if (showStanceInfo && !playerAttacking && inBattle && playerStance >= 1 && playerStance != 3){
+                            if (showStanceInfo && !playerAttacking && inBattle && playerStance >= 1){
                                 
                                 this.tweens.add({
                                     targets     : moveBox,
@@ -4750,7 +4887,7 @@
                                 
 
 
-                            } else if (!showStanceInfo || playerAttacking || playerStance <= 0 || playerStance == 3 || !inBattle){
+                            } else if (!showStanceInfo || playerAttacking || playerStance <= 0 || !inBattle){
                                 this.tweens.add({
                                     targets     : moveBox ,
                                     alpha       : 0, 
@@ -4804,14 +4941,14 @@
                                 moveIcon.setTexture('eagleStrikeIcon').setTint()
                                 moveTypeIcon.setTexture('spendingBuffIcon')
                             } else if (playerStance == 3){
-                                skillIcon.setTexture('combatHealIcon').setTint()
+                                skillIcon.setTexture('coveringFireIcon').setTint()
                                 skillNameText.setText(stance3Name)
 
                                 moveNameText.setText(stance3Name)
                                 moveText.setText(stance3Text)
 
                                 moveBox.setTexture('energyMoveBox2')
-                                moveIcon.setTexture('combatHealIcon').setTint()
+                                moveIcon.setTexture('coveringFireIcon').setTint()
                                 moveTypeIcon.setTexture('spendingBuffIcon')
                             } else if (playerStance == 4){
                                 skillIcon.setTexture('thunderStrikeIcon').setTint()
@@ -4997,6 +5134,8 @@
                                     if(!playerAttacking){
                                 player.playReverse({key:'pBackDash',frameRate:6},true)
                                     }
+
+                                    
                                 powerSource = 2
                                 playerStance = 3
 
