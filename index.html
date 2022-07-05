@@ -303,11 +303,12 @@
             if (remActionTime <= 0 && playerActionBarActive){
                 playerActionBarActive = false
                 
-
+                var storedStance = playerStance
+                playerStance = -1
                 player.stop()
                 player.play('pBackDash',true)
                 player.once('animationcomplete', function(){
-                
+                playerStance = storedStance
 
                 if (player.x > enemy1.x){
                     camera.pan(enemy1.x + Math.abs((player.x - enemy1.x) * 0.5),0,1500)
@@ -3544,9 +3545,10 @@
 
     function finish(){
         //if (gameOver == false){
-            gameOver = true
+           // gameOver = true
             camera.fadeOut(6000)
             camera.on('camerafadeoutcomplete', function () {
+            gameOver = true
             bgMusic.stop()
             gameRestart = true
             
