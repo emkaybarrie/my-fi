@@ -852,7 +852,7 @@
             this.x = x;
             this.y = y;
             
-            this.p =  233 / maxActionTime
+            this.p =  203 / maxActionTime
 
             this.draw();
 
@@ -900,12 +900,12 @@
 
                 //  BG
                 this.bg.fillStyle(0x000000);
-                this.bg.fillRect(this.x, this.y, 235, 20);
+                this.bg.fillRect(this.x, this.y, 205, 20);
 
                 //  Action time
 
                 this.actionTimeBar.fillStyle(0xffffff);
-                this.actionTimeBar.fillRect(this.x + 1, this.y + 1, 233, 18);
+                this.actionTimeBar.fillRect(this.x + 1, this.y + 1, 203, 18);
                 this.actionTimeBar.fillStyle(0x00CED1);
 
 
@@ -1278,6 +1278,48 @@
                 scanningForDanger = true
             },this)
         
+        } else if (Math.abs(s1Creep.x - player.x) < Math.abs((treeTrunk.x - player.x)) && Math.abs(s1Creep.x - player.x) < Math.abs((vines.x - player.x)) && s1Creep.x - player.x > -200 && s1Creep.x - player.x < 50){
+            scanningForDanger = false
+            if (player.body.onFloor()){
+                    if(attackChoice == 1){
+                        player.play({key:'pDash',frameRate:18},true)
+                        fireTowardsTarget(player,player.x + 100,1)
+                        player.once('animationcomplete',function(){
+                            player.play({key:'pDoubleAttack',frameRate:18},true)
+                            player.once('animationcomplete',function(){
+                                player.play({key:'pRun',repeat:-1},true)
+                                scanningForDanger = true
+                        },this)
+                        },this)
+                    
+                   
+                    } else if (attackChoice == 2) {
+                        player.play({key:'pDash',frameRate:18},true)
+                        fireTowardsTarget(player,player.x + 100,1)
+                        player.once('animationcomplete',function(){
+                        player.play('pAttack2',true)
+                        player.once('animationcomplete',function(){
+                            player.play({key:'pRun',repeat:-1},true)
+                            scanningForDanger = true
+                        },this)
+                    },this)
+                        
+                    }
+                } else if (!player.body.onFloor()) {
+                    if (attackChoice == 1 || attackChoice == 2) {
+                    player.play({key:'pDash',frameRate:18},true)
+                    fireTowardsTarget(player,player.x + 75,2)
+                    player.once('animationcomplete',function(){
+                            player.play({key:'pHeavyAttack',frameRate:12},true)
+                            //fireTowardsTarget(player,player.x + 75,2)
+                            player.setVelocityY(Phaser.Math.Between(150,175))
+                            player.once('animationcomplete',function(){
+                              player.play({key:'pRun',repeat:-1},true)
+                              scanningForDanger = true
+                            },this)
+                    },player)
+                    }
+                }
         } else {
             //scanningForDanger = false
             player.play({key:'pRun',frameRate:6},true)
@@ -1304,7 +1346,7 @@
         if (player.x <= enemy1.x + 75){
             usingPower = false
 
-            if(supportProc <= 50){
+            if(supportProc <= 30){
                 if (!supportArrow.visible){
                     support.play('sShoot',true)
                     support.once('animationcomplete',function(){
@@ -1319,16 +1361,13 @@
             
             playerS0Combo()
 
-            
-                                            
-                                            
-            
+
             
         } else if (player.x > enemy1.x + 75 && player.x < enemy1.x + 150){
             usingPower = false
             player.play({key:'pDash',frameRate:12},true)
 
-            if(supportProc <= 25){
+            if(supportProc <= 15){
                 if (!supportArrow.visible){
                     support.play('sShoot',true)
                     support.once('animationcomplete',function(){
@@ -1353,7 +1392,7 @@
            
             player.play({key:'pRun',frameRate:6},true)
             
-            if(supportProc <= 12.5){
+            if(supportProc <= 7.5){
                 if (!supportArrow.visible){
                     support.play('sShoot',true)
                     support.once('animationcomplete',function(){
@@ -1406,12 +1445,7 @@
                                             thunderStrike()
                                     }
             
-            
-                        
-                        
-                        
-                    
-            
+
         } else if (player.x > enemy1.x + 75 && player.x < enemy1.x + 150){
             usingPower = false
 
@@ -1456,34 +1490,15 @@
 
     }
         
-        
-      
-    
 
     function playerS0Combo(){
 
-        // Damage Stats
+    // Damage Stats
 
         skillMultiplier = 0.5
 
-    // // In Range Movement
-    //     var distance = Math.abs(player.x - enemy1.x)
-        
-    //     if (distance > 175){
-    //         player.play({key:'pRun',frameRate: 10},true);
-    //     } else {
-    //         player.play({key:'pDash',frameRate: 12},true);
-    //     }
-        
+    // In Range Movement
 
-    //     if(player.anims.getName() == 'pRun' || player.anims.getName() == 'pDash'){
-    //         fireTowardsTarget(player,enemy1.x,1)
-                
-    //     }
-
-    //     player.once('animationcomplete', function (anim,frame) {
-    //         player.emit('animationcomplete_' + anim.key, frame)
-    //     }, player)
     
     
     // Attack / Skill
@@ -1596,28 +1611,12 @@
 
     function playerS1Combo(){
 
-        // Damage Stats
+    // Damage Stats
 
         skillMultiplier = 0.75
     
-    // // In Range Movement
-    //     var distance = Math.abs(player.x - enemy1.x)
-        
-    //     if (distance > 175){
-    //         player.play({key:'pRun',frameRate: 10},true);
-    //     } else {
-    //         player.play({key:'pDash',frameRate: 12},true);
-    //     }
-        
-
-    //     if(player.anims.getName() == 'pRun' || player.anims.getName() == 'pDash'){
-    //         fireTowardsTarget(player,enemy1.x,1)
-                
-    //     }
-
-    //     player.once('animationcomplete', function (anim,frame) {
-    //         player.emit('animationcomplete_' + anim.key, frame)
-    //     }, player)
+    // In Range Movement
+    
     
     
     // Attack / Skill
@@ -2055,13 +2054,6 @@
             player.once('animationcomplete_pCrouch', function (anim,frame) {
             player.play({key:'pJump',frameRate: 10},true);
             
-            // player.tweens.add({
-            //                         targets     : player ,
-            //                         x           : enemy1.x, 
-            //                         y           : enemy1.y - 350,
-            //                         ease        : 'Linear',
-            //                         duration    : 1000,
-            // });
 
             player.setVelocityY(-350)
             player.setDragY(0)
@@ -2079,8 +2071,6 @@
                 
                     
             }
-
-            
 
             player.once('animationcomplete', function (anim,frame) {
                 player.emit('animationcomplete_' + anim.key, frame)
@@ -2161,9 +2151,6 @@
                 
 
                 }, player)
-            
-            
-
             
 
                 // Dash back to position
@@ -2249,7 +2236,6 @@
                 glory -= (25 / 60)
             }
             
-            //income *= 1 - (0.02 / 12 / 50)
 
         }   
     }
@@ -2290,10 +2276,6 @@
                     supportArrow.setVisible(0)
                     chaserS1VFX.setTint()
                 },this)
-
-
-                
-            
 
             fireTowardsTarget(enemy1,enemy1.x - 250,1)
         }
@@ -2357,8 +2339,7 @@
        
             }
             
-            
-             
+    
     }             
                  
     }
@@ -2381,11 +2362,9 @@
        if (inBattle == false) {
         
         enemy1.setVelocityX(enemy1.body.velocity.x + (velocityBoost * chaosFactor))
-        
 
         }
-
-        
+   
     }
 
     
@@ -2400,12 +2379,9 @@
 
         }
 
-        
-
         chaosMultiplierMin *= 1 + (0.08)
         chaosMultiplierMax *= 1 + (0.12)
-        
- 
+
     }
 
     function runMonthlyFunctions()
@@ -2426,7 +2402,7 @@
             enemyChase(Phaser.Math.Between(-25,50))
 
         }  else {
-            //enemy1.x = Phaser.Math.Between(width*1.1,width*1.4)
+           
         }
     }
 
@@ -3505,7 +3481,7 @@
     function moveTreeTrunk (treeTrunk,speed){
     
     treeTrunk.x -= speed;
-    if (treeTrunk.x < Phaser.Math.Between(0,width * 0.1)){
+    if (treeTrunk.x < Phaser.Math.Between(0,width * 0.05)){
         resetTreeTrunk(treeTrunk)
     }
 
@@ -3800,7 +3776,7 @@
 
         
         playerActionTimeBar.draw()
-        playerActionTimeBar.x = playerExperience.x
+        playerActionTimeBar.x = activeSkillBox.x
         playerActionTimeBar.y = playerExperience.y + 5
         
 
@@ -3846,7 +3822,7 @@
         goldText.y = goldIcon.y - 20
         goldText.setText(Math.floor(gold))
 
-        playerExperience.x = playerVitals.x
+        playerExperience.x = activeSkillBox.x
         playerExperience.y = camera.scrollY + (height * 0.85)
 
         skillIcon.x = activeSkillBox.x + 5
@@ -4399,7 +4375,7 @@
                     player.chain([{key:'pJump',frameRate: 12},true,{key:'pUptoFall',frameRate: 12}],true); 
                     support.play('sJump',true)
                     this.physics.moveTo(player,width * 1.45,75)
-                    player.setVelocityY(-175)
+                    player.setVelocityY(-215)
                     player.setVelocityX(75)
                     support.setVelocityY(-205)
                     support.setVelocityX(100)
@@ -4410,46 +4386,55 @@
   
 
                 
-            } else if (keyA.isDown && currentEnergy > (income * 0.05) && playerIsHit == false ){
+            } else if (keyA.isDown && currentEnergy > (income * 0.05) && playerIsHit == false){
 
                 // Running Attack
 
                 if (Phaser.Input.Keyboard.JustDown(keyA)){
                     var attackChoice = Phaser.Math.Between(1,2)
-                    //playerVitals.decreaseEnergy(income * 0.05)
                 }
 
                 playerVitals.decreaseEnergy(income * 0.005)
 
-
-                
-                if(attackChoice == 1){
-                   player.play({key:'pDash',frameRate:18},true)
-                   fireTowardsTarget(player,player.x + 100,1)
-                   player.setVelocityY(Phaser.Math.Between(-125,-150))
-                   player.once('animationcomplete',function(){
-                    player.play({key:'pHeavyAttack',frameRate:16},true)
-                    player.setVelocityY(Phaser.Math.Between(100,150))
-                    player.once('animationcomplete',function(){
-                        player.play({key:'pRun',repeat:-1},true)
-                   },this)
-                   },this)
-                   
-                } else if (attackChoice == 2) {
-                    player.play('pDash',true)
-                    fireTowardsTarget(player,player.x + 100,1)
-                    player.setVelocityY(Phaser.Math.Between(-75,-100))
-                    player.once('animationcomplete',function(){
-                    player.play('pAttack2',true)
-                    player.setVelocityY(Phaser.Math.Between(-100,-150))
-                    player.once('animationcomplete',function(){
-                    player.play({key:'pRun',repeat:-1},true)
-                   },this)
-                   },this)
+                if (player.body.onFloor()){
+                    if(attackChoice == 1){
+                        player.play({key:'pDash',frameRate:18},true)
+                        fireTowardsTarget(player,player.x + 100,1)
+                        player.once('animationcomplete',function(){
+                            player.play({key:'pDoubleAttack',frameRate:18},true)
+                            player.once('animationcomplete',function(){
+                                player.play({key:'pRun',repeat:-1},true)
+                        },this)
+                        },this)
                     
+                   
+                    } else if (attackChoice == 2) {
+                        player.play({key:'pDash',frameRate:18},true)
+                        fireTowardsTarget(player,player.x + 100,1)
+                        player.once('animationcomplete',function(){
+                        player.play('pAttack2',true)
+                        player.once('animationcomplete',function(){
+                            player.play({key:'pRun',repeat:-1},true)
+                        },this)
+                    },this)
+                        
+                    }
+                } else if (!player.body.onFloor()) {
+                    if (attackChoice == 1 || attackChoice == 2) {
+                    player.play({key:'pDash',frameRate:18},true)
+                    fireTowardsTarget(player,player.x + 75,2)
+                    player.once('animationcomplete',function(){
+                            player.play({key:'pHeavyAttack',frameRate:12},true)
+                            //fireTowardsTarget(player,player.x + 75,2)
+                            player.setVelocityY(Phaser.Math.Between(150,175))
+                            player.once('animationcomplete',function(){
+                              
+                                player.play({key:'pRun',repeat:-1},true)
+                            },this)
+                    },player)
+                    }
                 }
-      
-               
+                
 
 
                 playerSpeed = 0.9
@@ -4459,7 +4444,7 @@
                 enemyChase(Phaser.Math.FloatBetween(-5,+ 1))
                 
                 
-                sword.body
+               
                 
                 
             } else if (cursors.space.isDown && playerIsHit == false){
