@@ -5022,10 +5022,13 @@
                             
                             cursors.left.on('down', function(){
                                 if (inBattle){
-
+                                    pSFX.setVisible(true)
+                                    pSFX.setScale(0.75) 
+                                    pSFX.setAlpha(0.5) 
+                                    pSFX.x=player.x+10
+                                    pSFX.y=player.y
+                                    pSFX.play('focusStance',true)
                                
-                                    
-                                
                                 if(!playerAttacking){
                                 player.play({key:'pStance1', frameRate: 6},true)
                                 }
@@ -5068,6 +5071,13 @@
                             left.on('pointerdown', function(){
                                 if (inBattle){
 
+                                    pSFX.setVisible(true)
+                                    pSFX.setScale(0.75) 
+                                    pSFX.setAlpha(0.5) 
+                                    pSFX.x=player.x+10
+                                    pSFX.y=player.y
+                                    pSFX.play('focusStance',true)
+
                                   
                                 player.play({key:'pStance1', frameRate: 6},true)
                                 powerSource = 2
@@ -5107,7 +5117,7 @@
 
                                 if (inBattle){
                                     pSFX.setVisible(true)
-                                    pSFX.setScale(0.5) 
+                                    pSFX.setScale(0.75) 
                                     pSFX.setAlpha(0.5) 
                                     pSFX.x=player.x+10
                                     pSFX.y=player.y
@@ -5144,11 +5154,12 @@
                                 if (inBattle){
 
                                     pSFX.setVisible(true)
-                                    pSFX.setScale(0.5) 
+                                    pSFX.setScale(0.75) 
                                     pSFX.setAlpha(0.5) 
                                     pSFX.x=player.x+10
                                     pSFX.y=player.y
                                     pSFX.play('energyStance',true)
+
                                     
                                     if(!playerAttacking){
                                 player.play({key:'pCrouch', frameRate: 8},true)
@@ -5181,6 +5192,13 @@
                             // Keyboard
                             cursors.right.on('down', function(){
                                 if (inBattle){
+
+                                    pSFX.setVisible(true)
+                                    pSFX.setScale(0.75) 
+                                    pSFX.setAlpha(0.5) 
+                                    pSFX.x=player.x+10
+                                    pSFX.y=player.y
+                                    pSFX.play('energyStance',true)
                                     
                                     if(!playerAttacking){
                                 player.playReverse({key:'pBackDash',frameRate:6},true)
@@ -5212,6 +5230,13 @@
 
                             right.on('pointerdown', function(){
                                 if (inBattle){
+
+                                    pSFX.setVisible(true)
+                                    pSFX.setScale(0.75) 
+                                    pSFX.setAlpha(0.5) 
+                                    pSFX.x=player.x+10
+                                    pSFX.y=player.y
+                                    pSFX.play('energyStance',true)
                                     
                                     if(!playerAttacking){
                                 player.playReverse({key:'pBackDash',frameRate:6},true)
@@ -5243,6 +5268,13 @@
                             // Keyboard
                             cursors.down.on('down', function(){
                                 if (inBattle){
+
+                                    pSFX.setVisible(true)
+                                    pSFX.setScale(0.75) 
+                                    pSFX.setAlpha(0.5) 
+                                    pSFX.x=player.x+10
+                                    pSFX.y=player.y
+                                    pSFX.play('focusStance',true)
                                     
                                     if(!playerAttacking){
                                 player.play({key:'pDownStance', frameRate: 6},true)
@@ -5271,6 +5303,13 @@
                             // Touch
                             down.on('pointerdown', function(){
                                 if (inBattle){
+
+                                    pSFX.setVisible(true)
+                                    pSFX.setScale(0.75) 
+                                    pSFX.setAlpha(0.5) 
+                                    pSFX.x=player.x+10
+                                    pSFX.y=player.y
+                                    pSFX.play('focusStance',true)
                                     
                                     if(!playerAttacking){
                                 player.play({key:'pDownStance', frameRate: 6},true)
