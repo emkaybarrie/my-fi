@@ -2258,7 +2258,9 @@
         var storedStance = playerStance
         playerStance = 0
         playerIsHit = false 
-        player.play('pIdle',true)
+        if(currentLife > 0){
+            player.play('pIdle',true)
+        }
         playerStance = storedStance
     }
 
@@ -3544,8 +3546,8 @@
     }
 
     function finish(){
-        //if (gameOver == false){
-           // gameOver = true
+        if (gameOver == false){
+            gameOver = true
             camera.fadeOut(6000)
             camera.on('camerafadeoutcomplete', function () {
             gameOver = true
@@ -3555,7 +3557,7 @@
 
             }, this);
             
-        //}
+        }
         
     }
 
@@ -4625,7 +4627,7 @@
                  }, this);
             } 
 
-            if (playerStance == 0 && playerLanded && !playerAttacking && !playerIsHit){
+            if (playerStance == 0 && playerLanded && !playerAttacking && !playerIsHit && currentLife > 0){
                 player.play('pIdle',true)
 
             }
