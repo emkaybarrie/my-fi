@@ -1278,12 +1278,14 @@
                 scanningForDanger = true
             },this)
         
-        } else if (Math.abs(s1Creep.x - player.x) < Math.abs((treeTrunk.x - player.x)) && Math.abs(s1Creep.x - player.x) < Math.abs((vines.x - player.x)) && s1Creep.x - player.x > -200 && s1Creep.x - player.x < 50){
+        } else if (Math.abs(s1Creep.x - player.x) < Math.abs((treeTrunk.x - player.x)) && Math.abs(s1Creep.x - player.x) < Math.abs((vines.x - player.x)) && s1Creep.x - player.x > -75 && s1Creep.x - player.x < 150){
             scanningForDanger = false
+
+            var attackChoice = Phaser.Math.Between(1,2)
             if (player.body.onFloor()){
                     if(attackChoice == 1){
                         player.play({key:'pDash',frameRate:18},true)
-                        fireTowardsTarget(player,player.x + 100,1)
+                        fireTowardsTarget(player,player.x + 75,1)
                         player.once('animationcomplete',function(){
                             player.play({key:'pDoubleAttack',frameRate:18},true)
                             player.once('animationcomplete',function(){
@@ -1295,7 +1297,7 @@
                    
                     } else if (attackChoice == 2) {
                         player.play({key:'pDash',frameRate:18},true)
-                        fireTowardsTarget(player,player.x + 100,1)
+                        fireTowardsTarget(player,player.x + 75,1)
                         player.once('animationcomplete',function(){
                         player.play('pAttack2',true)
                         player.once('animationcomplete',function(){
@@ -1308,7 +1310,7 @@
                 } else if (!player.body.onFloor()) {
                     if (attackChoice == 1 || attackChoice == 2) {
                     player.play({key:'pDash',frameRate:18},true)
-                    fireTowardsTarget(player,player.x + 75,2)
+                    fireTowardsTarget(player,player.x + 50,2)
                     player.once('animationcomplete',function(){
                             player.play({key:'pHeavyAttack',frameRate:12},true)
                             //fireTowardsTarget(player,player.x + 75,2)
@@ -5159,7 +5161,7 @@
                                     }
 
 
-                                powerSource = 2
+                                powerSource = 1
                                 playerStance = 3
 
                                 cursors.right.once('down', function(){
