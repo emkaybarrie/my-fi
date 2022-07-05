@@ -394,11 +394,10 @@
                 playerTurn = false
                 playerTurnStarted = false
                 playerActionBarActive = false
-                // regenActive = true
                 supportArrow.visible = false
-                
                 playerAttacking = false
                 sword.body.checkCollision.none = true
+                enemyTurn = false
                 eSword.body.checkCollision.none = true
 
                 turnComplete = false
@@ -1022,6 +1021,8 @@
                     }, this)
     } else if (mode == 1){
             inBattle = true 
+            enemyTurn = false
+            playerTurn = false
             playerIsHit = false
             remActionTime = (currentLife/maxLife) * maxActionTime
             playerActionBarActive = false
@@ -4549,6 +4550,7 @@
             } else if(playerIsHit == false) {
 
                 player.body.checkCollision.none = false
+                sword.body.checkCollision.none = true
                 
 
                 if (!playerFocusing){
