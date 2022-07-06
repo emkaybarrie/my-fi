@@ -61,37 +61,54 @@
         }
     };
 
-
+    // General 
     var game = new Phaser.Game(config);
+    var width = game.config.width
+    var height = game.config.height
+
     var gameOver = false
     var gameRestart = false
+
     var glory = 0
     var gold = 0
     var highScore = parseInt(localStorage.getItem('highScore')) || 0;
 
+    var IS_TOUCH = true
+    var gamePad 
+    var gamePadEnabled = false
+    var leftDir
+
+    var skillTreeOpen = false
     var storingBuffTier = 0
     var spendingBuffTier = 0
     var growingBuffTier = 0
     var kianovaBuffTier = 0
 
-    var IS_TOUCH = true
-    var skillTreeOpen = false
-  
-
-    var width = game.config.width
-    var height = game.config.height
+    // Running Mode
 
     var playerFocusing = false
     var focusModeActive = false
     var scanningForDanger = true
+
+    // Battle Mode
+
     var showStanceInfo = false
+    var skillMultiplier = 1
+
     var playerAttacking = false 
     var attackModeActive = false
     var usingPower = false
 
-    var skillMultiplier = 1
+    
+
     var supportProc = 100
     var supportArrowSpeedMultiplier = 1
+
+    //
+    
+
+    
+
     var source
 
     var chaserCam = true
@@ -111,7 +128,7 @@
     var playerActionBarActive = false
     var playerActionBarRegen = false
     var remActionTime = 0
-    var maxActionTime = 60 * 2
+    var maxActionTime = 60 * 4
     var turnComplete = false
 
     var playerSpeed 
@@ -1432,26 +1449,22 @@
         if (player.x <= enemy1.x + 75){
             usingPower = false
                                     if(playerStance == 0){
-                                        pSFX.setVisible(true)
-                                    pSFX.setScale(1) 
-                                    pSFX.setAlpha(0.5) 
-                                    pSFX.x=player.x
-                                    pSFX.y=player.y
-                                    pSFX.play({key:'focusStance',frameRate: 25},true)
+                                     
                                     } else if (playerStance == 1){
-                                            
-                                        playerS1Combo()
+                                        thunderStrike() 
+                                        
                                         } else if (playerStance == 2){
                                             playerS2Combo()
                                             
                                         } else if (playerStance == 3){
+                                            playerS1Combo()
+                                            
+                                        } else if (playerStance == 4){
                                             coveringFire()
                                             support.play({key:'sShoot',frameRate:12},true)
                                                 support.once('animationcomplete',function(){
                                                     support.play('sIdle',true)
                                                 },this)
-                                        } else if (playerStance == 4){
-                                            thunderStrike()
                                     }
             
 
@@ -2567,7 +2580,7 @@
         this.load.spritesheet('whiteHitSmear2', 'assets/whiteHitSmear2.png', { frameWidth: 1048, frameHeight: 1048});  
 
         // Skills
-        this.load.spritesheet('chargeFocusIcon', 'assets/chargeFocusIcon.png', { frameWidth: 256, frameHeight: 256});
+        this.load.spritesheet('meditateIcon', 'assets/meditateIcon.png', { frameWidth: 256, frameHeight: 256});
         
 
         this.load.spritesheet('thunderStrikeIcon', 'assets/thunderStrikeIcon.png', { frameWidth: 256, frameHeight: 256});
@@ -2581,7 +2594,7 @@
 
         this.load.spritesheet('coveringFireIcon', 'assets/coveringFireIcon.png', { frameWidth: 256, frameHeight: 256});
         
-  
+        
 
     }
 
@@ -2772,8 +2785,8 @@
         spendingBuffIcon = this.add.image(0,0,'spendingBuffIcon').setDepth(4).setScale(0.5)
 
         activeSkillBox = this.add.image(camera.scrollX + 300,camera.scrollY + 40,'activeSkillBox').setDepth(3).setScale(0.072,0.05).setOrigin(0,0.5)
-        skillIcon = this.add.image(camera.scrollX + 300,camera.scrollY + 40,'chargeFocusIcon').setDepth(3).setScale(0.15).setOrigin(0,0.5)
-        skillNameText = this.add.text(0, 0, "Charge Focus").setFontFamily('Revalia').setFontSize(16).setColor('#ff9900').setDepth(4).setOrigin(0,0).setAlpha(0);
+        skillIcon = this.add.image(camera.scrollX + 300,camera.scrollY + 40).setDepth(3).setScale(0.15).setOrigin(0,0.5)
+        skillNameText = this.add.text(0, 0, "").setFontFamily('Revalia').setFontSize(16).setColor('#ff9900').setDepth(4).setOrigin(0,0).setAlpha(0);
         
 
         moveBox = this.add.image(0, 0, 'energyMoveBox2').setDepth(4).setAlpha(0).setScale(0).setOrigin(0,0)
@@ -2782,16 +2795,17 @@
         moveIcon = this.add.image(0,0,'deadlyCombatAssaultIcon').setDepth(4).setScale(0.1).setOrigin(0,0).setAlpha(0)
         moveTypeIcon = this.add.image(0,0,'spendingBuffIcon').setDepth(4).setScale(0.35).setOrigin(0,0).setAlpha(0)
         
-        stance0Name = 'Charge Focus'
-        stance0Text = "Practice patience, charging focus \nfrom energy"
-        stance1Name = 'Deadly Combat Assault'
-        stance1Text = "Unleash a deadly flurry of attacks\n\nIncreases in damage with \nconsecutive use"
-        stance2Name = 'Eagle Strike'
-        stance2Text = "Gain height before striking \ndown with deadly accuracy\n\nCan't be evaded"
-        stance3Name = 'Covering Fire'
-        stance3Text = "Charge the enemy under a \nbarrage of fire\n\nChance to inflict Suppression"
-        stance4Name = 'Thunder Strike'
-        stance4Text = "Rain thunderous rage down on \nenemies in an area\n\nCan cause Aftershock"
+        stance0Name = ''
+        stance0Text = ""
+        stance1Name = 'Thunder Strike'
+        stance1Text = "Rain thunderous rage down on \nenemies in an area\n\nCan cause Aftershock"
+        stance2Name = 'Meditate'
+        stance2Text = "Take a moment, channelling energy\n to charge focus"
+        stance3Name = 'Deadly Combat Assault'
+        stance3Text = "Unleash a deadly flurry of attacks\n\nIncreases in damage with \nconsecutive use"
+        stance4Name = 'Covering Fire'
+        stance4Text = "Charge the enemy under a \nbarrage of fire\n\nChance to inflict Suppression"
+        
    
         
 
@@ -2912,6 +2926,17 @@
             hideOnComplete: 1
         });
 
+        // Meditate
+
+        this.anims.create({
+            key: 'meditateStance',
+            frames: this.anims.generateFrameNames('heroF',{prefix: 'Warrior_Crouch_', start: 1, end: 5, suffix: '.png'}),
+            frameRate: 6,
+            repeat: 0,
+            //yoyo: true,
+            //delay: 1
+        });
+
         // Thunder Strike
 
         this.anims.create({
@@ -2930,6 +2955,15 @@
             repeat: 0,
             showOnStart: 1,
             hideOnComplete: 1
+        });
+
+        this.anims.create({
+            key: 'thunderStrikeStance',
+            frames: this.anims.generateFrameNames('heroF',{prefix: 'Warrior_Attack_', start: 3, end: 1, suffix: '.png'}),
+            frameRate: 6,
+            repeat: 0,
+            //yoyo: true,
+            //delay: 1
         });
 
         thunderStrikeVFX = this.add.sprite(enemy1.x, enemy1.y)
@@ -3085,7 +3119,15 @@
         });
 
         this.anims.create({
-            key: 'pStance1',
+            key: 'pBlock',
+            frames: this.anims.generateFrameNames('heroF',{prefix: 'Warrior_Attack_', start: 9, end: 9, suffix: '.png'}),
+            frameRate: 14,
+            repeat: 0,
+            //delay: 1
+        });
+
+        this.anims.create({
+            key: 'deadlyCombatAssaultStance',
             frames: this.anims.generateFrameNames('heroF',{prefix: 'Warrior_Attack_', start: 1, end: 4, suffix: '.png'}),
             frameRate: 6,
             repeat: 0,
@@ -3216,7 +3258,17 @@
             repeat:0,
             hideOnComplete: false
         });
+        // GamePad
 
+        this.input.gamepad.once('connected', function (pad) {
+            gamePad  = pad
+            gamePadEnabled = true
+        },this)
+
+
+
+
+        
         
         // Controllers online
         cursors = this.input.keyboard.createCursorKeys();
@@ -3242,7 +3294,7 @@
         
         if (this.sys.game.device.os.desktop){
             
-            IS_TOUCH = false;
+            IS_TOUCH = false
         } else {
             IS_TOUCH = true;
         }
@@ -3578,14 +3630,340 @@
     function update ()
     {
 
-        
-        console.log(this.sys.game.device.os)
+        // Controls
 
-        if (this.sys.game.device.os.desktop){
-            IS_TOUCH = false;
-        } else {
-            IS_TOUCH = true;
-        }
+        // Gamepad
+
+        
+
+        if (gamePadEnabled){
+            
+        gamePad.on('down', function (button) {
+            console.log(Math.abs(gamePad.leftStick.x) > 0.75)
+                                // Up = 12, Down = 13
+                                // Left = 14; Right = 15
+                                // LT = 6 ; RT = 7 
+                                // LB = 4 ; RB = 5
+                                // A = 0
+                                // B = 1
+                                // X = 2
+                                // Y = 3
+                                // Back = 8 ; Start = 9
+                                // LS = 10 ; RS = 11 
+                                if (button == 7){
+                                    keyA.isDown = true
+
+                                    if(inBattle){
+                                        attackModeActive = true
+                                        usingPower = true
+                                    } else {
+                                        var attackChoice = Phaser.Math.Between(1,2)
+                                        if(attackChoice == 1){
+                                            player.play({key:'pDash',frameRate:18},true)
+                                            fireTowardsTarget(player,player.x + 100,1)
+                                            player.setVelocityY(Phaser.Math.Between(-125,-150))
+                                            player.once('animationcomplete',function(){
+                                                player.play({key:'pHeavyAttack',frameRate:16},true)
+                                                player.setVelocityY(Phaser.Math.Between(100,150))
+                                                player.once('animationcomplete',function(){
+                                                    player.play({key:'pRun',repeat:-1},true)
+                                            },this)
+                                            },this)
+                                            
+                                        } else if (attackChoice == 2) {
+                                                player.play('pDash',true)
+                                                fireTowardsTarget(player,player.x + 100,1)
+                                                player.setVelocityY(Phaser.Math.Between(-75,-100))
+                                                player.once('animationcomplete',function(){
+                                                player.play('pAttack2',true)
+                                                player.setVelocityY(Phaser.Math.Between(-100,-150))
+                                                player.once('animationcomplete',function(){
+                                                player.play({key:'pRun',repeat:-1},true)
+                                            },this)
+                                            },this)
+                                                
+                                        }
+                                    }
+                                    
+                                    
+                                } else if (button == 6){
+                                    cursors.space.isDown = true
+
+                                    if(inBattle){
+                                    attackModeActive = true
+                                    usingPower = true
+                                    } else {
+                                        focusModeActive = true
+                                        scanningForDanger = true
+                                    }
+                                }
+
+                                if (button == 12){
+                                    cursors.up.isDown = true
+                                    if(inBattle){
+                                    if(!playerAttacking){
+                                    player.play({key:'thunderStrikeStance', frameRate: 6},true)
+                                    }
+
+                                    playerStance = 1
+                                    powerSource = 2
+                                    
+                                    pSFX.setVisible(true)
+                                    pSFX.setScale(0.75) 
+                                    pSFX.setAlpha(0.5) 
+                                    pSFX.x=player.x+10
+                                    pSFX.y=player.y
+                                    pSFX.play('focusStance',true)
+
+                                    usingPower = true
+                                    showStanceInfo = true
+                                    }
+                                } else if (button == 13){
+                                    cursors.down.isDown = true
+
+                                    if(inBattle){
+                                    if(!playerAttacking){
+                                    player.play({key:'meditateStance', frameRate: 6},true)
+                                    }
+
+                                    playerStance = 2
+                                    powerSource = 2
+                                    
+                                    pSFX.setVisible(true)
+                                    pSFX.setScale(0.75) 
+                                    pSFX.setAlpha(0.5) 
+                                    pSFX.x=player.x+10
+                                    pSFX.y=player.y
+                                    pSFX.play('focusStance',true)
+
+                                    usingPower = true
+                                    showStanceInfo = true
+                                }
+                                } else if (button == 14){
+                                    cursors.left.isDown = true
+
+                                    if(inBattle){
+                                    if(!playerAttacking){
+                                    player.play({key:'deadlyCombatAssaultStance', frameRate: 6},true)
+                                    }
+
+                                    powerSource = 2
+                                    playerStance = 3
+
+                                    pSFX.setVisible(true)
+                                    pSFX.setScale(0.75) 
+                                    pSFX.setAlpha(0.5) 
+                                    pSFX.x=player.x+10
+                                    pSFX.y=player.y
+                                    pSFX.play('focusStance',true)
+
+                                    usingPower = true
+                                    showStanceInfo = true
+                                    }
+                                  
+                                
+                                } else if (button == 15){
+                                    cursors.right.isDown = true
+
+                                    if(inBattle){
+                                    if(!playerAttacking){
+                                    player.playReverse({key:'pBackDash',frameRate:6},true)
+                                    }
+                                    playerStance = 4
+                                    powerSource = 1
+
+                                    pSFX.setVisible(true)
+                                    pSFX.setScale(0.75) 
+                                    pSFX.setAlpha(0.5) 
+                                    pSFX.x=player.x+10
+                                    pSFX.y=player.y
+                                    pSFX.play('focusStance',true)
+
+                                    usingPower = true
+                                    showStanceInfo = true
+                                }
+                                }  
+                                
+
+                            }, this);
+
+                            if (gamePad.leftStick.y < -0.5){
+                                cursors.up.isDown = true
+                                    if(inBattle){
+                                    if(!playerAttacking){
+                                    player.play({key:'thunderStrikeStance', frameRate: 6})
+                                    }
+
+                                    playerStance = 1
+                                    powerSource = 2
+                                    
+                                    pSFX.setVisible(true)
+                                    pSFX.setScale(0.75) 
+                                    pSFX.setAlpha(0.5) 
+                                    pSFX.x=player.x+10
+                                    pSFX.y=player.y
+                                    pSFX.play('focusStance')
+
+                                    usingPower = true
+                                    if (Math.abs(gamePad.leftStick.x) >= 1 ||Math.abs(gamePad.leftStick.y) >= 1) {
+                                    showStanceInfo = true
+                                    }
+                                    }
+                            } else if (gamePad.leftStick.y > 0.5){
+                                cursors.down.isDown = true
+
+                                    if(inBattle){
+                                    if(!playerAttacking){
+                                    player.play({key:'meditateStance', frameRate: 6})
+                                    }
+
+                                    playerStance = 2
+                                    powerSource = 1
+                                    
+                                    pSFX.setVisible(true)
+                                    pSFX.setScale(0.75) 
+                                    pSFX.setAlpha(0.5) 
+                                    pSFX.x=player.x+10
+                                    pSFX.y=player.y
+                                    pSFX.play('energyStance',true)
+
+                                    usingPower = true
+                                    if (Math.abs(gamePad.leftStick.x) >= 1 ||Math.abs(gamePad.leftStick.y) >= 1) {
+                                    showStanceInfo = true
+                                    }
+                            }
+                        } else if (gamePad.leftStick.x < -0.5){
+                                    cursors.left.isDown = true
+
+                                    if(inBattle){
+                                    if(!playerAttacking){
+                                    player.play({key:'deadlyCombatAssaultStance', frameRate: 6})
+                                    }
+
+                                    powerSource = 2
+                                    playerStance = 3
+
+                                    pSFX.setVisible(true)
+                                    pSFX.setScale(0.75) 
+                                    pSFX.setAlpha(0.5) 
+                                    pSFX.x=player.x+10
+                                    pSFX.y=player.y
+                                    pSFX.play('focusStance')
+
+                                    usingPower = true
+                                    if (Math.abs(gamePad.leftStick.x) >= 1 ||Math.abs(gamePad.leftStick.y) >= 1) {
+                                    showStanceInfo = true
+                                    }
+                                    }
+                        } else if (gamePad.leftStick.x > 0.5){
+                                cursors.right.isDown = true
+
+                                    if(inBattle){
+                                    if(!playerAttacking){
+                                    player.playReverse({key:'pBackDash',frameRate:6})
+                                    }
+                                    playerStance = 4
+                                    powerSource = 1
+
+                                    pSFX.setVisible(true)
+                                    pSFX.setScale(0.75) 
+                                    pSFX.setAlpha(0.5) 
+                                    pSFX.x=player.x+10
+                                    pSFX.y=player.y
+                                    pSFX.play('energyStance')
+
+                                    usingPower = true
+                                    if (Math.abs(gamePad.leftStick.x) >= 1 ||Math.abs(gamePad.leftStick.y) >= 1) {
+                                    showStanceInfo = true
+                                    }
+                                }
+                         
+                        } else if (!gamePad.up && !gamePad.down && !gamePad.left && !gamePad.right) {
+                            showStanceInfo = false
+                            cursors.up.isDown = false
+                            cursors.down.isDown = false
+                            cursors.left.isDown = false
+                            cursors.right.isDown = false
+                        }
+
+
+                            gamePad.on('up', function (button) {
+                                // Up = 12, Down = 13
+                                // Left = 14; Right = 15
+                                // LT = 6 ; RT = 7 
+                                // LB = 4 ; RB = 5
+                                // A = 0
+                                // B = 1
+                                // X = 2
+                                // Y = 3
+                                // Back = 8 ; Start = 9
+                                // LS = 10 ; RS = 11 
+                                if (button == 7){
+                                    player.stop()
+                                    player.play('pIdle',true)
+                                    keyA.isDown = false
+
+                                    if(inBattle){
+                                    attackModeActive = false
+                                    usingPower = false
+                                    }
+                            
+                                } else if (button == 6){
+                                    cursors.space.isDown = false
+                                    player.stop()
+                                    player.play('pIdle',true)
+
+                                    if(inBattle){
+                                    attackModeActive = false
+                                    usingPower = false
+                                    } else {
+                                        playerFocusing = false
+                                        focusModeActive = false
+                                        scanningForDanger = false
+                                    }
+                                }
+
+                                if (button == 12){
+                                    cursors.up.isDown = false
+                                   
+                                    
+                                    if(inBattle){
+                                        showStanceInfo = false
+                                    }
+                                    
+                                } else if (button == 13){
+                                    cursors.down.isDown = false
+                                    
+
+                                    
+                                    if(inBattle){
+                                showStanceInfo = false
+                                    }
+                                } else if (button == 14){
+                                    cursors.left.isDown = false
+ 
+                                if(inBattle){
+                                showStanceInfo = false
+                                }
+                                } else if (button == 15){
+                                    cursors.right.isDown = false
+ 
+                                if(inBattle){
+                                showStanceInfo = false
+                                }
+                                }  
+                                
+
+                            }, this);
+                        }
+        
+        //console.log(this.sys.game.device.os)
+
+        // if (this.sys.game.device.os.desktop){
+        //     IS_TOUCH = true//false;
+        // } else {
+        //     IS_TOUCH = true;
+        // }
 
         //s1Creep.play('s1CreepRun',true)
         
@@ -3798,17 +4176,20 @@
         
         keyX.on('down',function(){
             enemyChase(1000)
-            pSFX.setVisible(true)
-           
-                                pSFX.setScale(0.5) 
-                                pSFX.setAlpha(0.5) 
-                                pSFX.x=player.x+10
-                                pSFX.y=player.y
-                                pSFX.play('energyStance',true)
+         
             
             
 
         })
+
+        if (gamePadEnabled){
+            gamePad.on('down', function (button){
+            if (button == 2){
+                enemyChase(1000)
+            }
+        },this)
+        }
+        
             
             
             
@@ -3992,16 +4373,24 @@
 
         // console.log('Player Attacking: ' + playerAttacking) 
         // console.log('Player Attack Mode: ' + attackModeActive) 
-        // console.log('Stance Using Power: ' + usingPower) 
-         console.log('Player Stance: ' + playerStance) 
+        // console.log('Stance Using Power: ' + usingPower)
+        
+        
+        
         //  console.log('supportProc: ' + supportProc) 
 
         // console.log('Enemy 1 Turn: ' + enemyTurn)
         
+        
+
+       
+ 
+        
+     
 
         
 
-        
+         
 
 
           // console.log('Enemy Max HP: ' + e1MaxLife)
@@ -4247,6 +4636,10 @@
 
   
         } else if (inBattle) {
+
+           
+
+            
 
             if (powerSource == 1){
                 charge.setTint(0x00a86b)
@@ -4797,12 +5190,10 @@
                         if(keyA.isDown && playerActionBarActive){
 
                             
-                        
-                            source = currentEnergy
                             powerSource = 1
                             
 
-                            if (source > 0){
+                            if (currentEnergy > 0){
                                 playerAttacking = true
                                 regenActive = false
 
@@ -4952,14 +5343,14 @@
                                     scaleX       : 0.065,
                                     scaleY       : 0.1,
                                     ease        : 'Linear',
-                                    duration    : 150,
+                                    duration    : 500,
                                 });
 
                                 this.tweens.add({
                                     targets     : [moveIcon,moveTypeIcon,moveNameText,moveText],
                                     alpha       : 1,
                                     ease        : 'Linear',
-                                    duration    : 750,
+                                    duration    : 5000,
                                 });
 
                                 
@@ -4989,56 +5380,54 @@
                            
 
                             if (playerStance == 0){
-                                powerSource = 1
-                                skillIcon.setTexture('chargeFocusIcon').setTint()
-                                skillNameText.setText(stance0Name)
-
-                                //moveBox.setTexture('energyMoveBox2')
-                                //moveTypeIcon.setTexture('spendingBuffIcon')
+                               
                             } else if (playerStance == 1){
-                                skillIcon.setTexture('deadlyCombatAssaultIcon').setTint()
+                                skillIcon.setTexture('thunderStrikeIcon').setTint()
                                 skillNameText.setText(stance1Name)
-
-                                
 
                                 moveNameText.setText(stance1Name)
                                 moveText.setText(stance1Text)
 
-                                moveBox.setTexture('focusMoveBox2').setTint()
-                                moveIcon.setTexture('deadlyCombatAssaultIcon').setTint()
+                                moveBox.setTexture('focusMoveBox2')
+                                moveIcon.setTexture('thunderStrikeIcon').setTint()
                                 moveTypeIcon.setTexture('growingBuffIcon')
 
                             } else if (playerStance == 2){
-                                skillIcon.setTexture('eagleStrikeIcon').setTint()
+                                skillIcon.setTexture('meditateIcon').setTint()
                                 skillNameText.setText(stance2Name)
 
                                 moveNameText.setText(stance2Name)
                                 moveText.setText(stance2Text)
 
                                 moveBox.setTexture('energyMoveBox2')
-                                moveIcon.setTexture('eagleStrikeIcon').setTint()
+                                moveIcon.setTexture('meditateIcon').setTint()
                                 moveTypeIcon.setTexture('spendingBuffIcon')
                             } else if (playerStance == 3){
-                                skillIcon.setTexture('coveringFireIcon').setTint()
+                                skillIcon.setTexture('deadlyCombatAssaultIcon').setTint()
                                 skillNameText.setText(stance3Name)
+
+                                
 
                                 moveNameText.setText(stance3Name)
                                 moveText.setText(stance3Text)
 
-                                moveBox.setTexture('energyMoveBox2')
-                                moveIcon.setTexture('coveringFireIcon').setTint()
-                                moveTypeIcon.setTexture('spendingBuffIcon')
+                                moveBox.setTexture('focusMoveBox2').setTint()
+                                moveIcon.setTexture('deadlyCombatAssaultIcon').setTint()
+                                moveTypeIcon.setTexture('growingBuffIcon')
+                                
                             } else if (playerStance == 4){
-                                skillIcon.setTexture('thunderStrikeIcon').setTint()
+                                skillIcon.setTexture('coveringFireIcon').setTint()
                                 skillNameText.setText(stance4Name)
 
                                 moveNameText.setText(stance4Name)
                                 moveText.setText(stance4Text)
 
-                                moveBox.setTexture('focusMoveBox2')
-                                moveIcon.setTexture('thunderStrikeIcon').setTint()
-                                moveTypeIcon.setTexture('growingBuffIcon')
+                                moveBox.setTexture('energyMoveBox2')
+                                moveIcon.setTexture('coveringFireIcon').setTint()
+                                moveTypeIcon.setTexture('spendingBuffIcon')
                             }
+
+                            // Game Pad
 
                             
 
@@ -5057,7 +5446,7 @@
                                     pSFX.play('focusStance',true)
                                
                                 if(!playerAttacking){
-                                player.play({key:'pStance1', frameRate: 6},true)
+                                player.play({key:'deadlyCombatAssaultStance', frameRate: 6},true)
                                 }
 
                                 
@@ -5086,9 +5475,7 @@
                                     usingPower = true
                                      
                                 }
-                               
-                 
-                                
+                                  
                                 
   
                             })
@@ -5106,7 +5493,7 @@
                                     pSFX.play('focusStance',true)
 
                                   
-                                player.play({key:'pStance1', frameRate: 6},true)
+                                player.play({key:'thunderStrikeStance', frameRate: 6},true)
                                 powerSource = 2
                                 playerStance = 1
 
@@ -5135,7 +5522,9 @@
                             })
 
                             
+             
 
+                            
 
                             // 2 - Up
 
