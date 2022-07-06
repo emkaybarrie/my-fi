@@ -2789,7 +2789,7 @@
         skillNameText = this.add.text(0, 0, "").setFontFamily('Revalia').setFontSize(16).setColor('#ff9900').setDepth(4).setOrigin(0,0).setAlpha(0);
         
 
-        moveBox = this.add.image(0, 0, 'energyMoveBox2').setDepth(4).setAlpha(0).setScale(0).setOrigin(0,0)
+        moveBox = this.add.image(0, 0, 'energyMoveBox2').setDepth(4).setAlpha(0).setScale(0.065,.1).setOrigin(0,0)
         moveNameText = this.add.text(0, 0, "Deadly Combat Assault").setFontFamily('Revalia').setFontSize(12).setColor('#ff9900').setDepth(4).setOrigin(0,0).setAlpha(0);
         moveText = this.add.text(0, 0, "Move descripotion line 1\nMove description line 2").setFontFamily('Revalia').setFontSize(10).setColor('#FFFFFF').setDepth(4).setAlpha(0);
         moveIcon = this.add.image(0,0,'deadlyCombatAssaultIcon').setDepth(4).setScale(0.1).setOrigin(0,0).setAlpha(0)
@@ -4586,7 +4586,7 @@
             this.tweens.add({
                                     targets     : moveBox ,
                                     alpha       : 0, 
-                                    scaleX       : 0,
+                                    //scaleX       : 0,
                                     ease        : 'Linear',
                                     duration    : 50,
                                 });
@@ -5340,17 +5340,17 @@
                                 this.tweens.add({
                                     targets     : moveBox,
                                     alpha       : 0.65, 
-                                    scaleX       : 0.065,
-                                    scaleY       : 0.1,
+                                    //scaleX       : 0.065,
+                                   // scaleY       : 0.1,
                                     ease        : 'Linear',
-                                    duration    : 500,
+                                    duration    : 1500,
                                 });
 
                                 this.tweens.add({
                                     targets     : [moveIcon,moveTypeIcon,moveNameText,moveText],
                                     alpha       : 1,
                                     ease        : 'Linear',
-                                    duration    : 5000,
+                                    duration    : 1500,
                                 });
 
                                 
@@ -5360,7 +5360,7 @@
                                 this.tweens.add({
                                     targets     : moveBox ,
                                     alpha       : 0, 
-                                    scaleX       : 0,
+                                    //scaleX       : 0,
                                     ease        : 'Linear',
                                     duration    : 100,
                                 });
