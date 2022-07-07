@@ -99,7 +99,7 @@
     var attackModeActive = false
     var usingPower = false
 
-    
+    var battleStart
 
     var supportProc = 100
     var supportArrowSpeedMultiplier = 1
@@ -1084,7 +1084,7 @@
                                     showRunningHUD()
                                     playerVitals.hide()
                                     regenActive = true
-                                    
+                                    battleStart = true
                                     playerTurn = false
                                     playerActionBarRegen = true
                                     
@@ -4732,7 +4732,7 @@
            } 
 
            if(remActionTime < maxActionTime && playerActionBarRegen){
-            playerActionTimeBar.decreaseActionTime(-0.5) //remActionTime = maxActionTime * (currentEnergy/maxEnergy)
+            playerActionTimeBar.decreaseActionTime(-2) //remActionTime = maxActionTime * (currentEnergy/maxEnergy)
             }
 
 
@@ -5040,7 +5040,7 @@
                  }, this);
             } 
 
-            if (playerStance == 0 && playerLanded && !playerAttacking && !playerIsHit && currentLife > 0){
+            if (battleStart && playerStance == 0 && playerLanded && !playerAttacking && !playerIsHit && currentLife > 0){
                 player.play('pIdle',true)
 
             }
