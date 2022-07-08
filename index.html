@@ -31,7 +31,7 @@
 
     var config = {
         type: Phaser.AUTO,
-
+        pixelArt: true,
         scale: {
 
             parent: 'mygame',
@@ -5452,7 +5452,7 @@
                                     
                                     
                                 powerSource = 2
-                                playerStance = 1
+                                playerStance = 3
                                 
                                 cursors.left.once('down', function(){
                                 usingPower = true
@@ -5494,7 +5494,7 @@
                                   
                                 player.play({key:'thunderStrikeStance', frameRate: 6},true)
                                 powerSource = 2
-                                playerStance = 1
+                                playerStance = 3
 
                                 left.once('pointerdown', function(){
                                 usingPower = true
@@ -5541,8 +5541,8 @@
                                     if(!playerAttacking){
                                     player.play({key:'pCrouch', frameRate: 8},true)
                                     }
-                                powerSource = 1
-                                playerStance = 2
+                                powerSource = 2
+                                playerStance = 1
 
                                 cursors.up.once('down', function(){
                                 usingPower = true
@@ -5579,8 +5579,8 @@
                                     if(!playerAttacking){
                                 player.play({key:'pCrouch', frameRate: 8},true)
                                     }
-                                powerSource = 1
-                                playerStance = 2
+                                powerSource = 2
+                                playerStance = 1
 
                                 up.once('pointerdown', function(){
                                 usingPower = true
@@ -5621,7 +5621,7 @@
 
 
                                 powerSource = 1
-                                playerStance = 3
+                                playerStance = 4
 
                                 cursors.right.once('down', function(){
                                 usingPower = true
@@ -5656,8 +5656,8 @@
                                     if(!playerAttacking){
                                 player.playReverse({key:'pBackDash',frameRate:6},true)
                                     }
-                                powerSource = 2
-                                playerStance = 3
+                                powerSource = 1
+                                playerStance = 4
 
                                 right.once('pointerdown', function(){
                                 usingPower = true
@@ -5694,8 +5694,8 @@
                                     if(!playerAttacking){
                                 player.play({key:'pDownStance', frameRate: 6},true)
                                     }
-                                powerSource = 2
-                                playerStance = 4
+                                powerSource = 1
+                                playerStance = 2
 
                                 cursors.down.once('down', function(){
                                 usingPower = true
@@ -5729,8 +5729,8 @@
                                     if(!playerAttacking){
                                 player.play({key:'pDownStance', frameRate: 6},true)
                                     }
-                                powerSource = 2
-                                playerStance = 4
+                                powerSource = 1
+                                playerStance = 2
 
                                 down.once('pointerdown', function(){
                                 usingPower = true
