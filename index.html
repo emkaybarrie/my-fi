@@ -31,12 +31,11 @@
 
     var config = {
         type: Phaser.AUTO,
-        pixelArt: true,
+        pixelArt: 0,
         scale: {
 
             parent: 'mygame',
             mode: Phaser.Scale.FIT,
-            pixelArt: 0,
             autoCenter: Phaser.Scale.CENTER_BOTH,
             width:  DEFAULT_WIDTH, //592, //window.innerWidth * window.devicePixelRatio
             height: DEFAULT_HEIGHT //272, //window.innerHeight * window.devicePixelRatio
@@ -58,7 +57,8 @@
             preload: preload,
             create: create,
             update: update
-        }
+        },
+        
     };
 
     // General 
@@ -2485,6 +2485,22 @@
 
     function preload ()
     {   
+        var progress = this.add.graphics();
+
+    this.load.on('progress', function (value) {
+
+        progress.clear();
+        progress.fillStyle(0xffffff, 1);
+        progress.fillRect(0, 270, 800 * value, 60);
+
+    });
+
+    this.load.on('complete', function () {
+
+        progress.destroy();
+
+    });
+
         this.load.audio("bgMusic1", ["assets/music/Le_château_magique.mp3"]);
         this.load.audio("bgMusic2", ["assets/music/Kids_See_Ghosts.mp3"]);
         this.load.audio("bgMusic3", ["assets/music/Riptide.mp3"]);
