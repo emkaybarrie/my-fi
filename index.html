@@ -320,16 +320,16 @@
             }
                 
             if (playerActionBarActive){
-                currentTurnVFX.play('currentTurnIcon',true)
-                currentTurnVFX.setTint(0x00CED1).setAlpha(0.75) //0x674EA7
-                currentTurnVFX.setVisible(1)
+                playerTurnVFX.play('playerTurnIcon',true)
+                playerTurnVFX.setTint(0x00CED1).setAlpha(0.75) //0x674EA7
+                playerTurnVFX.setVisible(1)
                 if (player.flipX){
-                    currentTurnVFX.x = player.x + 10
+                    playerTurnVFX.x = player.x + 10
                 } else {
-                    currentTurnVFX.x = player.x
+                    playerTurnVFX.x = player.x
                 }
                 
-                currentTurnVFX.y = player.y - 50
+                playerTurnVFX.y = player.y - 50
 
                 playerActionBarRegen = false
                 
@@ -349,8 +349,8 @@
 
             if (remActionTime <= 0 && playerActionBarActive){
                 playerActionBarActive = false
-                currentTurnVFX.stop()
-                currentTurnVFX.setVisible(0)
+                playerTurnVFX.stop()
+                playerTurnVFX.setVisible(0)
                 var storedStance = playerStance
                 playerStance = -1
                 player.stop()
@@ -1037,8 +1037,8 @@
    function modeSwitch(mode){
     if (mode == 0){
         hideRunningHUD()
-        currentTurnVFX.stop()
-                currentTurnVFX.setVisible(0)
+        playerTurnVFX.stop()
+        playerTurnVFX.setVisible(0)
         playerTurn = false
                 playerTurnStarted = false
                 playerActionBarActive = false
@@ -2639,7 +2639,7 @@
 
         // General 
 
-        this.load.spritesheet('currentTurnIcon', 'assets/currentTurnIcon.png', { frameWidth: 100, frameHeight: 100});
+        this.load.spritesheet('playerTurnIcon', 'assets/playerTurnIcon.png', { frameWidth: 100, frameHeight: 100});
         // Enemies
 
         this.load.atlas('doomsayer', 'assets/doomsayer.png','assets/doomsayersprites.json');
@@ -2858,7 +2858,7 @@
         growingBuffIcon = this.add.image(0,0,'growingBuffIcon').setDepth(4).setScale(0.5)
         spendingBuffIcon = this.add.image(0,0,'spendingBuffIcon').setDepth(4).setScale(0.5)
 
-        currentTurnVFX = this.add.sprite(player.x, player.y - 50).setTint(0x674EA7).setDepth(4).setVisible(1)
+        playerTurnVFX = this.add.sprite(player.x, player.y - 50).setTint(0x674EA7).setDepth(4).setVisible(1)
         
        
         
@@ -2949,8 +2949,8 @@
         // General
 
         this.anims.create({
-            key: 'currentTurnIcon',
-            frames: this.anims.generateFrameNumbers('currentTurnIcon', { start:0, end: 72}),
+            key: 'playerTurnIcon',
+            frames: this.anims.generateFrameNumbers('playerTurnIcon', { start:0, end: 72}),
             frameRate: 81,
             repeat: -1,
             yoyo: 0
@@ -3748,7 +3748,9 @@
                                 // Y = 3
                                 // Back = 8 ; Start = 9
                                 // LS = 10 ; RS = 11 
-                                if (button == 1){
+                                if (button == 2){
+                                    enemyChase(1000)
+                                } else if (button == 1){
                                     if (skillTreeOpen){
                                         var tier = storingBuffTier += 1
                                         income *= 1.025
@@ -4355,13 +4357,7 @@
             enemyChase(1000)
         })
 
-        if (gamePadEnabled){
-            gamePad.on('down', function (button){
-            if (button == 2){
-                enemyChase(1000)
-            }
-        },this)
-        }
+       
         
             
             
