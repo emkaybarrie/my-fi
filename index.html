@@ -300,6 +300,7 @@
                 
                 playerTurnStarted = true
                 playerActionBarRegen = true
+
                 if (player.x > enemy1.x){
                     camera.pan(enemy1.x + Math.abs((player.x - enemy1.x) * 0.7),0,250)
                 } else {
@@ -319,8 +320,19 @@
             }
                 
             if (playerActionBarActive){
+                currentTurnVFX.play('currentTurnIcon',true)
+                currentTurnVFX.setTint(0x00CED1).setAlpha(0.75) //0x674EA7
+                currentTurnVFX.setVisible(1)
+                if (player.flipX){
+                    currentTurnVFX.x = player.x + 10
+                } else {
+                    currentTurnVFX.x = player.x
+                }
                 
+                currentTurnVFX.y = player.y - 50
+
                 playerActionBarRegen = false
+                
                 if(!playerAttacking){
                     
                 if (playerStance > 0){
@@ -337,7 +349,8 @@
 
             if (remActionTime <= 0 && playerActionBarActive){
                 playerActionBarActive = false
-                
+                currentTurnVFX.stop()
+                currentTurnVFX.setVisible(0)
                 var storedStance = playerStance
                 playerStance = -1
                 player.stop()
@@ -391,6 +404,7 @@
             if (enemyTurn){
                 enemyTurn = false
                 
+                
                 fireTowardsTarget(enemy1,player.x,1)
                 enemy1.play({key:'eRun',repeat:0})
 
@@ -418,6 +432,8 @@
             }
 
             if (turnComplete){
+
+                
                 
                 
                 if (player.x > enemy1.x){
@@ -1021,7 +1037,8 @@
    function modeSwitch(mode){
     if (mode == 0){
         hideRunningHUD()
-        
+        currentTurnVFX.stop()
+                currentTurnVFX.setVisible(0)
         playerTurn = false
                 playerTurnStarted = false
                 playerActionBarActive = false
@@ -2518,6 +2535,8 @@
         progress.destroy();
 
     });
+
+        // Music
         songChoice = Math.floor(Phaser.Math.Between(1,10))
         if (songChoice == 1){
             this.load.audio("bgMusic1", ["assets/music/Le_château_magique.mp3"]);
@@ -2578,6 +2597,11 @@
         this.load.image('defaultAction', 'assets/controls/ach_00022.png');
         this.load.image('charge', 'assets/controls/ach_00005.png');
         
+        // Battle Mode
+
+        // Menus & Icons
+        
+
         this.load.image('activeSkillBox', 'assets/activeSkillBox.png');
         this.load.image('energyMoveBox1', 'assets/energyMoveBox2.png');
         this.load.image('energyMoveBox2', 'assets/energyMoveBox2.png');
@@ -2612,6 +2636,10 @@
         this.load.spritesheet('arcaneArcher', 'assets/arcaneArcher.png', { frameWidth: 64, frameHeight: 64});
         this.load.image('arcaneArcherArrow', 'assets/arcaneArcherArrow.png');
 
+
+        // General 
+
+        this.load.spritesheet('currentTurnIcon', 'assets/currentTurnIcon.png', { frameWidth: 100, frameHeight: 100});
         // Enemies
 
         this.load.atlas('doomsayer', 'assets/doomsayer.png','assets/doomsayersprites.json');
@@ -2830,6 +2858,11 @@
         growingBuffIcon = this.add.image(0,0,'growingBuffIcon').setDepth(4).setScale(0.5)
         spendingBuffIcon = this.add.image(0,0,'spendingBuffIcon').setDepth(4).setScale(0.5)
 
+        currentTurnVFX = this.add.sprite(player.x, player.y - 50).setTint(0x674EA7).setDepth(4).setVisible(1)
+        
+       
+        
+
         activeSkillBox = this.add.image(camera.scrollX + 300,camera.scrollY + 40,'activeSkillBox').setDepth(3).setScale(0.072,0.05).setOrigin(0,0.5)
         skillIcon = this.add.image(camera.scrollX + 300,camera.scrollY + 40).setDepth(3).setScale(0.15).setOrigin(0,0.5)
         skillNameText = this.add.text(0, 0, "").setFontFamily('Revalia').setFontSize(16).setColor('#ff9900').setDepth(4).setOrigin(0,0).setAlpha(0);
@@ -2912,6 +2945,21 @@
         secondsTimer = this.time.addEvent({delay: 1000, callback: runSecondsFunctions, args: [], callbackScope: this, loop: true});
         
         // VFX
+
+        // General
+
+        this.anims.create({
+            key: 'currentTurnIcon',
+            frames: this.anims.generateFrameNumbers('currentTurnIcon', { start:0, end: 72}),
+            frameRate: 81,
+            repeat: -1,
+            yoyo: 0
+        });
+
+        
+
+        
+
         this.anims.create({
             key: 'energyStance',
             frames: this.anims.generateFrameNumbers('energyStance', { start:0, end: 35}),
@@ -4304,7 +4352,7 @@
 
         
         keyX.once('down',function(){
-            finish()
+            enemyChase(1000)
         })
 
         if (gamePadEnabled){
@@ -4488,7 +4536,7 @@
 
         // console.log('In Battle: ' + inBattle) 
 
-        // console.log('Player Turn: ' + playerTurn)
+         console.log('Player Turn: ' + playerTurn)
 
         // console.log('Player Action Bar Active: ' + playerActionBarActive) 
 
@@ -4504,7 +4552,7 @@
         
         //  console.log('supportProc: ' + supportProc) 
 
-        // console.log('Enemy 1 Turn: ' + enemyTurn)
+         console.log('Enemy 1 Turn: ' + enemyTurn)
         
         
 
@@ -4752,18 +4800,21 @@
             
       
     
-                        
+   
             
 
            enemy1.flipX = true
             
             this.woodsl4.setAlpha(1) 
+            
+              
 
   
         } else if (inBattle) {
 
            
-
+            
+            
             
 
             if (powerSource == 1){
