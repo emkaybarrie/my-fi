@@ -1844,7 +1844,7 @@
 
     // Attack 1
 
-    player.play({key:'pHeavyAttack',frameRate: 8, repeat: 1},true);
+    player.play({key:'pHeavyAttack',frameRate: 6, repeat: 0},true);
          
     player.once('animationcomplete', function (anim,frame) {
                 player.emit('animationcomplete_' + anim.key, frame)
@@ -1900,7 +1900,7 @@
 
     // Damage Stats
 
-    skillMultiplier = Phaser.Math.Between(0.1,0.15)
+    skillMultiplier = Phaser.Math.Between(0.15,0.25)
 
     supportArrowSpeedMultiplier = 2.5
 
@@ -4140,7 +4140,7 @@
                     if (player.anims.currentFrame.index >= 6 && player.anims.currentFrame.index < 12){
                         
                         sword.body.checkCollision.none = false
-                        damage = 0.1 * (maxEnergy * (attackChargePower/100)) * skillMultiplier
+                        damage = 0.05 * (maxEnergy * (attackChargePower/100)) * skillMultiplier
                     } else {
                         sword.body.checkCollision.none = true
                     }
@@ -4153,7 +4153,7 @@
                     if (player.anims.currentFrame.index >= 6 && player.anims.currentFrame.index < 8){
                         
                         sword.body.checkCollision.none = false
-                        damage = 0.15 * (maxEnergy * (attackChargePower/100)) * skillMultiplier
+                        damage = 0.1 * (maxEnergy * (attackChargePower/100)) * skillMultiplier
                     } else {
                         sword.body.checkCollision.none = true
                     }
@@ -4165,7 +4165,7 @@
                     if (player.anims.currentFrame.index >= 2 && player.anims.currentFrame.index < 3){
                         
                         sword.body.checkCollision.none = false
-                        damage = 0.15 * (maxEnergy * (attackChargePower/100)) * skillMultiplier
+                        damage = 0.1 * (maxEnergy * (attackChargePower/100)) * skillMultiplier
                     } else {
                         sword.body.checkCollision.none = true
                     }
@@ -4176,7 +4176,7 @@
                     if (player.anims.currentFrame.index >= 4 && player.anims.currentFrame.index < 6){
                         
                     sword.body.checkCollision.none = false
-                    damage =  0.3 * (maxEnergy * (attackChargePower/100)) * skillMultiplier
+                    damage =  0.15 * (maxEnergy * (attackChargePower/100)) * skillMultiplier
                     } else {
                         sword.body.checkCollision.none = true
                     }
