@@ -2996,7 +2996,7 @@
         this.anims.create({
             key: 'explosiveStrike',
             frames: this.anims.generateFrameNumbers('explosiveStrike', {start:0, end: 18}),
-            frameRate: 18,
+            frameRate: 36,
             repeat: 0,
             showOnStart: 1,
             hideOnComplete: 1
@@ -4140,7 +4140,7 @@
                     if (player.anims.currentFrame.index >= 6 && player.anims.currentFrame.index < 12){
                         
                         sword.body.checkCollision.none = false
-                        damage = 0.5 * (maxEnergy * (attackChargePower/100)) * skillMultiplier
+                        damage = 0.1 * (maxEnergy * (attackChargePower/100)) * skillMultiplier
                     } else {
                         sword.body.checkCollision.none = true
                     }
