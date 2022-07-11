@@ -186,8 +186,8 @@
      highScore = parseInt(localStorage.getItem('highScore')) || 0;
 
      IS_TOUCH = true
-     gamePad 
-    gamePadEnabled = false
+     
+    gamePadEnabled = true
 
 
     skillTreeOpen = false
@@ -218,7 +218,6 @@
 
     //
     
-   source
 
     chaserCam = true
 
@@ -3307,8 +3306,8 @@
         });
         // GamePad
 
-        this.input.gamepad.once('connected', function (pad) {
-            gamePad  = pad
+        this.input.gamepad.on('connected', function (pad) {
+            gamePad = pad
             gamePadEnabled = true
         },this)
 
@@ -3683,6 +3682,9 @@
         // Gamepad
 
         
+           
+            
+        
 
         if (gamePadEnabled){
             
@@ -3775,6 +3777,7 @@
                                     }
                                 } else if (button == 8){
                                     finish()
+                                   
 
                                 } else if (button == 7){
                                     keyA.isDown = true
