@@ -92,6 +92,10 @@
 
     // Battle Mode
 
+    //NightBorne
+
+    var startNecroFloat = true
+
     var showStanceInfo = false
     var skillMultiplier = 1
 
@@ -108,14 +112,14 @@
     
     var source
 
-    var chaserCam = true
+    var nightBorneCam = true
 
 
     var playerLanded = true
     var playerStance = -1
     var playerEntangled = false
     var enableEntanglement = false
-    var enemy1Entangled = false
+    var nightBorneEntangled = false
 
 
     var regenActive = true
@@ -168,11 +172,11 @@
     var chaosMultiplierMax = 2.5
 
     var playerIsHit = false
-    var enemy1IsHit = false
+    var nightBorneIsHit = false
    
-    var enemy1Life = (income * 0.8) 
-    var enemy1Alive // Can be removed
-    var e1MaxLife = (income * 0.8) 
+    var nightBorneLife = (income * 0.8) 
+   
+    var nightBorneMaxLife = (income * 0.8) 
     
 
     function reset(){
@@ -223,14 +227,14 @@
     //
     
 
-    chaserCam = true
+    nightBorneCam = true
 
 
     playerLanded = true
      playerStance = -1
      playerEntangled = false
      enableEntanglement = false
-     enemy1Entangled = false
+     nightBorneEntangled = false
 
   
      regenActive = true
@@ -282,11 +286,11 @@
      chaosMultiplierMax = 2.5
 
     playerIsHit = false
-     enemy1IsHit = false
+    nightBorneIsHit = false
    
-     enemy1Life = (income * 0.8) 
+    nightBorneLife = (income * 0.8) 
    
-     e1MaxLife = (income * 0.8) 
+    nightBorneMaxLife = (income * 0.8) 
         
     }
 
@@ -305,10 +309,16 @@
                 playerTurnStarted = true
                 playerActionBarRegen = true
 
-                if (player.x > enemy1.x){
-                    camera.pan(enemy1.x + Math.abs((player.x - enemy1.x) * 0.7),0,250)
+                // if (player.x > nightBorne.x){
+                //     camera.pan(nightBorne.x + Math.abs((player.x - nightBorne.x) * 0.7),0,250)
+                // } else {
+                //     camera.pan(player.x + Math.abs((player.x - nightBorne.x) * 0.3),0,250)
+                // }
+
+                if (player.x > width * 1.5){
+                    camera.pan(width * 1.6)
                 } else {
-                    camera.pan(player.x + Math.abs((player.x - enemy1.x) * 0.3),0,250)
+                    camera.pan(width * 1.4)
                 }
                 
                 camera.once('camerapancomplete', function(){
@@ -362,25 +372,35 @@
                 player.once('animationcomplete', function(){
                 playerStance = storedStance
 
-                if (player.x > enemy1.x){
-                    camera.pan(enemy1.x + Math.abs((player.x - enemy1.x) * 0.5),0,1500)
-                } else {
-                    camera.pan(player.x + Math.abs((player.x - enemy1.x) * 0.5),0,1500)
-                }
+                // if (player.x > nightBorne.x){
+                //     camera.pan(nightBorne.x + Math.abs((player.x - nightBorne.x) * 0.5),0,750)
+                // } else {
+                //     camera.pan(player.x + Math.abs((player.x - nightBorne.x) * 0.5),0,750)
+                // }
+
+                
+                    camera.pan(width * 1.5)
+                
                 
                 },this)
                 
                 fireTowardsTarget(player,player.x + 50,1)
-                fireTowardsTarget(enemy1,width*1.25,1)
+                fireTowardsTarget(nightBorne,width*1.25,1)
 
                 
                 
                 camera.once('camerapancomplete', function(){
                     
-                    if (player.x > enemy1.x){
-                    camera.pan(enemy1.x + Math.abs((player.x - enemy1.x) * 0.3),0,250)
+                    // if (player.x > nightBorne.x){
+                    // camera.pan(nightBorne.x + Math.abs((player.x - nightBorne.x) * 0.3),0,250)
+                    // } else {
+                    //     camera.pan(player.x + Math.abs((player.x - nightBorne.x) * 0.7),0,250)
+                    // }
+
+                    if (nightBorne.x > width * 1.5){
+                    camera.pan(width * 1.6)
                     } else {
-                        camera.pan(player.x + Math.abs((player.x - enemy1.x) * 0.7),0,250)
+                        camera.pan(width * 1.4)
                     }
 
                     camera.once('camerapancomplete', function(){
@@ -407,28 +427,36 @@
 
             if (enemyTurn){
                 enemyTurn = false
+                var nightBorneNecroMancerActionChoice = Phaser.Math.Between(1,10)
+                if(nightBorneNecroMancerActionChoice <= 6){
+                    nightBorneNecroMancer.play('nightBorneNecromancer_Attack')
+                } else if (nightBorneNecroMancerActionChoice > 6 && nightBorneNecroMancerActionChoice <= 9){
+                    nightBorneNecroMancer.play('nightBorneNecromancer_Attack2')
+                } else if (nightBorneNecroMancerActionChoice > 9) {
+                    nightBorneNecroMancer.play('nightBorneNecromancer_Attack3')
+                }
                 
-                
-                fireTowardsTarget(enemy1,player.x,1)
-                enemy1.play({key:'eRun',repeat:0})
+                nightBorneNecroMancer.once('animationcomplete',function(){
+                nightBorneNecroMancer.play('nightBorneNecromancer_Idle')
+                fireTowardsTarget(nightBorne,player.x,1)
+                nightBorne.play({key:'nightBorne_Move',repeat:0})
 
-                enemy1.once('animationcomplete',function(){
-                    enemy1.play('eAttack')
+                nightBorne.once('animationcomplete',function(){
+                    nightBorne.play('nightBorne_Attack')
 
-                    enemy1.once('animationcomplete',function(){
-                            fireTowardsTarget(enemy1,width*1.25,1)
-                            enemy1.play({key:'eIdle',repeat:2},true)
+                    nightBorne.once('animationcomplete',function(){
+                            fireTowardsTarget(nightBorne,width*1.25,4)
+                            nightBorne.play({key:'nightBorne_Idle',repeat:0})
                             
-                            enemy1.once('animationcomplete',function(){
-                            
-                            
-                            
+                            nightBorne.once('animationcomplete',function(){
+  
                             turnComplete = true
-                    }, this)
+                            }, this)
                     }, this)
 
 
                             
+                }, this)
                 }, this)
                 
                         
@@ -438,13 +466,16 @@
             if (turnComplete){
 
                 
+                nightBorne.play({key:'nightBorne_Idle'},true)
+                fireTowardsTarget(nightBorne,width*1.15,4)
                 
-                
-                if (player.x > enemy1.x){
-                    camera.pan(enemy1.x + Math.abs((player.x - enemy1.x) * 0.5),0,1500)
-                } else {
-                    camera.pan(player.x + Math.abs((player.x - enemy1.x) * 0.5),0,1500)
-                }
+                // if (player.x > nightBorne.x){
+                //     camera.pan(nightBorne.x + Math.abs((player.x - nightBorne.x) * 0.5),0,750)
+                // } else {
+                //     camera.pan(player.x + Math.abs((player.x - nightBorne.x) * 0.5),0,750)
+                // }
+
+                camera.pan(width * 1.5)
                 
                 
                 playerTurn = false
@@ -454,7 +485,7 @@
                 playerAttacking = false
                 sword.body.checkCollision.none = true
                 enemyTurn = false
-                eSword.body.checkCollision.none = true
+                // eSword.body.checkCollision.none = true
 
                 turnComplete = false
             }
@@ -785,37 +816,37 @@
     {
         this.bg = new Phaser.GameObjects.Graphics(scene).setDepth(1);
         
-        this.enemyLifeBar = new Phaser.GameObjects.Graphics(scene).setDepth(1);
+        this.nightBorneLifeBar = new Phaser.GameObjects.Graphics(scene).setDepth(1);
 
         this.x = x;
         this.y = y;
         
-        this.p =  38 / e1MaxLife
+        this.p =  38 / nightBorneMaxLife
 
         this.draw();
 
         scene.add.existing(this.bg)
-        scene.add.existing(this.enemyLifeBar);
+        scene.add.existing(this.nightBorneLifeBar);
     }
 
-    decreaseEnemyLife (amount)
+    decreaseNightborneLife (amount)
     {
-        enemy1Life -= amount;
+        nightBorneLife -= amount;
 
-        if (enemy1Life < 0)
+        if (nightBorneLife < 0)
         {
-            enemy1Life = 0;
+            nightBorneLife = 0;
         }
 
         this.draw();
 
-        return (enemy1Life === 0);
+        return (nightBorneLife === 0);
     }
 
     draw ()
     {
         this.bg.clear()
-        this.enemyLifeBar.clear();
+        this.nightBorneLifeBar.clear();
 
         //  BG
         this.bg.fillStyle(0x000000);
@@ -823,15 +854,15 @@
 
         //  Health
 
-        this.enemyLifeBar.fillStyle(0xffffff);
-        this.enemyLifeBar.fillRect(this.x + 1, this.y + 1, 38, 3);
-        this.enemyLifeBar.fillStyle(0xcc0000);
+        this.nightBorneLifeBar.fillStyle(0xffffff);
+        this.nightBorneLifeBar.fillRect(this.x + 1, this.y + 1, 38, 3);
+        this.nightBorneLifeBar.fillStyle(0xcc0000);
 
 
-        var d = Math.floor(this.p * enemy1Life);
-        //this.p =  38 / e1MaxLife
+        var d = Math.floor(this.p * nightBorneLife);
+   
 
-        this.enemyLifeBar.fillRect(this.x + 1, this.y + 1, d, 3);
+        this.nightBorneLifeBar.fillRect(this.x + 1, this.y + 1, d, 3);
 
     }
 
@@ -1049,7 +1080,7 @@
 
                 playerAttacking = false
                 sword.body.checkCollision.none = true
-                eSword.body.checkCollision.none = true
+                // eSword.body.checkCollision.none = true
                 supportArrow.body.checkCollision.none = true
                 supportArrow.setVisible(0)
                 turnComplete = false
@@ -1071,7 +1102,7 @@
                             player.body.setBoundsRectangle(new Phaser.Geom.Rectangle(width, 0, width, height));
                             playerMiniVitals.hide()
                             showRunningHUD()
-                            chaserCam = true
+                            nightBorneCam = true
                             
                             
                      
@@ -1084,10 +1115,8 @@
             remActionTime = (currentLife/maxLife) * maxActionTime
             playerActionBarActive = false
             pSFX.setTint()
-            chaserCam = false 
-            
-                  
-            
+            nightBorneCam = false 
+
             hideRunningHUD()
             playerExperience.bg.setVisible()
             playerExperience.experienceBar.setVisible()
@@ -1095,20 +1124,22 @@
             
                     
                     camera.resetFX()
-                    enemy1GetInBattlePosition()
+                    camera.pan(width * 1.5,0,500)
+                    nightBorneGetInBattlePosition()
                     player.stop()
                     playerGetInBattlePosition()
 
                     camera.once('camerapancomplete', function () {
 
-                        if (player.x > enemy1.x){
-                            camera.pan(enemy1.x + Math.abs((player.x - enemy1.x) * 0.5),0,1000)
-                        } else {
-                            camera.pan(player.x + Math.abs((player.x - enemy1.x) * 0.5),0,1000)
-                        }
-                   
+                        // if (player.x > nightBorne.x){
+                        //     camera.pan(nightBorne.x + Math.abs((player.x - nightBorne.x) * 0.5),0,500)
+                        // } else {
+                        //     camera.pan(player.x + Math.abs((player.x - nightBorne.x) * 0.5),0,500)
+                        // }
+                        
+                        //camera.pan(width * 1.5,0,500)
                     if(inBattle){
-                    camera.zoomTo(1.05,1000)
+                    camera.zoomTo(1.05,750)
                     }
 
                         camera.once('camerazoomcomplete', function () {
@@ -1135,22 +1166,22 @@
    }
 
 
-    function startChaserBattle(){
+    function startNightBorneBattle(){
 
     
             if (!inBattle){
             income *= 1 - (0.04 / 12)
-            remActionTime -= 1
-            currentEnergy *= 0.9
+            remActionTime *= 0.95
+            currentEnergy *= 0.95
             playerEntangled = false
-            enemy1Entangled = false
+            nightBorneEntangled = false
             regenActive = false
             modeSwitch(1)
             }
 
         if (enableEntanglement) {
             playerEntangled = true
-            enemy1Entangled = true
+            nightBorneEntangled = true
             
         }
                 
@@ -1165,9 +1196,9 @@
 
                 if(player.anims.getName() == 'pSlide'){
                     
-                        fireTowardsTarget(player,Phaser.Math.FloatBetween(width * 1.5, width * 1.8),4)
+                        fireTowardsTarget(player,Phaser.Math.FloatBetween(width * 1.65, width * 1.85),4)
                         support.play({key:'sRoll',repeat: 1},true)
-                        fireTowardsTarget(support,Phaser.Math.FloatBetween(width * 1.5, width * 1.9),4)
+                        fireTowardsTarget(support,Phaser.Math.FloatBetween(width * 1.6, width * 1.9),4)
                       
                 }
                 player.once('animationcomplete', function (anim,frame) {
@@ -1177,7 +1208,7 @@
         // Player jumps away towards battle position
             player.once('animationcomplete_pSlide', function (anim,frame) {
 
-                camera.pan(player.x ,0,1000)
+                //camera.pan(player.x ,0,500)
                 
                 
                 
@@ -1227,51 +1258,53 @@
 
     }
 
-    function enemy1GetInBattlePosition(){
+    function nightBorneGetInBattlePosition(){
 
-        fireTowardsTarget(enemy1,width * 1.25,1)
+        
+
+        fireTowardsTarget(nightBorne,Phaser.Math.FloatBetween(width * 1.3, width * 1.45),1)
+        fireTowardsTarget(nightBorneNecroMancer,Phaser.Math.FloatBetween(width * 1.1, width * 1.2),1)
 
     // Enemy steps to position
-        enemy1.play({key:'eRun',frameRate: 10},true);
+    nightBorne.play({key:'nightBorne_Move',frameRate: 23,repeat:0});
 
-            if(enemy1.anims.getName() == 'eRun'){
+            if(nightBorne.anims.getName() == 'nightBorne_Move'){
                 
-                
-                
+ 
             }
-            enemy1.once('animationcomplete', function (anim,frame) {
-                enemy1.emit('animationcomplete_' + anim.key, frame)
-            }, enemy1)
+            nightBorne.once('animationcomplete', function (anim,frame) {
+                nightBorne.emit('animationcomplete_' + anim.key, frame)
+            }, nightBorne)
 
     // Enemy taunts
-        enemy1.once('animationcomplete_eRun', function (anim,frame) {
+    nightBorne.once('animationcomplete_nightBorne_Move', function (anim,frame) {
         
             
-            enemy1.play('eAttack',true);
+        nightBorne.play('nightBorne_Attack');
 
-            
 
-            enemy1.once('animationcomplete', function (anim,frame) {
-                enemy1.emit('animationcomplete_' + anim.key, frame)
-            }, enemy1)
+        nightBorne.once('animationcomplete', function (anim,frame) {
+            nightBorne.emit('animationcomplete_' + anim.key, frame)
+            }, nightBorne)
         
 
-        }, enemy1)  
+        }, nightBorne)  
 
     // Enemy enters idle
-        enemy1.once('animationcomplete_eAttack', function (anim,frame) {
+    nightBorne.once('animationcomplete_nightBorne_Attack', function (anim,frame) {
             
         
-            enemy1.play({key:'eIdle'},true);
-
-
-            enemy1.once('animationcomplete', function (anim,frame) {
-                enemy1.emit('animationcomplete_' + anim.key, frame)
-                
-            }, enemy1)
+        nightBorne.play({key:'nightBorne_Idle'},true);
         
 
-        }, enemy1) 
+
+        nightBorne.once('animationcomplete', function (anim,frame) {
+            nightBorne.emit('animationcomplete_' + anim.key, frame)
+                
+            }, nightBorne)
+        
+
+        }, nightBorne) 
 
 
     }
@@ -1336,7 +1369,7 @@
                 scanningForDanger = true
             },this)
         
-        } else if (Math.abs(s1Creep.x - player.x) < Math.abs((treeTrunk.x - player.x)) && Math.abs(s1Creep.x - player.x) < Math.abs((vines.x - player.x)) && s1Creep.x - player.x > -75 && s1Creep.x - player.x < 150){
+        } else if (Math.abs(creep.x - player.x) < Math.abs((treeTrunk.x - player.x)) && Math.abs(creep.x - player.x) < Math.abs((vines.x - player.x)) && creep.x - player.x > -75 && creep.x - player.x < 150){
             scanningForDanger = false
 
             var attackChoice = Phaser.Math.Between(1,2)
@@ -1403,7 +1436,7 @@
 
             
             
-        if (player.x <= enemy1.x + 75){
+        if (player.x <= nightBorne.x + 75){
             usingPower = false
 
             if(supportProc <= 30){
@@ -1423,7 +1456,7 @@
 
 
             
-        } else if (player.x > enemy1.x + 75 && player.x < enemy1.x + 150){
+        } else if (player.x > nightBorne.x + 75 && player.x < nightBorne.x + 150){
             usingPower = false
             player.play({key:'pDash',frameRate:12},true)
 
@@ -1441,7 +1474,7 @@
             }
             
                                     
-            fireTowardsTarget(player,enemy1.x,1)
+            fireTowardsTarget(player,nightBorne.x,1)
             player.once('animationcomplete', function(){
                
                 
@@ -1485,7 +1518,7 @@
         
         if(usingPower){
             
-        if (player.x <= enemy1.x + 75){
+        if (player.x <= nightBorne.x + 75){
             usingPower = false
                                     if(playerStance == 0){
                                      
@@ -1507,7 +1540,7 @@
                                     }
             
 
-        } else if (player.x > enemy1.x + 75 && player.x < enemy1.x + 150){
+        } else if (player.x > nightBorne.x + 75 && player.x < nightBorne.x + 150){
             usingPower = false
 
             if (playerStance == 3){
@@ -1519,7 +1552,7 @@
             }
             player.play({key:'pDash',frameRate:12},true)
             
-            fireTowardsTarget(player,enemy1.x,1)
+            fireTowardsTarget(player,nightBorne.x,1)
             player.once('animationcomplete', function(){
                
                 
@@ -1845,6 +1878,10 @@
     // Attack 1
 
     player.play({key:'pHeavyAttack',frameRate: 6, repeat: 0},true);
+    
+                explosiveStrikeVFX.x = nightBorne.x
+                explosiveStrikeVFX.y = nightBorne.y - 100
+    explosiveStrikeVFX.play({key:'explosiveStrike',delay:500},true) 
          
     player.once('animationcomplete', function (anim,frame) {
                 player.emit('animationcomplete_' + anim.key, frame)
@@ -1855,11 +1892,11 @@
 
             // Dash back to position
             player.once('animationcomplete_pHeavyAttack', function (anim,frame) {
-                camera.shake(500,0.075)
-                explosiveStrikeVFX.x = enemy1.x
-                explosiveStrikeVFX.y = enemy1.y - 25
+                 camera.shake(500,0.075)
+                // explosiveStrikeVFX.x = nightBorne.x
+                // explosiveStrikeVFX.y = nightBorne.y - 100
 
-                explosiveStrikeVFX.play('explosiveStrike',true) 
+                //explosiveStrikeVFX.play('explosiveStrike',true) 
                     
             player.play({key:'pBackDash', frameRate: 6},true);
             
@@ -1971,10 +2008,10 @@
     player.play({key:'pDash', frameRate: 12},true);
 
         
-        if (player.x > enemy1.x){
-            fireTowardsTarget(player,enemy1.x - 15,2)
+        if (player.x > nightBorne.x){
+            fireTowardsTarget(player,nightBorne.x - 15,2)
         } else {
-            fireTowardsTarget(player,enemy1.x + 15,2)
+            fireTowardsTarget(player,nightBorne.x + 15,2)
         }
 
         
@@ -2041,10 +2078,10 @@
             if(player.anims.getName() == 'pJump'){
                 if (player.flipX){
                     player.setDragX(0)
-                    fireTowardsTarget(player,enemy1.x - 150,1)
+                    fireTowardsTarget(player,nightBorne.x - 150,1)
                 } else {
                     player.setDragX(0)
-                    fireTowardsTarget(player,enemy1.x + 150,1)
+                    fireTowardsTarget(player,nightBorne.x + 150,1)
                 }
                 
                     
@@ -2085,14 +2122,14 @@
             if(player.anims.currentFrame.index >= 1){
 
             player.setVelocityY(500)
-            thunderStrikeVFX.x = enemy1.x
-                        thunderStrikeVFX.y = enemy1.y + 50
+            thunderStrikeVFX.x = nightBorne.x
+                        thunderStrikeVFX.y = nightBorne.y + 50
                         camera.flash(500)      
                         camera.once('cameraflashcomplete',function(){
                                 thunderStrikeVFX.play({key:'thunderStrike',frameRate:36},true)
                                 camera.shake(500,0.05)
-                                chaserVFX.angle = 0
-                                chaserVFX.play('thunderStrikeSmear')        
+                                // chaserVFX.angle = 0
+                                // chaserVFX.play('thunderStrikeSmear')        
                         },this)
             
             }
@@ -2112,8 +2149,8 @@
                 
                 
                     player.play({key:'pAttack2',frameRate:8},true);
-                    thunderStrikeVFX.x = enemy1.x
-                    thunderStrikeVFX.y = enemy1.y + 50
+                    thunderStrikeVFX.x = nightBorne.x
+                    thunderStrikeVFX.y = nightBorne.y + 50
                     camera.flash(500)      
                         camera.once('cameraflashcomplete',function(){
                                 thunderStrikeVFX.play({key:'thunderStrike',frameRate:24},true)
@@ -2205,8 +2242,8 @@
         if (inBattle){
             camera.shake(250, 0.0025);
             playerIsHit = true
-            playerVitals.decreaseLife((e1MaxLife * 0.1) / 50)
-            playerActionTimeBar.decreaseActionTime((e1MaxLife * 0.25) / 50)
+            playerVitals.decreaseLife((nightBorneMaxLife * 0.1) / 50)
+            playerActionTimeBar.decreaseActionTime((nightBorneMaxLife * 0.25) / 50)
             maxEnergy *= 1 - (0.04 / 12 / 50)
             if(glory - (25/60) < 0){
                 glory = 0
@@ -2234,53 +2271,53 @@
 
     }
 
-    function s1CreepHit(){
+    function creepHit(){
         glory += level + 1
         gold += (level * 2) + 1
-        s1Creep.play('s1CreepDeath',true)
+        creep.play('creepDeath',true)
     }
 
-    function enemy1SupportHit(){
-        enemy1IsHit = true
+    function nightBorneSupportHit(){
+        nightBorneIsHit = true
 
         if (inBattle) {   
 
-            if (support.x >= enemy1.x){
-                chaserS1VFX.angle = 0 
-            } else {
-                chaserS1VFX.angle = 180
-            }
+            // if (support.x >= nightBorne.x){
+            //     chaserS1VFX.angle = 0 
+            // } else {
+            //     chaserS1VFX.angle = 180
+            // }
 
-                chaserS1VFX.setTint(0x301934)
-                chaserS1VFX.play('whiteHitSmear2',true)
+                // chaserS1VFX.setTint(0x301934)
+                nightBorneVFX.play('whiteHitSmear2',true)
                 sDamage = energyRegen * (attackChargePower/100) * 0.25
-                enemy1Vitals.decreaseEnemyLife(sDamage)
-                chaserS1VFX.on('animationcomplete',function(){
+                nightBorneVitals.decreaseNightborneLife(sDamage)
+                nightBorneVFX.on('animationcomplete',function(){
                     supportArrow.setVisible(0)
-                    chaserS1VFX.setTint()
+                    // chaserS1VFX.setTint()
                 },this)
 
-            fireTowardsTarget(enemy1,enemy1.x - 250,1)
+            fireTowardsTarget(nightBorne,nightBorne.x - 250,1)
         }
     }
 
-    function enemy1Hit(){
+    function nightBorneHit(){
 
-        enemy1IsHit = true
+        nightBorneIsHit = true
 
         if (inBattle) {   
 
-            if (player.x >= enemy1.x){
-                chaserVFX.angle = 180
+            if (player.x >= nightBorne.x){
+                // chaserVFX.angle = 180
             } else {
-                chaserVFX.angle = 0
+                // chaserVFX.angle = 0
             }
 
-            if (keyA.isDown){
-                chaserVFX.play('whiteHitSmear',true)
-            } else if (cursors.space.isDown) {
-                chaserVFX.play('deadlyCombatAssaultSmear',true)
-            }
+            // if (keyA.isDown){
+            //     chaserVFX.play('whiteHitSmear',true)
+            // } else if (cursors.space.isDown) {
+            //     chaserVFX.play('deadlyCombatAssaultSmear',true)
+            // }
             
 
             var chaos = Phaser.Math.FloatBetween(0.00,1.00)
@@ -2289,34 +2326,34 @@
             camera.flash(150);
             camera.shake(500, 0.0075);
             damage *= Phaser.Math.Between(1.75,2.25)
-            enemy1Vitals.decreaseEnemyLife(damage)
+            nightBorneVitals.decreaseNightborneLife(damage)
             if (player.flipX){
-                enemy1.x -= Phaser.Math.Between(15,25)
+                nightBorne.x -= Phaser.Math.Between(15,25)
                 
             } else {
-                enemy1.x -= Phaser.Math.Between(-15,-25)
+                nightBorne.x -= Phaser.Math.Between(-15,-25)
             }
             //
             } else
             if (chaos < 0.075){
             camera.shake(500, 0.0025);
             damage *= Phaser.Math.Between(1.25,1.55)
-            enemy1Vitals.decreaseEnemyLife(damage)
+            nightBorneVitals.decreaseNightborneLife(damage)
             if (player.flipX){
-                enemy1.x -= Phaser.Math.Between(1.5,2.5)
+                nightBorne.x -= Phaser.Math.Between(1.5,2.5)
                 
             } else {
-                enemy1.x -= Phaser.Math.Between(-2.5,-1.5)
+                nightBorne.x -= Phaser.Math.Between(-2.5,-1.5)
             }
             } else {
                 camera.shake(250, 0.0025);
                 damage *= Phaser.Math.Between(0.85,1.1)
-                enemy1Vitals.decreaseEnemyLife(damage)
+                nightBorneVitals.decreaseNightborneLife(damage)
                 if (player.flipX){
                 
-                enemy1.x -= Phaser.Math.Between(-1.5,1.5)
+                    nightBorne.x -= Phaser.Math.Between(-1.5,1.5)
             } else {
-                enemy1.x -= Phaser.Math.Between(-1,1)
+                nightBorne.x -= Phaser.Math.Between(-1,1)
             }
 
        
@@ -2327,11 +2364,11 @@
                  
     }
 
-    function enemy1Recover(){
+    function nightBorneRecover(){
 
-        if (enemy1IsHit){
-            enemy1IsHit  = false
-            enemy1.anims.play({key:'eIdle',frameRate: 12},true); 
+        if (nightBorneIsHit){
+            nightBorneIsHit  = false
+            nightBorne.anims.play({key:'nightBorne_Idle',frameRate: 12},true); 
                 
         }
 
@@ -2344,7 +2381,7 @@
     {
        if (inBattle == false) {
         
-        enemy1.setVelocityX(enemy1.body.velocity.x + (velocityBoost * chaosFactor))
+        nightBorne.setVelocityX(nightBorne.body.velocity.x + (velocityBoost * chaosFactor))
 
         }
    
@@ -2358,7 +2395,7 @@
 
         income *= 0.96
         enemyChase(600)
-        enemy1.setScale(Phaser.Math.FloatBetween(1.65,1.8),Phaser.Math.FloatBetween(1.2,1.3))
+        //nightBorne.setScale(Phaser.Math.FloatBetween(2.2,3))
 
         }
 
@@ -2378,9 +2415,9 @@
 
         if (inBattle == false) {
 
-            e1MaxLife = 2 + (income * chaosFactor) * 3
-            enemy1Life = e1MaxLife
-            enemy1Vitals.p = 38 / e1MaxLife
+            nightBorneMaxLife = 2 + (income * chaosFactor) * 3
+            nightBorneLife = nightBorneMaxLife
+            nightBorneVitals.p = 38 / nightBorneMaxLife
             
             enemyChase(Phaser.Math.Between(-25,50))
 
@@ -2484,10 +2521,10 @@
 
 
         
-        this.load.audio("playerSwordSwing", ["assets/soundFX/SFX_Whoosh_Sword_02.mp3"]);
-        this.load.audio("playerHeavySwordSwing", ["assets/soundFX/SFX_Whoosh_Sword_03.mp3"]);        
-        this.load.audio("enemySwordSwing", ["assets/soundFX/SFX_Sword_Whoosh_01.mp3"]);
-        this.load.audio("charge", ["assets/soundFX/SFX_Potion_01.mp3"]);
+        this.load.audio("playerSwordSwing", ["assets/sFX/SFX_Whoosh_Sword_02.mp3"]);
+        this.load.audio("playerHeavySwordSwing", ["assets/sFX/SFX_Whoosh_Sword_03.mp3"]);        
+        this.load.audio("enemySwordSwing", ["assets/sFX/SFX_Sword_Whoosh_01.mp3"]);
+        this.load.audio("charge", ["assets/sFX/SFX_Potion_01.mp3"]);
         
         this.load.image('playerIconBox', 'assets/activeSkillBox.png');
         this.load.image('playerIcon', 'assets/playerIcon.png');
@@ -2556,6 +2593,7 @@
         this.load.atlas('heroM', 'assets/heroM.png','assets/heroM.json');
         this.load.spritesheet('arcaneArcher', 'assets/arcaneArcher.png', { frameWidth: 64, frameHeight: 64});
         this.load.image('arcaneArcherArrow', 'assets/arcaneArcherArrow.png');
+        
 
 
         // General 
@@ -2565,7 +2603,8 @@
 
         this.load.atlas('doomsayer', 'assets/doomsayer.png','assets/doomsayersprites.json');
         this.load.spritesheet('nightBorne', 'assets/nightBorne.png', { frameWidth: 80, frameHeight: 80});
-        
+        this.load.spritesheet('nightBorneNecromancer', 'assets/nightBorneNecromancer.png', { frameWidth: 160, frameHeight: 128});
+
         this.load.spritesheet('energyStance', 'assets/energyStance.png', { frameWidth: 96, frameHeight: 192});
         this.load.spritesheet('focusStance', 'assets/focusStance.png', { frameWidth: 96, frameHeight: 192});
         this.load.spritesheet('chargeEnergy', 'assets/animations/17_felspell_spritesheet.png', { frameWidth: 100, frameHeight: 100});
@@ -2575,20 +2614,20 @@
         this.load.spritesheet('whiteHitSmear2', 'assets/whiteHitSmear2.png', { frameWidth: 1048, frameHeight: 1048});  
 
         // Skills
-        this.load.spritesheet('explosiveStrikeIcon', 'assets/explosiveStrikeIcon.png', { frameWidth: 256, frameHeight: 256});
-        this.load.spritesheet('explosiveStrike', 'assets/explosiveStrike.png', { frameWidth: 48, frameHeight: 48}); 
+        this.load.spritesheet('explosiveStrikeIcon', 'assets/skills/explosiveStrikeIcon.png', { frameWidth: 256, frameHeight: 256});
+        this.load.spritesheet('explosiveStrike', 'assets/skills/explosiveStrike.png', { frameWidth: 48, frameHeight: 48}); 
         
 
-        this.load.spritesheet('thunderStrikeIcon', 'assets/thunderStrikeIcon.png', { frameWidth: 256, frameHeight: 256});
-        this.load.spritesheet('thunderStrike', 'assets/thunderStrike.png', { frameWidth: 64, frameHeight: 64}); 
-        this.load.spritesheet('thunderStrikeSmear', 'assets/thunderStrikeSmear.png', { frameWidth: 1048, frameHeight: 1048});
+        this.load.spritesheet('thunderStrikeIcon', 'assets/skills/thunderStrikeIcon.png', { frameWidth: 256, frameHeight: 256});
+        this.load.spritesheet('thunderStrike', 'assets/skills/thunderStrike.png', { frameWidth: 64, frameHeight: 64}); 
+        this.load.spritesheet('thunderStrikeSmear', 'assets/skills/thunderStrikeSmear.png', { frameWidth: 1048, frameHeight: 1048});
 
-        this.load.spritesheet('deadlyCombatAssaultIcon', 'assets/deadlyCombatAssaultIcon.png', { frameWidth: 256, frameHeight: 256});
-        this.load.spritesheet('deadlyCombatAssaultSmear', 'assets/deadlyCombatAssaultSmear.png', { frameWidth: 1048, frameHeight: 1048});
+        this.load.spritesheet('deadlyCombatAssaultIcon', 'assets/skills/deadlyCombatAssaultIcon.png', { frameWidth: 256, frameHeight: 256});
+        this.load.spritesheet('deadlyCombatAssaultSmear', 'assets/skills/deadlyCombatAssaultSmear.png', { frameWidth: 1048, frameHeight: 1048});
 
-        this.load.spritesheet('eagleStrikeIcon', 'assets/eagleStrikeIcon.png', { frameWidth: 256, frameHeight: 256});
+        this.load.spritesheet('eagleStrikeIcon', 'assets/skills/eagleStrikeIcon.png', { frameWidth: 256, frameHeight: 256});
 
-        this.load.spritesheet('coveringFireIcon', 'assets/coveringFireIcon.png', { frameWidth: 256, frameHeight: 256});
+        this.load.spritesheet('coveringFireIcon', 'assets/skills/coveringFireIcon.png', { frameWidth: 256, frameHeight: 256});
         
         
 
@@ -2690,58 +2729,98 @@
         treeTrunk.body.setSize(150,57).setOffset(5,10)
 
 
-            enemy1 = this.physics.add.sprite(0, height - 85, 'doomsayer').setScale(1.75, 1.2).setPipeline('Light2D');
-            
-            enemy1.setDepth(0)
-            enemy1.flipX = true
-            enemy1.body.maxVelocity.x = 500
-            enemy1.setCollideWorldBounds(true)
-            enemy1.body.setAllowGravity(true)
-            chaserVFX = this.add.sprite(enemy1.x, enemy1.y)
-            chaserVFX.setDepth(1).setScale(0.25)//.setPipeline('Light2D')
-            chaserS1VFX = this.add.sprite(enemy1.x, enemy1.y)
-            chaserS1VFX.setDepth(1).setScale(0.25)//.setPipeline('Light2D')
+     
             
             
-            this.physics.add.overlap(enemy1, player, startChaserBattle);
             
-            this.physics.add.overlap(sword, enemy1, enemy1Hit)
-            this.physics.add.overlap(supportArrow,enemy1, enemy1SupportHit);
-            this.physics.add.collider(platforms,enemy1);
             
-            enemy1.body.setAllowDrag(true)
-           
-            enemy1Life = (income * 0.3) * Phaser.Math.Between(0.8,1.7) 
-            e1MaxLife = enemy1Life
-            enemy1Alive = true
 
-            enemy1Vitals = new EnemyHealthBar(this,enemy1.x, enemy1.y - 50);
-
-            eSword = this.add.rectangle(enemy1.x, enemy1.y, 65, 60);
-            this.physics.add.existing(eSword, false)
-            eSword.body.setAllowGravity(false).setOffset(0,5)
-            eSword.body.checkCollision.none = true
-            this.physics.add.overlap(eSword, player, playerEnemyHit);
-
-            // Stage 1 Creeps
-            s1Creep = this.physics.add.sprite(0, 0, 'nightBorne').setScale(3).setPipeline('Light2D').setOrigin(0.5,1);
-            s1Creep.body.setSize(45, 50)
-            //s1Creep.play('s1CreepRun',true)
             
-            s1Creep.setDepth(0)
-            s1Creep.flipX = true
-            s1Creep.body.maxVelocity.x = 500
-            s1Creep.setCollideWorldBounds(true)
-            s1Creep.body.setAllowGravity(true)
-            s1CreepVFX = this.add.sprite(s1Creep.x, s1Creep.y)
-            s1CreepVFX.setDepth(1).setScale(0.25)//.setPipeline('Light2D')
+
+            // eSword = this.add.rectangle(nightBorne.x, nightBorne.y, 65, 60);
+            // this.physics.add.existing(eSword, false)
+            // eSword.body.setAllowGravity(false).setOffset(0,5)
+            // eSword.body.checkCollision.none = true
+            // this.physics.add.overlap(eSword, player, playerEnemyHit);
+
+            // NightBorne
             
+            nightBorne = this.physics.add.sprite(0, 0, 'nightBorne').setScale(3.25).setOrigin(0.5,1).setDepth(1)
+            nightBorneVitals = new EnemyHealthBar(this,nightBorne.x, nightBorne.y - 150);
+            nightBorneLife = (income * 0.3) * Phaser.Math.Between(0.8,1.7) 
+            nightBorneMaxLife = nightBorneLife
+            nightBorneAlive = true
+            nightBorne.body.maxVelocity.x = 500
+            nightBorne.body.setSize(45, 50)
+
+            nightBorne.body.setAllowDrag(true)
+            nightBorne.setCollideWorldBounds(true)
+            nightBorne.body.setAllowGravity(1)
+            this.physics.add.overlap(nightBorne, player, startNightBorneBattle);
+            this.physics.add.overlap(sword, nightBorne, nightBorneHit)
+            this.physics.add.overlap(supportArrow,nightBorne, nightBorneSupportHit);
+            this.physics.add.collider(platforms,nightBorne);
+            
+
+            nightBorneOutline = this.physics.add.sprite(nightBorne.x - 1, nightBorne.y - 2.5, 'nightBorne').setScale(3.25).setOrigin()
+            nightBorneOutline.setTintFill(0x7851a9).setDepth(0).setAlpha(0.75)
+            nightBorneOutline.body.setAllowGravity(0)
+            nightBorneOutline.body.setSize(45, 50)
+            nightBorneOutline.setCollideWorldBounds(false)
+            this.tweens.add({
+                                    targets     : nightBorneOutline,
+                                    alpha       : 0, 
+                                    scale      : 3.35,
+                                   
+                                    ease        : 'Power2',
+                                    duration    : 2000,
+                                    yoyo        : 1,
+                                    //loop        : -1,
+                                    repeat      : -1
+            });
+            
+            nightBorneVFX = this.add.sprite(nightBorne.x, nightBorne.y)
+            nightBorneVFX.setDepth(0).setScale(0.25)//.setPipeline('Light2D')
+
+            nightBorneNecroMancer = this.physics.add.sprite(nightBorne.x - 100, nightBorne.y + 75, 'nightBorneNecromancer').setScale(1.75).setOrigin()
+            nightBorneNecroMancer.setDepth(1)
+            nightBorneNecroMancer.setSize(60, 60).setOffset(50,50)
+            nightBorneNecroMancer.body.maxVelocity.x = 500
+            nightBorneNecroMancer.setCollideWorldBounds(true)
+            nightBorneNecroMancer.body.setAllowGravity(0)
+            this.physics.add.collider(platforms,nightBorneNecroMancer);
             //this.physics.add.overlap(s1Creep, player, playerCreepHit);
+            //this.physics.add.overlap(sword, nightBorneNecroMancer, nightBorneNecroMancerHit)  
+            //nightBorneNecroMancer.body.setAllowDrag(true)
+
+            nightBorneNecroMancerOutline = this.physics.add.sprite(nightBorneNecroMancer.x - 1, nightBorneNecroMancer.y - 2.5, 'nightBorneNecromancer').setScale(2.1).setOrigin()
+            nightBorneNecroMancerOutline.setTintFill(0x7851a9).setDepth(0).setAlpha(1)
+            nightBorneNecroMancerOutline.body.setAllowGravity(0)
+            nightBorneNecroMancerOutline.setSize(60, 60).setOffset(50,50)
+            nightBorneNecroMancerOutline.setCollideWorldBounds(true)
+            this.tweens.add({
+                                    targets     : nightBorneNecroMancerOutline,
+                                    alpha       : 0, 
+                                    scale      : 1.9,
+                                   
+                                    ease        : 'Power2',
+                                    duration    : 2000,
+                                    yoyo        : 1,
+                                    //loop        : -1,
+                                    repeat      : -1
+            });
+
+           
             
-            this.physics.add.overlap(sword, s1Creep, s1CreepHit)
-            this.physics.add.collider(platforms,s1Creep);
+            nightBorneNecroMancerVFX = this.add.sprite(nightBorneNecroMancer.x, nightBorneNecroMancer.y)
+            nightBorneNecroMancerVFX.setDepth(0).setScale(0.25)//.setPipeline('Light2D')
+
+            // Creep
+
+            creep = this.physics.add.sprite(0, 0).setScale(2).setOrigin()
             
-            s1Creep.body.setAllowDrag(true)
+            
+            
             
           
 
@@ -2982,7 +3061,7 @@
             //delay: 1
         });
 
-        thunderStrikeVFX = this.add.sprite(enemy1.x, enemy1.y)
+        thunderStrikeVFX = this.add.sprite(0,0)
         thunderStrikeVFX.setDepth(1).setScale(2,5).setOrigin(0.5,1)//.setPipeline('Light2D')
         thunderStrikeLighting = this.lights.addLight(0, 0, 0).setIntensity(1.5)
         thunderStrikeLighting.setColor(0xFFBF1F)
@@ -3002,8 +3081,8 @@
             hideOnComplete: 1
         });
 
-        explosiveStrikeVFX = this.add.sprite(enemy1.x, enemy1.y)
-        explosiveStrikeVFX.setDepth(1).setScale(3)
+        explosiveStrikeVFX = this.add.sprite(0,0)
+        explosiveStrikeVFX.setDepth(2).setScale(3)
 
 
         // Player Animations
@@ -3221,7 +3300,89 @@
 
 
 
-        // Chaser Animation
+        // NightBorne Animation
+
+        this.anims.create({
+            key: 'nightBorne_Idle',
+            frames: this.anims.generateFrameNumbers('nightBorne', { start:0, end: 8}),
+            frameRate: 12,
+            showOnStart: 1,
+            repeat:-1
+        });
+
+        this.anims.create({
+            key: 'nightBorne_Move',
+            frames: this.anims.generateFrameNumbers('nightBorne', { start:23, end: 28}),
+            frameRate: 12,
+            showOnStart: 1,
+            repeat:-1
+        });
+
+        this.anims.create({
+            key: 'nightBorne_Attack',
+            frames: this.anims.generateFrameNumbers('nightBorne', { start:46, end: 57}),
+            frameRate: 12,
+            showOnStart: 1,
+            repeat:0
+        });
+
+        this.anims.create({
+            key: 'nightBorne_Hurt',
+            frames: this.anims.generateFrameNumbers('nightBorne', { start:69, end: 73}),
+            frameRate: 12,
+            showOnStart: 1,
+            repeat:0
+        });
+
+        this.anims.create({
+            key: 'nightBorne_Death',
+            frames: this.anims.generateFrameNumbers('nightBorne', { start:91, end: 115}),
+            frameRate: 23,
+            repeat:0,
+            hideOnComplete: false
+        });
+
+        this.anims.create({
+            key: 'nightBorneNecromancer_Idle',
+            frames: this.anims.generateFrameNumbers('nightBorneNecromancer', { start:0, end: 7}),
+            frameRate: 8,
+            repeat:-1
+        });
+
+        this.anims.create({
+            key: 'nightBorneNecromancer_Move',
+            frames: this.anims.generateFrameNumbers('nightBorneNecromancer', { start:17, end: 24}),
+            frameRate: 12,
+            showOnStart: 1,
+            repeat:-1
+        });
+
+        this.anims.create({
+            key: 'nightBorneNecromancer_Attack',
+            frames: this.anims.generateFrameNumbers('nightBorneNecromancer', { start:51, end: 63}),
+            frameRate: 16,
+            showOnStart: 1,
+            repeat:0
+        });
+
+        this.anims.create({
+            key: 'nightBorneNecromancer_Attack2',
+            frames: this.anims.generateFrameNumbers('nightBorneNecromancer', { start:34, end: 46}),
+            frameRate: 10,
+            showOnStart: 1,
+            repeat:0
+        });
+
+        this.anims.create({
+            key: 'nightBorneNecromancer_Attack3',
+            frames: this.anims.generateFrameNumbers('nightBorneNecromancer', { start:68, end: 84}),
+            frameRate: 8,
+            showOnStart: 1,
+            repeat:0
+        });
+
+        
+
         this.anims.create({
             key: 'eIdle',
             frames: this.anims.generateFrameNames('doomsayer',{prefix: 'idle', start: 1, end: 8}),
@@ -3273,16 +3434,10 @@
 
         // S1 Enemies
 
-        this.anims.create({
-            key: 's1CreepRun',
-            frames: this.anims.generateFrameNumbers('nightBorne', { start:23, end: 28}),
-            frameRate: 10,
-            showOnStart: 1,
-            repeat:-1
-        });
+        
 
         this.anims.create({
-            key: 's1CreepDeath',
+            key: 'creepDeath',
             frames: this.anims.generateFrameNumbers('nightBorne', { start:91, end: 115}),
             frameRate: 23,
             repeat:0,
@@ -3296,8 +3451,7 @@
         },this)
 
 
-
-
+       
         
         
         // Controllers online
@@ -3539,7 +3693,7 @@
 
             });
             
-    
+            
 
     }
 
@@ -3566,8 +3720,8 @@
            
     
 
-            enemy1.setVelocityX(-100)
-            enemy1.setDragX(500)
+            nightBorne.setVelocityX(-100)
+            nightBorne.setDragX(500)
         }
         
            
@@ -3593,11 +3747,11 @@
     
     }
 
-    function moveS1Creep (speed){
+    function moveCreep (speed){
     
-    s1Creep.x -= speed;
-    if (s1Creep.x < Phaser.Math.Between(0,width * 0.25)){
-        resetS1Creep(s1Creep)
+        creep.x -= speed;
+    if (creep.x < Phaser.Math.Between(0,width * 0.25)){
+        resetCreep(creep)
     }
 
     
@@ -3617,12 +3771,12 @@
         treeTrunk.setScale(scaleXRandom,scaleYRandom)
     }
 
-    function resetS1Creep (s1Creep){
-        s1Creep.x = Phaser.Math.Between(width * 2.5,width * 3)
-        s1Creep.play('s1CreepRun',true)
+    function resetCreep (creep){
+        creep.x = Phaser.Math.Between(width * 2.5,width * 3)
+        creep.play('creepRun',true)
         var scaleXRandom = Phaser.Math.FloatBetween(1.9,3.1)
         var scaleYRandom = Phaser.Math.FloatBetween(1.8,3.2)
-        s1Creep.setScale(scaleXRandom,scaleYRandom)
+        creep.setScale(scaleXRandom,scaleYRandom)
     }
 
     function finish(){
@@ -3660,6 +3814,51 @@
 
     function update ()
     {
+        
+
+        nightBorneOutline.play(''+ nightBorne.anims.getName()+'',true)
+        nightBorneOutline.x = nightBorne.x - 2.5
+        nightBorneOutline.y = nightBorne.y - 135
+
+        nightBorneNecroMancerOutline.play(nightBorneNecroMancer.anims.getName(),true)
+        nightBorneNecroMancerOutline.x = nightBorneNecroMancer.x - 2.5
+        nightBorneNecroMancerOutline.y = nightBorneNecroMancer.y - 10
+
+        if (inBattle){
+            if(startNecroFloat){
+                startNecroFloat = false
+            this.tweens.add({
+                                    targets     : [nightBorneNecroMancerOutline,nightBorneNecroMancer],
+                                    x       : width * 1.35, 
+                                    
+                                   
+                                    ease        : 'Quad.easeIn',
+                                    duration    : 12000,
+                                    yoyo        : 1,
+                                    //loop        : -1,
+                                    repeat      : -1
+            });
+            this.tweens.add({
+                                    targets     : [nightBorneNecroMancerOutline,nightBorneNecroMancer],
+                                    y       : nightBorne.y - 200, 
+                                    
+                                   
+                                    ease        : 'Power2',
+                                    duration    : 7500,
+                                    yoyo        : 1,
+                                    //loop        : -1,
+                                    repeat      : -1,
+                                    delay       : 500
+            });
+        }
+
+        } else if (!inBattle) {
+            
+            nightBorneNecroMancer.x = nightBorne.x - 100
+            nightBorneNecroMancer.y = nightBorne.y - 150
+            nightBorneNecroMancerOutline.x = nightBorneNecroMancer.x - 2.5
+            nightBorneNecroMancerOutline.y = nightBorneNecroMancer.y - 10
+        }
 
         // Controls
 
@@ -4082,25 +4281,25 @@
     }
 
 
-    if (enemy1.body.onFloor() && !enemy1Entangled){
-            player.setDragX(300)
-        } else if (enemy1Entangled && inBattle) {
+    if (nightBorne.body.onFloor() && !nightBorneEntangled){
+            nightBorne.setDragX(300)
+        } else if (nightBorneEntangled && inBattle) {
 
             
-            enemy1.setDragX(1000)
+            nightBorne.setDragX(1000)
 
         
         } else {
 
-            enemy1.setDragX(200)
+            nightBorne.setDragX(200)
     }
 
-        // Stop enemy1 if sliding past anhor point
+        // Stop nightBorne if sliding past anhor point
 
-        if (enemy1.x < width * 1.2 && inBattle){
+        if (nightBorne.x < width * 1.2 && inBattle){
 
-        enemy1.setVelocityX(0)
-        enemy1.x = width * 1.21
+            nightBorne.setVelocityX(0)
+            nightBorne.x = width * 1.21
         }
 
 
@@ -4109,10 +4308,10 @@
         if (support.anims.getName() == 'sShoot'){
                     //playerSwordSwing.play()
                     
-                    if (support.anims.currentFrame.index >= 7 && !enemy1IsHit){
+                    if (support.anims.currentFrame.index >= 7 && !nightBorneIsHit){
                         
                         supportArrow.setVisible(1)
-                        if(support.x > enemy1.x){
+                        if(support.x > nightBorne.x){
                         supportArrow.body.setVelocityX(-350 * supportArrowSpeedMultiplier)
                         } else {
                             supportArrow.body.setVelocityX(350 * supportArrowSpeedMultiplier)
@@ -4184,18 +4383,18 @@
                    
         }
 
-        if (enemy1.anims.getName() == 'eAttack'){
+        if (nightBorne.anims.getName() == 'nightBorne_Attack'){
                 enemySwordSwing.play()
                     
                     
                     
 
-                    if (enemy1.anims.currentFrame.index >= 5 && enemy1.anims.currentFrame.index < 7){
+                    if (nightBorne.anims.currentFrame.index >= 5 && nightBorne.anims.currentFrame.index < 7){
                         
-                        eSword.body.checkCollision.none = false
+                        // eSword.body.checkCollision.none = false
             
                     } else {
-                        eSword.body.checkCollision.none = true
+                        // eSword.body.checkCollision.none = true
                     }
         }
 
@@ -4203,11 +4402,11 @@
 
         // Enemy detects collision with player sword
 
-        if (enemy1IsHit){
-                enemy1.anims.play({key:'eHurt',frameRate: 12},true); 
-                enemy1.once('animationcomplete', function () {
+        if (nightBorneIsHit){
+            nightBorne.anims.play({key:'nightBorne_Hurt',frameRate: 12},true); 
+            nightBorne.once('animationcomplete', function () {
                     
-                        enemy1Recover();
+                nightBorneRecover();
                     
                     
                 }, this);
@@ -4215,18 +4414,18 @@
 
         // Check for enemy death
 
-        if (enemy1Life <= 0 && !enemy1IsHit){
-                        enemy1.anims.play({key:'eDeath',frameRate: 8},true);
+        if (nightBorneLife <= 0 && !nightBorneIsHit){
+            nightBorne.anims.play({key:'nightBorne_Death',frameRate: 23},true);
                         
-                        enemy1.once('animationcomplete', function (anim,frame) {
-                            enemy1.x = 0
-                            e1MaxLife = Phaser.Math.Between(income * 0.8, (income * 0.8) * chaosFactor) 
-                            enemy1Life = e1MaxLife
-                            enemy1Vitals.p = 38 / e1MaxLife
+            nightBorne.once('animationcomplete', function (anim,frame) {
+                nightBorne.x = 0
+                            nightBorneMaxLife = Phaser.Math.Between(income * 0.8, (income * 0.8) * chaosFactor) 
+                            nightBorneLife = nightBorneMaxLife
+                            nightBorneVitals.p = 38 / nightBorneMaxLife
 
                             modeSwitch(0)
                            
-                        }, enemy1)
+                        }, nightBorne)
 
 
         }
@@ -4405,7 +4604,7 @@
         // console.log('Player Energy Regen: ' + energyRegen)
 
         //console.log('Velocity : ' + player.body.velocity.x)
-        //console.log('Velocity to reach Target: ' + -(Phaser.Math.GetSpeed(player.x - enemy1.x, 1) * 1500) * devicePixelRatio)
+        //console.log('Velocity to reach Target: ' + -(Phaser.Math.GetSpeed(player.x - nightBorne.x, 1) * 1500) * devicePixelRatio)
         //console.log('Player Drag X: ' + player.body.drag.x)
 
         //console.log('Player Entangled: ' + playerEntangled)
@@ -4451,7 +4650,7 @@
          
 
 
-          // console.log('Enemy Max HP: ' + e1MaxLife)
+          console.log('Enemy Max HP: ' + startNecroFloat)
 
           //console.log('Support Arrow Visisble: ' + supportArrow.visible)
           //console.log('Support Arrow x: ' + supportArrow.x)
@@ -4460,7 +4659,7 @@
        
  
         playerEntangled = false
-        enemy1Entangled = false
+        nightBorneEntangled = false
 
                                 
         deadSpace.x = left.x + 35.5
@@ -4474,31 +4673,31 @@
        
         
 
-        if (enemy1.flipX){
-            eSword.x = enemy1.x + 25
-            eSword.y = enemy1.y - 15
+        if (nightBorne.flipX){
+            // eSword.x = nightBorne.x + 25
+            // eSword.y = nightBorne.y - 15
         } else {
-            eSword.x = enemy1.x - 50
-            eSword.y = enemy1.y - 15
+            // eSword.x = nightBorne.x - 50
+            // eSword.y = nightBorne.y - 15
         }
 
         //eSword.body.checkCollision.none = true
 
-        enemy1Vitals.x = enemy1.x + 25
-        enemy1Vitals.y = enemy1.y - 20
-        enemy1Vitals.draw()
-        chaserVFX.x = enemy1.x
-        chaserVFX.y = enemy1.y
+        nightBorneVitals.x = nightBorne.x + 30
+        nightBorneVitals.y = nightBorne.y - 100
+        nightBorneVitals.draw()
+        // chaserVFX.x = nightBorne.x
+        // chaserVFX.y = nightBorne.y
 
-        chaserS1VFX.x = enemy1.x
-        chaserS1VFX.y = enemy1.y
+        // chaserS1VFX.x = nightBorne.x
+        // chaserS1VFX.y = nightBorne.y
 
         
-        thunderStrikeVFX.x = enemy1.x
-        thunderStrikeVFX.y = enemy1.y + 50
+        thunderStrikeVFX.x = nightBorne.x
+        thunderStrikeVFX.y = nightBorne.y + 50
 
-        thunderStrikeLighting.x = enemy1.x
-        thunderStrikeLighting.y = enemy1.y + 50
+        thunderStrikeLighting.x = nightBorne.x
+        thunderStrikeLighting.y = nightBorne.y + 50
         thunderStrikeLighting.intensity = 4
 
         
@@ -4546,7 +4745,7 @@
             
 
             chaosFactor = Phaser.Math.FloatBetween(chaosMultiplierMin,chaosMultiplierMax)
-            enemy1.body.setSize(enemy1.width, enemy1.height)
+            //nightBorne.body.setSize(nightBorne.width, nightBorne.height)
             
 
          
@@ -4673,12 +4872,12 @@
             })
 
 
-            // Dynamic Panning based on chaser distance to player
-            if (chaserCam){
-            if (enemy1.x <= width * 0.85){
-                camera.pan(width * 1.5,0,1000) 
+            // Dynamic Panning based on nightBorne distance to player
+            if (nightBorneCam){
+            if (nightBorne.x <= width * 0.85){
+                camera.pan(width * 1.5,0,1250) 
             } else {
-                camera.pan(width * 1.5 - ((width * 1.6) - enemy1.x ),0,2500)
+                camera.pan(width * 1.3,0,2500)
             }
         }
 
@@ -4688,7 +4887,7 @@
    
             
 
-           enemy1.flipX = true
+        nightBorne.flipX = false
             
             this.woodsl4.setAlpha(1) 
             
@@ -4768,13 +4967,13 @@
 
             this.woodsl4.setAlpha(0.75)
 
-            // Enables Player and Enemy1 to automatically face each other
-            if(player.x < enemy1.x){
+            // Enables Player and nightBorne to automatically face each other
+            if(player.x < nightBorne.x){
             player.flipX = false
-            enemy1.flipX = false
+            nightBorne.flipX = true
            } else {
             player.flipX = true
-            enemy1.flipX = true
+            nightBorne.flipX = false
            }
 
            // Turn Start Phase - Player
@@ -4810,11 +5009,15 @@
 
             
 
-            if (enemy1.x > width * Phaser.Math.FloatBetween(1.3,1.4) && player.x > width * 1.4){
-                        enemy1.setVelocityX(enemy1.body.velocity.x - 10)
+            if (nightBorne.x > width * Phaser.Math.FloatBetween(1.3,1.4) && player.x > width * 1.4){
+                nightBorne.setVelocityX(nightBorne.body.velocity.x - 10)
             }
 
-            enemy1.anims.play({key:'eRun',frameRate: 14 * playerSpeed},true);
+            nightBorneNecroMancer.play({key:'nightBorneNecromancer_Idle',frameRate: 8 * playerSpeed},true)
+            nightBorneNecroMancerOutline.play({key:'nightBorneNecromancer_Idle',frameRate: 8 * playerSpeed},true)
+
+            nightBorne.play({key:'nightBorne_Move',frameRate: 8 * playerSpeed},true)
+            nightBorneOutline.play({key:'nightBorne_Move',frameRate: 8 * playerSpeed},true);
 
             
 
@@ -4822,7 +5025,7 @@
 
             moveTreeTrunk(treeTrunk, 4.5 * (playerSpeed))
 
-            moveS1Creep(6 * (playerSpeed))
+            moveCreep(6 * (playerSpeed))
 
             defaultAction.once('pointerdown',function(){
 
@@ -4875,7 +5078,7 @@
                     player.setVelocityX(75)
                     support.setVelocityY(-205)
                     support.setVelocityX(100)
-                    enemy1.setVelocityX(enemy1.body.velocity.x + 50)
+                    nightBorne.setVelocityX(nightBorne.body.velocity.x + 50)
                     
                 //}
 
@@ -5049,11 +5252,11 @@
         } else if (inBattle) {
             // In Battle Mode
 
-            if (enemy1Alive == false){
+            if (nightBorneAlive == false){
 
-                enemy1Alive = true
+                nightBorneAlive = true
                 
-                enemy1.anims.play({key:'eRun',frameRate: 12},true);
+                nightBorne.anims.play({key:'nightBorne_Move',frameRate: 12},true);
 
             }
 
