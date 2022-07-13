@@ -1,3 +1,5 @@
+import { HealthBar, EnemyHealthBar, MiniHealthBar, ExperienceBar, ActionTimeBar } from "./shared/ui-elements";
+import { preload } from "./startup/preload.js"
 
 // Feature MVP To do:
 
@@ -175,46 +177,44 @@ function reset(){
 
     IS_TOUCH = true
     
-if (gamePadEnabled){
-    gamePadEnabled = true
-} else {
-    gamePadEnabled = false
-}
+    if (gamePadEnabled){
+        gamePadEnabled = true
+    } else {
+        gamePadEnabled = false
+    }
 
 
-skillTreeOpen = false
+    skillTreeOpen = false
     storingBuffTier = 0
     spendingBuffTier = 0
-growingBuffTier = 0
+    growingBuffTier = 0
     kianovaBuffTier = 0
 
-// Running Mode
+    // Running Mode
 
     playerFocusing = false
     focusModeActive = false
     scanningForDanger = true
 
-// Battle Mode
+    // Battle Mode
 
-showStanceInfo = false
+    showStanceInfo = false
     skillMultiplier = 1
 
     playerAttacking = false 
     attackModeActive = false
-usingPower = false
+    usingPower = false
 
 
 
     supportProc = 100
     supportArrowSpeedMultiplier = 1
 
-//
+
+    nightBorneCam = true
 
 
-nightBorneCam = true
-
-
-playerLanded = true
+    playerLanded = true
     playerStance = -1
     playerEntangled = false
     enableEntanglement = false
@@ -227,7 +227,7 @@ playerLanded = true
     playerTurnStarted = false
     playerActionBarActive = false
     playerActionBarRegen = false
-remActionTime = 0
+    remActionTime = 0
     maxActionTime = 60 * 4
     turnComplete = false
 
@@ -239,16 +239,16 @@ remActionTime = 0
     level = 0
 
 
-income = 100
+    income = 100
     lifeRegenAllocation = 0.0 
     focusRegenAllocation = 0.3 // a) self -report budget driven (i.e. how much do you save/invest a month) b) queried - eventually determined by funds in specific location (myFi designated/directed savings/funds)
     energyRegenAllocation = 0.7  // a) self-report buidget driven b) delta of non-saved/invested income
 
-lifeRegen = lifeRegenAllocation * income // Calc TBD - Buy-in to myFi stable/pension/emergency fund provides buff to regen - lock tokens/stables and earn 1 - x% 'regen' i.e return
+    lifeRegen = lifeRegenAllocation * income // Calc TBD - Buy-in to myFi stable/pension/emergency fund provides buff to regen - lock tokens/stables and earn 1 - x% 'regen' i.e return
     focusRegen = focusRegenAllocation * income
     energyRegen = 0// energyRegenAllocation * income 
 
-attackChargePower = 0
+    attackChargePower = 0
 
     damage = 0
     sDamage = 0
@@ -269,13 +269,12 @@ attackChargePower = 0
     chaosMultiplierMin = 0.7
     chaosMultiplierMax = 2.5
 
-playerIsHit = false
-nightBorneIsHit = false
+    playerIsHit = false
+    nightBorneIsHit = false
 
-nightBorneLife = (income * 0.8) 
+    nightBorneLife = (income * 0.8) 
 
-nightBorneMaxLife = (income * 0.8) 
-    
+    nightBorneMaxLife = (income * 0.8) 
 }
 
 function runTurn(){
@@ -482,516 +481,6 @@ function runTurn(){
     
 }
 
-
-class HealthBar {
-
-    constructor (scene,startLife, x, y,scaleX,scaleY)
-    {
-        this.bg = new Phaser.GameObjects.Graphics(scene).setDepth(4);
-        
-        
-        this.lifeBar = new Phaser.GameObjects.Graphics(scene).setDepth(4);
-        this.focusBar = new Phaser.GameObjects.Graphics(scene).setDepth(4);
-        this.energyBar = new Phaser.GameObjects.Graphics(scene).setDepth(4);
-        
-
-        this.scaleX = scaleX
-        this.scaleY = scaleY
-
-        this.x = x;
-        this.y = y;
-        
-        this.pL =  (39.5 * this.scaleX) / maxLife
-        this.pF =  (39.5 * this.scaleX)  / maxFocus 
-        this.pE =  (39.5 * this.scaleX)  / maxEnergy
-
-        
-        
-
-        this.draw();
-
-        scene.add.existing(this.bg)
-        scene.add.existing(this.lifeBar);
-        scene.add.existing(this.focusBar);
-        scene.add.existing(this.energyBar);
-        
-    }
-
-    decreaseLife (amount)
-    {
-        currentLife -= amount;
-
-        if (currentLife > maxLife){
-            currentLife = maxLife
-        }
-
-        
-
-        if (currentLife < 0)
-        {
-            currentLife = 0;
-        }
-
-        this.draw();
-
-        return (currentLife === 0);
-    }
-
-    decreaseEnergy (amount)
-    {
-        currentEnergy -= amount;
-
-        if (currentEnergy > maxEnergy){
-            currentEnergy = maxEnergy
-        }
-
-        if (currentEnergy < 0)
-        {
-            currentEnergy = 0;
-        }
-        
-
-        this.draw();
-
-        return (currentEnergy === 0);
-    }
-
-    decreaseFocus (amount)
-    {
-        currentFocus -= amount;
-
-        if (currentFocus > maxFocus){
-            currentFocus = maxFocus
-        }
-
-        if (currentFocus < 0)
-        {
-            currentFocus = 0;
-        }
-
-        this.draw();
-
-        return (currentFocus === 0);
-    }
-
-    hide ()
-    {
-        this.bg.setVisible(0)
-        this.lifeBar.setVisible(0)
-        this.energyBar.setVisible(0)
-        this.focusBar.setVisible(0)
-    }
-
-    show ()
-    {
-        this.bg.setVisible(1)
-        this.lifeBar.setVisible(1)
-        this.energyBar.setVisible(1)
-        this.focusBar.setVisible(1)
-    }
-
-    draw ()
-    {
-        this.bg.clear()
-        this.lifeBar.clear();
-        this.focusBar.clear();
-        this.energyBar.clear();
-        
-
-        //  BG
-        this.bg.fillStyle(0x000000);
-        this.bg.fillRect(this.x, this.y, (40 * this.scaleX), 13.25 * this.scaleY);
-
-        //  Health
-
-        this.lifeBar.fillStyle(0xffffff);
-        this.lifeBar.fillRect(this.x + 1 , this.y + 1, 39.5 * this.scaleX, 4 * this.scaleY);
-        this.lifeBar.fillStyle(0xcc0000);
-
-
-        var d = Math.floor(this.pL * currentLife);
-
-        this.lifeBar.fillRect(this.x + 1 , this.y + 1 , d , 4 * this.scaleY);
-
-        //  Focus
-
-        this.focusBar.fillStyle(0xffffff);
-        this.focusBar.fillRect(this.x + 1 , (this.y + 2 + (4 * this.scaleY)) , 39.5 * this.scaleX, 4 * this.scaleY);
-        this.focusBar.fillStyle(0xf1c232);
-        
-
-        var d = Math.floor(this.pF * currentFocus);
-
-        this.focusBar.fillRect(this.x + 1 , (this.y + 2 + (4 * this.scaleY)), d  , 4 * this.scaleY);
-
-        //  Energy
-
-        this.energyBar.fillStyle(0xffffff);
-        this.energyBar.fillRect(this.x + 1 , (this.y + 3 + ((4 * this.scaleY) * 2)) , 39.5 * this.scaleX , 4 * this.scaleY);
-        this.energyBar.fillStyle(0x00a86b);
-    
-
-        var d = Math.floor(this.pE * currentEnergy);
-
-        this.energyBar.fillRect(this.x + 1 , (this.y + 3 + ((4 * this.scaleY) * 2)), d , 4 * this.scaleY);
-
-        
-    }
-
-}
-
-class MiniHealthBar {
-
-    constructor (scene,startLife, x, y,scaleX,scaleY)
-    {
-        this.bg = new Phaser.GameObjects.Graphics(scene).setDepth(4);
-        
-        
-        this.lifeBar = new Phaser.GameObjects.Graphics(scene).setDepth(4);
-        this.focusBar = new Phaser.GameObjects.Graphics(scene).setDepth(4);
-        this.energyBar = new Phaser.GameObjects.Graphics(scene).setDepth(4);
-        
-
-        this.scaleX = scaleX
-        this.scaleY = scaleY
-
-        this.x = x;
-        this.y = y;
-        
-        this.pL =  (38 * this.scaleX) / maxLife
-        this.pF =  (38 * this.scaleX)  / maxFocus 
-        this.pE =  (38 * this.scaleX)  / maxEnergy
-
-        
-        
-
-        this.draw();
-
-        scene.add.existing(this.bg)
-        scene.add.existing(this.lifeBar);
-        scene.add.existing(this.focusBar);
-        scene.add.existing(this.energyBar);
-        
-    }
-
-    decreaseLife (amount)
-    {
-        currentLife -= amount;
-
-        if (currentLife > maxLife){
-            currentLife = maxLife
-        }
-
-    
-
-        if (currentLife < 0)
-        {
-            currentLife = 0;
-        }
-
-        this.draw();
-
-        return (currentLife === 0);
-    }
-
-    decreaseEnergy (amount)
-    {
-        currentEnergy -= amount;
-
-        if (currentEnergy > maxEnergy){
-            currentEnergy = maxEnergy
-        }
-
-        if (currentEnergy < 0)
-        {
-            currentEnergy = 0;
-        }
-        
-
-        this.draw();
-
-        return (currentEnergy === 0);
-    }
-
-    decreaseFocus (amount)
-    {
-        currentFocus -= amount;
-
-        if (currentFocus > maxFocus){
-            currentFocus = maxFocus
-        }
-
-        if (currentFocus < 0)
-        {
-            currentFocus = 0;
-        }
-
-        this.draw();
-
-        return (currentFocus === 0);
-    }
-
-    hide ()
-    {
-        this.bg.setVisible(0)
-        this.lifeBar.setVisible(0)
-        this.energyBar.setVisible(0)
-        this.focusBar.setVisible(0)
-    }
-
-    show ()
-    {
-        this.bg.setVisible(1)
-        this.lifeBar.setVisible(1)
-        this.energyBar.setVisible(1)
-        this.focusBar.setVisible(1)
-    }
-
-    draw ()
-    {
-        this.bg.clear()
-        this.lifeBar.clear();
-        this.focusBar.clear();
-        this.energyBar.clear();
-        
-
-        //  BG
-        this.bg.fillStyle(0x000000);
-        this.bg.fillRect(this.x, this.y, (40 * this.scaleX), 16 * this.scaleY);
-
-        //  Health
-
-        this.lifeBar.fillStyle(0xffffff);
-        this.lifeBar.fillRect(this.x + 1 , this.y + 1, 38 * this.scaleX, 4 * this.scaleY);
-        this.lifeBar.fillStyle(0xcc0000);
-
-
-        var d = Math.floor(this.pL * currentLife);
-
-        this.lifeBar.fillRect(this.x + 1 , this.y + 1 , d , 4 * this.scaleY);
-
-        //  Focus
-
-        this.focusBar.fillStyle(0xffffff);
-        this.focusBar.fillRect(this.x + 1 , (this.y + 2 + (4 * this.scaleY)) , 38 * this.scaleX, 4 * this.scaleY);
-        this.focusBar.fillStyle(0xf1c232);
-        
-
-        var d = Math.floor(this.pF * currentFocus);
-
-        this.focusBar.fillRect(this.x + 1 , (this.y + 2 + (4 * this.scaleY)), d  , 4 * this.scaleY);
-
-        //  Energy
-
-        this.energyBar.fillStyle(0xffffff);
-        this.energyBar.fillRect(this.x + 1 , (this.y + 3 + ((4 * this.scaleY) * 2)) , 38 * this.scaleX , 4 * this.scaleY);
-        this.energyBar.fillStyle(0x00a86b);
-
-
-        var d = Math.floor(this.pE * currentEnergy);
-
-        this.energyBar.fillRect(this.x + 1 , (this.y + 3 + ((4 * this.scaleY) * 2)), d , 4 * this.scaleY);
-
-        
-    }
-
-}
-
-class EnemyHealthBar {
-
-constructor (scene, x, y)
-{
-    this.bg = new Phaser.GameObjects.Graphics(scene).setDepth(1);
-    
-    this.nightBorneLifeBar = new Phaser.GameObjects.Graphics(scene).setDepth(1);
-
-    this.x = x;
-    this.y = y;
-    
-    this.p =  38 / nightBorneMaxLife
-
-    this.draw();
-
-    scene.add.existing(this.bg)
-    scene.add.existing(this.nightBorneLifeBar);
-}
-
-decreaseNightborneLife (amount)
-{
-    nightBorneLife -= amount;
-
-    if (nightBorneLife < 0)
-    {
-        nightBorneLife = 0;
-    }
-
-    this.draw();
-
-    return (nightBorneLife === 0);
-}
-
-draw ()
-{
-    this.bg.clear()
-    this.nightBorneLifeBar.clear();
-
-    //  BG
-    this.bg.fillStyle(0x000000);
-    this.bg.fillRect(this.x, this.y, 40, 5);
-
-    //  Health
-
-    this.nightBorneLifeBar.fillStyle(0xffffff);
-    this.nightBorneLifeBar.fillRect(this.x + 1, this.y + 1, 38, 3);
-    this.nightBorneLifeBar.fillStyle(0xcc0000);
-
-
-    var d = Math.floor(this.p * nightBorneLife);
-
-
-    this.nightBorneLifeBar.fillRect(this.x + 1, this.y + 1, d, 3);
-
-}
-
-}
-
-class ExperienceBar {
-
-constructor (scene,exp, x, y)
-{
-    this.bg = new Phaser.GameObjects.Graphics(scene).setDepth(4);
-    
-    this.experienceBar = new Phaser.GameObjects.Graphics(scene).setDepth(4);
-
-    this.x = x;
-    this.y = y;
-    
-    this.p =  (39.5 * playerVitals.scaleX) / expToLevelUp
-
-    this.draw();
-
-    scene.add.existing(this.bg)
-    scene.add.existing(this.experienceBar);
-    
-}
-
-increaseExp (amount)
-{
-    exp += amount;
-
-    if (exp > expToLevelUp)
-    {
-        exp = expToLevelUp;
-    }
-
-    this.draw();
-
-    return (exp === expToLevelUp);
-}
-
-
-    draw ()
-    {
-        this.bg.clear()
-        this.experienceBar.clear();
-        
-
-        //  BG
-        this.bg.fillStyle(0x000000);
-        this.bg.fillRect(this.x, this.y, (40 * playerVitals.scaleX), 20);
-
-        //  Exp
-
-        this.experienceBar.fillStyle(0xffffff);
-        this.experienceBar.fillRect(this.x + 1 , this.y + 1, 39.5 * playerVitals.scaleX, 18);
-        this.experienceBar.fillStyle(0x674EA7);
-
-        var d = Math.floor(this.p * exp);
-
-        this.experienceBar.fillRect(this.x + 1 , this.y + 1, d, 18);
-
-        
-    }
-
-}
-
-class ActionTimeBar {
-
-    constructor (scene,remActionTime, x, y)
-    {
-        this.bg = new Phaser.GameObjects.Graphics(scene).setDepth(4);
-        
-        this.actionTimeBar = new Phaser.GameObjects.Graphics(scene).setDepth(4);
-
-        this.x = x;
-        this.y = y;
-        
-        this.p =  203 / maxActionTime
-
-        this.draw();
-
-        scene.add.existing(this.bg)
-        scene.add.existing(this.actionTimeBar);
-        
-    }
-
-    decreaseActionTime (amount)
-    {
-        remActionTime -= amount;
-
-        if (remActionTime < 0)
-        {
-            remActionTime = 0;
-        }
-
-        this.draw();
-
-        return (remActionTime === 0);
-    }
-
-    hide ()
-    {
-        this.bg.setVisible(0)
-        this.actionTimeBar.setVisible(0)
-    }
-
-    show ()
-    {
-        this.bg.setVisible(1)
-        this.actionTimeBar.setVisible(1)
-
-    }
-
-
-
-        
-
-        draw ()
-        {
-            this.bg.clear()
-            this.actionTimeBar.clear();
-        
-
-            //  BG
-            this.bg.fillStyle(0x000000);
-            this.bg.fillRect(this.x, this.y, 205, 20);
-
-            //  Action time
-
-            this.actionTimeBar.fillStyle(0xffffff);
-            this.actionTimeBar.fillRect(this.x + 1, this.y + 1, 203, 18);
-            this.actionTimeBar.fillStyle(0x00CED1);
-
-
-            var d = Math.floor(this.p * remActionTime);
-
-            this.actionTimeBar.fillRect(this.x + 1, this.y + 1, d, 18);
-
-            
-        }
-
-    }
-
 function showRunningHUD() {
     playerIcon.setVisible(1)
     playerIconBox.setVisible(1)
@@ -1057,101 +546,100 @@ function hideTierIcons() {
 }
     
 function modeSwitch(mode){
-if (mode == 0){
-    hideRunningHUD()
-    playerTurnVFX.stop()
-    playerTurnVFX.setVisible(0)
-    playerTurn = false
-            playerTurnStarted = false
-            playerActionBarActive = false
-
-            playerAttacking = false
-            sword.body.checkCollision.none = true
-            nightBorneSword.body.checkCollision.none = true
-            supportArrow.body.checkCollision.none = true
-            supportArrow.setVisible(0)
-            turnComplete = false
-    
-    playerExperience.bg.setVisible(1)
-    playerExperience.experienceBar.setVisible(1)
-        
-        IS_TOUCH = false
-        inBattle = false
-        player.flipX = false
-        support.flipX = false
-        regenActive = true
-        
-        camera.zoomTo(1,750)
-
-                camera.once('camerazoomcomplete', function () {
-
-                        nightBorne.x = 0
-                        player.body.setBoundsRectangle(new Phaser.Geom.Rectangle(width, 0, width, height));
-                        playerMiniVitals.hide()
-                        showRunningHUD()
-                        nightBorneCam = true
-                        
-                        
-                    
-                }, this)
-} else if (mode == 1){
-        inBattle = true 
-        enemyTurn = false
-        playerTurn = false
-        playerIsHit = false
-        remActionTime = (currentLife/maxLife) * maxActionTime
-        playerActionBarActive = false
-        pSFX.setTint()
-        nightBorneCam = false 
-
+    if (mode == 0){
         hideRunningHUD()
-        playerExperience.bg.setVisible()
-        playerExperience.experienceBar.setVisible()
-        IS_TOUCH = false
+        playerTurnVFX.stop()
+        playerTurnVFX.setVisible(0)
+        playerTurn = false
+                playerTurnStarted = false
+                playerActionBarActive = false
+
+                playerAttacking = false
+                sword.body.checkCollision.none = true
+                nightBorneSword.body.checkCollision.none = true
+                supportArrow.body.checkCollision.none = true
+                supportArrow.setVisible(0)
+                turnComplete = false
         
-                
-                camera.resetFX()
-                camera.pan(width * 1.5,0,500)
-                nightBorneGetInBattlePosition()
-                player.stop()
-                playerGetInBattlePosition()
-
-                camera.once('camerapancomplete', function () {
-
-                    // if (player.x > nightBorne.x){
-                    //     camera.pan(nightBorne.x + Math.abs((player.x - nightBorne.x) * 0.5),0,500)
-                    // } else {
-                    //     camera.pan(player.x + Math.abs((player.x - nightBorne.x) * 0.5),0,500)
-                    // }
-                    
-                    //camera.pan(width * 1.5,0,500)
-                if(inBattle){
-                camera.zoomTo(1.05,750)
-                }
+        playerExperience.bg.setVisible(1)
+        playerExperience.experienceBar.setVisible(1)
+            
+            IS_TOUCH = false
+            inBattle = false
+            player.flipX = false
+            support.flipX = false
+            regenActive = true
+            
+            camera.zoomTo(1,750)
 
                     camera.once('camerazoomcomplete', function () {
 
-
-                        camera.flash(250,1000)
-                            camera.once('cameraflashcomplete', function () {
-                                
-                                player.body.setBoundsRectangle(new Phaser.Geom.Rectangle(width * 1.1,0, width * 0.9, height));
-                                player.flipX = true
-                                playerMiniVitals.show()
-                                showRunningHUD()
-                                playerVitals.hide()
-                                regenActive = true
-                                battleStart = true
-                                playerTurn = false
-                                playerActionBarRegen = true
-                                
-                                
-                            },this)
+                            nightBorne.x = 0
+                            player.body.setBoundsRectangle(new Phaser.Geom.Rectangle(width, 0, width, height));
+                            playerMiniVitals.hide()
+                            showRunningHUD()
+                            nightBorneCam = true
+                            
+                            
+                        
                     }, this)
-                },this)
-}
-}
+    } else if (mode == 1){
+            inBattle = true 
+            enemyTurn = false
+            playerTurn = false
+            playerIsHit = false
+            remActionTime = (currentLife/maxLife) * maxActionTime
+            playerActionBarActive = false
+            pSFX.setTint()
+            nightBorneCam = false 
 
+            hideRunningHUD()
+            playerExperience.bg.setVisible()
+            playerExperience.experienceBar.setVisible()
+            IS_TOUCH = false
+            
+                    
+                    camera.resetFX()
+                    camera.pan(width * 1.5,0,500)
+                    nightBorneGetInBattlePosition()
+                    player.stop()
+                    playerGetInBattlePosition()
+
+                    camera.once('camerapancomplete', function () {
+
+                        // if (player.x > nightBorne.x){
+                        //     camera.pan(nightBorne.x + Math.abs((player.x - nightBorne.x) * 0.5),0,500)
+                        // } else {
+                        //     camera.pan(player.x + Math.abs((player.x - nightBorne.x) * 0.5),0,500)
+                        // }
+                        
+                        //camera.pan(width * 1.5,0,500)
+                    if(inBattle){
+                    camera.zoomTo(1.05,750)
+                    }
+
+                        camera.once('camerazoomcomplete', function () {
+
+
+                            camera.flash(250,1000)
+                                camera.once('cameraflashcomplete', function () {
+                                    
+                                    player.body.setBoundsRectangle(new Phaser.Geom.Rectangle(width * 1.1,0, width * 0.9, height));
+                                    player.flipX = true
+                                    playerMiniVitals.show()
+                                    showRunningHUD()
+                                    playerVitals.hide()
+                                    regenActive = true
+                                    battleStart = true
+                                    playerTurn = false
+                                    playerActionBarRegen = true
+                                    
+                                    
+                                },this)
+                        }, this)
+                    },this)
+    }
+}
 
 function startNightBorneBattle(){
 
@@ -1177,8 +665,6 @@ function startNightBorneBattle(){
 }
 
 function playerGetInBattlePosition(){
-
-    
     // Player crouches to jump away
         player.play({key:'pSlide',frameRate: 12},true);
 
@@ -1247,25 +733,21 @@ function playerGetInBattlePosition(){
 }
 
 function nightBorneGetInBattlePosition(){
-
-    
-
     fireTowardsTarget(nightBorne,Phaser.Math.FloatBetween(width * 1.35, width * 1.45),1)
     fireTowardsTarget(nightBorneNecromancer,Phaser.Math.FloatBetween(width * 1.15, width * 1.25),1)
 
-// Enemy steps to position
-nightBorne.play({key:'nightBorne_Move',frameRate: 23,repeat:0});
+    // Enemy steps to position
+    nightBorne.play({key:'nightBorne_Move',frameRate: 23,repeat:0});
 
-        if(nightBorne.anims.getName() == 'nightBorne_Move'){
-            
+    if(nightBorne.anims.getName() == 'nightBorne_Move'){
 
-        }
-        nightBorne.once('animationcomplete', function (anim,frame) {
-            nightBorne.emit('animationcomplete_' + anim.key, frame)
-        }, nightBorne)
+    }
+    nightBorne.once('animationcomplete', function (anim,frame) {
+        nightBorne.emit('animationcomplete_' + anim.key, frame)
+    }, nightBorne)
 
-// Enemy taunts
-nightBorne.once('animationcomplete_nightBorne_Move', function (anim,frame) {
+    // Enemy taunts
+    nightBorne.once('animationcomplete_nightBorne_Move', function (anim,frame) {
     
         
     nightBorne.play('nightBorne_Attack');
@@ -1278,8 +760,8 @@ nightBorne.once('animationcomplete_nightBorne_Move', function (anim,frame) {
 
     }, nightBorne)  
 
-// Enemy enters idle
-nightBorne.once('animationcomplete_nightBorne_Attack', function (anim,frame) {
+    // Enemy enters idle
+    nightBorne.once('animationcomplete_nightBorne_Attack', function (anim,frame) {
         
     
     nightBorne.play({key:'nightBorne_Idle'},true);
@@ -1293,8 +775,6 @@ nightBorne.once('animationcomplete_nightBorne_Attack', function (anim,frame) {
     
 
     }, nightBorne) 
-
-
 }
 
 
@@ -1577,173 +1057,161 @@ function playerS0Combo(){
 
 
 
-// Damage Stats
+    // Damage Stats
 
-skillMultiplier = Phaser.Math.Between(0.75,1)
+    skillMultiplier = Phaser.Math.Between(0.75,1)
 
-// In Range Movement
-
-
-
-// Attack / Skill
-
-// Attack 1a
-    
-    
-    
-        player.play({key:'pAttack1',frameRate: 10},true);
+    // In Range Movement
 
 
-        player.once('animationcomplete', function (anim,frame) {
-            player.emit('animationcomplete_' + anim.key, frame)
-        }, player)
-    
 
-    
-    
-// Attack 1b
-player.once('animationcomplete_pDash', function (anim,frame) {
-    
-    
+    // Attack / Skill
+
+    // Attack 1a
+        
+        
+        
     player.play({key:'pAttack1',frameRate: 10},true);
 
 
     player.once('animationcomplete', function (anim,frame) {
         player.emit('animationcomplete_' + anim.key, frame)
     }, player)
+        
 
+        
+        
+    // Attack 1b
+    player.once('animationcomplete_pDash', function (anim,frame) {
+        player.play({key:'pAttack1',frameRate: 10},true);
 
-}, player) 
+        player.once('animationcomplete', function (anim,frame) {
+            player.emit('animationcomplete_' + anim.key, frame)
+        }, player)
+    }, player) 
 
-// Attack 2
+    // Attack 2
     player.once('animationcomplete_pAttack1', function (anim,frame) {
-    
-    
         player.play({key:'pAttack2'},true);
 
         if(player.anims.getName() == 'pAttack2'){
-            
                 player.setVelocityX(-25)
-            
         }
 
         player.once('animationcomplete', function (anim,frame) {
             player.emit('animationcomplete_' + anim.key, frame)
         }, player)
-    
-
     }, player) 
 
-
     // Attack 3
-        player.once('animationcomplete_pAttack2', function (anim,frame) {
-        
-        
-            player.play({key:'pHeavyAttack'},true);
-
-            player.once('animationcomplete', function (anim,frame) {
-                player.emit('animationcomplete_' + anim.key, frame)
-            }, player)
-        
-
-        }, player)
-    
-
-
-        // Dash back to position
-        player.once('animationcomplete_pHeavyAttack', function (anim,frame) {
-
-                
-        player.play({key:'pBackDash', frameRate: 6},true);
-        
-
-            fireTowardsTarget(player,player.x + 100,1)
-        
+    player.once('animationcomplete_pAttack2', function (anim,frame) {
+        player.play({key:'pHeavyAttack'},true);
 
         player.once('animationcomplete', function (anim,frame) {
             player.emit('animationcomplete_' + anim.key, frame)
-            
-            
+        }, player)
+    }, player)
+
+    // Dash back to position
+    player.once('animationcomplete_pHeavyAttack', function (anim,frame) {
+        player.play({key:'pBackDash', frameRate: 6},true);
+        fireTowardsTarget(player,player.x + 100,1);
+        player.once('animationcomplete', function (anim,frame) {
+            player.emit('animationcomplete_' + anim.key, frame)
         }, player)
 
+    }, player)
 
-        }, player)
-
-        // Return to Idle
-        player.once('animationcomplete_pBackDash', function (anim,frame) {
-
-                
+    // Return to Idle
+    player.once('animationcomplete_pBackDash', function (anim,frame) {
         player.play({key:'pIdle', frameRate: 8},true);
         
         attackChargePower = 0
         usingPower = true
-        
-
 
         player.once('animationcomplete', function (anim,frame) {
             player.emit('animationcomplete_' + anim.key, frame)
-            
         }, player)
-
-
-        }, player)
-
-    
-
+    }, player)
 }
 
 
 function playerS1Combo(){
 
-// Damage Stats
+    // Damage Stats
 
     skillMultiplier = 0.75
 
-// In Range Movement
+    // In Range Movement
 
-
-
-// Attack / Skill
+    // Attack / Skill
     
 
-// Attack 1a
+    // Attack 1a
     // player.once('animationcomplete_pRun', function (anim,frame) {
-    
-    
         player.play({key:'pDoubleAttack',frameRate: 16},true);
-
 
         player.once('animationcomplete', function (anim,frame) {
             player.emit('animationcomplete_' + anim.key, frame)
         }, player)
-    
 
     //}, player)
     
-// Attack 1b
-player.once('animationcomplete_pDash', function (anim,frame) {
-    
+    // Attack 1b
+    player.once('animationcomplete_pDash', function (anim,frame) {
     
     player.play({key:'pDoubleAttack',frameRate: 16},true);
-
 
     player.once('animationcomplete', function (anim,frame) {
         player.emit('animationcomplete_' + anim.key, frame)
     }, player)
 
 
-}, player) 
+    }, player) 
 
-// Attack 3
+    // Attack 3
     player.once('animationcomplete_pDoubleAttack', function (anim,frame) {
-    
     
         player.play({key:'pAttack1'},true);
 
         if(player.anims.getName() == 'pAttack1'){
-            
                 player.setVelocityX(-15)
-                
+        }
+
+        player.once('animationcomplete', function (anim,frame) {
+            player.emit('animationcomplete_' + anim.key, frame)
+        }, player)
+
+    }, player) 
+
+
+    // Attack 4
+    player.once('animationcomplete_pAttack1', function (anim,frame) {
+    
+    
+        player.play({key:'pAttack2'},true);
+
+        player.once('animationcomplete', function (anim,frame) {
+            player.emit('animationcomplete_' + anim.key, frame)
+        }, player)
+    
+
+    }, player)
+    
+    // Attack 5a
+    player.once('animationcomplete_pAttack2', function (anim,frame) {
+    
+    
+        player.play({key:'pJump'},true);
+
+        
+            player.setVelocityX(100)
+        
+
+        if (player.body.onFloor()){
+            if(player.anims.currentFrame.index >= 1){
+                player.setVelocityY(-150)
+            }
         }
 
         player.once('animationcomplete', function (anim,frame) {
@@ -1753,106 +1221,50 @@ player.once('animationcomplete_pDash', function (anim,frame) {
 
     }, player) 
 
+    // Attack 5b
+    player.once('animationcomplete_pJump', function (anim,frame) {
+            player.play({key:'pHeavyAttack'},true);
 
-    // Attack 4
-        player.once('animationcomplete_pAttack1', function (anim,frame) {
-        
-        
-            player.play({key:'pAttack2'},true);
-
-            player.once('animationcomplete', function (anim,frame) {
-                player.emit('animationcomplete_' + anim.key, frame)
-            }, player)
-        
-
-        }, player)
-    
-    // Attack 5a
-        player.once('animationcomplete_pAttack2', function (anim,frame) {
-        
-        
-            player.play({key:'pJump'},true);
-
-            
-                player.setVelocityX(100)
-            
-
-            if (player.body.onFloor()){
-                if(player.anims.currentFrame.index >= 1){
-                    player.setVelocityY(-150)
-                }
+            if (player.flipX){
+                player.setVelocityX(-50)
+            } else {
+                player.setVelocityX(50)
             }
 
+            player.body.maxVelocity.y = 500
+
             player.once('animationcomplete', function (anim,frame) {
                 player.emit('animationcomplete_' + anim.key, frame)
+                player.body.maxVelocity.y = 250
+                
             }, player)
-        
+    
 
-        }, player) 
+    }, player) 
 
-    // Attack 5b
-        player.once('animationcomplete_pJump', function (anim,frame) {
-
-                
-                player.play({key:'pHeavyAttack'},true);
-                
-
-                if (player.flipX){
-                    player.setVelocityX(-50)
-                } else {
-                    player.setVelocityX(50)
-                }
-
-                player.body.maxVelocity.y = 500
-
-
-                player.once('animationcomplete', function (anim,frame) {
-                    player.emit('animationcomplete_' + anim.key, frame)
-                    player.body.maxVelocity.y = 250
-                    
-                }, player)
-        
-
-        }, player) 
-
-        // Dash back to position
-        player.once('animationcomplete_pHeavyAttack', function (anim,frame) {
-
-                
+    // Dash back to position
+    player.once('animationcomplete_pHeavyAttack', function (anim,frame) {
         player.play({key:'pBackDash', frameRate: 6},true);
-        
 
         fireTowardsTarget(player,player.x + 100,1)
-        
 
         player.once('animationcomplete', function (anim,frame) {
             player.emit('animationcomplete_' + anim.key, frame)
-            
-            
         }, player)
 
+    }, player)
 
-        }, player)
-
-        // Return to Idle
-        player.once('animationcomplete_pBackDash', function (anim,frame) {
-
-                
+    // Return to Idle
+    player.once('animationcomplete_pBackDash', function (anim,frame) {
         player.play({key:'pIdle', frameRate: 8},true);
         
         attackChargePower = 0
-        
-        
 
         player.once('animationcomplete', function (anim,frame) {
             player.emit('animationcomplete_' + anim.key, frame)
             
         }, player)
-
-
-        }, player)
-
-    
+    }, player)
 }
 
 function explosiveStrike(){
@@ -1861,123 +1273,88 @@ function explosiveStrike(){
 
     skillMultiplier = Phaser.Math.Between(1.25,1.75)
 
-// In Range Movement
+    // In Range Movement
 
-// Attack 1
+    // Attack 1
 
-player.play({key:'pHeavyAttack',frameRate: 6, repeat: 0},true);
+    player.play({key:'pHeavyAttack',frameRate: 6, repeat: 0},true);
 
-            explosiveStrikeVFX.x = nightBorne.x
-            explosiveStrikeVFX.y = nightBorne.y - 100
-explosiveStrikeVFX.play({key:'explosiveStrike',delay:500},true) 
-        
-player.once('animationcomplete', function (anim,frame) {
-            player.emit('animationcomplete_' + anim.key, frame)
-        }, player)
+    explosiveStrikeVFX.x = nightBorne.x
+    explosiveStrikeVFX.y = nightBorne.y - 100
+    explosiveStrikeVFX.play({key:'explosiveStrike',delay:500},true) 
+            
+    player.once('animationcomplete', function (anim,frame) {
+        player.emit('animationcomplete_' + anim.key, frame)
+    }, player)
 
-
-
-
-        // Dash back to position
-        player.once('animationcomplete_pHeavyAttack', function (anim,frame) {
-                camera.shake(500,0.075)
-            // explosiveStrikeVFX.x = nightBorne.x
-            // explosiveStrikeVFX.y = nightBorne.y - 100
-
-            //explosiveStrikeVFX.play('explosiveStrike',true) 
-                
+    // Dash back to position
+    player.once('animationcomplete_pHeavyAttack', function (anim,frame) {
+        camera.shake(500,0.075);
         player.play({key:'pBackDash', frameRate: 6},true);
-        
 
         fireTowardsTarget(player,player.x + 100,1)
-        
 
         player.once('animationcomplete', function (anim,frame) {
             player.emit('animationcomplete_' + anim.key, frame)
-            
         }, player)
 
+    }, player)
 
-        }, player)
-
-        // Return to Idle
-        player.once('animationcomplete_pBackDash', function (anim,frame) {
-
-                
+    // Return to Idle
+    player.once('animationcomplete_pBackDash', function (anim,frame) {
         player.play({key:'pIdle', frameRate: 8},true);
-        playerAttacking = false
-        attackChargePower = 0
-        
-        
+        playerAttacking = false;
+        attackChargePower = 0;
 
         player.once('animationcomplete', function (anim,frame) {
             player.emit('animationcomplete_' + anim.key, frame)
-            
         }, player)
-
-
-        }, player)
-
+    }, player)
 
 }
 
 function coveringFire(){
 
-// Damage Stats
+    // Damage Stats
 
-skillMultiplier = Phaser.Math.Between(0.15,0.25)
+    skillMultiplier = Phaser.Math.Between(0.15,0.25)
 
-supportArrowSpeedMultiplier = 2.5
-
-
-// In Range Movement
+    supportArrowSpeedMultiplier = 2.5
 
 
-// Attack / Skill
+    // In Range Movement
 
 
-
-// Attack 1
-
-
-player.play({key:'pAttack1',frameRate: 10},true);
-
-
-player.once('animationcomplete', function (anim,frame) {
-
-    support.play('sShoot',true)
-player.emit('animationcomplete_' + anim.key, frame)
-}, player)
+    // Attack / Skill
 
 
 
-
-// Attack 2
-player.once('animationcomplete_pAttack1', function (anim,frame) {
+    // Attack 1
 
 
-player.play({key:'pAttack2'},true);
+    player.play({key:'pAttack1',frameRate: 10},true);
 
-if(player.anims.getName() == 'pAttack2'){
-    
-        player.setVelocityX(-25)
-    
-}
 
-player.once('animationcomplete', function (anim,frame) {
-    support.play('sShoot',true)
+    player.once('animationcomplete', function (anim,frame) {
+
+        support.play('sShoot',true)
     player.emit('animationcomplete_' + anim.key, frame)
-}, player)
+    }, player)
 
 
-}, player) 
 
 
-// Attack 3
-player.once('animationcomplete_pAttack2', function (anim,frame) {
+    // Attack 2
+    player.once('animationcomplete_pAttack1', function (anim,frame) {
 
 
-    player.play({key:'pHeavyAttack'},true);
+    player.play({key:'pAttack2'},true);
+
+    if(player.anims.getName() == 'pAttack2'){
+        
+            player.setVelocityX(-25)
+        
+    }
 
     player.once('animationcomplete', function (anim,frame) {
         support.play('sShoot',true)
@@ -1985,76 +1362,76 @@ player.once('animationcomplete_pAttack2', function (anim,frame) {
     }, player)
 
 
-}, player)
+    }, player) 
+
+
+    // Attack 3
+    player.once('animationcomplete_pAttack2', function (anim,frame) {
+
+
+        player.play({key:'pHeavyAttack'},true);
+
+        player.once('animationcomplete', function (anim,frame) {
+            support.play('sShoot',true)
+            player.emit('animationcomplete_' + anim.key, frame)
+        }, player)
+
+
+    }, player)
 
 
 
-// Dash back to position
-player.once('animationcomplete_pHeavyAttack', function (anim,frame) {
+    // Dash back to position
+    player.once('animationcomplete_pHeavyAttack', function (anim,frame) {
 
-        
-player.play({key:'pDash', frameRate: 12},true);
-
-    
-    if (player.x > nightBorne.x){
-        fireTowardsTarget(player,nightBorne.x - 15,2)
-    } else {
-        fireTowardsTarget(player,nightBorne.x + 15,2)
-    }
-
-    
-
-
-player.once('animationcomplete', function (anim,frame) {
-    support.play('sShoot',true)
-    player.emit('animationcomplete_' + anim.key, frame)
-    
-    
-}, player)
-
-
-}, player)
-
-// Return to Idle
-player.once('animationcomplete_pDash', function (anim,frame) {
-    support.play('sShoot',true)
+            
+    player.play({key:'pDash', frameRate: 12},true);
 
         
-player.play({key:'pDoubleAttack', frameRate: 8},true);
+        if (player.x > nightBorne.x){
+            fireTowardsTarget(player,nightBorne.x - 15,2)
+        } else {
+            fireTowardsTarget(player,nightBorne.x + 15,2)
+        }
 
-attackChargePower = 0
-usingPower = true
-
-
-
-player.once('animationcomplete', function (anim,frame) {
-    player.emit('animationcomplete_' + anim.key, frame)
-    
-}, player)
+        
 
 
-}, player)
+    player.once('animationcomplete', function (anim,frame) {
+        support.play('sShoot',true)
+        player.emit('animationcomplete_' + anim.key, frame)
+        
+        
+    }, player)
 
+
+    }, player)
+
+    // Return to Idle
+    player.once('animationcomplete_pDash', function (anim,frame) {
+        support.play('sShoot',true);
+        player.play({key:'pDoubleAttack', frameRate: 8},true);
+        attackChargePower = 0;
+        usingPower = true;
+
+        player.once('animationcomplete', function (anim,frame) {
+            player.emit('animationcomplete_' + anim.key, frame)
+        }, player)
+    }, player)
 }
 
 function thunderStrike(){
-
     // Damage Stats
-
     skillMultiplier = Phaser.Math.Between(0.25,3)
-
     // In Range Movement
-    
 
     // Player Crouches
-
     player.play({key:'pCrouch',frameRate: 10},true);
-
     player.once('animationcomplete', function (anim,frame) {
             player.emit('animationcomplete_' + anim.key, frame)
-        }, player)
+    }, player)
     // Player Jumps up
-        player.once('animationcomplete_pCrouch', function (anim,frame) {
+    player.once('animationcomplete_pCrouch', function (anim,frame) {
         player.play({key:'pJump',frameRate: 10},true);
         
 
@@ -2102,9 +1479,6 @@ function thunderStrike(){
 
     // Attack 1
     player.once('animationcomplete_pUptoFall', function (anim,frame) {
-        
-        
-
         player.play({key:'pHeavyAttack',frameRate: 12},true);
 
         if(player.anims.currentFrame.index >= 1){
@@ -2133,8 +1507,7 @@ function thunderStrike(){
 
 
         // Attack 2
-            player.once('animationcomplete_pHeavyAttack', function (anim,frame) {
-            
+        player.once('animationcomplete_pHeavyAttack', function (anim,frame) {
             
                 player.play({key:'pAttack2',frameRate:8},true);
                 thunderStrikeVFX.x = nightBorne.x
@@ -2149,50 +1522,34 @@ function thunderStrike(){
                     
                     player.emit('animationcomplete_' + anim.key, frame)
                 }, player)
+        }, player)
 
-                
-            
-
-            }, player)
-        
-
-            // Dash back to position
-            player.once('animationcomplete_pAttack2', function (anim,frame) {
-                        
-                
-
-                    
+        // Dash back to position
+        player.once('animationcomplete_pAttack2', function (anim,frame) {
             player.play({key:'pBackDash', frameRate: 6},true);
-            
 
             fireTowardsTarget(player,player.x + 250,1)
-            
 
             player.once('animationcomplete', function (anim,frame) {
                 player.emit('animationcomplete_' + anim.key, frame)
                 
             }, player)
 
-
-            }, player)
+        }, player)
 
             // Return to Idle
-            player.once('animationcomplete_pBackDash', function (anim,frame) {
-
+        player.once('animationcomplete_pBackDash', function (anim,frame) {
                     
             player.play({key:'pIdle', frameRate: 8},true);
             playerAttacking = false
             attackChargePower = 0
-            
-        
 
             player.once('animationcomplete', function (anim,frame) {
                 player.emit('animationcomplete_' + anim.key, frame)
                 
             }, player)
 
-
-            }, player)
+        }, player)
 
 
     }
@@ -2200,54 +1557,51 @@ function thunderStrike(){
 
 
 function playerVineHit(){
-
-if (inBattle == false){
-    playerIsHit = true
-    playerVitals.decreaseLife((income * 0.35) / 100)
-    
-    
-    player.x -= 0.25
-    enemyChase(Phaser.Math.FloatBetween(2,4))
-} 
-
+    if (inBattle == false){
+        playerIsHit = true
+        playerVitals.decreaseLife((income * 0.35) / 100)
+        
+        
+        player.x -= 0.25
+        enemyChase(Phaser.Math.FloatBetween(2,4))
+    } 
 }
 
 function playerTreeTrunkHit(){
+    if (inBattle == false){
+        playerIsHit = true
+        playerVitals.decreaseLife((income * 0.35) / 75)
+        
+        player.x -= 0.05
 
-if (inBattle == false){
-    playerIsHit = true
-    playerVitals.decreaseLife((income * 0.35) / 75)
-    
-    player.x -= 0.05
-
-    enemyChase(Phaser.Math.FloatBetween(3,6))
-} 
-
+        enemyChase(Phaser.Math.FloatBetween(3,6))
+    } 
 }
 
 function playerEnemyHit(){
-
-    if (inBattle){
-        camera.shake(250, 0.0025);
-        playerIsHit = true
-        playerVitals.decreaseLife((nightBorneMaxLife * 0.5) / 50)
-        playerActionTimeBar.decreaseActionTime((nightBorneMaxLife * 0.25) / 50)
-        maxEnergy *= 1 - (0.04 / 12 / 50)
-        if(glory - (25/60) < 0){
-            glory = 0
-        } else {
-            glory -= (25 / 60)
-        }
-        
-
-    }   
+    if (!inBattle){
+        return;
+    }
+    
+    camera.shake(250, 0.0025);
+    playerIsHit = true
+    playerVitals.decreaseLife((nightBorneMaxLife * 0.5) / 50)
+    playerActionTimeBar.decreaseActionTime((nightBorneMaxLife * 0.25) / 50)
+    maxEnergy *= 1 - (0.04 / 12 / 50)
+    if(glory - (25/60) < 0){
+        glory = 0
+    } else {
+        glory -= (25 / 60)
+    }
 }
 
 
 
 function playerRecover(){
+    if (!playerIsHit){
+        return;
+    }
 
-if (playerIsHit){
     var storedStance = playerStance
     playerStance = 0
     playerIsHit = false 
@@ -2257,46 +1611,39 @@ if (playerIsHit){
     playerStance = storedStance
 }
 
-}
-
 function creepHit(){
-
     glory += level + 1
     gold += (level * 2) + 1
     creep.play('nightBorneMinion_Death',true)
-    
 }
 
 function nightBorneSupportHit(){
     nightBorneIsHit = true
 
-    if (inBattle) {   
-
-        
-            nightBorneVFX.play('whiteHitSmear2',true)
-            sDamage = energyRegen * (attackChargePower/100) * 0.25
-            nightBorneVitals.decreaseNightborneLife(sDamage)
-            nightBorneVFX.on('animationcomplete',function(){
-                supportArrow.setVisible(0)
-            
-            },this)
-
-        fireTowardsTarget(nightBorne,nightBorne.x - 250,1)
+    if (!inBattle){
+        return;
     }
+
+    nightBorneVFX.play('whiteHitSmear2',true)
+    sDamage = energyRegen * (attackChargePower/100) * 0.25
+    nightBorneVitals.decreaseNightborneLife(sDamage)
+
+    nightBorneVFX.on('animationcomplete',function(){
+        supportArrow.setVisible(0)
+    },this)
+
+    fireTowardsTarget(nightBorne,nightBorne.x - 250,1)
 }
 
 function nightBorneHit(){
-
     nightBorneIsHit = true
 
-    if (inBattle) {   
+    if (!inBattle){
+        return;
+    }
 
-        
-        
-
-        var chaos = Phaser.Math.FloatBetween(0.00,1.00)
-        if (chaos < 0.025){
-        
+    var chaos = Phaser.Math.FloatBetween(0.00,1.00)
+    if (chaos < 0.025) {
         camera.flash(150);
         camera.shake(500, 0.0075);
         damage *= Phaser.Math.Between(1.75,2.25)
@@ -2307,9 +1654,7 @@ function nightBorneHit(){
         } else {
             nightBorne.x -= Phaser.Math.Between(-15,-25)
         }
-        //
-        } else
-        if (chaos < 0.075){
+    } else if (chaos < 0.075){
         camera.shake(500, 0.0025);
         damage *= Phaser.Math.Between(1.25,1.55)
         nightBorneVitals.decreaseNightborneLife(damage)
@@ -2319,33 +1664,26 @@ function nightBorneHit(){
         } else {
             nightBorne.x -= Phaser.Math.Between(-2.5,-1.5)
         }
-        } else {
-            camera.shake(250, 0.0025);
-            damage *= Phaser.Math.Between(0.85,1.1)
-            nightBorneVitals.decreaseNightborneLife(damage)
-            if (player.flipX){
-            
-                nightBorne.x -= Phaser.Math.Between(-1.5,1.5)
+    } else {
+        camera.shake(250, 0.0025);
+        damage *= Phaser.Math.Between(0.85,1.1)
+        nightBorneVitals.decreaseNightborneLife(damage)
+        if (player.flipX){
+            nightBorne.x -= Phaser.Math.Between(-1.5,1.5)
         } else {
             nightBorne.x -= Phaser.Math.Between(-1,1)
         }
+    }
 
-    
-        }
-        
-
-}             
-                
 }
 
 function nightBorneRecover(){
-
-    if (nightBorneIsHit){
-        nightBorneIsHit  = false
-        nightBorne.anims.play({key:'nightBorne_Idle',frameRate: 12},true); 
-            
+    if (!nightBorneIsHit){
+        return;
     }
 
+    nightBorneIsHit  = false
+    nightBorne.anims.play({key:'nightBorne_Idle',frameRate: 12},true); 
 }
 
 
@@ -2353,12 +1691,9 @@ function nightBorneRecover(){
 
 function enemyChase(velocityBoost)
 {
-    if (inBattle == false) {
-    
-    nightBorne.setVelocityX(nightBorne.body.velocity.x + (velocityBoost * chaosFactor))
-
+    if (!inBattle) {
+        nightBorne.setVelocityX(nightBorne.body.velocity.x + (velocityBoost * chaosFactor))
     }
-
 }
 
 
@@ -2366,11 +1701,8 @@ function enemyChase(velocityBoost)
 function runYearlyFunctions()
 {
     if (inBattle == false) {
-
-    income *= 0.96
-    enemyChase(600)
-    
-
+        income *= 0.96
+        enemyChase(600)
     }
 
     chaosMultiplierMin *= 1 + (0.08)
@@ -2380,12 +1712,8 @@ function runYearlyFunctions()
 
 function runMonthlyFunctions()
 {
-
-
     chaosMultiplierMin *= 1 + (0.06 / 12)
     chaosMultiplierMax *= 1 + (0.08 / 12) 
-
-    
 
     if (inBattle == false) {
 
@@ -2395,41 +1723,26 @@ function runMonthlyFunctions()
         
         enemyChase(Phaser.Math.Between(-25,50))
 
-    }  else {
-        
     }
 }
 
 function runWeeklyFunctions()
 {
-    
     enemyChase(-10)
-
 }
 
 function runSecondsFunctions()
 {
-    
-
-    if (regenActive){
-
-        
-    playerVitals.decreaseLife(-lifeRegen / 5) 
-    playerVitals.decreaseEnergy(-energyRegen / 5)
-    playerVitals.decreaseFocus(-focusRegen / 5)
-
+    if (regenActive) {
+        playerVitals.decreaseLife(-lifeRegen / 5) 
+        playerVitals.decreaseEnergy(-energyRegen / 5)
+        playerVitals.decreaseFocus(-focusRegen / 5)
     }
 
-    
-
-    if (inBattle == false){
-        if (skillTreeOpen == false){
-            playerExperience.increaseExp((100 / 60))
-            glory += (100 / 60)
-        }
-        
+    if (!inBattle && !skillTreeOpen) {
+        playerExperience.increaseExp((100 / 60))
+        glory += (100 / 60)
     } 
-
     
 }
 
@@ -2437,177 +1750,19 @@ function refreshStats(){
     lifeRegen = lifeRegenAllocation * income
     energyRegen = energyRegenAllocation * income
     focusRegen = focusRegenAllocation * income
-    
 }
 
 function updateHighScore(){
     if (highScore < glory){
         highScore = glory
     }
-
-    
     localStorage.setItem('highScore',highScore);
 }
 
 
-function preload ()
-{   
-    var progress = this.add.graphics();
-
-this.load.on('progress', function (value) {
-
-    progress.clear();
-    progress.fillStyle(0xffffff, 1);
-    progress.fillRect(0, 270, 800 * value, 60);
-
-});
-
-this.load.on('complete', function () {
-
-    progress.destroy();
-
-});
-
-    // Music
-    songChoice = Math.floor(Phaser.Math.Between(1,10))
-    if (songChoice == 1){
-        this.load.audio("bgMusic1", ["assets/music/Le_château_magique.mp3"]);
-    } else if (songChoice == 2){
-        this.load.audio("bgMusic2", ["assets/music/Kids_See_Ghosts.mp3"]);
-    } else if (songChoice == 3){
-        this.load.audio("bgMusic3", ["assets/music/Riptide.mp3"]);
-    } else if (songChoice == 4){
-        this.load.audio("bgMusic4", ["assets/music/The_Apartment.mp3"]);
-    } else if (songChoice == 5){
-        this.load.audio("bgMusic5", ["assets/music/Katana.mp3"]);
-    } else if (songChoice == 6){
-        this.load.audio("bgMusic6", ["assets/music/Ludum_Dare_38_Track_2.wav"]);
-    } else if (songChoice == 7){
-        this.load.audio("bgMusic7", ["assets/music/Night_(Instrumental).mp3"]);
-    } else if (songChoice == 8){
-        this.load.audio("bgMusic8", ["assets/music/Smile.mp3"]);
-    } else if (songChoice == 9){
-        this.load.audio("bgMusic9", ["assets/music/Tripwire.mp3"]);
-    } else if (songChoice == 10){
-        this.load.audio("bgMusic10", ["assets/music/Gumshield.mp3"]);
-    } 
-
-
-
-    
-    this.load.audio("playerSwordSwing", ["assets/sFX/SFX_Whoosh_Sword_02.mp3"]);
-    this.load.audio("playerHeavySwordSwing", ["assets/sFX/SFX_Whoosh_Sword_03.mp3"]);        
-    this.load.audio("enemySwordSwing", ["assets/sFX/SFX_Sword_Whoosh_01.mp3"]);
-    this.load.audio("charge", ["assets/sFX/SFX_Potion_01.mp3"]);
-    
-    this.load.image('playerIconBox', 'assets/activeSkillBox.png');
-    this.load.image('playerIcon', 'assets/playerIcon.png');
-    
-
-    this.load.image('storingBuffIcon', 'assets/ach_00059.png');
-    this.load.image('spendingBuffIcon', 'assets/ach_00046.png');
-    this.load.image('growingBuffIcon', 'assets/ach_00057.png');
-
-    this.load.image('t1BuffIcon', 'assets/ach_00117.png');
-    this.load.image('t2BuffIcon', 'assets/ach_00118.png');
-    this.load.image('t3BuffIcon', 'assets/ach_00119.png');
-    this.load.image('t4BuffIcon', 'assets/ach_00120.png');
-    this.load.image('t5BuffIcon', 'assets/ach_00121.png');
-
-    this.load.image('t1KianovaBuffIcon', 'assets/ach_00122.png');
-    this.load.image('t2KianovaBuffIcon', 'assets/ach_00091.png');
-
-    this.load.image('levelIcon', 'assets/ach_00006.png');
-    this.load.image('gloryIcon', 'assets/ach_00035.png');
-    this.load.image('goldIcon', 'assets/ach_00040.png');
-
-    this.load.image('up', 'assets/controls/shadedDark03.png');
-    this.load.image('down', 'assets/controls/shadedDark10.png');
-    this.load.image('deadSpace', 'assets/controls/buttonDeadSpace.png');
-    this.load.image('left', 'assets/controls/shadedDark05.png');
-    this.load.image('right', 'assets/controls/shadedDark06.png');
-    this.load.image('defaultAction', 'assets/controls/ach_00022.png');
-    this.load.image('charge', 'assets/controls/ach_00005.png');
-    
-    // Battle Mode
-
-    // Menus & Icons
-    
-
-    this.load.image('activeSkillBox', 'assets/activeSkillBox.png');
-    this.load.image('energyMoveBox1', 'assets/energyMoveBox2.png');
-    this.load.image('energyMoveBox2', 'assets/energyMoveBox2.png');
-    this.load.image('focusMoveBox1', 'assets/focusMoveBox1.png');
-    this.load.image('focusMoveBox2', 'assets/focusMoveBox2.png');
-
-
-    this.load.image('dawnl1', 'assets/dawn1.png');
-    this.load.image('dawnl2', 'assets/dawn2.png');
-    this.load.image('dawnl3', 'assets/dawn3.png');
-    this.load.image('dawnl4', 'assets/dawn4.png');
-    this.load.image('dawnl5', 'assets/dawn5.png');
-    this.load.image('dawnl6', 'assets/dawn6.png');
-    this.load.image('dawnl7', 'assets/dawn7.png');
-    this.load.image('dawnl8', 'assets/dawn8.png');
-
-    this.load.image('woodsl1', 'assets/woods1.png');
-    this.load.image('woodsl2', 'assets/woods2.png');
-    this.load.image('woodsl3', 'assets/woods3.png');
-    this.load.image('woodsl4', 'assets/woods4.png');
-
-    this.load.image('vines', 'assets/vines.png');
-    this.load.image('treeTrunk', 'assets/treeTrunk.png');
-
-    this.load.image('ground', 'assets/woodground.png');
-
-    
-    this.load.atlas('heroF', 'assets/heroF.png','assets/heroF.json');
-    this.load.atlas('heroM', 'assets/heroM.png','assets/heroM.json');
-    this.load.spritesheet('arcaneArcher', 'assets/arcaneArcher.png', { frameWidth: 64, frameHeight: 64});
-    this.load.image('arcaneArcherArrow', 'assets/arcaneArcherArrow.png');
-    
-
-
-    // General 
-
-    this.load.spritesheet('playerTurnIcon', 'assets/playerTurnIcon.png', { frameWidth: 100, frameHeight: 100});
-    // Enemies
-
-    this.load.atlas('doomsayer', 'assets/doomsayer.png','assets/doomsayersprites.json');
-    this.load.spritesheet('nightBorne', 'assets/nightBorne.png', { frameWidth: 80, frameHeight: 80});
-    this.load.spritesheet('nightBorneNecromancer', 'assets/nightBorneNecromancer.png', { frameWidth: 160, frameHeight: 128});
-
-    this.load.spritesheet('energyStance', 'assets/energyStance.png', { frameWidth: 96, frameHeight: 192});
-    this.load.spritesheet('focusStance', 'assets/focusStance.png', { frameWidth: 96, frameHeight: 192});
-    this.load.spritesheet('chargeEnergy', 'assets/chargeEnergy.png', { frameWidth: 100, frameHeight: 100});
-    this.load.spritesheet('chargeDash', 'assets/chargeDash.png', { frameWidth: 128, frameHeight: 128});
-    // VFX - Hit Animation
-    this.load.spritesheet('whiteHitSmear', 'assets/whiteHitSmear.png', { frameWidth: 1048, frameHeight: 1048});
-    this.load.spritesheet('whiteHitSmear2', 'assets/whiteHitSmear2.png', { frameWidth: 1048, frameHeight: 1048});  
-
-    // Skills
-    this.load.spritesheet('explosiveStrikeIcon', 'assets/skills/explosiveStrikeIcon.png', { frameWidth: 256, frameHeight: 256});
-    this.load.spritesheet('explosiveStrike', 'assets/skills/explosiveStrike.png', { frameWidth: 48, frameHeight: 48}); 
-    
-
-    this.load.spritesheet('thunderStrikeIcon', 'assets/skills/thunderStrikeIcon.png', { frameWidth: 256, frameHeight: 256});
-    this.load.spritesheet('thunderStrike', 'assets/skills/thunderStrike.png', { frameWidth: 64, frameHeight: 64}); 
-    this.load.spritesheet('thunderStrikeSmear', 'assets/skills/thunderStrikeSmear.png', { frameWidth: 1048, frameHeight: 1048});
-
-    this.load.spritesheet('deadlyCombatAssaultIcon', 'assets/skills/deadlyCombatAssaultIcon.png', { frameWidth: 256, frameHeight: 256});
-    this.load.spritesheet('deadlyCombatAssaultSmear', 'assets/skills/deadlyCombatAssaultSmear.png', { frameWidth: 1048, frameHeight: 1048});
-
-    this.load.spritesheet('eagleStrikeIcon', 'assets/skills/eagleStrikeIcon.png', { frameWidth: 256, frameHeight: 256});
-
-    this.load.spritesheet('coveringFireIcon', 'assets/skills/coveringFireIcon.png', { frameWidth: 256, frameHeight: 256});
-    
-    
-
-}
 
 function create ()
 {
-
     //songChoice = Math.floor(Phaser.Math.Between(1,10))
     bgMusic = this.sound.add("bgMusic"+songChoice, { loop: true, volume: 0.75});
 
