@@ -3304,6 +3304,24 @@
         });
 
         this.anims.create({
+            key: 'nightBorneMinion_Idle',
+            frames: this.anims.generateFrameNames('doomsayer',{prefix: 'idle', start: 1, end: 8}),
+            frameRate: 10,
+            showOnStart: 1,
+            repeat:-1
+        });
+
+        this.anims.create({
+            key: 'nightBorneMinion_Attack',
+            frames: this.anims.generateFrameNames('doomsayer',{prefix: 'attack', start: 1, end: 10}),
+            frameRate: 10,
+            showOnStart: 1,
+            delay: 25,
+            //repeatDelay: Math.random() * 3000
+            
+        });
+
+        this.anims.create({
             key: 'nightBorneMinion_Death',
             frames: this.anims.generateFrameNames('doomsayer',{prefix: 'death', start: 1, end: 10}),
             frameRate: 12,
@@ -3410,30 +3428,10 @@
 
         
 
-        this.anims.create({
-            key: 'eIdle',
-            frames: this.anims.generateFrameNames('doomsayer',{prefix: 'idle', start: 1, end: 8}),
-            frameRate: 10,
-            repeat:-1
-        });
-
-       
-        this.anims.create({
-            key: 'eRun',
-            frames: this.anims.generateFrameNames('doomsayer',{prefix: 'walk', start: 1, end: 8}),
-            frameRate: 10,
-            repeat: 0
-        });
+      
 
 
-        this.anims.create({
-            key: 'eAttack',
-            frames: this.anims.generateFrameNames('doomsayer',{prefix: 'attack', start: 1, end: 10}),
-            frameRate: 10,
-            delay: 25,
-            //repeatDelay: Math.random() * 3000
-            
-        });
+        
 
         this.anims.create({
             key: 'eTaunt',
@@ -3760,6 +3758,7 @@
     function moveCreep (speed){
     
         creep.x -= speed;
+        
     if (creep.x < Phaser.Math.Between(0,width * 0.25)){
         resetCreep(creep)
     }
@@ -3783,7 +3782,18 @@
 
     function resetCreep (creep){
         creep.x = Phaser.Math.Between(width * 2.5,width * 3)
-        creep.play('nightBorneMinion_Move',true)
+        var creepAnimationRandomiser = Phaser.Math.Between(1,3)
+        if (creepAnimationRandomiser == 1){
+            creep.flipX = false
+            creep.play('nightBorneMinion_Move',true)
+        } else if (creepAnimationRandomiser == 2){
+            creep.flipX = false
+            creep.play('nightBorneMinion_Idle',true)
+        } else if (creepAnimationRandomiser == 3){
+            creep.flipX = true
+            creep.play('nightBorneMinion_Idle',true)
+        }
+        
         var scaleXRandom = Phaser.Math.FloatBetween(1.9,2.3)
         var scaleYRandom = Phaser.Math.FloatBetween(0.9,1.35)
         creep.setScale(scaleXRandom,scaleYRandom)
@@ -5067,7 +5077,16 @@
 
             moveTreeTrunk(treeTrunk, 4.5 * (playerSpeed))
 
-            moveCreep(6 * (playerSpeed))
+            if(creep.anims.getName() == 'nightBorneMinion_Move'){
+                moveCreep(6 * (playerSpeed))
+            } else if (creep.anims.getName() == 'nightBorneMinion_Idle') {
+                moveCreep(3 * (playerSpeed))
+            } else {
+                moveCreep(4 * (playerSpeed))
+            }
+            
+
+            
 
             defaultAction.once('pointerdown',function(){
 
