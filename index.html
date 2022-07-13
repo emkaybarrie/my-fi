@@ -2805,7 +2805,7 @@
 
             // Creep
 
-            creep = this.physics.add.sprite(0, 0, 'doomsayer').setScale(1).setOrigin()
+            creep = this.physics.add.sprite(0, 0, 'doomsayer').setScale(1).setOrigin().setPipeline('Light2D')
             creep.setCollideWorldBounds(true)
             creep.body.setAllowGravity(1)
             this.physics.add.collider(platforms,creep);
