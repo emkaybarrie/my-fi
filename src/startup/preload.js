@@ -1,4 +1,4 @@
-function preload ()
+export function preload ()
 {   
     var progress = this.add.graphics();
 
