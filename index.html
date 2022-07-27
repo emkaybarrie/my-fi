@@ -955,7 +955,7 @@
                  
                             regenActive = true
                             nightBorne.x = 0
-                            player.body.setBoundsRectangle(new Phaser.Geom.Rectangle(width * 0.75, 0, width * 1, height));
+                            //player.body.setBoundsRectangle(new Phaser.Geom.Rectangle(width * 0.75, 0, width * 1, height));
                             playerMiniVitals.hide()
                             showRunningHUD()
                             nightBorneCam = true
@@ -2141,9 +2141,9 @@
         if (regenActive){
 
             
-        playerVitals.decreaseLife(-lifeRegen / 20) 
-        playerVitals.decreaseEnergy(-energyRegen / 20)
-        playerVitals.decreaseFocus(-focusRegen / 20)
+        playerVitals.decreaseLife(-lifeRegen / 200) 
+        playerVitals.decreaseEnergy(-energyRegen / 200)
+        playerVitals.decreaseFocus(-focusRegen / 200)
 
         }
 
@@ -2605,7 +2605,7 @@
 
         secondsTimer = this.time.addEvent({delay: 1000, callback: runSecondsFunctions, args: [], callbackScope: this, loop: true});
 
-        regenTimer = this.time.addEvent({delay: 250, callback: runRegenFunctions, args: [], callbackScope: this, loop: true});
+        regenTimer = this.time.addEvent({delay: 25, callback: runRegenFunctions, args: [], callbackScope: this, loop: true});
         
         // VFX
 
