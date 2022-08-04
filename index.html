@@ -81,10 +81,14 @@
     var gamePad 
     var gamePadEnabled = false
 
-    var leftIsDown
-    var rightIsDown
-    var upIsDown
-    var downIsDown
+    var actionKeyAIsDown = false
+    var actionKeyBIsDown = false
+    var skillKeyAIsDown = false
+    var skillKeyBIsDown = false
+    var leftIsDown = false
+    var rightIsDown = false
+    var upIsDown = false
+    var downIsDown = false
   
     
 
@@ -113,7 +117,7 @@
 
         // Player
         var playerLockedOn
-        var controlsEnabled = false
+        var controlsEnabled = true
         var playerBlocking = false
         var playerDodging = false
         var playerJumping = false
@@ -122,8 +126,7 @@
         var playerAttacking = false 
         var attackModeActive = false
         var usingPower = false
-        var supportProc = 100
-        var supportArrowSpeedMultiplier = 1
+     
 
         var playerLanded = true
 
@@ -235,8 +238,7 @@
         playerAttacking = false 
         attackModeActive = false
         usingPower = false
-        supportProc = 100
-        supportArrowSpeedMultiplier = 1
+
 
         playerLanded = true
 
@@ -938,16 +940,12 @@
                 playerAttacking = false
                 sword.body.checkCollision.none = true
                 nightBorneSword.body.checkCollision.none = true
-                supportArrow.body.checkCollision.none = true
-                supportArrow.setVisible(0)
+                
 
-
-            
-            
             inBattle = false
             
             player.flipX = false
-            support.flipX = false
+
             
             
             
@@ -955,43 +953,44 @@
                  
                             regenActive = true
                             nightBorne.x = 0
-                            //player.body.setBoundsRectangle(new Phaser.Geom.Rectangle(width * 0.75, 0, width * 1, height));
+                            
                             playerMiniVitals.hide()
                             showRunningHUD()
                             nightBorneCam = true
+                            highObstacle.body.checkCollision.none = false
+                            lowObstacle.body.checkCollision.none = false
+                           
 
               
     } else if (mode == 1){
+            
+            controlsEnabled = false
             woodsl4.setAlpha(0.65)
             inBattle = true
             gameMode = 1
-            playerIsHit = false
+            
             highObstacle.body.checkCollision.none = true
             lowObstacle.body.checkCollision.none = true
             nightBorneCam = false 
 
                     camera.resetFX()
                     camera.pan(width * 1.5,0,1500)
+                    
                     nightBorneGetInBattlePosition()
                     player.stop()
                     playerGetInBattlePosition()
 
                     camera.once('camerapancomplete', function () {
 
-                        
-                        
 
                             camera.flash(250,1000)
                                 camera.once('cameraflashcomplete', function () {
                                     
                                     regenActive = true
                                     controlsEnabled = true
-                                    camera.startFollow(player, false, 0.05, 0.05)
-                                   
-                                 
+                                    camera.startFollow(player,true,0.1,0.1)
+                                    
 
-                                    
-                                    
                                 },this)
                       
                     },this)
@@ -1003,7 +1002,7 @@
 
     
             if (!inBattle){
-            nightBorneSword.body.checkCollision.none = true
+            
             income *= 1 - (0.04 / 12)
             currentEnergy *= 0.95
             nightBorne.setDragX(500)
@@ -1029,8 +1028,7 @@
                 if(player.anims.getName() == 'pSlide'){
                     
                         fireTowardsTarget(player,Phaser.Math.FloatBetween(width * 1.65, width * 1.85),4)
-                        support.play({key:'sRoll',repeat: 1},true)
-                        fireTowardsTarget(support,Phaser.Math.FloatBetween(width * 1.6, width * 1.9),4)
+
                       
                 }
                 player.once('animationcomplete', function (anim,frame) {
@@ -1040,7 +1038,7 @@
         // Player jumps away towards battle position
             player.once('animationcomplete_pSlide', function (anim,frame) {
 
-                //camera.pan(player.x ,0,500)
+                
                 
                 
                 
@@ -1055,9 +1053,7 @@
                 }
 
                 player.once('animationcomplete', function (anim,frame) {
-                    support.flipX = true
 
-                    support.play('sIdle',true)
                     player.emit('animationcomplete_' + anim.key, frame)
                 }, player)
             
@@ -1270,12 +1266,10 @@
         
         
         if(usingPower){
-            
-        
+
             usingPower = false
                                  
-
-                    thunderStrike() 
+            thunderStrike() 
 
         } 
         
@@ -1593,121 +1587,8 @@
 
     }
 
-    function coveringFire(){
-
-    // Damage Stats
-
-    baseDamageMultiplier = Phaser.Math.Between(0.15,0.25)
-
-    supportArrowSpeedMultiplier = 2.5
-
-
-    // In Range Movement
-
-
-    // Attack / Skill
-
     
-
-    // Attack 1
    
-
-    player.play({key:'pAttack1',frameRate: 10},true);
-
-
-    player.once('animationcomplete', function (anim,frame) {
-
-        support.play('sShoot',true)
-    player.emit('animationcomplete_' + anim.key, frame)
-    }, player)
-
-
-    
-
-    // Attack 2
-    player.once('animationcomplete_pAttack1', function (anim,frame) {
-
-
-    player.play({key:'pAttack2'},true);
-
-    if(player.anims.getName() == 'pAttack2'){
-        
-            player.setVelocityX(-25)
-        
-    }
-
-    player.once('animationcomplete', function (anim,frame) {
-        support.play('sShoot',true)
-        player.emit('animationcomplete_' + anim.key, frame)
-    }, player)
-
-
-    }, player) 
-
-
-    // Attack 3
-    player.once('animationcomplete_pAttack2', function (anim,frame) {
-
-
-        player.play({key:'pHeavyAttack'},true);
-
-        player.once('animationcomplete', function (anim,frame) {
-            support.play('sShoot',true)
-            player.emit('animationcomplete_' + anim.key, frame)
-        }, player)
-
-
-    }, player)
-
-
-
-    // Dash back to position
-    player.once('animationcomplete_pHeavyAttack', function (anim,frame) {
-
-            
-    player.play({key:'pDash', frameRate: 12},true);
-
-        
-        if (player.x > closest.x){
-            fireTowardsTarget(player,closest.x - 15,2)
-        } else {
-            fireTowardsTarget(player,closest.x + 15,2)
-        }
-
-        
-
-
-    player.once('animationcomplete', function (anim,frame) {
-        support.play('sShoot',true)
-        player.emit('animationcomplete_' + anim.key, frame)
-        
-        
-    }, player)
-
-
-    }, player)
-
-    // Return to Idle
-    player.once('animationcomplete_pDash', function (anim,frame) {
-        support.play('sShoot',true)
-
-            
-    player.play({key:'pDoubleAttack', frameRate: 8},true);
-
-   
-    usingPower = true
-
-
-
-    player.once('animationcomplete', function (anim,frame) {
-        player.emit('animationcomplete_' + anim.key, frame)
-        
-    }, player)
-
-
-    }, player)
-
-    }
 
     function thunderStrike(){
 
@@ -1834,7 +1715,7 @@
 
                         
                 player.play({key:'pIdle', frameRate: 8},true);
-                playerAttacking = false
+                usingPower = true
              
                 
             
@@ -1941,23 +1822,7 @@
         
     }
 
-    function nightBorneSupportHit(){
-        nightBorneIsHit = true
-
-        if (inBattle) {   
-
-          
-                nightBorneVFX.play('whiteHitSmear2',true)
-                var sDamage = energyRegen * 0.25
-                nightBorneVitals.decreaseNightborneLife(sDamage)
-                nightBorneVFX.on('animationcomplete',function(){
-                    supportArrow.setVisible(0)
-             
-                },this)
-
-            fireTowardsTarget(nightBorne,nightBorne.x - 250,1)
-        }
-    }
+ 
 
     function nightBorneHit(){
 
@@ -2250,7 +2115,6 @@
 
         // Menus & Icons
         
-
         this.load.image('activeSkillBox', 'assets/activeSkillBox.png');
         this.load.image('energyMoveBox1', 'assets/energyMoveBox2.png');
         this.load.image('energyMoveBox2', 'assets/energyMoveBox2.png');
@@ -2277,11 +2141,9 @@
 
         this.load.image('ground', 'assets/woodground.png');
 
-        
         this.load.atlas('heroF', 'assets/heroF.png','assets/heroF.json');
         this.load.atlas('heroM', 'assets/heroM.png','assets/heroM.json');
-        this.load.spritesheet('arcaneArcher', 'assets/arcaneArcher.png', { frameWidth: 64, frameHeight: 64});
-        this.load.image('arcaneArcherArrow', 'assets/arcaneArcherArrow.png');
+
         
 
 
@@ -2375,8 +2237,6 @@
                     aSkill.setInteractive(1).setVisible(1)
                     bSkill.setInteractive(1).setVisible(1)
 
-                    
-
                 }
 
         
@@ -2392,20 +2252,21 @@
         
         this.physics.world.setBounds(0, 0, width * 3,  height);
         
-        woodsl1 = this.add.tileSprite(0,0, width * 3, height, 'woodsl1').setOrigin(0,0).setScrollFactor(0)
-        woodsl2 = this.add.tileSprite(0,0, width * 3, height, 'woodsl2').setOrigin(0,0).setScrollFactor(0.25)
-        woodsl3 = this.add.tileSprite(0,0, width * 3, height, 'woodsl3').setOrigin(0,0).setScrollFactor(0.5)
-        woodsl4 = this.add.tileSprite(0,0, width * 3, height, 'woodsl4').setOrigin(0,0).setScrollFactor(1).setDepth(3)
+        woodsl1 = this.add.tileSprite(0,0, width * 4, height, 'woodsl1').setOrigin(0,0).setScrollFactor(0)
+        woodsl2 = this.add.tileSprite(0,0, width * 4, height, 'woodsl2').setOrigin(0,0).setScrollFactor(0.25)
+        woodsl3 = this.add.tileSprite(0,0, width * 4, height, 'woodsl3').setOrigin(0,0).setScrollFactor(0.5)
+        woodsl4 = this.add.tileSprite(0,0, width * 4, height, 'woodsl4').setOrigin(0,0).setScrollFactor(1)
+
+        woodsl4.setDepth(3)
 
         this.lights.enable();
         this.lights.setAmbientColor(0x808080);
 
-        spotlight = this.lights.addLight(400, 300, 280).setIntensity(0.5);
        
         platforms = this.physics.add.staticGroup();
         platforms.create(0, height - 50, 'ground').setOrigin(0,0).setScale(width * 3 /400).refreshBody().setVisible(1);
 
-        player = this.physics.add.sprite(width * 1.3, height - 90 ,'heroF').setScale(2).setPipeline('Light2D');
+        player = this.physics.add.sprite(width * 1.3, height - 90 ,'heroF').setScale(2)//.setPipeline('Light2D');
         player.setDepth(2)
         player.body.setSize(10, 30).setOffset(25,15).setAllowDrag(true)
         
@@ -2424,23 +2285,13 @@
         sword.body.setAllowGravity(false).setOffset(0,5).setSize(100, 55)
         sword.body.checkCollision.none = true
 
-        // Support
-        support = this.physics.add.sprite(width * 1.3, height - 90 ,'arcaneArcher').setScale(2.1).setPipeline('Light2D');
-        support.body.setSize(15, 35).setAllowDrag(true).setOffset(25,18)
-        support.setDepth(0)
-        support.setCollideWorldBounds(true);
-        this.physics.add.collider(support,platforms);
-        supportArrow = this.add.image(support.x - 30,support.y - 15, 'arcaneArcherArrow').setOrigin(0,0.5).setDepth(0).setScale(2).setPipeline('Light2D').setVisible(0)
-        this.physics.add.existing(supportArrow,false)
-        supportArrow.body.setAllowGravity(false)
-        supportArrow.body.checkCollision.none = true
 
-        
-        highObstacle = this.add.image(0,player.y - 120, 'vines').setOrigin(0,0).setDepth(1).setScale(0.35,0.5)
+        highObstacle = this.add.image(0,player.y - 120, 'vines').setScale(0.35,0.5)
         this.physics.add.existing(highObstacle,false)
         highObstacle.body.setSize(474,175).setOffset(0,-7.5)
+        highObstacle.body.setAllowGravity(false)
 
-        lowObstacle = this.add.image(0,height - 110, 'treeTrunk').setOrigin(0,0).setDepth(1)
+        lowObstacle = this.add.image(0,height - 110, 'treeTrunk')
         this.physics.add.existing(lowObstacle,false)
         lowObstacle.body.setSize(150,57).setOffset(5,10)
 
@@ -2458,7 +2309,7 @@
 
             // NightBorne
             
-            nightBorne = this.physics.add.sprite(0, 0, 'nightBorne').setScale(3.25).setOrigin(0.5,1).setDepth(1)
+            nightBorne = this.physics.add.sprite(0, 0, 'nightBorne').setScale(3.25).setOrigin(0.5,1).setDepth(2)
             nightBorneVitals = new EnemyHealthBar(this,nightBorne.x, nightBorne.y - 150);
             nightBorneLife = (income * 0.3) * Phaser.Math.Between(0.8,1.7) 
             nightBorneMaxLife = nightBorneLife
@@ -2472,7 +2323,7 @@
             nightBorne.body.setAllowGravity(1)
             this.physics.add.overlap(nightBorne, player, startNightBorneBattle);
             this.physics.add.overlap(sword, nightBorne, nightBorneHit)
-            this.physics.add.overlap(supportArrow,nightBorne, nightBorneSupportHit);
+    
             this.physics.add.collider(platforms,nightBorne);
 
             nightBorneSword = this.add.rectangle(nightBorne.x, nightBorne.y, 150, 175);
@@ -2499,10 +2350,10 @@
             });
             
             nightBorneVFX = this.add.sprite(nightBorne.x, nightBorne.y + 100)
-            nightBorneVFX.setScale(1).setTint(0x00CED1).setDepth(4).setVisible(1)//.setPipeline('Light2D')
+            nightBorneVFX.setScale(1).setTint(0x00CED1).setDepth(4).setVisible(1)
 
             nightBorneNecromancer = this.physics.add.sprite(nightBorne.x - 100, nightBorne.y + 75, 'nightBorneNecromancer').setScale(1.75).setOrigin()
-            nightBorneNecromancer.setDepth(1)
+            nightBorneNecromancer.setDepth(2)
             nightBorneNecromancer.setSize(60, 60).setOffset(50,50)
             nightBorneNecromancer.body.maxVelocity.x = 500
             nightBorneNecromancer.setCollideWorldBounds(true)
@@ -2527,21 +2378,22 @@
             });
 
             nightBorneNecromancerVFX = this.add.sprite(nightBorneNecromancer.x, nightBorneNecromancer.y)
-            nightBorneNecromancerVFX.setDepth(0).setScale(0.25)//.setPipeline('Light2D')
+            nightBorneNecromancerVFX.setDepth(0).setScale(0.25)
 
             // Creep
 
-            creep = this.physics.add.sprite(0, 0, 'doomsayer').setScale(1).setOrigin().setPipeline('Light2D')
+            creep = this.physics.add.sprite(0, 0, 'doomsayer').setScale(1).setOrigin()
             creep.setCollideWorldBounds(true)
             creep.body.setAllowGravity(1)
             this.physics.add.collider(platforms,creep);
             this.physics.add.overlap(creep, sword, creepHit);
             //this.physics.add.overlap(creep, player, playerCreepHit);
 
-        camera = this.cameras.main.centerOn(width * 1.5,0) //.startFollow(player, false, 0.05, 0.05)
+        camera = this.cameras.main.centerOn(width * 1.5,0)
+        
 
 
-        camera.setBounds(width * 0.25, 0, width * 2.75, height)
+        camera.setBounds(0, 0, width * 3, height)
  
         camera.fadeIn(3000)
         
@@ -2719,7 +2571,7 @@
         });
 
         thunderStrikeVFX = this.add.sprite(0,0)
-        thunderStrikeVFX.setDepth(1).setScale(2,5).setOrigin(0.5,1)//.setPipeline('Light2D')
+        thunderStrikeVFX.setDepth(1).setScale(2,5).setOrigin(0.5,1)
         thunderStrikeLighting = this.lights.addLight(0, 0, 0).setIntensity(1.5)
         thunderStrikeLighting.setColor(0xFFBF1F)
         
@@ -2914,42 +2766,7 @@
             //delay: 500
         });
 
-        // Support Animation
-
-        this.anims.create({
-            key: 'sIdle',
-            frames: this.anims.generateFrameNumbers('arcaneArcher', { start:40, end: 43}),
-            frameRate: 10,
-            repeat:-1
-        });
-
-        this.anims.create({
-            key: 'sRun',
-            frames: this.anims.generateFrameNumbers('arcaneArcher', { start:0, end: 7}),
-            frameRate: 12,
-            repeat:-1
-        });
-
-        this.anims.create({
-            key: 'sRoll',
-            frames: this.anims.generateFrameNumbers('arcaneArcher', { start:16, end: 22}),
-            frameRate: 12,
-            repeat: 0
-        });
-
-        this.anims.create({
-            key: 'sJump',
-            frames: this.anims.generateFrameNumbers('arcaneArcher', { start:56, end: 57}),
-            frameRate: 4,
-            repeat: 0
-        });
-
-        this.anims.create({
-            key: 'sShoot',
-            frames: this.anims.generateFrameNumbers('arcaneArcher', { start:24, end: 30}),
-            frameRate: 8,
-            repeat: 0
-        });
+        
 
         // NightBorne Animation
 
@@ -3102,9 +2919,10 @@
 
 
         
-        // Controllers online
+        // Keyboard Keys
         cursors = this.input.keyboard.createCursorKeys();
         keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
+        keyD = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
         keyZ = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Z);
         keyX = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.X);
 
@@ -3209,7 +3027,7 @@
 
             gameObject.setAlpha(0.5);
 
-            });
+        });
             
             enemies = this.physics.add.group({
                 
@@ -3352,20 +3170,30 @@
 
     function update ()
     {
+        
         // Debugging and Testing Controls
 
             // Console
 
             closest = this.physics.closest(player,enemies.getChildren()) 
             
-            console.log(leftIsDown)
-            console.log(rightIsDown)
+           // console.log("Left Key:" + leftIsDown)
+            //console.log("Right Key:" + rightIsDown)
+            //console.log("ActionKeyA:" + actionKeyAIsDown)
+           // console.log("ActionKeyB:" + actionKeyBIsDown)
+            //console.log("SkillKeyA:" + skillKeyAIsDown)
+            //console.log("SkillKeyB:" + skillKeyBIsDown)
+            //console.log("Using Power:" + usingPower)
+            console.log("Using Power:" + highObstacle.x)
+            console.log("sp:" + playerSpeed)
 
             gfx.clear()
             .lineStyle(2, 0xff3300)
             .lineBetween(closest.x, closest.y, player.x, player.y)
 
                 if (Phaser.Input.Keyboard.JustDown(keyZ)){
+
+                    
                     
                     if (touchEnabled){
                         enableTouchControls(0)
@@ -3464,41 +3292,93 @@
   
             // Controls
 
+                // Keyboard
+
+                if(cursors.left.isDown){
+                    leftIsDown = true 
+                } else if (Phaser.Input.Keyboard.JustUp(cursors.left)){
+                    leftIsDown = false     
+                } 
+
+                if(cursors.right.isDown){
+                    rightIsDown = true 
+                    
+                } else if (Phaser.Input.Keyboard.JustUp(cursors.right)){
+                    rightIsDown = false 
+                }
+
+                if (Phaser.Input.Keyboard.JustDown(cursors.up)){
+                    upIsDown = true
+                } else if (Phaser.Input.Keyboard.JustUp(cursors.up)) {
+                    //upIsDown = false
+                }
+
+                if (cursors.down.isDown){
+                    downIsDown = true
+                } else if (Phaser.Input.Keyboard.JustUp(cursors.down)){
+                    downIsDown = false
+                }
+
+                if (keyA.isDown){
+
+                    actionKeyAIsDown = true
+
+                    if (Phaser.Input.Keyboard.JustDown(keyA)){
+                        usingPower = true
+                    }
+                    
+                } else if (keyA.isUp){
+
+                    if (Phaser.Input.Keyboard.JustUp(keyA)){
+                        actionKeyAIsDown = false
+                    }
+                    
+                }
+
+                if (keyD.isDown){
+
+                    actionKeyBIsDown = true
+
+                } else if (keyD.isUp){
+                    if (Phaser.Input.Keyboard.JustUp(keyD)){
+                        actionKeyBIsDown = false
+                    }  
+                }
+
+                if (cursors.space.isDown){
+
+                    skillKeyAIsDown = true
+
+                    if (Phaser.Input.Keyboard.JustDown(cursors.space)){
+                        usingPower = true
+                    }
+
+                } else if (cursors.space.isUp){
+
+                    if (Phaser.Input.Keyboard.JustUp(cursors.space)){
+                        skillKeyAIsDown = false
+                    }
+
+                }
+
+
+                
                 // Gamepad
                 
                 if (gamePadEnabled){
 
-                    if (gamePad.leftStick.y < -0.5   && !playerIsHit && !playerAttacking && !playerJumping && !playerBlocking){ 
+                    if (gamePad.leftStick.y < -0.5){ 
+                        upIsDown = true
                         
-                        if (player.body.onFloor()){
-                            playerJumping = true
-                            player.play({key:'pCrouch',frameRate:24},true)
-                            player.once('animationcomplete',function(){
-                                
-                                player.play({key:'pJump',frameRate:18},true)
-                                
-                                if(player.body.speed > 10){
-                                    if (player.flipX){
-                                    player.setVelocityX(-150)
-                                } else {
-                                    player.setVelocityX(150)
-                                }
-                                }
-                                  
-                                player.setVelocityY(-300)
-                                playerLanded = false
-                            },player)
-                        } 
-
-                    } else if (gamePad.leftStick.y > 0.5 && !playerIsHit && !playerAttacking && !playerCrouching && !playerBlocking){ 
-                        playerCrouching = true
-                        if(player.body.speed > 10){
-                            player.play({key:'pSlide',frameRate:14},true)
-                        } else {
-                            player.play({key:'pCrouch',frameRate:14},true)
-                        }
-
-                    } 
+                    } else if (gamePad.leftStick.y > -0.5){
+                        upIsDown = false
+                    }
+                    
+                    if (gamePad.leftStick.y > 0.5){ 
+                        downIsDown = true
+                    } else if (gamePad.leftStick.y < 0.5){
+                        downIsDown = false
+                    }
                     
                     if(gamePad.leftStick.x >= 0.5){
                         rightIsDown = true
@@ -3516,7 +3396,7 @@
                         
                     }
                     
-                    if(gamePad.leftStick.y > -0.5 && gamePad.leftStick.y < 0.5 && !leftIsDown && !rightIsDown && !playerIsHit && !playerAttacking && !playerJumping && !playerBlocking){
+                    if(!upIsDown && !downIsDown && !leftIsDown && !rightIsDown && !playerIsHit && !playerAttacking && !playerJumping && !playerBlocking){
                         playerCrouching = false
                         playerDodging = false
                         player.play('pIdle',true)
@@ -3625,75 +3505,20 @@
 
                         } else if (button == 7){
 
-                            keyA.isDown = true
-                            regenActive = false
+                            actionKeyAIsDown = true
+                            usingPower = true
 
-                            if(inBattle){
-
-                                attackModeActive = true
-                                usingPower = true
-                                playerBlocking = false
-                                playerDodging = false
-                               
-                            } else {
-                                var attackChoice = Phaser.Math.Between(1,2)
-
-                                if(attackChoice == 1){
-                                    player.play({key:'pDash',frameRate:18},true)
-                                    fireTowardsTarget(player,player.x + 100,1)
-                                    player.setVelocityY(Phaser.Math.Between(-125,-150))
-                                    player.once('animationcomplete',function(){
-                                        player.play({key:'pHeavyAttack',frameRate:16},true)
-                                        player.setVelocityY(Phaser.Math.Between(100,150))
-                                        player.once('animationcomplete',function(){
-                                            player.play({key:'pRun',repeat:-1},true)
-                                    },this)
-                                    },this)
-                                    
-                                } else if (attackChoice == 2) {
-                                        player.play('pDash',true)
-                                        fireTowardsTarget(player,player.x + 100,1)
-                                        player.setVelocityY(Phaser.Math.Between(-75,-100))
-                                        player.once('animationcomplete',function(){
-                                        player.play('pAttack2',true)
-                                        player.setVelocityY(Phaser.Math.Between(-100,-150))
-                                        player.once('animationcomplete',function(){
-                                        player.play({key:'pRun',repeat:-1},true)
-                                    },this)
-                                    },this)
-                                        
-                                }
-                            }
                             
                         } else if (button == 5){
-                            cursors.space.isDown = true
-                            regenActive = false
+                            
+                            skillKeyAIsDown = true
+                            usingPower = true
 
-                            if(inBattle){
-                                attackModeActive = true
-                                usingPower = true
-                                playerBlocking = false
-                                playerDodging = false
-                            } else {
-                                focusModeActive = true
-                                scanningForDanger = true
-                            }
+                            
                         } else if (button == 6){
-                            // OR BLOCK IS AUTO IF NO BUTTONS PRESSED?
-                            regenActive = false
 
-                            if(inBattle){
-                                if(!playerBlocking && !playerIsHit && !playerAttacking){
-                                    
-                                    
-                                    player.play({key:'pBlock'},true)
-                                        
-                                    playerBlocking = true
-                                    playerDodging = false
-
-
-                                }
-                            }
+                            actionKeyBIsDown = true
+                            
                             
                         } 
 
@@ -3713,23 +3538,13 @@
                         // Back = 8 ; Start = 9
                         // LS = 10 ; RS = 11 
                         if (button == 7){
-                            
-                            keyA.isDown = false
-                            sword.body.checkCollision.none = true
-                            regenActive = true
-                                // player.once('animationcomplete',function(){
-                                //     player.play('pIdle',true)
-                                // },player)
-
-                            if(inBattle){
-                                playerAttacking = false
-                                attackModeActive = false
-                                usingPower = false
-                            }
+                             
+                            actionKeyAIsDown = false
                     
                         } else if (button == 5){
-                            cursors.space.isDown = false
-                            regenActive = true
+                            skillKeyAIsDown = false
+
+                            
                             
                                 player.stop()
                                 player.play('pBackDash',true)
@@ -3738,33 +3553,11 @@
                                     player.play('pIdle',true)
                                 },player)
 
-                                //fireTowardsTarget(player, player.x + 125,1)
-                            
 
-
-                            if(inBattle){
-                                playerAttacking = false
-                                attackModeActive = false
-                                usingPower = false
-                            } else {
-                                playerFocusing = false
-                                focusModeActive = false
-                                scanningForDanger = false
-                            }
                         } else if (button == 6){
                             
-                            regenActive = true
-
-                            if(inBattle){
+                            actionKeyBIsDown = false
                                
-     
-                                    playerBlocking = false
-                                    
-
-
-                                //}
-                            }
-                            
                         }
 
                     }, this);
@@ -3810,200 +3603,118 @@
 
                         leftIsDown = false
 
-                        if(!playerJumping && !playerAttacking  && !playerBlocking && gameMode == 1 && controlsEnabled && !playerIsHit){
-
-                            playerDodging = false
-                            playerCrouching = false
-
-                            player.play('pIdle',true)
-                        }
                     })
 
                     right.on('pointerdown', function(){
 
                         rightIsDown = true
 
-                        
                     })
 
                     right.on('pointerup', function(){
 
                         rightIsDown = false
 
-                        if(!playerJumping && !playerAttacking  && !playerBlocking && gameMode == 1 && controlsEnabled && !playerIsHit){
-
-                            playerDodging = false
-                            playerCrouching = false
-
-                            player.play('pIdle',true)
-                        }
                     })
 
                     up.on('pointerdown', function(){
 
-                        
+                        upIsDown = true
 
-                        if(!playerIsHit && !playerAttacking && !playerJumping && !playerBlocking){
-
-                        if (player.body.onFloor()){
-                            playerJumping = true
-                            player.play({key:'pCrouch',frameRate:24},true)
-                            player.once('animationcomplete',function(){
-                                
-                                player.play({key:'pJump',frameRate:18},true)
-                                
-                                if(player.body.speed > 10){
-                                    if (player.flipX){
-                                    player.setVelocityX(-150)
-                                } else {
-                                    player.setVelocityX(150)
-                                }
-                                }
-                                
-                                
-                                player.setVelocityY(-300)
-                                playerLanded = false
-                            },player)
-                        } 
-                        }
-
-                        
                     })
 
                     up.on('pointerup', function(){
 
-                        
-
-                        if(!playerJumping && !playerAttacking  && !playerBlocking && gameMode == 1 && controlsEnabled && !playerIsHit){
-
-                            playerDodging = false
-                            playerCrouching = false
-
-                            player.play('pIdle',true)
-                        }
                     })
 
                     down.on('pointerdown', function(){
 
-                        
-
-                        if(!playerIsHit && !playerAttacking && !playerJumping && !playerBlocking){
-
-                        playerCrouching = true
-                        if(player.body.speed > 15){
-                            player.play({key:'pSlide',frameRate:14},true)
-                        } else {
-                            player.play({key:'pCrouch',frameRate:14},true)
-                        }
-                        }
-
-                        
+                        downIsDown = true
+  
                     })
 
                     down.on('pointerup', function(){
 
 
-                        if(!playerJumping && !playerAttacking  && !playerBlocking && gameMode == 1 && controlsEnabled && !playerIsHit){
-                            playerDodging = false
-                            playerCrouching = false
-
-                            player.play('pIdle',true)
-                        }
+                        downIsDown = false
                     })
 
                     aAction.on('pointerdown', function (button) {
 
-                            keyA.isDown = true
-                            regenActive = false
+                            actionKeyAIsDown = true
+                            usingPower = true
 
-                            if(inBattle){
+                            // keyA.isDown = true
+                            // regenActive = false
 
-                                attackModeActive = true
-                                usingPower = true
-                                playerBlocking = false
-                                playerDodging = false
+                            // if(inBattle){
+
+                            //     attackModeActive = true
+                            //     usingPower = true
+                            //     playerBlocking = false
+                            //     playerDodging = false
                             
-                            } else {
-                                var attackChoice = Phaser.Math.Between(1,2)
+                            // } else {
+                            //     var attackChoice = Phaser.Math.Between(1,2)
 
-                                if(attackChoice == 1){
-                                    player.play({key:'pDash',frameRate:18},true)
-                                    fireTowardsTarget(player,player.x + 100,1)
-                                    player.setVelocityY(Phaser.Math.Between(-125,-150))
-                                    player.once('animationcomplete',function(){
-                                        player.play({key:'pHeavyAttack',frameRate:16},true)
-                                        player.setVelocityY(Phaser.Math.Between(100,150))
-                                        player.once('animationcomplete',function(){
-                                            player.play({key:'pRun',repeat:-1},true)
-                                    },this)
-                                    },this)
+                            //     if(attackChoice == 1){
+                            //         player.play({key:'pDash',frameRate:18},true)
+                            //         fireTowardsTarget(player,player.x + 100,1)
+                            //         player.setVelocityY(Phaser.Math.Between(-125,-150))
+                            //         player.once('animationcomplete',function(){
+                            //             player.play({key:'pHeavyAttack',frameRate:16},true)
+                            //             player.setVelocityY(Phaser.Math.Between(100,150))
+                            //             player.once('animationcomplete',function(){
+                            //                 player.play({key:'pRun',repeat:-1},true)
+                            //         },this)
+                            //         },this)
                                     
-                                } else if (attackChoice == 2) {
-                                        player.play('pDash',true)
-                                        fireTowardsTarget(player,player.x + 100,1)
-                                        player.setVelocityY(Phaser.Math.Between(-75,-100))
-                                        player.once('animationcomplete',function(){
-                                        player.play('pAttack2',true)
-                                        player.setVelocityY(Phaser.Math.Between(-100,-150))
-                                        player.once('animationcomplete',function(){
-                                        player.play({key:'pRun',repeat:-1},true)
-                                    },this)
-                                    },this)
+                            //     } else if (attackChoice == 2) {
+                            //             player.play('pDash',true)
+                            //             fireTowardsTarget(player,player.x + 100,1)
+                            //             player.setVelocityY(Phaser.Math.Between(-75,-100))
+                            //             player.once('animationcomplete',function(){
+                            //             player.play('pAttack2',true)
+                            //             player.setVelocityY(Phaser.Math.Between(-100,-150))
+                            //             player.once('animationcomplete',function(){
+                            //             player.play({key:'pRun',repeat:-1},true)
+                            //         },this)
+                            //         },this)
                                         
-                                }
-                            }
+                            //     }
+                            // }
 
                         }, this);
 
                     aAction.on('pointerup', function (button) {
 
-                    keyA.isDown = false
-                    sword.body.checkCollision.none = true
-                    regenActive = true
-                        // player.once('animationcomplete',function(){
-                        //     player.play('pIdle',true)
-                        // },player)
+                        actionKeyAIsDown = false
+                        
 
-                        if(inBattle){
-                            playerAttacking = false
-                            attackModeActive = false
-                            usingPower = false
-                        }
+                    // keyA.isDown = false
+                    // sword.body.checkCollision.none = true
+                    // regenActive = true
+                    
+
+                    //     if(inBattle){
+                    //         playerAttacking = false
+                    //         attackModeActive = false
+                    //         usingPower = false
+                    //     }
 
 
                     }, this);
 
                     bAction.on('pointerdown', function (button) {
                         
-                        regenActive = false
-
-                        if(inBattle){
-                            if(!playerBlocking && !playerIsHit && !playerAttacking){
-                                
-                                
-                                player.play({key:'pBlock'},true)
-                                    
-                                playerBlocking = true
-                                playerDodging = false
-
-
-                            }
-                        }
+                        actionKeyBIsDown = true
 
 
                     }, this);
 
                     bAction.on('pointerup', function (button) {
 
-                    regenActive = true
-
-                    if(inBattle){
-
-                                
-                            playerBlocking = false
-                            player.play('pIdle',true)
-
-                    }
+                        actionKeyBIsDown = false
 
                     }, this);
 
@@ -4011,18 +3722,8 @@
 
 
                     
-                        cursors.space.isDown = true
-                        regenActive = false
-
-                        if(inBattle){
-                            attackModeActive = true
-                            usingPower = true
-                            playerBlocking = false
-                            playerDodging = false
-                        } else {
-                            focusModeActive = true
-                            scanningForDanger = true
-                        }
+                        skillKeyAIsDown = true
+                        usingPower = true
                     
 
                     }, this);
@@ -4030,31 +3731,7 @@
                     aSkill.on('pointerup', function (button) {
               
                     
-                    cursors.space.isDown = false
-                    regenActive = true
-
-                        player.stop()
-                        player.play('pBackDash',true)
-
-                        player.once('animationcomplete',function(){
-                            player.play('pIdle',true)
-                        },player)
-
-                        //fireTowardsTarget(player, player.x + 125,1)
-
-
-
-                    if(inBattle){
-                        playerAttacking = false
-                        attackModeActive = false
-                        usingPower = false
-                    } else {
-                        playerFocusing = false
-                        focusModeActive = false
-                        scanningForDanger = false
-                    }
-
-                     
+                        skillKeyAIsDown = false
 
                     }, this);
 
@@ -4106,11 +3783,155 @@
 
                     // }, this);
                     
-                    // Abstracted Controls
+                // Abstracted Controls
+                
+                if(actionKeyAIsDown){
+                    if(!playerIsHit){
 
-                    if(leftIsDown){
-                        if(!playerDodging && !playerIsHit && !playerAttacking && !playerBlocking){
+                            regenActive = false
+
+                            if(inBattle){
+
+                                attackModeActive = true
+                                playerBlocking = false
+                                playerDodging = false
+
+                                if (currentEnergy > 0){
+                                    playerAttacking = true
+
+                                    playerVitals.decreaseEnergy(maxEnergy * 0.004)
+
+                                    if(attackModeActive){
+                                        playerAction()  
+                                    }
+
+                                } else {
+                                    
+                                    sword.body.checkCollision.none = true
+                                    attackModeActive = false
+                                    usingPower = false
+    
+                                }
+                               
+                            } else {
+
+                                playerVitals.decreaseEnergy(income * 0.005)
+
+                                var attackChoice = Phaser.Math.Between(1,2)
+
+                                if(attackChoice == 1){
+                                    player.play({key:'pDash',frameRate:18},true)
+                                    fireTowardsTarget(player,player.x + 100,1)
+                                    player.setVelocityY(Phaser.Math.Between(-125,-150))
+
+                                    player.once('animationcomplete',function(){
+                                        player.play({key:'pHeavyAttack',frameRate:16},true)
+                                        player.setVelocityY(Phaser.Math.Between(100,150))
+
+                                        player.once('animationcomplete',function(){
+                                            player.play({key:'pRun',repeat:-1},true)
+                                        },this)
+
+                                    },this)
+                                    
+                                } else if (attackChoice == 2) {
+                                        player.play('pDash',true)
+                                        fireTowardsTarget(player,player.x + 100,1)
+                                        player.setVelocityY(Phaser.Math.Between(-75,-100))
+
+                                        player.once('animationcomplete',function(){
+                                            player.play('pAttack2',true)
+                                            player.setVelocityY(Phaser.Math.Between(-100,-150))
+
+                                            player.once('animationcomplete',function(){
+                                                player.play({key:'pRun',repeat:-1},true)
+                                            },this)
+
+                                        },this)
+                                        
+                                }
+                            }
+                    }
+                } 
+
+                if (actionKeyBIsDown){
+
+                    if(!playerIsHit){
+                        regenActive = false
+
+                        if(inBattle){
+                            if(!playerBlocking && !playerIsHit && !playerAttacking){
+
+                                player.play({key:'pBlock'},true)
+                                    
+                                playerBlocking = true
+                                playerDodging = false
+
+                            }
+                        }
+                    }
+                }
+
+                if(skillKeyAIsDown){
+                    if(!playerIsHit){
+
+                            regenActive = false
+
+                            if(inBattle){
+
+                                attackModeActive = true
+                                playerBlocking = false
+                                playerDodging = false
+
+                                if (currentFocus > 0){
+                                    playerAttacking = true
+
+                                    playerVitals.decreaseFocus(maxFocus * 0.006)
+
+                                    if(attackModeActive){
+                                        playerSkill() 
+                                    }
+
+                                } else {
+                                    
+                                    sword.body.checkCollision.none = true
+                                    attackModeActive = false
+                                    usingPower = false
+    
+                                }
                             
+                               
+                            } else {
+
+                                focusModeActive = true
+                                scanningForDanger = true
+
+                                playerVitals.decreaseFocus((income) / 50)
+
+                                if (currentFocus  > 0){
+                                    playerFocusing = true
+                                    playerSpeed = 0.5
+                                    highObstacle.body.checkCollision.none = true
+                                    lowObstacle.body.checkCollision.none = true
+                            
+                                    if(focusModeActive){
+                                        runFocusMode()
+                                    }
+
+                                } else {
+                                    playerFocusing = false
+                                    focusModeActive = false
+                                    scanningForDanger = false    
+                                }
+                            }
+                    }
+                } 
+
+                if(leftIsDown){
+                    if(!playerDodging && !playerIsHit && !playerAttacking && !playerBlocking){
+
+                        if(inBattle){
+                        
                             if (playerLockedOn){
                                 nightBorneVFX.x = closest.x
                                 nightBorneVFX.setVisible(1)
@@ -4138,12 +3959,21 @@
                                 player.play('pRun',true)
                                 player.setVelocityX(player.body.velocity.x - 35) 
                             }
+                        } else {
+                            playerVitals.decreaseFocus((income * 0.25) / 100 )
+                            playerVitals.decreaseLife(-(income * 0.25)  / 50 )
+
+                            this.physics.moveTo(player,width * 1.1,height - 90,90)
+                            player.anims.play({key:'pRun',frameRate: 8},true);
                         }
+
                     }
+                }
 
-                    if(rightIsDown){
-                        if(!playerDodging && !playerIsHit && !playerAttacking && !playerBlocking){
-
+                if(rightIsDown){
+                    
+                    if(!playerDodging && !playerIsHit && !playerAttacking && !playerBlocking){
+                        if(inBattle){
                             player.body.maxVelocity.x = 250
 
                             if (playerLockedOn){
@@ -4173,13 +4003,154 @@
                                 player.play('pRun',true)
                                 player.setVelocityX(player.body.velocity.x + 35) 
                             }
-                            }
+                        
+                        } else {
+                            playerVitals.decreaseEnergy((income * 0.25) / 50)
+                            this.physics.moveTo(player,width * 1.75,height - 90,90)
+                            player.anims.play({key:'pRun',frameRate: 16},true);
+                            glory += (5 / 60)
+                        }
                     }
+                }
+
+                if(upIsDown){
+                    if(inBattle){
+                        if (player.body.onFloor()){
+                            playerJumping = true
+                            
+                            player.play({key:'pCrouch',frameRate:24},true)
+                            player.once('animationcomplete',function(){
+                                
+                                player.play({key:'pJump',frameRate:18},true)
+                                
+                                if(player.body.speed > 10){
+                                    if (player.flipX){
+                                    player.setVelocityX(-150)
+                                } else {
+                                    player.setVelocityX(150)
+                                }
+                                }
+                                
+                                player.setVelocityY(-300)
+                                
+                                playerLanded = false
+                            },player)
+
+                            upIsDown = false
+                        } 
+                    } else {
+                        if (player.body.onFloor()){
+                            playerJumping = true
+                            
+                            playerVitals.decreaseEnergy(income * 0.2)
+                            
+                            player.play('pJump',true)
+                            player.setVelocityY(-215)
+                            player.setVelocityX(75)
+
+                            player.once('animationcomplete',function(){
+                                player.play('pUptoFall',true)
+                                playerJumping = false
+
+                            },player)
+                          
+                            upIsDown = false
+                            
+
+                        }
+
+                        
+                    }
+                }
+
+                // Players crouch animation when player lands back on ground
+                if (inBattle && !playerLanded){
+                    if(player.body.deltaY() > 0 && player.body.onFloor()){
+                            player.play({key:'pCrouch',frameRate:18},true);
+
+                            player.once('animationcomplete', function () {
+
+                            playerLanded = true
+                            playerJumping = false
+                            
+                            player.play({key:'pIdle'},true);
+
+                            }, this);
+            
+                    }
+                }
+
+                if(downIsDown){
+
+                    if(inBattle){
+                        
+                        if(!playerCrouching){
+                            if(player.body.speed > 10){
+                            player.play({key:'pSlide',frameRate:14},true)
+                            } else {
+                                player.play({key:'pCrouch',frameRate:14},true)
+                            }
+                            playerCrouching = true
+                        }
+                        
+                    } else {
+                        highObstacle.body.checkCollision.none = true
+ 
+                        playerVitals.decreaseEnergy((income * 0.25) / 25)
+
+                        player.anims.play({key:'pSlide',frameRate: 6},true);
+               
+
+                        this.physics.moveTo(player,width * 1.25,height - 90,30)
+                    }
+                    
+                }
+
+                if(!leftIsDown && !rightIsDown && !upIsDown && !downIsDown  && !actionKeyAIsDown && !actionKeyBIsDown && !skillKeyAIsDown && !skillKeyBIsDown && !playerIsHit && !playerJumping && playerLanded && player.body.onFloor() && !gameOver && controlsEnabled){
+                    if(inBattle){
+                        player.play('pIdle',true) 
+                    } else {
+                        player.play({key:'pRun',frameRate: 12},true);
+                        this.physics.moveTo(player,width * 1.25,height - 90,90)
+
+                    }
+                    
+                }
+
+                if(!downIsDown){
+                    if(gameMode == 0){
+                    highObstacle.body.checkCollision.none = false
+                    }
+                    playerCrouching = false
+                }
+
+                if(!actionKeyAIsDown && !actionKeyBIsDown && !skillKeyAIsDown && !skillKeyBIsDown){
+                    regenActive = true
+                    sword.body.checkCollision.none = true
+                    attackModeActive = false
+                    usingPower = false
+                }
+
+                if(!actionKeyAIsDown && !skillKeyAIsDown && !skillKeyBIsDown){
+                    playerAttacking = false
+                }
+
+                if (!actionKeyBIsDown){
+                    playerBlocking = false
+                }
+
+                if(!skillKeyAIsDown && !skillKeyBIsDown){
+                    playerFocusing = false
+                    focusModeActive = false
+                    scanningForDanger = false
+                }
 
 
            // NightBorne
            
                // NightBorne Elite
+
+               
 
                     // NightBorne outline follows NightBorne
                         nightBorneOutline.x = nightBorne.x - 2.5
@@ -4205,14 +4176,59 @@
 
             playerSpeed = player.x / (width * 1.25)
 
+            // To be sorted
+
+            if (progress >= progressToNextLevel){
+            glory += (100 / 60) * 10
+            levelUp()
+
+            }
+
+            if (progress >= progressToNextCheckPoint){
+                enemyChase(4)
+            }
+
+            
+
+
+                nightBorneNecromancer.play({key:'nightBorneNecromancer_Idle',frameRate: 8 * playerSpeed},true)
+                nightBorne.play({key:'nightBorne_Move',frameRate: 8 * playerSpeed},true)
+
+                moveHighObstacle(highObstacle, 4 * (playerSpeed))
+                
+
+                moveLowObstacle(lowObstacle, 4.5 * (playerSpeed))
+
+                if(creep.anims.getName() == 'nightBorneMinion_Move'){
+                    moveCreep(6 * (playerSpeed))
+                } else if (creep.anims.getName() == 'nightBorneMinion_Idle') {
+                    moveCreep(3 * (playerSpeed))
+                } else {
+                    moveCreep(4 * (playerSpeed))
+                }
+
+            
+
             // Background 
 
                 // Parallax Background layers scrolls at variable speed multiplied by playerSpeed %
-                woodsl2.tilePositionX += 1.5 * (playerSpeed)
-                woodsl3.tilePositionX += 3 * (playerSpeed)
-                woodsl4.tilePositionX += 4.5 * (playerSpeed)
+                if(!gameOver){
+                    woodsl2.tilePositionX += 1.5 * (playerSpeed)
+                    woodsl3.tilePositionX += 3 * (playerSpeed)
+                    woodsl4.tilePositionX += 4.5 * (playerSpeed)
+                } 
+                
 
             // NightBorne
+
+                // Dynamic Panning based on nightBorne distance to player
+                if (nightBorneCam){
+                    if (nightBorne.x <= width * 0.85){
+                        camera.pan(width * 1.5,0,1250) 
+                    } else {
+                        camera.pan(width * 1.3,0,2500)
+                    }
+                }
 
                 // NightBorne Elite
 
@@ -4224,13 +4240,31 @@
                     nightBorneNecromancer.y = nightBorne.y - 175
 
 
+
         // Battle Mode
 
         } else if (gameMode == 1){
+
            
 
-                // Drag Settings & Arena Border / Dead Zones 
-                // TO BE DELETED AND REPLACED WITH BATTLE MODE REBUILD
+                // Auto lock
+
+                // Enables Player and nightBorne to automatically face each other
+                if(Math.abs(player.x - closest.x) <= 150){
+                    playerLockedOn = true
+                    if(player.x < closest.x){
+                        player.flipX = false
+                        closest.flipX = true
+                    } else {
+                        player.flipX = true
+                        closest.flipX = false
+                    }
+                } else {
+                    playerLockedOn = false
+                }
+
+                // Drag Settings
+                
                 // Set player drag based on if in air or on ground
 
                 if (player.body.onFloor()){
@@ -4238,29 +4272,6 @@
                 } else {
                     player.setDragX(300)
                 }
-
-                if (support.body.onFloor()){
-                    support.setDragX(300)
-                } else {
-                    support.setDragX(100)
-                }
-
-                // EITHER A) RELY ON AREA BORDER or B) TO BE REPLACED WITH DEADZONE OVERLAP OBJECT AROUND BATTLE AREA or C) BOTH
-                // Stop player if sliding past anhor point
-
-                // if (player.x > width * 1.8){
-
-                //     player.setVelocityX(0)
-                //     player.x = width * 1.79
-                // }
-
-                if (support.x > width * 1.85){
-
-                    support.setVelocityX(0)
-                    support.x = width * 1.85
-                }
-
-                // Stop nightBorne if sliding past anhor point
 
 
                 // NightBorne
@@ -4312,67 +4323,41 @@
 
                     
             
-            // Background 
+            
 
-                // Parallax Background layers scrolls at variable speed
-                woodsl2.tilePositionX = (camera.x * 0.3) 
-                woodsl3.tilePositionX = (camera.x * 0.65) 
-                woodsl4.tilePositionX = (camera.x)
+            
         }
 
 
-         // Move to "Start NightBorne Battle" function
-        if (inBattle){
+        //  // Move to "Start NightBorne Battle" function
+        // if (inBattle){
            
-            if(startNecroFloat){
-                startNecroFloat = false
-            this.tweens.add({
-                                    targets     : [nightBorneNecromancer],
-                                    x       : nightBorne.x - 75, 
-                                    ease        : 'Quad.easeIn',
-                                    duration    : 12000,
-                                    yoyo        : 1,
-                                    repeat      : -1
-            });
-            this.tweens.add({
-                                    targets     : [nightBorneNecromancer],
-                                    y       : nightBorne.y - 230, 
-                                    ease        : 'Power2',
-                                    duration    : 7500,
-                                    yoyo        : 1,
-                                    repeat      : -1
+        //     if(startNecroFloat){
+        //         startNecroFloat = false
+        //     this.tweens.add({
+        //                             targets     : [nightBorneNecromancer],
+        //                             x       : nightBorne.x - 75, 
+        //                             ease        : 'Quad.easeIn',
+        //                             duration    : 12000,
+        //                             yoyo        : 1,
+        //                             repeat      : -1
+        //     });
+        //     this.tweens.add({
+        //                             targets     : [nightBorneNecromancer],
+        //                             y       : nightBorne.y - 230, 
+        //                             ease        : 'Power2',
+        //                             duration    : 7500,
+        //                             yoyo        : 1,
+        //                             repeat      : -1
                                     
-            });
-        }
+        //     });
+        // }
 
-        } 
+        // } 
 
 
-        // REPLACE WITH CASE: FORMAT FOR CLEANER CODE, ADD ALL TO BATTLE MODE SECTION ONLY AND PLAYER ONLY VERSION TO RUNNING MODE
-        // Support
-
-        if (support.anims.getName() == 'sShoot'){
-                   
-                    
-                    if (support.anims.currentFrame.index >= 7 && !nightBorneIsHit){
-                        
-                        supportArrow.setVisible(1)
-                        if(support.x > nightBorne.x){
-                        supportArrow.body.setVelocityX(-350 * supportArrowSpeedMultiplier)
-                        } else {
-                            supportArrow.body.setVelocityX(350 * supportArrowSpeedMultiplier)
-                        }
-                    } else {
-                        sword.body.checkCollision.none = true
-                    }
-
-                    if (supportArrow.visible){
-                        supportArrow.body.checkCollision.none = false
-                    } else {
-                        supportArrow.body.checkCollision.none = true
-                    }
-
-        } 
+        // // REPLACE WITH CASE: FORMAT FOR CLEANER CODE, ADD ALL TO BATTLE MODE SECTION ONLY AND PLAYER ONLY VERSION TO RUNNING MODE
+        
         
         // Enable player sword collision detection
         if (player.anims.getName() == 'pDoubleAttack'){
@@ -4446,16 +4431,6 @@
             gameOver = false
         }
 
-        if (progress >= progressToNextLevel){
-            glory += (100 / 60) * 10
-            levelUp()
-
-        }
-
-        if (progress >= progressToNextCheckPoint){
-            enemyChase(4)
-        }
-
         refreshStats()
 
 
@@ -4472,327 +4447,19 @@
         nightBorneVitals.draw()
 
  
-            if (player.flipX){
-                sword.x = player.x - 10
-                sword.y = player.y - 15
-            } else {
-                sword.x = player.x + 10
-                sword.y = player.y - 15
-            }
-
-            if (!supportArrow.visible){
-                
-            if (support.flipX){
-                supportArrow.flipX = true
-                supportArrow.x = support.x - 94
-                
-            } else {
-                supportArrow.flipX = false
-                supportArrow.x = support.x + 30
-            
-            }
-                supportArrow.y = support.y - 12.5
-                supportArrow.body.checkCollision.none = true
-            }   
-
-            chaosFactor = Phaser.Math.FloatBetween(chaosMultiplierMin,chaosMultiplierMax)
-
-        if (inBattle == false){
-
-            if(cursors.space.isDown){
-
-            if (currentFocus  > 0){
-            playerFocusing = true
-
-            playerSpeed = 0.5
-            highObstacle.body.checkCollision.none = true
-
-            lowObstacle.body.checkCollision.none = true
-                
-                if (Phaser.Input.Keyboard.JustDown(cursors.space)){
-
-                    focusModeActive = true
-                    scanningForDanger = true
-                }
-                if(focusModeActive){
-                    runFocusMode()
-                }
-            } else {
-                playerFocusing = false
-                
-                
-            }
-
-            } else if (Phaser.Input.Keyboard.JustUp(cursors.space)){
-            player.stop()
-            playerFocusing = false
-            focusModeActive = false
-            scanningForDanger = false
-            }
-
-            aSkill.once('pointerdown',function(){
-            focusModeActive = true
-            scanningForDanger = true
-            },this)
-
-            aSkill.once('pointerup',function(){
-            player.stop()
-            playerFocusing = false
-            focusModeActive = false
-            scanningForDanger = false
-            },this)
-
-            aSkill.once('pointerout',function(){
-            player.stop()
-            playerFocusing = false
-            focusModeActive = false
-            scanningForDanger = false
-            },this)
-
-            if (!playerFocusing && keyA.isUp){
-            // playerSpeed = player.x / (width * 1.2)
-            player.setTintFill()
-            spotlight.intensity = 0.5
-            spotlight.setColor(0xffffff)
-            spotlight.x = player.x
-            spotlight.y = player.y
-   
-            
+        if (player.flipX){
+            sword.x = player.x - 10
+            sword.y = player.y - 15
+        } else {
+            sword.x = player.x + 10
+            sword.y = player.y - 15
         }
-
-            // Dynamic Panning based on nightBorne distance to player
-            if (nightBorneCam){
-                if (nightBorne.x <= width * 0.85){
-                    camera.pan(width * 1.5,0,1250) 
-                } else {
-                    camera.pan(width * 1.3,0,2500)
-                }
-            }
-
-        } else if (inBattle) {
-
-            spotlight.intensity = 0.5
-
-            spotlight.x = player.x
-            spotlight.y = player.y
-
-
-            // Enables Player and nightBorne to automatically face each other
-            if(Math.abs(player.x - closest.x) <= 150){
-                playerLockedOn = true
-                if(player.x < closest.x){
-                    player.flipX = false
-                    closest.flipX = true
-                } else {
-                    player.flipX = true
-                    closest.flipX = false
-                }
-            } else {
-                playerLockedOn = false
-            }
-
-        }
-
-        if (inBattle == false){
-
-            if (skillTreeOpen){
-                highObstacle.body.checkCollision.none = true
-                lowObstacle.body.checkCollision.none = true
-            } else if(!playerFocusing) {
-                highObstacle.body.checkCollision.none = false
-                lowObstacle.body.checkCollision.none = false
-            }
-
-            if (nightBorne.x > width * Phaser.Math.FloatBetween(1.3,1.4) && player.x > width * 1.4){
-                nightBorne.setVelocityX(nightBorne.body.velocity.x - 10)
-            }
-
-            nightBorneNecromancer.play({key:'nightBorneNecromancer_Idle',frameRate: 8 * playerSpeed},true)
-            nightBorne.play({key:'nightBorne_Move',frameRate: 8 * playerSpeed},true)
-
-            moveHighObstacle(highObstacle, 4 * (playerSpeed))
-
-            moveLowObstacle(lowObstacle, 4.5 * (playerSpeed))
-
-            if(creep.anims.getName() == 'nightBorneMinion_Move'){
-                moveCreep(6 * (playerSpeed))
-            } else if (creep.anims.getName() == 'nightBorneMinion_Idle') {
-                moveCreep(3 * (playerSpeed))
-            } else {
-                moveCreep(4 * (playerSpeed))
-            }
-            
-
-            if (playerIsHit){ 
-                
-                playerHitAnimation()
-            } else if (cursors.up.isDown && currentEnergy > (income * 0.2) && !playerIsHit && player.body.onFloor()){ 
-
-                playerVitals.decreaseEnergy(income * 0.2)
-                
-
-                //if(Phaser.Input.Keyboard.JustDown(cursors.up)){
-                    player.chain([{key:'pJump',frameRate: 12},true,{key:'pUptoFall',frameRate: 12}],true); 
-                    support.play('sJump',true)
-                    this.physics.moveTo(player,width * 1.45,75)
-                    player.setVelocityY(-215)
-                    player.setVelocityX(75)
-                    support.setVelocityY(-205)
-                    support.setVelocityX(100)
-                    nightBorne.setVelocityX(nightBorne.body.velocity.x + 50)
-                    
-                //}
-
-  
-
-                
-            } else if (keyA.isDown && currentEnergy > (income * 0.05) && playerIsHit == false){
-
-                // Running Attack
-
-                if (Phaser.Input.Keyboard.JustDown(keyA)){
-                    var attackChoice = Phaser.Math.Between(1,2)
-                }
-
-                playerVitals.decreaseEnergy(income * 0.005)
-
-                if (player.body.onFloor()){
-                    if(attackChoice == 1){
-                        player.play({key:'pDash',frameRate:18},true)
-                        fireTowardsTarget(player,player.x + 100,1)
-                        player.once('animationcomplete',function(){
-                            player.play({key:'pDoubleAttack',frameRate:18},true)
-                            player.once('animationcomplete',function(){
-                                player.play({key:'pRun',repeat:-1},true)
-                        },this)
-                        },this)
-                    
-                   
-                    } else if (attackChoice == 2) {
-                        player.play({key:'pDash',frameRate:18},true)
-                        fireTowardsTarget(player,player.x + 100,1)
-                        player.once('animationcomplete',function(){
-                        player.play('pAttack2',true)
-                        player.once('animationcomplete',function(){
-                            player.play({key:'pRun',repeat:-1},true)
-                        },this)
-                    },this)
-                        
-                    }
-                } else if (!player.body.onFloor()) {
-                    if (attackChoice == 1 || attackChoice == 2) {
-                    player.play({key:'pDash',frameRate:18},true)
-                    fireTowardsTarget(player,player.x + 75,2)
-                    player.once('animationcomplete',function(){
-                            player.play({key:'pHeavyAttack',frameRate:12},true)
-                            //fireTowardsTarget(player,player.x + 75,2)
-                            player.setVelocityY(Phaser.Math.Between(150,175))
-                            player.once('animationcomplete',function(){
-                              
-                                player.play({key:'pRun',repeat:-1},true)
-                            },this)
-                    },player)
-                    }
-                }
-                
-
-
-                playerSpeed = 0.9
-
-                //enemyChase(Phaser.Math.FloatBetween(-5,+ 1))
-
-            } else if (cursors.space.isDown && playerIsHit == false){
-                
-                playerVitals.decreaseFocus((income) / 50)
-                if(currentFocus > 0){
-                    highObstacle.body.checkCollision.none = true
-
-                    lowObstacle.body.checkCollision.none = true
-
-
-                //enemyChase(Phaser.Math.FloatBetween(-5,1))
-                }
-                
  
-            } else if (downIsDown && currentEnergy > ((income * 0.15)) && player.body.onFloor()){
 
-                highObstacle.body.checkCollision.none = true
- 
-                playerVitals.decreaseEnergy((income * 0.25) / 25)
+        chaosFactor = Phaser.Math.FloatBetween(chaosMultiplierMin,chaosMultiplierMax)
 
-                player.anims.play({key:'pSlide',frameRate: 6},true);
-                support.play('sRoll',true)
-
-                this.physics.moveTo(player,width * 1.25,height - 90,30)
-            
-            } else if (leftIsDown && currentFocus > ((income * 0.25) / 50 ) && !playerIsHit && player.body.onFloor() && currentLife < maxLife){
-
-
-                    playerVitals.decreaseFocus((income * 0.25) / 100 )
-                    playerVitals.decreaseLife(-(income * 0.25)  / 50 )
-                    //enemyChase(4)
-
-                this.physics.moveTo(player,width * 1.1,height - 90,90)
-                player.anims.play({key:'pRun',frameRate: 8},true);
-                
-            } else if (rightIsDown && currentEnergy > ((income * 0.25) / 50 ) && playerIsHit == false && player.body.onFloor()){
-
-                
-                playerVitals.decreaseEnergy((income * 0.25) / 50)
-                this.physics.moveTo(player,width * 1.75,height - 90,90)
-                player.anims.play({key:'pRun',frameRate: 16},true);
-                //enemyChase(Phaser.Math.FloatBetween(-5,-2))
-                glory += (5 / 60)
-     
-            } else if(!playerIsHit) {
-
-                player.body.checkCollision.none = false
-                sword.body.checkCollision.none = true
-                
-
-                if (!playerFocusing){
-                if (player.body.onFloor()){
-                    if(skillTreeOpen){
-                        this.physics.moveTo(player,width * 1.5,height - 90,150)
-                    } else {
-                       this.physics.moveTo(player,width * 1.25,height - 90,150)
-                       this.physics.moveTo(support,width * 1.1,height - 90,150)
-                    }
-                    
-                    player.anims.play({key:'pRun',frameRate: 12},true);
-                    this.physics.moveTo(player,width * 1.25,height - 90,90)
-                        support.play('sRun',true)
-    
-                }
-                }
-
-            }
-
-        } else if (inBattle) {
-            // In Battle Mode
-
-            // Players crouch animation when player lands back on ground
-            if (!playerLanded){
-                if(player.body.deltaY() > 0 && player.body.onFloor()){
-                        player.play({key:'pCrouch',frameRate:18},true);
-
-                        player.once('animationcomplete', function () {
-
-                        playerLanded = true
-                        playerJumping = false
-                        
-                        player.play({key:'pIdle'},true);
-
-                        }, this);
-
-                        
-                }
-            }
-
-            if (currentLife <= 0 && gameOver == false){
-                //gameOver = true
-                playerTurn = false
-                //player.stop()
+        if (currentLife <= 0 && gameOver == false){
+                gameOver = true
                 player.anims.play({key:'pDeath',frameRate: 12},true); 
                 player.once('animationcomplete', function () {
                     updateHighScore()
@@ -4800,59 +4467,11 @@
                  }, this);
             } 
 
-                        // Keyboard contorls 
+        if (playerIsHit){ 
+            playerHitAnimation()
+        } 
 
-                        if(keyA.isDown){
-
-                            if (currentEnergy > 0){
-                                playerAttacking = true
-
-                                    playerVitals.decreaseEnergy(maxEnergy * 0.004)
-
-                                if(attackModeActive){
-                                playerAction()
-                                    
-                                }
-                            } else {
-                                
-                                sword.body.checkCollision.none = true
-                                attackModeActive = false
-                                usingPower = false
-   
-                            }
-                        }
-
-                        if(cursors.space.isDown){
-
-                                playerAttacking = true
-
-                                    playerVitals.decreaseFocus(maxFocus * 0.006)
-
-                                if (Phaser.Input.Keyboard.JustDown(cursors.space)){
-
-                                    attackModeActive = true
-                                    usingPower = true
-                                }
-                                if(attackModeActive){
-                                playerSkill()
-                                //player.body.maxVelocity.x = 250
-                                }
-
-                            } else if (Phaser.Input.Keyboard.JustUp(cursors.space)){
-                            
-                            player.stop()
-                            player.play('pBackDash',true)
-                            player.once('animationcomplete',function(){
-                                        player.play('pIdle',true)
-                                    },player)
-                            fireTowardsTarget(player, player.x + 125,1)
-                            
-                            playerAttacking = false
-                            attackModeActive = false
-                            usingPower = false
-                            }
-
-            }
+        
 
         }
 
