@@ -4118,10 +4118,15 @@
                 }
 
                 if(!downIsDown){
+                    
+                    playerCrouching = false
+                }
+
+                if(!downIsDown && !skillKeyAIsDown){
                     if(gameMode == 0){
                     highObstacle.body.checkCollision.none = false
                     }
-                    playerCrouching = false
+                    
                 }
 
                 if(!actionKeyAIsDown && !actionKeyBIsDown && !skillKeyAIsDown && !skillKeyBIsDown){
