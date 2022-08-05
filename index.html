@@ -2051,29 +2051,29 @@
     });
 
         // Music
-        songChoice = Math.floor(Phaser.Math.Between(1,10))
-        if (songChoice == 1){
-            this.load.audio("bgMusic1", ["assets/music/Le_château_magique.mp3"]);
-        } else if (songChoice == 2){
-           this.load.audio("bgMusic2", ["assets/music/Kids_See_Ghosts.mp3"]);
-        } else if (songChoice == 3){
-            this.load.audio("bgMusic3", ["assets/music/Riptide.mp3"]);
-        } else if (songChoice == 4){
-            this.load.audio("bgMusic4", ["assets/music/The_Apartment.mp3"]);
-       } else if (songChoice == 5){
-             this.load.audio("bgMusic5", ["assets/music/Katana.mp3"]);
-        } else if (songChoice == 6){
-            this.load.audio("bgMusic6", ["assets/music/Ludum_Dare_38_Track_2.wav"]);
-        } else if (songChoice == 7){
-            this.load.audio("bgMusic7", ["assets/music/Night_(Instrumental).mp3"]);
-        } else if (songChoice == 8){
-            this.load.audio("bgMusic8", ["assets/music/Smile.mp3"]);
-        } else if (songChoice == 9){
-            this.load.audio("bgMusic9", ["assets/music/Tripwire.mp3"]);
-        } else if (songChoice == 10){
-            this.load.audio("bgMusic10", ["assets/music/Gumshield.mp3"]);
-        } 
+        bgMusicArray = []
+        
+        
+            
+            this.load.audio("bgMusic1", ["assets/music/Riptide.mp3"]);
+            this.load.audio("bgMusic2", ["assets/music/Smile.mp3"]);
+            this.load.audio("bgMusic3", ["assets/music/Gumshield.mp3"]);
 
+            this.load.audio("bgMusic4", ["assets/music/The_Apartment.mp3"]);
+            this.load.audio("bgMusic5", ["assets/music/Le_château_magique.mp3"]);
+            this.load.audio("bgMusic6", ["assets/music/Kids_See_Ghosts.mp3"]);
+            this.load.audio("bgMusic7", ["assets/music/Katana.mp3"]);
+            this.load.audio("bgMusic8", ["assets/music/Ludum_Dare_38_Track_2.wav"]);
+            this.load.audio("bgMusic9", ["assets/music/Night_(Instrumental).mp3"]);
+            this.load.audio("bgMusic10", ["assets/music/Tripwire.mp3"]);
+        
+            
+        
+
+        
+        Phaser.Utils.Array.Add(bgMusicArray,["bgMusic1","bgMusic2","bgMusic3"])
+
+        
 
 
         
@@ -2184,6 +2184,8 @@
 
     }
 
+    
+
     function create ()
     {
 
@@ -2241,10 +2243,11 @@
 
         
         // Travel Mode 
-        
-        bgMusic = this.sound.add("bgMusic"+songChoice, {volume: 0.75});
 
+
+        bgMusic = this.sound.add(Phaser.Utils.Array.GetRandom(bgMusicArray))
         bgMusic.play()
+        
 
         playerSwordSwing = this.sound.add("playerSwordSwing", {volume: 0.5})
         playerHeavySwordSwing = this.sound.add("playerHeavySwordSwing", {volume: 0.5})
@@ -3177,15 +3180,19 @@
 
             closest = this.physics.closest(player,enemies.getChildren()) 
             
-           // console.log("Left Key:" + leftIsDown)
-            //console.log("Right Key:" + rightIsDown)
-            //console.log("ActionKeyA:" + actionKeyAIsDown)
-           // console.log("ActionKeyB:" + actionKeyBIsDown)
-            //console.log("SkillKeyA:" + skillKeyAIsDown)
-            //console.log("SkillKeyB:" + skillKeyBIsDown)
-            //console.log("Using Power:" + usingPower)
-            console.log("Using Power:" + highObstacle.x)
-            console.log("sp:" + playerSpeed)
+           console.log("Left Key:" + leftIsDown)
+            console.log("Right Key:" + rightIsDown)
+            console.log("ActionKeyA:" + actionKeyAIsDown)
+           console.log("ActionKeyB:" + actionKeyBIsDown)
+            console.log("SkillKeyA:" + skillKeyAIsDown)
+            console.log("SkillKeyB:" + skillKeyBIsDown)
+            console.log("Player Dodging:" + playerDodging)
+            console.log("Player Attacking:" + playerAttacking)
+            console.log("Player Blocking:" + playerBlocking)
+            console.log("Player Jumping:" + playerJumping)
+            console.log("Player Crouching:" + playerCrouching)
+            console.log("Using Power:" + usingPower)
+           
 
             gfx.clear()
             .lineStyle(2, 0xff3300)
@@ -3262,30 +3269,11 @@
 
                 // Background Music
 
-                bgMusic.once('complete', function(bgMusic){
-                    songChoice = Math.floor(Phaser.Math.Between(1,10))
-                        if (songChoice == 1){
-                            this.load.audio("bgMusic1", ["assets/music/Le_château_magique.mp3"]);
-                        } else if (songChoice == 2){
-                            this.load.audio("bgMusic2", ["assets/music/Kids_See_Ghosts.mp3"]);
-                        } else if (songChoice == 3){
-                            this.load.audio("bgMusic3", ["assets/music/Riptide.mp3"]);
-                        } else if (songChoice == 4){
-                            this.load.audio("bgMusic4", ["assets/music/The_Apartment.mp3"]);
-                        } else if (songChoice == 5){
-                            this.load.audio("bgMusic5", ["assets/music/Katana.mp3"]);
-                        } else if (songChoice == 6){
-                            this.load.audio("bgMusic6", ["assets/music/Ludum_Dare_38_Track_2.wav"]);
-                        } else if (songChoice == 7){
-                            this.load.audio("bgMusic7", ["assets/music/Night_(Instrumental).mp3"]);
-                        } else if (songChoice == 8){
-                            this.load.audio("bgMusic8", ["assets/music/Smile.mp3"]);
-                        } else if (songChoice == 9){
-                            this.load.audio("bgMusic9", ["assets/music/Tripwire.mp3"]);
-                        } else if (songChoice == 10){
-                            this.load.audio("bgMusic10", ["assets/music/Gumshield.mp3"]);
-                        }
-                    bgMusic = this.sound.add("bgMusic" + songChoice, {volume: 0.75});
+                bgMusic.once('complete', function(){
+                    songChoice = Math.floor(Phaser.Math.Between(3,10))
+                    Phaser.Utils.Array.Add(bgMusicArray,"bgMusic" + songChoice)
+                    bgMusic.destroy()
+                    bgMusic = this.sound.add(Phaser.Utils.Array.GetRandom(bgMusicArray))
                     bgMusic.play()
                 },this)  
 
@@ -3396,11 +3384,7 @@
                         
                     }
                     
-                    if(!upIsDown && !downIsDown && !leftIsDown && !rightIsDown && !playerIsHit && !playerAttacking && !playerJumping && !playerBlocking){
-                        playerCrouching = false
-                        playerDodging = false
-                        player.play('pIdle',true)
-                    }
+                    
                     
                     
             
@@ -4106,7 +4090,7 @@
                     
                 }
 
-                if(!leftIsDown && !rightIsDown && !upIsDown && !downIsDown  && !actionKeyAIsDown && !actionKeyBIsDown && !skillKeyAIsDown && !skillKeyBIsDown && !playerIsHit && !playerJumping && playerLanded && player.body.onFloor() && !gameOver && controlsEnabled){
+                if(!leftIsDown && !rightIsDown && !upIsDown && !downIsDown  && !actionKeyAIsDown && !actionKeyBIsDown && !skillKeyAIsDown && !skillKeyBIsDown && !playerIsHit && !playerCrouching && !playerJumping && playerLanded && player.body.onFloor() && !gameOver && controlsEnabled){
                     if(inBattle){
                         player.play('pIdle',true) 
                     } else {
@@ -4115,6 +4099,10 @@
 
                     }
                     
+                }
+
+                if(!leftIsDown && !rightIsDown){
+                playerDodging = false
                 }
 
                 if(!downIsDown){
@@ -4250,22 +4238,31 @@
 
         } else if (gameMode == 1){
 
-           
 
-                // Auto lock
-
-                // Enables Player and nightBorne to automatically face each other
-                if(Math.abs(player.x - closest.x) <= 150){
+                // Auto lock - Enables Player to automatically face closest enemy
+                if(Math.abs(player.x - closest.x) <= 200){
                     playerLockedOn = true
                     if(player.x < closest.x){
                         player.flipX = false
-                        closest.flipX = true
+                        
                     } else {
                         player.flipX = true
-                        closest.flipX = false
+                        
                     }
                 } else {
                     playerLockedOn = false
+                }
+
+                // Enables closest enemy to automatically face and move towards player
+                if(Math.abs(closest.x - player.x) <= 150){
+                    enemyLockedOn = true
+                    if(closest.x < player.x){
+                        closest.flipX = false
+                    } else {
+                        closest.flipX = true
+                    }
+                } else {
+                    enemyLockedOn = false
                 }
 
                 // Drag Settings
