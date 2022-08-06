@@ -53,6 +53,12 @@
                 overlapBias: 20
             }
         },
+        fps: {
+            forceSetTimeOut: true,
+            // panicMax: 0,
+            // smoothStep: false,
+            target: 60
+        },
         scene: {
             preload: preload,
             create: create,
@@ -1289,7 +1295,7 @@
 
             usingPower = false
                                  
-            thunderStrike() 
+            deadlyCombatAssault() 
 
         } 
         
@@ -2509,9 +2515,9 @@
         spendingBuffIcon = this.add.image(0,0,'spendingBuffIcon').setDepth(4).setScale(0.5)
 
         aSkillBox = this.add.image(0,0,'activeSkillBox').setDepth(3).setScale(0.0125,0.0375).setOrigin(0.5,0.5)
-        aSkillIcon = this.add.image(0,0,'thunderStrikeIcon').setDepth(3).setScale(0.125).setOrigin(0.5,0.5)
+        aSkillIcon = this.add.image(0,0,'deadlyCombatAssaultIcon').setDepth(3).setScale(0.125).setOrigin(0.5,0.5)
         bSkillBox = this.add.image(0,0,'activeSkillBox').setDepth(3).setScale(0.0125,0.0375).setOrigin(0.5,0.5)
-        bSkillIcon = this.add.image(0,0,'coveringFireIcon').setDepth(3).setScale(0.125).setOrigin(0.5,0.5)
+        bSkillIcon = this.add.image(0,0,'thunderStrikeIcon').setDepth(3).setScale(0.125).setOrigin(0.5,0.5)
         
         
 
@@ -4247,7 +4253,7 @@
             if (progress >= progressToNextCheckPoint){
                 nightBorneCam()
                 if(nightBorneCamLocked){
-                    enemyChase(0.25)
+                    enemyChase(0.3)
                 }
                 
             }
