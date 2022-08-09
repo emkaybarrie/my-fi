@@ -2525,14 +2525,22 @@
 
         levelProgress = new LevelProgressBar(this,progress, camera.scrollX + width * 0.33, camera.scrollY + (height - 85));
 
-        skillTreeLifeIcon = this.add.image(width * 0.25, height / 2,'storingBuffIcon').setDepth(4).setScale(1).setVisible(0).setAlpha(0.75)
-        skillTreeFocusIcon = this.add.image(width * 0.5 , height / 2,'growingBuffIcon').setDepth(4).setScale(1).setVisible(0).setAlpha(0.75)
-        skillTreeEnergyIcon = this.add.image(width * 0.75, height / 2,'spendingBuffIcon').setDepth(4).setScale(1).setVisible(0).setAlpha(0.75)
+        
 
-        inspirationBoxEnergy = this.add.image(0,height / 2,'inspirationBox').setDepth(3).setScale(0.15,0.1).setOrigin(0.5,0.5).setVisible(0).setAlpha(0.75)
-        inspirationBoxFocus = this.add.image(0,height / 2,'inspirationBox').setDepth(3).setScale(0.2,0.5).setOrigin(0.5,0.5).setVisible(0).setAlpha(0.75)
-        inspirationBoxPower = this.add.image(0,height / 2,'inspirationBox').setDepth(3).setScale(0.2,0.5).setOrigin(0.5,0.5).setVisible(0).setAlpha(0.75)
+        inspirationPlayerIconBox = this.add.image(0,camera.scrollY + (height * 0.15),'playerIconBox').setDepth(3).setScale(0.025,0.07).setOrigin(0.5,0.5).setVisible(0)
+        inspirationPlayerIcon = this.add.image(0,inspirationPlayerIconBox.y,'playerIcon').setDepth(3).setScale(0.04,0.035).setOrigin(0.5,0.5).setVisible(0)
 
+        inspirationTextBox = this.add.image(width * 0.5,inspirationPlayerIconBox.y,'playerIconBox').setDepth(3).setScale(0.075,0.0375).setOrigin(0.5,0.5).setVisible(1).setAlpha(0.75).setVisible(0)
+        inspirationText = this.add.text(inspirationTextBox.x, inspirationTextBox.y, 'Choose an Inspiration').setFontFamily('Arial').setFontSize(16).setDepth(4).setOrigin(0.5,0.5).setVisible(0);
+
+        inspirationBoxEnergy = this.add.image(0,inspirationPlayerIconBox.y + 115,'inspirationBox').setDepth(3).setScale(0.125,0.075).setOrigin(0.5,0.5).setVisible(0).setAlpha(0.75)
+        inspirationBoxFocus = this.add.image(0,inspirationBoxEnergy.y,'inspirationBox').setDepth(3).setScale(0.125,0.075).setOrigin(0.5,0.5).setVisible(0).setAlpha(0.75)
+        inspirationBoxPower = this.add.image(0,inspirationBoxEnergy.y,'inspirationBox').setDepth(3).setScale(0.125,0.075).setOrigin(0.5,0.5).setVisible(0).setAlpha(0.75)
+        
+        skillTreeEnergyIcon = this.add.image(width * 0.25, inspirationPlayerIconBox.y + 40,'spendingBuffIcon').setDepth(4).setScale(0.5).setVisible(0).setAlpha(0.95)
+        skillTreeFocusIcon = this.add.image(width * 0.5 , inspirationPlayerIconBox.y + 40,'growingBuffIcon').setDepth(4).setScale(0.5).setVisible(0).setAlpha(0.95)
+        skillTreeLifeIcon = this.add.image(width * 0.75, inspirationPlayerIconBox.y + 40,'storingBuffIcon').setDepth(4).setScale(0.5).setVisible(0).setAlpha(0.95)
+        //skillTreeEnergyIcon
         // 96 seconds = 1 year
         // 8 seconds = 1 month
         // 2 second per week
@@ -3018,7 +3026,7 @@
 
              gameObject.setAlpha(1);
 
-            if (gameObject == skillTreeLifeIcon){
+            if (gameObject == inspirationBoxPower){
 
                 var tier = storingBuffTier += 1
                 income *= 1.025
@@ -3035,7 +3043,6 @@
                     var alpha = 1
                 }
 
-                //storingBuffTierIcon.setTexture('t'+ tier +'BuffIcon').setAlpha(alpha)
                 playerVitals.pL = (39.5 * playerVitals.scaleX) / maxLife
                 playerVitals.draw()
                 playerMiniVitals.pL = (38 * playerMiniVitals.scaleX) / maxLife
@@ -3045,7 +3052,7 @@
                 
             } 
 
-            if (gameObject == skillTreeFocusIcon){
+            if (gameObject == inspirationBoxFocus){
 
                 
 
@@ -3075,7 +3082,7 @@
                 
             } 
 
-            if (gameObject == skillTreeEnergyIcon){
+            if (gameObject == inspirationBoxEnergy){
 
                 var tier = spendingBuffTier
                 income *= 1.025
@@ -3135,8 +3142,27 @@
         if (skillTreeOpen){
             highObstacle.body.checkCollision.none = false
             lowObstacle.body.checkCollision.none = false
+            //
+            playerIconBox.setVisible(1)
+            playerIcon.setVisible(1)
+            playerVitalsBox.setVisible(1)
+            playerVitals.show()
             
+            skillABox.setVisible(1)
+            skillAIcon.setVisible(1)
+            skillBBox.setVisible(1)
+            skillBIcon.setVisible(1)
+            
+            //
+            inspirationTextBox.setVisible(0)
+            inspirationText.setVisible(0)
+            //
+            inspirationPlayerIconBox.setVisible(0)
+            inspirationPlayerIcon.setVisible(0)
+
             inspirationBoxEnergy.setVisible(0).disableInteractive()
+            inspirationBoxFocus.setVisible(0).disableInteractive()
+            inspirationBoxPower.setVisible(0).disableInteractive()
 
             skillTreeLifeIcon.setVisible(0)
             skillTreeFocusIcon.setVisible(0)
@@ -3148,9 +3174,28 @@
         } else {
             highObstacle.body.checkCollision.none = true
             lowObstacle.body.checkCollision.none = true
+            //
+            playerIconBox.setVisible(0)
+            playerIcon.setVisible(0)
+            playerVitalsBox.setVisible(0)
+            playerVitals.hide()
+            //
+            skillABox.setVisible(0)
+            skillAIcon.setVisible(0)
+            skillBBox.setVisible(0)
+            skillBIcon.setVisible(0)
 
+            //
+            inspirationTextBox.setVisible(1)
+            inspirationText.setVisible(1)
+            //
+            inspirationPlayerIconBox.setVisible(1)
+            inspirationPlayerIcon.setVisible(1)
+            //
             inspirationBoxEnergy.setVisible(1).setInteractive()
-
+            inspirationBoxFocus.setVisible(1).setInteractive()
+            inspirationBoxPower.setVisible(1).setInteractive()
+            //
             skillTreeLifeIcon.setVisible(1)
             skillTreeFocusIcon.setVisible(1)
             skillTreeEnergyIcon.setVisible(1)
@@ -3724,9 +3769,10 @@
                 if (Phaser.Input.Keyboard.JustDown(keyC)){
 
                     
-toggleSkillTree()
+                toggleSkillTree()
+                
 
-}
+                }
             
         // General / Universal
 
@@ -3779,13 +3825,23 @@ toggleSkillTree()
                 skillBIcon.x = skillBBox.x
                 skillBIcon.y = skillBBox.y
 
+                inspirationPlayerIconBox.x = camera.scrollX + (width * 0.075)
+
+
+                inspirationPlayerIcon.x = inspirationPlayerIconBox.x
+
+
+                inspirationTextBox.x = camera.scrollX + (width * 0.5)
+                inspirationText.x = inspirationTextBox.x
+
                 inspirationBoxEnergy.x = camera.scrollX + (width * 0.25)
-                //inspirationBoxFocus.x = camera.scrollX + (width * 0.5)
-                //inspirationBoxPower.x = camera.scrollX + (width * 0.75)
+                inspirationBoxFocus.x = camera.scrollX + (width * 0.5)
+                inspirationBoxPower.x = camera.scrollX + (width * 0.75)
             
-                skillTreeLifeIcon.x = camera.scrollX + (width * 0.25)
-                skillTreeFocusIcon.x = camera.scrollX + (width * 0.5)
-                skillTreeEnergyIcon.x = camera.scrollX + (width * 0.75)
+                skillTreeEnergyIcon.x = inspirationBoxEnergy.x
+                skillTreeFocusIcon.x = inspirationBoxFocus.x
+                skillTreeLifeIcon.x = inspirationBoxPower.x
+
 
             // Audio
 
