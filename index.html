@@ -1803,11 +1803,13 @@
         }
 
     function obstacleCollision(){
+        if(!skillTreeOpen){
         playerIsHit = true
         player.once('animationstart',function(){
                 player.x -= 0.5
         })
         playerVitals.decreaseLife((income * 0.35) / 100)
+        }
         //enemyChase(Phaser.Math.FloatBetween(2,4))
   
     }
@@ -2534,8 +2536,14 @@
         inspirationText = this.add.text(inspirationTextBox.x, inspirationTextBox.y, 'Choose an Inspiration').setFontFamily('Arial').setFontSize(16).setDepth(4).setOrigin(0.5,0.5).setVisible(0);
 
         inspirationBoxEnergy = this.add.image(0,inspirationPlayerIconBox.y + 115,'inspirationBox').setDepth(3).setScale(0.125,0.075).setOrigin(0.5,0.5).setVisible(0).setAlpha(0.75)
+        inspirationTextEnergy = this.add.text(inspirationBoxEnergy.x, inspirationBoxEnergy.y,null,{align: 'center'}).setFontFamily('Arial').setFontSize(12).setDepth(3).setOrigin(0.5,0.5).setVisible(0);
+        inspirationTextEnergy.setText("Improve Energy\nRegeneration Rate\n& Maximum Energy\n\nAffected by 'Spending\nRating'")
         inspirationBoxFocus = this.add.image(0,inspirationBoxEnergy.y,'inspirationBox').setDepth(3).setScale(0.125,0.075).setOrigin(0.5,0.5).setVisible(0).setAlpha(0.75)
+        inspirationTextFocus = this.add.text(inspirationBoxFocus.x, inspirationBoxFocus.y,null,{align: 'center'}).setFontFamily('Arial').setFontSize(12).setDepth(3).setOrigin(0.5,0.5).setVisible(0);
+        inspirationTextFocus.setText("Improve Focus\nRegeneration Rate\n& Maximum Focus\n\nAffected by 'Saving\nRating'")
         inspirationBoxPower = this.add.image(0,inspirationBoxEnergy.y,'inspirationBox').setDepth(3).setScale(0.125,0.075).setOrigin(0.5,0.5).setVisible(0).setAlpha(0.75)
+        inspirationTextPower = this.add.text(inspirationBoxPower.x, inspirationBoxPower.y,null,{align: 'center'}).setFontFamily('Arial').setFontSize(12).setDepth(3).setOrigin(0.5,0.5).setVisible(0);
+        inspirationTextPower.setText("Improve Life\nRegeneration Rate\n& Maximum Life\n\nAffected by 'Storing\nRating'")
         
         skillTreeEnergyIcon = this.add.image(width * 0.25, inspirationPlayerIconBox.y + 40,'spendingBuffIcon').setDepth(4).setScale(0.5).setVisible(0).setAlpha(0.95)
         skillTreeFocusIcon = this.add.image(width * 0.5 , inspirationPlayerIconBox.y + 40,'growingBuffIcon').setDepth(4).setScale(0.5).setVisible(0).setAlpha(0.95)
@@ -3161,8 +3169,11 @@
             inspirationPlayerIcon.setVisible(0)
 
             inspirationBoxEnergy.setVisible(0).disableInteractive()
+            inspirationTextEnergy.setVisible(0)
             inspirationBoxFocus.setVisible(0).disableInteractive()
+            inspirationTextFocus.setVisible(0)
             inspirationBoxPower.setVisible(0).disableInteractive()
+            inspirationTextPower.setVisible(0)
 
             skillTreeLifeIcon.setVisible(0)
             skillTreeFocusIcon.setVisible(0)
@@ -3193,8 +3204,11 @@
             inspirationPlayerIcon.setVisible(1)
             //
             inspirationBoxEnergy.setVisible(1).setInteractive()
+            inspirationTextEnergy.setVisible(1)
             inspirationBoxFocus.setVisible(1).setInteractive()
+            inspirationTextFocus.setVisible(1)
             inspirationBoxPower.setVisible(1).setInteractive()
+            inspirationTextPower.setVisible(1)
             //
             skillTreeLifeIcon.setVisible(1)
             skillTreeFocusIcon.setVisible(1)
@@ -3835,8 +3849,11 @@
                 inspirationText.x = inspirationTextBox.x
 
                 inspirationBoxEnergy.x = camera.scrollX + (width * 0.25)
+                inspirationTextEnergy.x = inspirationBoxEnergy.x
                 inspirationBoxFocus.x = camera.scrollX + (width * 0.5)
+                inspirationTextFocus.x = inspirationBoxFocus.x
                 inspirationBoxPower.x = camera.scrollX + (width * 0.75)
+                inspirationTextPower.x = inspirationBoxPower.x
             
                 skillTreeEnergyIcon.x = inspirationBoxEnergy.x
                 skillTreeFocusIcon.x = inspirationBoxFocus.x
