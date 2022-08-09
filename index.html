@@ -433,8 +433,7 @@
             this.lifeBar.fillStyle(0xffffff);
             this.lifeBar.fillRect(this.x + 1 , this.y + 1, 39.5 * this.scaleX, 4 * this.scaleY);
             this.lifeBar.fillStyle(0xcc0000);
-
-
+            
             var d = Math.floor(this.pL * currentLife);
 
             this.lifeBar.fillRect(this.x + 1 , this.y + 1 , d , 4 * this.scaleY);
@@ -2084,14 +2083,6 @@
     {
         
 
-        if (!inBattle && !nightBorneCamActive){
-            if (skillTreeOpen == false){
-                levelProgress.increaseProgress((100 / 60))
-                glory += (100 / 60)
-            }
-            
-        } 
-
         
     }
 
@@ -2105,6 +2096,14 @@
         playerVitals.decreaseLife(-lifeRegen / 200) 
         playerVitals.decreaseEnergy(-energyRegen / 200)
         playerVitals.decreaseFocus(-focusRegen / 200)
+
+        if (!inBattle && !nightBorneCamActive){
+            if (skillTreeOpen == false){
+                levelProgress.increaseProgress((2.5 / 60))
+                glory += (2.5 / 60) * (playerSpeed)
+            }
+            
+        } 
 
         }
 
@@ -2534,7 +2533,9 @@
 
         inspirationTextBox = this.add.image(width * 0.5,inspirationPlayerIconBox.y,'playerIconBox').setDepth(3).setScale(0.075,0.0375).setOrigin(0.5,0.5).setVisible(1).setAlpha(0.75).setVisible(0)
         inspirationText = this.add.text(inspirationTextBox.x, inspirationTextBox.y, 'Choose an Inspiration').setFontFamily('Arial').setFontSize(16).setDepth(4).setOrigin(0.5,0.5).setVisible(0);
-
+        
+            
+            
         inspirationBoxEnergy = this.add.image(0,inspirationPlayerIconBox.y + 115,'inspirationBox').setDepth(3).setScale(0.125,0.075).setOrigin(0.5,0.5).setVisible(0).setAlpha(0.75)
         inspirationTextEnergy = this.add.text(inspirationBoxEnergy.x, inspirationBoxEnergy.y,null,{align: 'center'}).setFontFamily('Arial').setFontSize(12).setDepth(3).setOrigin(0.5,0.5).setVisible(0);
         inspirationTextEnergy.setText("Improve Energy\nRegeneration Rate\n& Maximum Energy\n\nAffected by 'Spending\nRating'")
@@ -3683,7 +3684,7 @@
                                 player.x += 3
                                 }
                                 player.anims.play({key:'pRun',frameRate: 16},true);
-                                glory += (5 / 60)
+                                glory += (2.5 / 60)
                             }
                         }
 
@@ -3720,6 +3721,9 @@
                         } else if(!nightBorneCamActive){
                             highObstacle.body.checkCollision.none = false
                             lowObstacle.body.checkCollision.none = false
+                            if(player.x > width * 1.35){
+                                player.x -= 1
+                            }
                         }
                         
                     }
@@ -3811,15 +3815,15 @@
                 playerVitalsBox.x = playerVitals.x - 4
                 playerVitalsBox.y = playerIcon.y
 
-                gloryIcon.x = camera.scrollX + (width * 0.875)
+                gloryIcon.x = camera.scrollX + (width * 0.865)
                 gloryIcon.y = levelIcon.y - 15
-                gloryText.x = gloryIcon.x + 35
+                gloryText.x = gloryIcon.x + 47.5
                 gloryText.y = gloryIcon.y
                 gloryText.setText(Math.floor(glory))
 
                 goldIcon.x = gloryIcon.x
                 goldIcon.y = levelIcon.y + 15
-                goldText.x = goldIcon.x + 35
+                goldText.x = gloryText.x
                 goldText.y = goldIcon.y
                 goldText.setText(Math.floor(gold))
 
@@ -4373,7 +4377,7 @@
             // To be sorted
 
             if (progress >= progressToNextLevel){
-            glory += (100 / 60) * 10
+            glory += ((100 / 60) * 100) * (playerSpeed)
             levelUp()
 
             }
