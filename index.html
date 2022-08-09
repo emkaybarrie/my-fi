@@ -935,10 +935,10 @@
             up.setInteractive(1).setVisible(1)
             down.setInteractive(1).setVisible(1)
 
-            aAction.setInteractive(1).setVisible(1)
-            bAction.setInteractive(1).setVisible(1)
-            aSkill.setInteractive(1).setVisible(1)
-            bSkill.setInteractive(1).setVisible(1)
+            actionA.setInteractive(1).setVisible(1)
+            actionB.setInteractive(1).setVisible(1)
+            skillA.setInteractive(1).setVisible(1)
+            skillB.setInteractive(1).setVisible(1)
 
             
 
@@ -953,10 +953,10 @@
             up.disableInteractive().setVisible()
             down.setInteractive().setVisible()
             
-            aAction.setInteractive().setVisible()
-            bAction.setInteractive().setVisible()
-            aSkill.setInteractive().setVisible()
-            bSkill.setInteractive().setVisible()
+            actionA.setInteractive().setVisible()
+            actionB.setInteractive().setVisible()
+            skillA.setInteractive().setVisible()
+            skillB.setInteractive().setVisible()
 
             
 
@@ -2289,10 +2289,10 @@
                 this.input.addPointer(8);
                 //Anchor buttons
                 left = this.add.image(0,0, 'left').setInteractive().setDepth(4).setScale(0.75).setAlpha(0.5);
-                aAction = this.add.image(0, 0, 'defaultAction').setInteractive().setDepth(4).setScale(.6).setAlpha(0.5).setTint(0x00a86b);
-                bAction = this.add.image(0, 0, 'defaultAction').setInteractive().setDepth(4).setScale(.6).setAlpha(0.5).setTint(0x90ee90);
-                aSkill = this.add.image(0, 0, 'charge').setInteractive().setDepth(4).setScale(.6).setAlpha(0.5).setTint(0xf1c232);//Focus - 0xf1c232
-                bSkill = this.add.image(0, 0, 'charge').setInteractive().setDepth(4).setScale(.6).setAlpha(0.5).setTint(0xffffe0);//Focus - 0xf1c232
+                actionA = this.add.image(0, 0, 'defaultAction').setInteractive().setDepth(4).setScale(.6).setAlpha(0.5).setTint(0x00a86b);
+                actionB = this.add.image(0, 0, 'defaultAction').setInteractive().setDepth(4).setScale(.6).setAlpha(0.5).setTint(0x90ee90);
+                skillA = this.add.image(0, 0, 'charge').setInteractive().setDepth(4).setScale(.6).setAlpha(0.5).setTint(0xf1c232);//Focus - 0xf1c232
+                skillB = this.add.image(0, 0, 'charge').setInteractive().setDepth(4).setScale(.6).setAlpha(0.5).setTint(0xffffe0);//Focus - 0xf1c232
                 // Remaining buttons
                 deadSpace = this.add.image(left.x + 35.5, left.y, 'deadSpace').setDepth(4).setScale(0.75).setVisible(0);
                 right = this.add.image(deadSpace.x + 35.5, deadSpace.y, 'right').setInteractive().setDepth(4).setScale(0.75).setAlpha(0.5);
@@ -2310,10 +2310,10 @@
                     up.setInteractive().setVisible()
                     down.setInteractive().setVisible()
                     
-                    aAction.setInteractive().setVisible()
-                    bAction.setInteractive().setVisible()
-                    aSkill.setInteractive().setVisible()
-                    bSkill.setInteractive().setVisible()
+                    actionA.setInteractive().setVisible()
+                    actionB.setInteractive().setVisible()
+                    skillA.setInteractive().setVisible()
+                    skillB.setInteractive().setVisible()
                     
 
                 } else {
@@ -2325,10 +2325,10 @@
                     up.setInteractive(1).setVisible(1)
                     down.setInteractive(1).setVisible(1)
 
-                    aAction.setInteractive(1).setVisible(1)
-                    bAction.setInteractive(1).setVisible(1)
-                    aSkill.setInteractive(1).setVisible(1)
-                    bSkill.setInteractive(1).setVisible(1)
+                    actionA.setInteractive(1).setVisible(1)
+                    actionB.setInteractive(1).setVisible(1)
+                    skillA.setInteractive(1).setVisible(1)
+                    skillB.setInteractive(1).setVisible(1)
 
                 }
 
@@ -2514,10 +2514,10 @@
         growingBuffIcon = this.add.image(0,0,'growingBuffIcon').setDepth(4).setScale(0.5)
         spendingBuffIcon = this.add.image(0,0,'spendingBuffIcon').setDepth(4).setScale(0.5)
 
-        aSkillBox = this.add.image(0,0,'activeSkillBox').setDepth(3).setScale(0.0125,0.0375).setOrigin(0.5,0.5)
-        aSkillIcon = this.add.image(0,0,'deadlyCombatAssaultIcon').setDepth(3).setScale(0.125).setOrigin(0.5,0.5)
-        bSkillBox = this.add.image(0,0,'activeSkillBox').setDepth(3).setScale(0.0125,0.0375).setOrigin(0.5,0.5)
-        bSkillIcon = this.add.image(0,0,'thunderStrikeIcon').setDepth(3).setScale(0.125).setOrigin(0.5,0.5)
+        skillABox = this.add.image(0,0,'activeSkillBox').setDepth(3).setScale(0.0125,0.0375).setOrigin(0.5,0.5)
+        skillAIcon = this.add.image(0,0,'deadlyCombatAssaultIcon').setDepth(3).setScale(0.125).setOrigin(0.5,0.5)
+        skillBBox = this.add.image(0,0,'activeSkillBox').setDepth(3).setScale(0.0125,0.0375).setOrigin(0.5,0.5)
+        skillBIcon = this.add.image(0,0,'thunderStrikeIcon').setDepth(3).setScale(0.125).setOrigin(0.5,0.5)
 
         
         stance1Name = 'Thunder Strike'
@@ -3755,17 +3755,17 @@
                 levelProgress.y = camera.scrollY + (height * 0.9)
                 levelProgress.draw()
 
-                aSkillBox.x = playerVitalsBox.x + 150
-                aSkillBox.y = playerVitalsBox.y + 32.5
+                skillABox.x = playerVitalsBox.x + 150
+                skillABox.y = playerVitalsBox.y + 32.5
 
-                aSkillIcon.x = aSkillBox.x
-                aSkillIcon.y = aSkillBox.y
+                skillAIcon.x = skillABox.x
+                skillAIcon.y = skillABox.y
 
-                bSkillBox.x = aSkillBox.x + 40
-                bSkillBox.y = aSkillBox.y
+                skillBBox.x = skillABox.x + 40
+                skillBBox.y = skillABox.y
 
-                bSkillIcon.x = bSkillBox.x
-                bSkillIcon.y = bSkillBox.y
+                skillBIcon.x = skillBBox.x
+                skillBIcon.y = skillBBox.y
             
                 skillTreeLifeIcon.x = camera.scrollX + (width * 0.25)
                 skillTreeFocusIcon.x = camera.scrollX + (width * 0.5)
@@ -4078,10 +4078,10 @@
                         left.x = camera.scrollX + (width * 0.05)
                         left.y = camera.scrollY + (height - 90)
 
-                        aAction.x = camera.scrollX + (width * 0.925)
-                        aAction.y = camera.scrollY + (height * 0.75)
-                        bAction.x = aAction.x - 60
-                        bAction.y = camera.scrollY + (height * 0.8)
+                        actionA.x = camera.scrollX + (width * 0.925)
+                        actionA.y = camera.scrollY + (height * 0.75)
+                        actionB.x = actionA.x - 60
+                        actionB.y = camera.scrollY + (height * 0.8)
 
                         
                         // Remaining Buttons                        
@@ -4094,10 +4094,10 @@
                         down.x = deadSpace.x
                         down.y = left.y + 40.5 
 
-                        aSkill.x = aAction.x 
-                        aSkill.y = aAction.y - 60
-                        bSkill.x = bAction.x 
-                        bSkill.y = bAction.y - 60
+                        skillA.x = actionA.x 
+                        skillA.y = actionA.y - 60
+                        skillB.x = actionB.x 
+                        skillB.y = actionB.y - 60
                     
                     
                     left.on('pointerdown', function(){
