@@ -2173,7 +2173,7 @@
         this.load.audio("enemySwordSwing", ["assets/sFX/SFX_Sword_Whoosh_01.mp3"]);
         this.load.audio("charge", ["assets/sFX/SFX_Potion_01.mp3"]);
         
-        this.load.image('playerIconBox', 'assets/activeSkillBox.png');
+        this.load.image('playerIconBox', 'assets/vFX/playerHUDBox.png');
         this.load.image('playerIcon', 'assets/icons/playerIcon1.png');
         
 
@@ -2207,7 +2207,7 @@
         // Menus & Icons
         
         this.load.image('inspirationBox', 'assets/vFX/inspirationBox.png');
-        this.load.image('playerHUDBox', 'assets/vFX/playerHUDBox.png');
+        this.load.image('playerVitalsBox', 'assets/vFX/playerHUDBox.png');
 
         this.load.image('dawnl1', 'assets/dawn1.png');
         this.load.image('dawnl2', 'assets/dawn2.png');
@@ -2494,7 +2494,7 @@
         levelIcon = this.add.image(0,0,'levelIcon').setDepth(4).setScale(0.35).setOrigin(0.5,0.5)
         levelText = this.add.text(levelIcon + 5, levelIcon.y, Math.floor(level)).setFontFamily('Arial').setFontSize(28).setColor('#674EA7').setDepth(4).setOrigin(0.5,0.5)
         
-        playerVitalsBox = this.add.image(0,0,'activeSkillBox').setDepth(3).setScale(0.072,0.035).setOrigin(0,0.5)
+        playerVitalsBox = this.add.image(0,0,'playerVitalsBox').setDepth(3).setScale(0.072,0.035).setOrigin(0,0.5)
         playerVitals = new HealthBar(this,startLife, levelIcon.x + 30, playerIcon.y + 20,5,2)
         playerMiniVitals = new MiniHealthBar(this,startLife, playerIcon.x + 30, playerIcon.x + 20,1,1);
         playerMiniVitals.hide()
@@ -2508,9 +2508,9 @@
         growingBuffIcon = this.add.image(0,0,'growingBuffIcon').setDepth(4).setScale(0.5)
         spendingBuffIcon = this.add.image(0,0,'spendingBuffIcon').setDepth(4).setScale(0.5)
 
-        skillABox = this.add.image(0,0,'activeSkillBox').setDepth(3).setScale(0.0125,0.0375).setOrigin(0.5,0.5)
+        skillABox = this.add.image(0,0,'playerVitalsBox').setDepth(3).setScale(0.0125,0.0375).setOrigin(0.5,0.5)
         skillAIcon = this.add.image(0,0,'deadlyCombatAssaultIcon').setDepth(3).setScale(0.125).setOrigin(0.5,0.5)
-        skillBBox = this.add.image(0,0,'activeSkillBox').setDepth(3).setScale(0.0125,0.0375).setOrigin(0.5,0.5)
+        skillBBox = this.add.image(0,0,'playerVitalsBox').setDepth(3).setScale(0.0125,0.0375).setOrigin(0.5,0.5)
         skillBIcon = this.add.image(0,0,'thunderStrikeIcon').setDepth(3).setScale(0.125).setOrigin(0.5,0.5)
 
         
@@ -2529,9 +2529,9 @@
         skillTreeFocusIcon = this.add.image(width * 0.5 , height / 2,'growingBuffIcon').setDepth(4).setScale(1).setVisible(0).setAlpha(0.75)
         skillTreeEnergyIcon = this.add.image(width * 0.75, height / 2,'spendingBuffIcon').setDepth(4).setScale(1).setVisible(0).setAlpha(0.75)
 
-        inspirationBoxEnergy = this.add.image(0,0,'inspirationBox').setDepth(3).setScale(0.0125,0.0375).setOrigin(0.5,0.5).setVisible(0).setAlpha(0.75)
-        inspirationBoxFocus = this.add.image(inspirationBoxEnergy.x + 100,inspirationBoxEnergy.y,'inspirationBox').setDepth(3).setScale(0.0125,0.0375).setOrigin(0.5,0.5).setVisible(0).setAlpha(0.75)
-        inspirationBoxPower = this.add.image(inspirationBoxFocus.x + 100,inspirationBoxEnergy.y,'inspirationBox').setDepth(3).setScale(0.0125,0.5).setOrigin(0.5,0.5).setVisible(0).setAlpha(0.75)
+        inspirationBoxEnergy = this.add.image(0,height / 2,'inspirationBox').setDepth(3).setScale(0.15,0.1).setOrigin(0.5,0.5).setVisible(0).setAlpha(0.75)
+        inspirationBoxFocus = this.add.image(0,height / 2,'inspirationBox').setDepth(3).setScale(0.2,0.5).setOrigin(0.5,0.5).setVisible(0).setAlpha(0.75)
+        inspirationBoxPower = this.add.image(0,height / 2,'inspirationBox').setDepth(3).setScale(0.2,0.5).setOrigin(0.5,0.5).setVisible(0).setAlpha(0.75)
 
         // 96 seconds = 1 year
         // 8 seconds = 1 month
@@ -3008,8 +3008,10 @@
         cursors = this.input.keyboard.createCursorKeys();
         keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
         keyD = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
-        keyZ = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Z);
         keyX = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.X);
+
+        keyZ = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Z);
+        keyC = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.C);
 
         this.input.on('gameobjectdown', function (pointer, gameObject) {
         
@@ -3718,6 +3720,13 @@
                     }
 
                 }
+
+                if (Phaser.Input.Keyboard.JustDown(keyC)){
+
+                    
+toggleSkillTree()
+
+}
             
         // General / Universal
 
@@ -3769,6 +3778,10 @@
 
                 skillBIcon.x = skillBBox.x
                 skillBIcon.y = skillBBox.y
+
+                inspirationBoxEnergy.x = camera.scrollX + (width * 0.25)
+                //inspirationBoxFocus.x = camera.scrollX + (width * 0.5)
+                //inspirationBoxPower.x = camera.scrollX + (width * 0.75)
             
                 skillTreeLifeIcon.x = camera.scrollX + (width * 0.25)
                 skillTreeFocusIcon.x = camera.scrollX + (width * 0.5)
