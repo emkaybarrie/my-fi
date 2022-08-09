@@ -967,15 +967,11 @@
     if (mode == 0){
         woodsl4.setAlpha(1)
         gameMode = 0
+        inBattle = false
         levelProgress.show()
-                playerAttacking = false
-                sword.body.checkCollision.none = true
-                nightBorneSword.body.checkCollision.none = true
-                
-
-            inBattle = false
-            
-            player.flipX = false
+        sword.body.checkCollision.none = true
+        nightBorneSword.body.checkCollision.none = true
+        player.flipX = false
 
                             regenActive = true
                             
@@ -992,6 +988,7 @@
             woodsl4.setAlpha(0.75)
             inBattle = true
             gameMode = 1
+            progressToNextCheckPoint += progressToNextLevel * 0.25
             
             highObstacle.body.checkCollision.none = true
             lowObstacle.body.checkCollision.none = true
@@ -1022,14 +1019,13 @@
             if (!inBattle){
             
             income *= 1 - (0.04 / 12)
-            currentEnergy *= 0.95
             nightBorne.setDragX(500)
             nightBorneNecromancer.setDragX(1000)
             fireTowardsTarget(nightBorne,Phaser.Math.FloatBetween(width * 1.15, width * 1.45),4)
             fireTowardsTarget(nightBorneNecromancer,Phaser.Math.FloatBetween(width * 1.15, width * 1.25),1)
             
             regenActive = false
-            progressToNextCheckPoint += progressToNextLevel * 0.25
+            
             modeSwitch(1)
             }
 
@@ -1294,8 +1290,12 @@
         if(usingPower){
 
             usingPower = false
-                                 
-            deadlyCombatAssault() 
+             if(skillKeyAIsDown){
+                deadlyCombatAssault()
+             } else if (skillKeyBIsDown){
+                thunderStrike()
+             }                    
+             
 
         } 
         
@@ -2174,7 +2174,7 @@
         this.load.audio("charge", ["assets/sFX/SFX_Potion_01.mp3"]);
         
         this.load.image('playerIconBox', 'assets/activeSkillBox.png');
-        this.load.image('playerIcon', 'assets/playerIcon.png');
+        this.load.image('playerIcon', 'assets/playerIcon2.png');
         
 
         this.load.image('storingBuffIcon', 'assets/ach_00059.png');
@@ -2494,7 +2494,7 @@
         camera.fadeIn(3000)
         
         playerIconBox = this.add.image(0,0,'playerIconBox').setDepth(3).setScale(0.0125,0.035).setOrigin(0.5,0.5)
-        playerIcon = this.add.image(0,0,'playerIcon').setDepth(3).setScale(1.5).setOrigin(0.5,0.5)
+        playerIcon = this.add.image(0,0,'playerIcon').setDepth(3).setScale(0.02,0.0175).setOrigin(0.5,0.5)
         
 
         levelIcon = this.add.image(0,0,'levelIcon').setDepth(4).setScale(0.35).setOrigin(0.5,0.5)
@@ -2518,13 +2518,8 @@
         aSkillIcon = this.add.image(0,0,'deadlyCombatAssaultIcon').setDepth(3).setScale(0.125).setOrigin(0.5,0.5)
         bSkillBox = this.add.image(0,0,'activeSkillBox').setDepth(3).setScale(0.0125,0.0375).setOrigin(0.5,0.5)
         bSkillIcon = this.add.image(0,0,'thunderStrikeIcon').setDepth(3).setScale(0.125).setOrigin(0.5,0.5)
-        
-        
 
-                                  
         
-        stance0Name = ''
-        stance0Text = ""
         stance1Name = 'Thunder Strike'
         stance1Text = "Rain thunderous rage down on \nenemies in an area\n\nCan cause Aftershock"
         stance2Name = 'Explosive Strike'
@@ -2862,8 +2857,6 @@
             //delay: 500
         });
 
-        
-
         // NightBorne Animation
 
         this.anims.create({
@@ -3013,8 +3006,6 @@
             gamePadEnabled = true
         },this)
 
-
-        
         // Keyboard Keys
         cursors = this.input.keyboard.createCursorKeys();
         keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
@@ -3345,6 +3336,61 @@
                     }
                 } else 
                 //
+                if(skillKeyBIsDown){
+                    if(!playerIsHit){
+
+                            regenActive = false
+
+                            if(inBattle){
+
+                                attackModeActive = true
+                                playerBlocking = false
+                                playerDodging = false
+
+                                if (currentFocus > 0){
+                                    playerAttacking = true
+
+                                    playerVitals.decreaseFocus(maxFocus * 0.006)
+
+                                    if(attackModeActive){
+                                        playerSkill() 
+                                    }
+
+                                } else {
+                                    
+                                    sword.body.checkCollision.none = true
+                                    attackModeActive = false
+                                    usingPower = false
+    
+                                }
+                            
+                               
+                            } else {
+
+                                focusModeActive = true
+                                scanningForDanger = true
+
+                                playerVitals.decreaseFocus((income) / 50)
+
+                                if (currentFocus  > 0){
+                                    playerFocusing = true
+                                    playerSpeed = 0.5
+                                    highObstacle.body.checkCollision.none = true
+                                    lowObstacle.body.checkCollision.none = true
+                            
+                                    if(focusModeActive){
+                                        runFocusMode()
+                                    }
+
+                                } else {
+                                    playerFocusing = false
+                                    focusModeActive = false
+                                    scanningForDanger = false    
+                                }
+                            }
+                    }
+                } else
+                //
                 if(actionKeyAIsDown){
                     if(!playerIsHit){
 
@@ -3626,25 +3672,31 @@
 
             closest = this.physics.closest(player,enemies.getChildren()) 
 
-            console.log("Controls Active:" + controlsEnabled)
-
-            console.log("Player Hit:" + playerIsHit)
+          
+            console.log("Progress:" + progress)
+            console.log("Progress to Next CheckPoint:" + progressToNextCheckPoint)
             
-           console.log("Left Key:" + leftIsDown)
-            console.log("Right Key:" + rightIsDown)
-            console.log("ActionKeyA:" + actionKeyAIsDown)
-           console.log("ActionKeyB:" + actionKeyBIsDown)
-            console.log("SkillKeyA:" + skillKeyAIsDown)
-            console.log("SkillKeyB:" + skillKeyBIsDown)
-            console.log("Player Dodging:" + playerDodging)
-            console.log("Player Attacking:" + playerAttacking)
-            console.log("Player Blocking:" + playerBlocking)
-            console.log("Player Jumping:" + playerJumping)
-            console.log("Player Crouching:" + playerCrouching)
-            console.log("Using Power:" + usingPower)
 
-            console.log("nightBorneCam:" + nightBorneCamActive)
-            console.log("nightBorneCamLocked:" + nightBorneCamLocked)
+            // console.log("Controls Active:" + controlsEnabled)
+
+        //     console.log("Player Hit:" + playerIsHit)
+            
+        //    console.log("Left Key:" + leftIsDown)
+        //     console.log("Right Key:" + rightIsDown)
+        //     console.log("ActionKeyA:" + actionKeyAIsDown)
+        //    console.log("ActionKeyB:" + actionKeyBIsDown)
+        //     console.log("SkillKeyA:" + skillKeyAIsDown)
+        //     console.log("SkillKeyB:" + skillKeyBIsDown)
+        //     console.log("Player Dodging:" + playerDodging)
+        //     console.log("Player Attacking:" + playerAttacking)
+        //     console.log("Player Blocking:" + playerBlocking)
+        //     console.log("Player Jumping:" + playerJumping)
+        //     console.log("Player Crouching:" + playerCrouching)
+        //     console.log("Using Power:" + usingPower)
+
+            // console.log("nightBorneCam:" + nightBorneCamActive)
+            // console.log("nightBorneCamLocked:" + nightBorneCamLocked)
+            console.log("NightBorne X Pos:" + nightBorne.x)
             
            
 
@@ -3734,7 +3786,7 @@
   
             // Controls
 
-                // Keyboard
+                // Keyboard Control Mapping
 
                 if(cursors.left.isDown){
                     leftIsDown = true 
@@ -3803,9 +3855,25 @@
 
                 }
 
+                if (keyX.isDown){
+
+                skillKeyBIsDown = true
+
+                if (Phaser.Input.Keyboard.JustDown(keyX)){
+                    usingPower = true
+                }
+
+                } else if (cursors.space.isUp){
+
+                if (Phaser.Input.Keyboard.JustUp(keyX)){
+                    skillKeyBIsDown = false
+                }
+
+                }
+
 
                 
-                // Gamepad
+                // Gamepad Control Mapping
                 
                 if (gamePadEnabled){
 
@@ -3838,10 +3906,6 @@
                         
                     }
                     
-                    
-                    
-                    
-            
                     gamePad.on('down', function (button) {
 
                         // Up = 12, Down = 13
@@ -3956,9 +4020,13 @@
                         } else if (button == 6){
 
                             actionKeyBIsDown = true
+    
+                        } else if (button == 4){
                             
-                            
-                        } 
+                            skillKeyBIsDown = true
+                            usingPower = true
+ 
+                        }
 
                        
 
@@ -3981,10 +4049,7 @@
                     
                         } else if (button == 5){
                             skillKeyAIsDown = false
-
-                            
-                            
-                                player.stop()
+   
                                 player.play('pBackDash',true)
 
                                 player.once('animationcomplete',function(){
@@ -3996,6 +4061,10 @@
                             
                             actionKeyBIsDown = false
                                
+                        } else if (button == 4){
+                            skillKeyBIsDown = false
+
+
                         }
 
                     }, this);
@@ -4077,7 +4146,7 @@
                         downIsDown = false
                     })
 
-                    aAction.on('pointerdown', function (button) {
+                    actionA.on('pointerdown', function (button) {
 
                             actionKeyAIsDown = true
                             usingPower = true
@@ -4086,7 +4155,7 @@
 
                         }, this);
 
-                    aAction.on('pointerup', function (button) {
+                    actionB.on('pointerup', function (button) {
 
                         actionKeyAIsDown = false
                         
@@ -4095,20 +4164,20 @@
 
                     }, this);
 
-                    bAction.on('pointerdown', function (button) {
+                    actionB.on('pointerdown', function (button) {
                         
                         actionKeyBIsDown = true
 
 
                     }, this);
 
-                    bAction.on('pointerup', function (button) {
+                    actionB.on('pointerup', function (button) {
 
                         actionKeyBIsDown = false
 
                     }, this);
 
-                    aSkill.on('pointerdown', function (button) {
+                    skillA.on('pointerdown', function (button) {
 
 
                     
@@ -4118,60 +4187,30 @@
 
                     }, this);
 
-                    aSkill.on('pointerup', function (button) {
+                    skillA.on('pointerup', function (button) {
               
                     
                         skillKeyAIsDown = false
 
                     }, this);
 
-                    // dCharge.on('down', function (button) {
-
-                    // if (button == 5){
-                    //     cursors.space.isDown = true
-                    //     regenActive = false
-
-                    //     if(inBattle){
-                    //         attackModeActive = true
-                    //         usingPower = true
-                    //         playerBlocking = false
-                    //         playerDodging = false
-                    //     } else {
-                    //         focusModeActive = true
-                    //         scanningForDanger = true
-                    //     }
-                    // } 
-
-                    // }, this);
-
-                    // dCharge.on('up', function (button) {
-                    // if (button == 5){
-                    // cursors.space.isDown = false
-                    // regenActive = true
-
-                    //     player.stop()
-                    //     player.play('pBackDash',true)
-
-                    //     player.once('animationcomplete',function(){
-                    //         player.play('pIdle',true)
-                    //     },player)
-
-                    //     //fireTowardsTarget(player, player.x + 125,1)
+                    skillB.on('pointerdown', function (button) {
 
 
+                    
+                    skillKeyBIsDown = true
+                    usingPower = true
 
-                    // if(inBattle){
-                    //     playerAttacking = false
-                    //     attackModeActive = false
-                    //     usingPower = false
-                    // } else {
-                    //     playerFocusing = false
-                    //     focusModeActive = false
-                    //     scanningForDanger = false
-                    // }
-                    // }
 
-                    // }, this);
+                    }, this);
+
+                    skillB.on('pointerup', function (button) {
+
+
+                    skillKeyBIsDown = false
+
+                    }, this);
+
                     
                 // Abstracted Controls
                 if (playerIsHit){ 
@@ -4445,8 +4484,11 @@
 
                                         nightBorne.setDragX(0)
                                         nightBorneNecromancer.setDragX(0)
+                                        nightBorne.setVelocityX(0)
+                                        nightBorneNecromancer.setVelocityX(0)
                                         nightBorne.flipX = false
                                         nightBorne.x = 0
+                                        nightBorne.y = 0
                                         nightBorneMaxLife = Phaser.Math.Between(income * 0.8, (income * 0.8) * chaosFactor) 
                                         nightBorneLife = nightBorneMaxLife
                                         nightBorneVitals.p = 38 / nightBorneMaxLife
