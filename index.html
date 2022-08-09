@@ -2174,7 +2174,7 @@
         this.load.audio("charge", ["assets/sFX/SFX_Potion_01.mp3"]);
         
         this.load.image('playerIconBox', 'assets/activeSkillBox.png');
-        this.load.image('playerIcon', 'assets/playerIcon2.png');
+        this.load.image('playerIcon', 'assets/icons/playerIcon1.png');
         
 
         this.load.image('storingBuffIcon', 'assets/ach_00059.png');
@@ -2206,12 +2206,7 @@
 
         // Menus & Icons
         
-        this.load.image('activeSkillBox', 'assets/activeSkillBox.png');
-        this.load.image('energyMoveBox1', 'assets/energyMoveBox2.png');
-        this.load.image('energyMoveBox2', 'assets/energyMoveBox2.png');
-        this.load.image('focusMoveBox1', 'assets/focusMoveBox1.png');
-        this.load.image('focusMoveBox2', 'assets/focusMoveBox2.png');
-
+        this.load.image('inspirationBox', 'assets/vFX/inspirationBox.png');
 
         this.load.image('dawnl1', 'assets/dawn1.png');
         this.load.image('dawnl2', 'assets/dawn2.png');
@@ -2270,8 +2265,6 @@
         this.load.spritesheet('eagleStrikeIcon', 'assets/skills/eagleStrikeIcon.png', { frameWidth: 256, frameHeight: 256});
 
         this.load.spritesheet('coveringFireIcon', 'assets/skills/coveringFireIcon.png', { frameWidth: 256, frameHeight: 256});
-        
-        
 
     }
 
@@ -2534,6 +2527,10 @@
         skillTreeLifeIcon = this.add.image(width * 0.25, height / 2,'storingBuffIcon').setDepth(4).setScale(1).setVisible(0).setAlpha(0.75)
         skillTreeFocusIcon = this.add.image(width * 0.5 , height / 2,'growingBuffIcon').setDepth(4).setScale(1).setVisible(0).setAlpha(0.75)
         skillTreeEnergyIcon = this.add.image(width * 0.75, height / 2,'spendingBuffIcon').setDepth(4).setScale(1).setVisible(0).setAlpha(0.75)
+
+        inspirationBoxEnergy = this.add.image(0,0,'inspirationBox').setDepth(3).setScale(0.0125,0.0375).setOrigin(0.5,0.5).setVisible(0).setAlpha(0.75)
+        inspirationBoxFocus = this.add.image(inspirationBoxEnergy.x + 100,inspirationBoxEnergy.y,'inspirationBox').setDepth(3).setScale(0.0125,0.0375).setOrigin(0.5,0.5).setVisible(0).setAlpha(0.75)
+        inspirationBoxPower = this.add.image(inspirationBoxFocus.x + 100,inspirationBoxEnergy.y,'inspirationBox').setDepth(3).setScale(0.0125,0.5).setOrigin(0.5,0.5).setVisible(0).setAlpha(0.75)
 
         // 96 seconds = 1 year
         // 8 seconds = 1 month
@@ -3136,9 +3133,11 @@
             highObstacle.body.checkCollision.none = false
             lowObstacle.body.checkCollision.none = false
             
-            skillTreeLifeIcon.setVisible(0).disableInteractive()
-            skillTreeFocusIcon.setVisible(0).disableInteractive()
-            skillTreeEnergyIcon.setVisible(0).disableInteractive()
+            inspirationBoxEnergy.setVisible(0).disableInteractive()
+
+            skillTreeLifeIcon.setVisible(0)
+            skillTreeFocusIcon.setVisible(0)
+            skillTreeEnergyIcon.setVisible(0)
             skillTreeOpen = false
          
             
@@ -3146,9 +3145,12 @@
         } else {
             highObstacle.body.checkCollision.none = true
             lowObstacle.body.checkCollision.none = true
-            skillTreeLifeIcon.setVisible(1).setInteractive()
-            skillTreeFocusIcon.setVisible(1).setInteractive()
-            skillTreeEnergyIcon.setVisible(1).setInteractive()
+
+            inspirationBoxEnergy.setVisible(1).setInteractive()
+
+            skillTreeLifeIcon.setVisible(1)
+            skillTreeFocusIcon.setVisible(1)
+            skillTreeEnergyIcon.setVisible(1)
             skillTreeOpen = true
            
     
