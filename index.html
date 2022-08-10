@@ -1799,6 +1799,12 @@
     function obstacleCollision(){
         if(!skillTreeOpen){
         playerIsHit = true
+        camera.shake(500, 0.0025);
+        if(player.flipX){
+            player.flipX = false
+        } else {
+            player.flipX = true
+        }
         player.once('animationstart',function(){
                 player.x -= 0.5
         })
@@ -1848,10 +1854,8 @@
                     }
                     player.anims.play({key:'pHurt',frameRate: 12},true); 
 
+                    camera.shake(150, 0.004);
                     
-                    player.once('animationstart', function (){
-                        camera.shake(150, 0.0025);
-                    },player)
 
                     player.once('animationcomplete', function () {
                         playerIsHit = false 
@@ -3706,6 +3710,7 @@
                         usingPower = false
                     } else {
                         player.play({key:'pRun',frameRate: 12},true);
+                        player.flipX = false
                         playerCrouching = false
                         camera.zoomTo(1,250)
                         
@@ -4388,6 +4393,7 @@
             }
 
             if (progress >= progressToNextCheckPoint){
+                player.flipX = false
                 nightBorneCam()
                 if(nightBorneCamLocked){
                     enemyChase(0.3)
