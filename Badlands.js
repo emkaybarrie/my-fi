@@ -136,7 +136,7 @@
     var regenActive = true
     var playerIsHit = false
     var level = 0
-    var progress = 0 // to be renamed
+    var progress = 0
     var progressToNextLevel = Phaser.Math.Between(175,225)
     var progressToNextCheckPoint = progressToNextLevel * 0.25
     
@@ -2438,7 +2438,7 @@
     }
 
 
-var Badlands = class Badlands extends Phaser.Scene {
+class Badlands extends Phaser.Scene {
 
 
     constructor() {
@@ -2457,22 +2457,22 @@ var Badlands = class Badlands extends Phaser.Scene {
         
         
             
-            this.load.audio("bgMusic0a", ["assets/music/Riptide.mp3"]);
-            this.load.audio("bgMusic0b", ["assets/music/Smile.mp3"]);
-            this.load.audio("bgMusic0c", ["assets/music/Gumshield.mp3"]);
-            this.load.audio("bgMusic0d", ["assets/music/Throw_Me_To_The_Wolves.mp3"]);
+            // this.load.audio("bgMusic0a", ["assets/music/Riptide.mp3"]);
+            // this.load.audio("bgMusic0b", ["assets/music/Smile.mp3"]);
+            // this.load.audio("bgMusic0c", ["assets/music/Gumshield.mp3"]);
+            // this.load.audio("bgMusic0d", ["assets/music/Throw_Me_To_The_Wolves.mp3"]);
 
-            Phaser.Utils.Array.Add(bgMusicArray,["bgMusic0a","bgMusic0b","bgMusic0c","bgMusic0d"])
+            // Phaser.Utils.Array.Add(bgMusicArray,["bgMusic0a","bgMusic0b","bgMusic0c","bgMusic0d"])
             
-            this.load.audio("bgMusic1", ["assets/music/The_Apartment.mp3"]);
-            this.load.audio("bgMusic2", ["assets/music/Le_château_magique.mp3"]);
-            this.load.audio("bgMusic3", ["assets/music/Kids_See_Ghosts.mp3"]);
-            this.load.audio("bgMusic4", ["assets/music/Katana.mp3"]);
-            this.load.audio("bgMusic5", ["assets/music/Ludum_Dare_38_Track_2.wav"]);
-            this.load.audio("bgMusic6", ["assets/music/Night_(Instrumental).mp3"]);
-            this.load.audio("bgMusic7", ["assets/music/Tripwire.mp3"]);
+            // this.load.audio("bgMusic1", ["assets/music/The_Apartment.mp3"]);
+            // this.load.audio("bgMusic2", ["assets/music/Le_château_magique.mp3"]);
+            // this.load.audio("bgMusic3", ["assets/music/Kids_See_Ghosts.mp3"]);
+            // this.load.audio("bgMusic4", ["assets/music/Katana.mp3"]);
+            // this.load.audio("bgMusic5", ["assets/music/Ludum_Dare_38_Track_2.wav"]);
+            // this.load.audio("bgMusic6", ["assets/music/Night_(Instrumental).mp3"]);
+            // this.load.audio("bgMusic7", ["assets/music/Tripwire.mp3"]);
 
-            songDatabaseSize = 7
+            // songDatabaseSize = 4
             
             
 
@@ -2484,19 +2484,10 @@ var Badlands = class Badlands extends Phaser.Scene {
         this.load.image('playerIconBox', 'assets/vFX/playerHUDBox.png');
         this.load.image('playerIcon', 'assets/icons/playerIcon1.png');
         
-
         this.load.image('storingBuffIcon', 'assets/ach_00059.png');
         this.load.image('spendingBuffIcon', 'assets/ach_00046.png');
         this.load.image('growingBuffIcon', 'assets/ach_00057.png');
 
-        this.load.image('t1BuffIcon', 'assets/ach_00117.png');
-        this.load.image('t2BuffIcon', 'assets/ach_00118.png');
-        this.load.image('t3BuffIcon', 'assets/ach_00119.png');
-        this.load.image('t4BuffIcon', 'assets/ach_00120.png');
-        this.load.image('t5BuffIcon', 'assets/ach_00121.png');
-
-        this.load.image('t1KianovaBuffIcon', 'assets/ach_00122.png');
-        this.load.image('t2KianovaBuffIcon', 'assets/ach_00091.png');
 
         this.load.image('levelIcon', 'assets/ach_00006.png');
         this.load.image('gloryIcon', 'assets/ach_00035.png');
@@ -2636,7 +2627,7 @@ var Badlands = class Badlands extends Phaser.Scene {
         // Travel Mode 
 
 
-        bgMusic = this.sound.add(Phaser.Utils.Array.GetRandom(bgMusicArray))
+        //bgMusic = this.sound.add(Phaser.Utils.Array.GetRandom(bgMusicArray))
         //bgMusic.play()
         
 
@@ -3535,13 +3526,13 @@ var Badlands = class Badlands extends Phaser.Scene {
 
                 // Background Music
 
-                bgMusic.once('complete', function(){
-                    songChoice = Math.floor(Phaser.Math.Between(1,songDatabaseSize))
-                    Phaser.Utils.Array.Add(bgMusicArray,"bgMusic" + songChoice)
-                    bgMusic.destroy()
-                    bgMusic = this.sound.add(Phaser.Utils.Array.GetRandom(bgMusicArray))
-                    bgMusic.play()
-                },this)  
+                // bgMusic.once('complete', function(){
+                //     songChoice = Math.floor(Phaser.Math.Between(1,songDatabaseSize))
+                //     Phaser.Utils.Array.Add(bgMusicArray,"bgMusic" + songChoice)
+                //     bgMusic.destroy()
+                //     bgMusic = this.sound.add(Phaser.Utils.Array.GetRandom(bgMusicArray))
+                //     bgMusic.play()
+                // },this)  
 
   
             // Controls

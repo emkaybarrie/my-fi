@@ -1,20 +1,23 @@
+
 var titleImage
 var titleText
 var titleSubText
 
-var camera
+class Title extends Phaser.Scene {
 
-var nextScene
-
-var Title = class Title extends Phaser.Scene {
+    
     constructor() {
+        
         super("loadTitle")
     }
+
+ 
 
     preload(){
         this.load.image('titleA', 'assets/TitleScreenA.png');
         this.load.image('titleText', 'assets/tempLogo.png');
         this.load.audio("bgMusic0d", "assets/music/Throw_Me_To_The_Wolves.mp3");
+
     }
     
     create(){
@@ -22,9 +25,6 @@ var Title = class Title extends Phaser.Scene {
         titleImage = this.add.image(40,-200,'titleA').setScale(0.5).setOrigin(0,0)
         titleText = this.add.image(400,100,'titleText').setScale(0.35).setAlpha(0)
         titleSubText = this.add.text(titleText.x - 35,215,"A myFi Project",{align: 'center'}).setFontFamily('Arial').setAlpha(0)
-        
-        
-
         
         camera = this.cameras.main.fadeIn(2000)
         this.sound.play('bgMusic0d')
@@ -51,6 +51,8 @@ var Title = class Title extends Phaser.Scene {
                 
                 onComplete: function () {
                     nextScene = true
+                    
+                    
                 }
                
 
@@ -66,7 +68,7 @@ var Title = class Title extends Phaser.Scene {
         if (nextScene){
             nextScene = false
             camera.fadeOut(1000)
-            camera.on('camerafadeoutcomplete',function(){
+            camera.once('camerafadeoutcomplete',function(){
                 this.scene.start("loadTutorial")
             },this)
         }
