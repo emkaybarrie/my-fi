@@ -104,7 +104,7 @@
     var playerIsHit = false
     var level = 0
     var progress = 0 // to be renamed
-    var progressToNextLevel = Phaser.Math.Between(75,100)
+    var progressToNextLevel = Phaser.Math.Between(175,225)
     var progressToNextCheckPoint = progressToNextLevel * 0.25
     
 
@@ -1169,93 +1169,88 @@
         
         if(scanningForDanger){
             
-        if (Math.abs(lowObstacle.x - player.x) < Math.abs((highObstacle.x - player.x)) && lowObstacle.x - player.x > -250 && lowObstacle.x - player.x < 50){
+        if (Math.abs(lowObstacle.x - player.x) < Math.abs((highObstacle.x - player.x)) && lowObstacle.x > width && lowObstacle.x - player.x > -300 && lowObstacle.x - player.x < 150 && lowObstacle.x < width * 2){
             scanningForDanger = false
-            if(player.body.onFloor() ){
-            player.setVelocityY(-250)
+
+            camera.zoomTo(1,500)
+            if(player.x < lowObstacle.x && player.y > 100){
+                player.play({key:'pJump',frameRate:6},true)
+                player.y -= 2
+                player.x += 2
+                player.setDragY(1000)
+            } else if (!player.body.onFloor()) {
+                player.play({key:'pUptoFall',frameRate:2},true)
+                player.x += 3
+                player.setDragY(250)
+            } else {
+                player.play({key:'pRun',repeat:-1,frameRate:6},true)
             }
-            player.setDragX(10)
-            fireTowardsTarget(player,lowObstacle.x + 50,6)
             
-            
-            player.play({key:'pJump',frameRate:6},true)
-            
+
             player.once('animationcomplete', function(){
-               
-                    player.play({key:'pDash',frameRate:8},true)
-                    player.once('animationcomplete', function(){
-                        
-                        
-                        scanningForDanger = true
-                    },this)
+
+               scanningForDanger = true
+           },this)
+                    
               
-            },this)
             
-        } else if (Math.abs(highObstacle.x - player.x) < Math.abs((lowObstacle.x - player.x)) && highObstacle.x - player.x > -200 && highObstacle.x - player.x < 50){
+            
+        } else if (Math.abs(highObstacle.x - player.x) < Math.abs((lowObstacle.x - player.x)) && highObstacle.x > width && highObstacle.x - player.x > -300 && highObstacle.x - player.x < 150 && highObstacle.x < width * 2){
             scanningForDanger = false
+            camera.zoomTo(1,500)
+            if(player.body.onFloor()) {
             player.play({key:'pSlide',frameRate:4},true)
-            player.setDragX(10)
-            fireTowardsTarget(player,highObstacle.x + 100,8)
+            player.x += 0.5
+            } else {
+                player.play({key:'pUptoFall',frameRate:4},true)
+                player.x += 2
+                player.setDragY(250) 
+            }
+            
             player.once('animationcomplete', function(){
-               
-                
+
                 scanningForDanger = true
             },this)
         
-        } else if (Math.abs(creep.x - player.x) < Math.abs((lowObstacle.x - player.x)) && Math.abs(creep.x - player.x) < Math.abs((highObstacle.x - player.x)) && creep.x - player.x > -75 && creep.x - player.x < 150){
+        } else if (Math.abs(creep.x - player.x) < Math.abs((lowObstacle.x - player.x)) && Math.abs(creep.x - player.x) < Math.abs((highObstacle.x - player.x)) && creep.x - player.x > -75 && creep.x - player.x < 150 && creep.x > width && creep.x < width * 2){
             scanningForDanger = false
-
-            var attackChoice = Phaser.Math.Between(1,2)
+            
+            
             if (player.body.onFloor()){
-                    if(attackChoice == 1){
-                        player.play({key:'pDash',frameRate:18},true)
-                        fireTowardsTarget(player,player.x + 75,1)
+
+                player.x += 1
+                        
+                camera.zoomTo(1.1,1000)
+                        player.play({key:'pDoubleAttack',frameRate:10},true)
                         player.once('animationcomplete',function(){
-                            player.play({key:'pDoubleAttack',frameRate:18},true)
-                            player.once('animationcomplete',function(){
-                                player.play({key:'pRun',repeat:-1},true)
+                                player.play({key:'pRun',repeat:-1,frameRate:6},true)
                                 scanningForDanger = true
+                                
                         },this)
-                        },this)
+                        
                     
                    
-                    } else if (attackChoice == 2) {
-                        player.play({key:'pDash',frameRate:18},true)
-                        fireTowardsTarget(player,player.x + 75,1)
-                        player.once('animationcomplete',function(){
-                        player.play('pAttack2',true)
-                        player.once('animationcomplete',function(){
-                            player.play({key:'pRun',repeat:-1},true)
-                            scanningForDanger = true
-                        },this)
-                    },this)
-                        
-                    }
-                } else if (!player.body.onFloor()) {
-                    if (attackChoice == 1 || attackChoice == 2) {
-                    player.play({key:'pDash',frameRate:18},true)
-                    fireTowardsTarget(player,player.x + 50,2)
-                    player.once('animationcomplete',function(){
+                    
+               } else if (!player.body.onFloor()) {
+                    
+                    
+                player.x += 3
+                    
                             player.play({key:'pHeavyAttack',frameRate:12},true)
-                            //fireTowardsTarget(player,player.x + 75,2)
-                            player.setVelocityY(Phaser.Math.Between(150,175))
+                            player.setDragY(0)
+                            player.y += 2
                             player.once('animationcomplete',function(){
-                              player.play({key:'pRun',repeat:-1},true)
+                              player.play({key:'pRun',repeat:-1,frameRate:6},true)
                               scanningForDanger = true
                             },this)
-                    },player)
-                    }
-                }
+                    
+                }  
+               
         } else {
-            //scanningForDanger = false
+            camera.zoomTo(1,500)
             player.play({key:'pRun',frameRate:6},true)
-            if(player.x > width * 1.35)
-            player.x -= 1
-            player.once('animationcomplete', function(){
-                //fireTowardsTarget(player,width * 1.3,12)
-                
-            
-            },this)
+            if(player.x > width * 1.25)
+            player.x -= 0.5
             scanningForDanger = true
         }
         }
@@ -1882,13 +1877,20 @@
     
         glory += level + 1
         gold += (level * 2) + 1
-        creep.play('nightBorneMinion_Hurt',true)
+        //creep.play('nightBorneMinion_Hurt',true)
         creep.x = player.x + 35
         camera.shake(150, 0.0015)
-        creep.once('animationcomplete', function(){
+        //creep.once('animationcomplete', function (anim,frame) {
+            //creep.emit('animationcomplete_' + anim.key, frame)
+            //creep.once('animationcomplete_nightBorneMinion_Hurt', function (anim,frame) {
             creep.play('nightBorneMinion_Death',true)
-            creep.x = 0
-        },creep)
+            creep.once('animationcomplete', function(){
+
+                creep.x = 0
+           },creep)
+       //},creep)
+            
+        //},creep)
 
         
         
@@ -3025,7 +3027,7 @@
         cursors = this.input.keyboard.createCursorKeys();
         keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
         keyD = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
-        keyX = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.X);
+        keyF = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.F);
 
         keyZ = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Z);
         keyC = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.C);
@@ -3360,7 +3362,7 @@
                                 if (currentFocus > 0){
                                     playerAttacking = true
 
-                                    playerVitals.decreaseFocus(maxFocus * 0.006)
+                                    playerVitals.decreaseFocus(maxFocus * 0.003)
 
                                     if(attackModeActive){
                                         playerSkill() 
@@ -3380,11 +3382,11 @@
                                 focusModeActive = true
                                 scanningForDanger = true
 
-                                playerVitals.decreaseFocus((income) / 50)
+                                //playerVitals.decreaseFocus((income) / 100)
 
                                 if (currentFocus  > 0){
                                     playerFocusing = true
-                                    playerSpeed = 0.5
+                                    
                                     highObstacle.body.checkCollision.none = true
                                     lowObstacle.body.checkCollision.none = true
                             
@@ -3415,7 +3417,7 @@
                                 if (currentFocus > 0){
                                     playerAttacking = true
 
-                                    playerVitals.decreaseFocus(maxFocus * 0.006)
+                                    playerVitals.decreaseFocus(maxFocus * 0.003)
 
                                     if(attackModeActive){
                                         playerSkill() 
@@ -3435,11 +3437,11 @@
                                 focusModeActive = true
                                 scanningForDanger = true
 
-                                playerVitals.decreaseFocus((income) / 50)
+                                playerVitals.decreaseFocus((income) / 100)
 
                                 if (currentFocus  > 0){
                                     playerFocusing = true
-                                    playerSpeed = 0.5
+                                    
                                     highObstacle.body.checkCollision.none = true
                                     lowObstacle.body.checkCollision.none = true
                             
@@ -3669,8 +3671,7 @@
                                 if(playerSpeed > 1){
                                 playerVitals.decreaseFocus((income * 0.25) / 100 )
                                 playerVitals.decreaseLife(-(income * 0.25)  / 50 )
-                                //this.physics.moveTo(player,width * 1.1,height - 90,90)
-                                //player.setVelocityX(player.body.velocity.x - 5)
+                                
                                 player.x -= 3
                                 }
                                 player.anims.play({key:'pRun',frameRate: 8},true);
@@ -3679,8 +3680,7 @@
                             if(rightIsDown){
                                 if(playerSpeed < 1.5){
                                 playerVitals.decreaseEnergy((income * 0.25) / 50)
-                                //this.physics.moveTo(player,width * 1.75,height - 90,90)
-                                //player.setVelocityX(player.body.velocity.x + 2.5)
+                                
                                 player.x += 2
                                 }
                                 player.anims.play({key:'pRun',frameRate: 16},true);
@@ -3695,6 +3695,7 @@
                 if (player.body.onFloor() && !gameOver && controlsEnabled){
                     regenActive = true
                     sword.body.checkCollision.none = true
+                    player.setDragY(0)
                     
 
                     if(inBattle){
@@ -3706,8 +3707,7 @@
                     } else {
                         player.play({key:'pRun',frameRate: 12},true);
                         playerCrouching = false
-                        //this.physics.moveTo(player,width * 1.25,height - 90,90)
-                        //player.setVelocityX(0)
+                        camera.zoomTo(1,250)
                         
 
                         if(player.x < width * 1.25){
@@ -3741,8 +3741,8 @@
             closest = this.physics.closest(player,enemies.getChildren()) 
 
           
-            console.log("Progress:" + progress)
-            console.log("Progress to Next CheckPoint:" + progressToNextCheckPoint)
+            //console.log("Progress:" + progress)
+            //console.log("Progress to Next CheckPoint:" + progressToNextCheckPoint)
             
 
             // console.log("Controls Active:" + controlsEnabled)
@@ -3764,7 +3764,8 @@
 
             // console.log("nightBorneCam:" + nightBorneCamActive)
             // console.log("nightBorneCamLocked:" + nightBorneCamLocked)
-            console.log("NightBorne X Pos:" + nightBorne.x)
+            //console.log("NightBorne X Pos:" + nightBorne.x)
+            console.log("Player Y Pos:" + player.y)
             
            
 
@@ -3948,17 +3949,17 @@
 
                 }
 
-                if (keyX.isDown){
+                if (keyF.isDown){
 
                 skillKeyBIsDown = true
 
-                if (Phaser.Input.Keyboard.JustDown(keyX)){
+                if (Phaser.Input.Keyboard.JustDown(keyF)){
                     usingPower = true
                 }
 
                 } else if (cursors.space.isUp){
 
-                if (Phaser.Input.Keyboard.JustUp(keyX)){
+                if (Phaser.Input.Keyboard.JustUp(keyF)){
                     skillKeyBIsDown = false
                 }
 
@@ -4372,7 +4373,11 @@
 
             // Game Variables
 
-            playerSpeed = player.x / (width * 1.25)
+            if(!focusModeActive){
+                playerSpeed = player.x / (width * 1.25)
+            } else {
+                playerSpeed = 0.5
+            }
 
             // To be sorted
 
@@ -4407,6 +4412,7 @@
                 // Parallax Background layers scrolls at variable speed multiplied by playerSpeed %
                 if(!gameOver){
                     if(!nightBorneCamActive || nightBorneCamLocked){
+                    
                     woodsl2.tilePositionX += 1.5 * (playerSpeed)
                     woodsl3.tilePositionX += 3 * (playerSpeed)
                     woodsl4.tilePositionX += 4.5 * (playerSpeed)
