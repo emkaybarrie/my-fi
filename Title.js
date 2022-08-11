@@ -9,6 +9,7 @@ class Title extends Phaser.Scene {
     constructor() {
         
         super("loadTitle")
+
     }
 
  
@@ -17,7 +18,7 @@ class Title extends Phaser.Scene {
         this.load.image('titleA', 'assets/TitleScreenA.png');
         this.load.image('titleText', 'assets/tempLogo.png');
         this.load.audio("bgMusic0d", "assets/music/Throw_Me_To_The_Wolves.mp3");
-
+        
     }
     
     create(){
@@ -28,6 +29,7 @@ class Title extends Phaser.Scene {
         
         camera = this.cameras.main.fadeIn(2000)
         this.sound.play('bgMusic0d')
+        this.sound.pauseOnBlur = false
         camera.on('camerafadeincomplete',function(){
             
             this.tweens.add({

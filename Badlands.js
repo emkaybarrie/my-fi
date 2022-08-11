@@ -19,12 +19,20 @@
     var playerSwordSwing
     var playerHeavySwordSwing
     var enemySwordSwing
-    var width = 592
-    var height = 272
-    var woodsl1
-    var woodsl2
-    var woodsl3
-    var woodsl4
+    var width = 1980
+    var height = 1080
+    
+    var lvlFG1
+    var lvlFG2
+    var lvlBG1 
+    var lvlBG2 
+    var lvlBG3 
+    var lvlBG4 
+    var lvlBG5 
+    var lvlBG6
+    var lvlBG7
+    var lvlBG8   
+
     var platforms
     var player
     var sword
@@ -36,9 +44,7 @@
     var nightBorneSword
     var nightBorneOutline
     var nightBorneVFX
-    var nightBorneNecromancer
-    var nightBorneNecromancerOutline
-    var nightBorneNecromancerVFX
+
     var creep
     var camera
 
@@ -51,6 +57,9 @@
         var levelText 
         var playerVitalsBox
         var playerVitals
+        var playerVitalsTextL
+        var playerVitalsTextF
+        var playerVitalsTextE
        
 
        var gloryIcon
@@ -109,8 +118,8 @@
     var gameOver = false
     var gameRestart = false
 
-    var glory = 0
-    var gold = 0
+    var glory = 9000
+    var gold = 9000
     var highScore = parseInt(localStorage.getItem('highScore')) || 0;
 
     var gameMode = 0
@@ -135,7 +144,7 @@
 
     var regenActive = true
     var playerIsHit = false
-    var level = 0
+    var level = 90
     var progress = 0
     var progressToNextLevel = Phaser.Math.Between(175,225)
     var progressToNextCheckPoint = progressToNextLevel * 0.25
@@ -146,7 +155,7 @@
     var playerFocusing = false
     var focusModeActive = false
     var scanningForDanger = true
-    var playerSpeed
+    var playerSpeed = 1
 
         //NightBorne
         var startNecroFloat = true
@@ -228,7 +237,7 @@
 
     class HealthBar {
 
-                constructor (scene,startLife, x, y,scaleX,scaleY)
+                constructor (scene,startLife, x, y)
                 {
                     this.bg = new Phaser.GameObjects.Graphics(scene).setDepth(4);
                     
@@ -238,19 +247,13 @@
                     this.energyBar = new Phaser.GameObjects.Graphics(scene).setDepth(4);
                     
         
-                    this.scaleX = scaleX
-                    this.scaleY = scaleY
-        
                     this.x = x;
                     this.y = y;
                     
-                    this.pL =  (39.5 * this.scaleX) / maxLife
-                    this.pF =  (39.5 * this.scaleX)  / maxFocus 
-                    this.pE =  (39.5 * this.scaleX)  / maxEnergy
-        
-                    
-                    
-        
+                    this.pL =  574 / maxLife
+                    this.pF =  574  / maxFocus 
+                    this.pE =  574  / maxEnergy
+
                     this.draw();
         
                     scene.add.existing(this.bg)
@@ -343,39 +346,39 @@
         
                     //  BG
                     this.bg.fillStyle(0x000000);
-                    this.bg.fillRect(this.x, this.y, (40 * this.scaleX), 12 * this.scaleY);
+                    this.bg.fillRect(this.x, this.y, 575, 85);
         
                     //  Health
         
                     this.lifeBar.fillStyle(0xffffff);
-                    this.lifeBar.fillRect(this.x + 1 , this.y + 1, 39.5 * this.scaleX, 4 * this.scaleY);
+                    this.lifeBar.fillRect(this.x + 1 , this.y + 2, 574, 30);
                     this.lifeBar.fillStyle(0xcc0000);
                     
                     var d = Math.floor(this.pL * currentLife);
         
-                    this.lifeBar.fillRect(this.x + 1 , this.y + 1 , d , 4 * this.scaleY);
+                    this.lifeBar.fillRect(this.x + 1 , this.y + 2 , d , 30);
         
                     //  Focus
         
                     this.focusBar.fillStyle(0xffffff);
-                    this.focusBar.fillRect(this.x + 1 , (this.y + 2 + (4 * this.scaleY)) , 39.5 * this.scaleX, 4 * this.scaleY);
+                    this.focusBar.fillRect(this.x + 1 , this.y + 5 + 30 , 574, 30);
                     this.focusBar.fillStyle(0xf1c232);
                     
         
                     var d = Math.floor(this.pF * currentFocus);
         
-                    this.focusBar.fillRect(this.x + 1 , (this.y + 2 + (4 * this.scaleY)), d  , 4 * this.scaleY);
+                    this.focusBar.fillRect(this.x + 1 , this.y + 5 + 30, d, 30);
         
                     //  Energy
         
                     this.energyBar.fillStyle(0xffffff);
-                    this.energyBar.fillRect(this.x + 1 , (this.y + 3 + ((4 * this.scaleY) * 2)) , 39.5 * this.scaleX , 2 * this.scaleY);
+                    this.energyBar.fillRect(this.x + 1 , this.y + 8 + 60 , 574, 15);
                     this.energyBar.fillStyle(0x00a86b);
                 
         
                     var d = Math.floor(this.pE * currentEnergy);
         
-                    this.energyBar.fillRect(this.x + 1 , (this.y + 3 + ((4 * this.scaleY) * 2)), d , 2 * this.scaleY);
+                    this.energyBar.fillRect(this.x + 1 ,this.y + 8 + 60 , d , 15);
         
                     
                 }
@@ -656,7 +659,7 @@
     function moveHighObstacle (highObstacle,speed){
     
         highObstacle.x -= speed;
-        if (highObstacle.x < Phaser.Math.Between(-400,-200)){
+        if (highObstacle.x < Phaser.Math.Between(0,0)){
             resetHighObstacle(highObstacle)
         }
 
@@ -688,19 +691,20 @@
 
     function resetHighObstacle (highObstacle){
         highObstacle.x = width * 3
-        var scaleXRandom = Phaser.Math.FloatBetween(0.15,0.65)
-        var scaleYRandom = Phaser.Math.FloatBetween(0.55,0.8)
+        var scaleXRandom = Phaser.Math.FloatBetween(0.5,0.75)
+        var scaleYRandom = Phaser.Math.FloatBetween(1.25,2.5)
         highObstacle.setScale(scaleXRandom,scaleYRandom)
     }
 
     function resetLowObstacle (lowObstacle){
         lowObstacle.x = width * 3
-        var scaleXRandom = Phaser.Math.FloatBetween(0.75,1.1)
-        var scaleYRandom = Phaser.Math.FloatBetween(0.8,1.2)
+        var scaleXRandom = Phaser.Math.FloatBetween(0.75,2)
+        var scaleYRandom = Phaser.Math.FloatBetween(1.6,2.4)
         lowObstacle.setScale(scaleXRandom,scaleYRandom)
     }
 
     function resetCreep (creep){
+        
         creep.x = Phaser.Math.Between(width * 2.5,width * 3)
         var creepAnimationRandomiser = Phaser.Math.Between(1,3)
         if (creepAnimationRandomiser == 1){
@@ -714,8 +718,8 @@
             creep.play('nightBorneMinion_Idle',true)
         }
         
-        var scaleXRandom = Phaser.Math.FloatBetween(1.9,2.3)
-        var scaleYRandom = Phaser.Math.FloatBetween(0.9,1.35)
+        var scaleXRandom = Phaser.Math.FloatBetween(3.9,4.2)
+        var scaleYRandom = Phaser.Math.FloatBetween(1.9,2.35)
         creep.setScale(scaleXRandom,scaleYRandom)
     }
 
@@ -754,11 +758,15 @@
     }
 
 
-        function showRunningHUD() {
+        function showHUD() {
         playerIcon.setVisible(1)
         playerIconBox.setVisible(1)
+        playerVitalsBox.setVisible(1)
         playerVitals.show()
-
+        playerVitalsTextL.setVisible(1)
+        playerVitalsTextF.setVisible(1)
+        playerVitalsTextE.setVisible(1)
+        
         levelIcon.setVisible(1)
         levelText.setVisible(1)
         
@@ -767,23 +775,41 @@
 
         goldIcon.setVisible(1)
         goldText.setVisible(1)
+
+        skillABox.setVisible(1)
+        skillAIcon.setVisible(1)
+        skillBBox.setVisible(1)
+        skillBIcon.setVisible(1)
+
+        levelProgress.show()
         
 
     }
 
-    function hideRunningHUD() {
-        playerIcon.setVisible(0)
-        playerIconBox.setVisible(0)
+    function hideHUD() {
+        playerIcon.setVisible()
+        playerIconBox.setVisible()
+        playerVitalsBox.setVisible()
         playerVitals.hide()
-
-        levelIcon.setVisible(0)
-        levelText.setVisible(0)
+        playerVitalsTextL.setVisible()
+        playerVitalsTextF.setVisible()
+        playerVitalsTextE.setVisible()
         
-        gloryIcon.setVisible(0)
-        gloryText.setVisible(0)
+        levelIcon.setVisible()
+        levelText.setVisible()
+        
+        gloryIcon.setVisible()
+        gloryText.setVisible()
 
-        goldIcon.setVisible(0)
-        goldText.setVisible(0)
+        goldIcon.setVisible()
+        goldText.setVisible()
+
+        skillABox.setVisible()
+        skillAIcon.setVisible()
+        skillBBox.setVisible()
+        skillBIcon.setVisible()
+
+        levelProgress.hide()
 
   
     }
@@ -793,6 +819,7 @@
             camera.resetFX()
             playerIsHit = false
             controlsEnabled = false
+            hideHUD()
             levelProgress.hide()
             nightBorneCamActive = true
             highObstacle.body.checkCollision.none = true
@@ -849,7 +876,7 @@
      
    function modeSwitch(mode){
     if (mode == 0){
-        woodsl4.setAlpha(1)
+        //lvlFG1.setAlpha(1)
         gameMode = 0
         inBattle = false
         levelProgress.show()
@@ -869,7 +896,7 @@
     } else if (mode == 1){
             
             
-            woodsl4.setAlpha(0.75)
+            //lvlFG1.setAlpha(0.95)
             inBattle = true
             gameMode = 1
             progressToNextCheckPoint += progressToNextLevel * 0.25
@@ -904,9 +931,8 @@
             
             income *= 1 - (0.04 / 12)
             nightBorne.setDragX(500)
-            nightBorneNecromancer.setDragX(1000)
+            
             fireTowardsTarget(nightBorne,Phaser.Math.FloatBetween(width * 1.15, width * 1.45),4)
-            fireTowardsTarget(nightBorneNecromancer,Phaser.Math.FloatBetween(width * 1.15, width * 1.25),1)
             
             regenActive = false
             
@@ -1053,11 +1079,14 @@
         if (Math.abs(lowObstacle.x - player.x) < Math.abs((highObstacle.x - player.x)) && lowObstacle.x > width && lowObstacle.x - player.x > -300 && lowObstacle.x - player.x < 150 && lowObstacle.x < width * 2){
             scanningForDanger = false
 
-            camera.zoomTo(1,500)
-            if(player.x < lowObstacle.x && player.y > 100){
+            camera.zoomTo(1.5,1000)
+            camera.pan(player.x,player.y + 100,1000)
+           
+            
+            if(player.x < lowObstacle.x + 100 && player.y > 75){
                 player.play({key:'pJump',frameRate:6},true)
-                player.y -= 2
-                player.x += 2
+                player.y -= 8
+                player.x += 5
                 player.setDragY(1000)
             } else if (!player.body.onFloor()) {
                 player.play({key:'pUptoFall',frameRate:2},true)
@@ -1078,7 +1107,10 @@
             
         } else if (Math.abs(highObstacle.x - player.x) < Math.abs((lowObstacle.x - player.x)) && highObstacle.x > width && highObstacle.x - player.x > -300 && highObstacle.x - player.x < 150 && highObstacle.x < width * 2){
             scanningForDanger = false
-            camera.zoomTo(1,500)
+            camera.zoomTo(1.5,1000)
+            camera.pan(player.x,player.y,1000)
+            
+            
             if(player.body.onFloor()) {
             player.play({key:'pSlide',frameRate:4},true)
             player.x += 0.5
@@ -1100,8 +1132,13 @@
             if (player.body.onFloor()){
 
                 player.x += 1
+                creep.x += 2
                         
-                camera.zoomTo(1.1,1000)
+                camera.zoomTo(2,1500)
+                camera.pan(player.x,player.y,1000)
+
+                
+              
                         player.play({key:'pDoubleAttack',frameRate:10},true)
                         player.once('animationcomplete',function(){
                                 player.play({key:'pRun',repeat:-1,frameRate:6},true)
@@ -1116,6 +1153,11 @@
                     
                     
                 player.x += 3
+
+                camera.zoomTo(2,1500)
+                camera.pan(player.x,player.y,1000)
+                
+               
                     
                             player.play({key:'pHeavyAttack',frameRate:12},true)
                             player.setDragY(0)
@@ -1128,7 +1170,11 @@
                 }  
                
         } else {
-            camera.zoomTo(1,500)
+            
+            
+            
+            camera.pan(width * 1.5,player.y,1000)
+            
             player.play({key:'pRun',frameRate:6},true)
             if(player.x > width * 1.25)
             player.x -= 0.5
@@ -1556,16 +1602,16 @@
             
 
             player.setVelocityY(-350)
-            player.setDragY(0)
+            
 
         
 
             if(player.anims.getName() == 'pJump'){
                 if (player.flipX){
-                    player.setDragX(0)
+                    
                     fireTowardsTarget(player,closest.x - 150,1)
                 } else {
-                    player.setDragX(0)
+                    
                     fireTowardsTarget(player,closest.x + 150,1)
                 }
                 
@@ -1768,7 +1814,8 @@
             creep.play('nightBorneMinion_Death',true)
             creep.once('animationcomplete', function(){
 
-                creep.x = 0
+                creep.x = width * 3
+                
            },creep)
        //},creep)
             
@@ -1879,29 +1926,29 @@
     function nightBorne_EliteAI(){
 
         if(Math.abs(nightBorne.x - player.x) > 150){
-            nightBorne.setDragX(150)
+            nightBorne.setDragX(250)
             var actionChoice = Phaser.Math.Between(1,3)
         
             if (actionChoice == 1){
                 nightBorne.play({key:'nightBorne_Move',frameRate:8},true)
                 if(nightBorne.x < player.x){
                     
-                    nightBorne.setVelocityX(275)
+                    nightBorne.setVelocityX(1000)
 
                     
                 } else {
 
-                    nightBorne.setVelocityX(-275)
+                    nightBorne.setVelocityX(-1000)
                    
                 }
 
             } else if (actionChoice == 2){
                 nightBorne.play({key:'nightBorne_Move',frameRate:10},true)
                 if(nightBorne.x < player.x){
-                    nightBorne.setVelocityX(350)
+                    nightBorne.setVelocityX(750)
                     
                 } else {
-                    nightBorne.setVelocityX(-350)
+                    nightBorne.setVelocityX(-750)
                 }
             } else if (actionChoice == 3) {
                 nightBorne.play('nightBorne_Idle',true)
@@ -1911,7 +1958,7 @@
         } else {
             var actionChoice = Phaser.Math.Between(1,3)
             nightBorne.setVelocityX(0)
-            nightBorne.setDragX(300)
+            nightBorne.setDragX(450)
             if (actionChoice == 1){
                 nightBorne.play({key:'nightBorne_Attack',frameRate:12,repeat:Phaser.Math.Between(0,1)},true)
                 
@@ -1977,14 +2024,14 @@
         }  else {
             playerVitals.decreaseLife(-lifeRegen / 200) 
         playerVitals.decreaseEnergy(-energyRegen / 200)
-        playerVitals.decreaseFocus(-focusRegen / 200)
+        playerVitals.decreaseFocus(-focusRegen * 100 / 200) 
         }  
         
 
         if (!inBattle && !nightBorneCamActive){
             if (skillTreeOpen == false){
                 levelProgress.increaseProgress((2.5 / 60))
-                glory += (2.5 / 60) * (playerSpeed)
+                glory += ((2.5 / 60) * (playerSpeed))
             }
             
         } 
@@ -2058,7 +2105,9 @@
                                 } else {
                                     playerFocusing = false
                                     focusModeActive = false
-                                    scanningForDanger = false    
+                                    scanningForDanger = false
+                                    camera.zoomTo(1,500)
+                                      
                                 }
                             }
                     }
@@ -2113,7 +2162,9 @@
                                 } else {
                                     playerFocusing = false
                                     focusModeActive = false
-                                    scanningForDanger = false    
+                                    scanningForDanger = false 
+                                    camera.zoomTo(1,500)   
+                                      
                                 }
                             }
                     }
@@ -2197,8 +2248,9 @@
                 if(downIsDown){
                     if(inBattle){ 
                         if(!playerCrouching){
-                            if(player.body.speed > 10){
+                            if(player.body.speed > 250){
                             player.play({key:'pSlide',frameRate:14},true)
+                            player.setDragX(1000)
                             } else {
                                 player.play({key:'pCrouch',frameRate:14},true)
                             }
@@ -2228,39 +2280,55 @@
                         if (player.body.onFloor()){
                             playerJumping = true
                             
-                            player.play({key:'pCrouch',frameRate:24},true)
+
+                            if(player.body.speed > 250){
+
+                                player.setDragX(1000)
+
+                                if (player.flipX){
+                                    player.setVelocityX(player.body.velocity.x - 50)
+                                } else {
+                                    player.setVelocityX(player.body.velocity.x + 50)
+                                }
+
+                                upIsDown = false
+                                player.play({key:'pJump',frameRate:18},true)
+                                
+                                player.setVelocityY(-750)
+                                playerLanded = false
+
+                            } else {
+                                player.play({key:'pCrouch',frameRate:24},true)
                             player.once('animationcomplete',function(){
                                 upIsDown = false
                                 player.play({key:'pJump',frameRate:18},true)
-                                if(player.body.speed > 10){
-                                    if (player.flipX){
-                                        player.setVelocityX(-150)
-                                    } else {
-                                        player.setVelocityX(150)
-                                    }
-                                }
-                                player.setVelocityY(-300)
+                                
+                                player.setVelocityY(-750)
                                 playerLanded = false
                             },player)
+                            }
+
+
+                            
 
                              
                         } 
                     } else {
                         if (currentEnergy > maxEnergy * 0.1){
-                        
+                            player.setDragX(1000)
                         if (player.body.onFloor()){
                             playerJumping = true
                             
                             playerVitals.decreaseEnergy(maxEnergy * 0.2)
                             
                             player.play('pJump',true)
-                            player.setVelocityY(-300)
+                            player.setVelocityY(-600)
                             player.setVelocityX(100)
 
                             player.once('animationcomplete',function(){
                                 player.play('pUptoFall',true)
                                 
-                                player.setDragX(400)
+                                
                                 playerJumping = false
                                 upIsDown = false
 
@@ -2278,7 +2346,7 @@
                     if(!playerDodging && !playerIsHit && !playerAttacking && !playerBlocking){
 
                         if(inBattle){
-                            player.body.maxVelocity.x = 250
+                            player.body.maxVelocity.x = 750
                             if (playerLockedOn){
                                 nightBorneVFX.x = closest.x
                                 nightBorneVFX.setVisible(1)
@@ -2287,12 +2355,12 @@
                                 if(leftIsDown){
                                     if(player.flipX == false){
                                         playerDodging = true
-                                        fireTowardsTarget(player,player.x - 450,1)
+                                        player.setVelocityX(-1000)
                                         if(player.body.onFloor()){
-                                            player.setVelocityY(-75)
+                                            player.setVelocityY(Phaser.Math.Between(-250,0))
                                         }
                                         
-                                        player.play({key:'pBackDash',frameRate:8},true)
+                                        player.play({key:'pBackDash',frameRate:6},true)
                                         player.once('animationcomplete', function (){
                                             
                                                 playerDodging = false
@@ -2300,18 +2368,19 @@
                                                 },player)
                                     } else if (player.body.onFloor() && playerLanded) {
                                         player.play('pRun',true)
-                                        player.setVelocityX(player.body.velocity.x - 35)
+                                        player.setVelocityX(player.body.velocity.x - 100)
                                     }
                                 } else 
                                 // If Right
                                 if(rightIsDown){
                                     if(player.flipX == true){
                                         playerDodging = true
-                                        fireTowardsTarget(player,player.x + 450,1)
+                            
+                                        player.setVelocityX(1000)
                                         if(player.body.onFloor()){
-                                            player.setVelocityY(-75)
+                                            player.setVelocityY(Phaser.Math.Between(-250,0))
                                         }
-                                        player.play({key:'pBackDash',frameRate:8},true)
+                                        player.play({key:'pBackDash',frameRate:6},true)
                                         player.once('animationcomplete', function (){
                                             
                                                 playerDodging = false
@@ -2320,7 +2389,8 @@
                                         
                                     } else if (player.body.onFloor() && playerLanded) {
                                         player.play('pRun',true)
-                                        player.setVelocityX(player.body.velocity.x + 35)
+                                        player.setVelocityX(player.body.velocity.x + 100)
+                                     
                                     }
                                 }
 
@@ -2330,27 +2400,27 @@
                                 // If Left
                                 if(leftIsDown){
                                     player.flipX = true
-                                    player.setVelocityX(player.body.velocity.x - 35)
+                                    player.setVelocityX(player.body.velocity.x - 125)
+                                   
                                 } else
                                 // If Right 
                                 if(rightIsDown){
                                     player.flipX = false
-                                    player.setVelocityX(player.body.velocity.x + 35)
+                                    player.setVelocityX(player.body.velocity.x + 125)
+                                    
                                 }
                             }
                         } else {
                             player.flipX = false
-                            player.body.maxVelocity.x = 250
+                            player.body.maxVelocity.x = 750
                             // If Left
                             if(currentEnergy > 1){
                             if(leftIsDown){
                                 playerVitals.decreaseEnergy((maxEnergy * 0.25) / 50 )
                                 playerVitals.decreaseLife(-(maxEnergy * 0.25)  / 100 )
                                 if(playerSpeed >= 0.9){
-                                
-                                
-                                
-                                player.x -= 3
+
+                                player.x -= 6
                                 }
                                 player.anims.play({key:'pRun',frameRate: 8},true);
                             } else 
@@ -2358,7 +2428,7 @@
                             if(rightIsDown){
                                 playerVitals.decreaseEnergy((income * 0.25) / 50)
                                 if(playerSpeed <= 1.5){
-                                player.x += 2
+                                player.x += 4
                                 }
                                 player.anims.play({key:'pRun',frameRate: 16},true);
                                 glory += (2.5 / 60)
@@ -2366,18 +2436,18 @@
                         } else {
 
                             if(player.x < width * 1.25){
-                                player.x += 4
+                                player.x += 8
                                 highObstacle.body.checkCollision.none = true
                                 lowObstacle.body.checkCollision.none = true
                             } else if(player.x > width * 1.75){
-                                player.x -= 4
+                                player.x -= 8
                                 highObstacle.body.checkCollision.none = true
                                 lowObstacle.body.checkCollision.none = true
                             } else if(!nightBorneCamActive){
                                 highObstacle.body.checkCollision.none = false
                                 lowObstacle.body.checkCollision.none = false
                                 if(player.x > width * 1.35){
-                                    player.x -= 1
+                                    player.x -= 2
                                 }
                             }
 
@@ -2404,7 +2474,14 @@
                     
 
                     if(inBattle){
+                        if(player.body.speed > 500){
+                            player.setDragX(2000) 
+                        } else {
+                            player.setDragX(3000)       
+                        }
+
                         player.play('pIdle',true)
+                        
                         playerDodging = false 
                         playerCrouching = false
                         attackModeActive = false
@@ -2413,7 +2490,10 @@
                         player.play({key:'pRun',frameRate: 12},true);
                         player.flipX = false
                         playerCrouching = false
-                        camera.zoomTo(1,250)
+                        camera.zoomTo(1,500)
+                        camera.once('camerazoomcomplete', function(){
+
+                        },this)
                         
 
                         if(player.x < width * 1.25){
@@ -2508,19 +2588,19 @@ class Badlands extends Phaser.Scene {
         this.load.image('inspirationBox', 'assets/vFX/inspirationBox.png');
         this.load.image('playerVitalsBox', 'assets/vFX/playerHUDBox.png');
 
-        this.load.image('dawnl1', 'assets/dawn1.png');
-        this.load.image('dawnl2', 'assets/dawn2.png');
-        this.load.image('dawnl3', 'assets/dawn3.png');
-        this.load.image('dawnl4', 'assets/dawn4.png');
-        this.load.image('dawnl5', 'assets/dawn5.png');
-        this.load.image('dawnl6', 'assets/dawn6.png');
-        this.load.image('dawnl7', 'assets/dawn7.png');
-        this.load.image('dawnl8', 'assets/dawn8.png');
+        this.load.image('dawnBG8', 'assets/dawn1.png');
+        this.load.image('dawnBG7', 'assets/dawn2.png');
+        this.load.image('dawnBG6', 'assets/dawn3.png');
+        this.load.image('dawnBG5', 'assets/dawn4.png');
+        this.load.image('dawnBG4', 'assets/dawn5.png');
+        this.load.image('dawnBG3', 'assets/dawn6.png');
+        this.load.image('dawnBG2', 'assets/dawn7.png');
+        this.load.image('dawnBG1', 'assets/dawn8.png');
 
-        this.load.image('woodsl1', 'assets/woods1.png');
-        this.load.image('woodsl2', 'assets/woods2.png');
-        this.load.image('woodsl3', 'assets/woods3.png');
-        this.load.image('woodsl4', 'assets/woods4.png');
+        this.load.image('woodsBG8', 'assets/woods1.png');
+        this.load.image('woodsBG2', 'assets/woods2.png');
+        this.load.image('woodsBG1', 'assets/woods3.png');
+        this.load.image('woodsFG1', 'assets/woods4.png');
 
         this.load.image('vines', 'assets/vines.png');
         this.load.image('treeTrunk', 'assets/treeTrunk.png');
@@ -2637,21 +2717,31 @@ class Badlands extends Phaser.Scene {
         
         this.physics.world.setBounds(0, 0, width * 3,  height);
         
-        woodsl1 = this.add.tileSprite(0,0, width * 4, height, 'woodsl1').setOrigin(0,0).setScrollFactor(0)
-        woodsl2 = this.add.tileSprite(0,0, width * 4, height, 'woodsl2').setOrigin(0,0).setScrollFactor(0.25)
-        woodsl3 = this.add.tileSprite(0,0, width * 4, height, 'woodsl3').setOrigin(0,0).setScrollFactor(0.5)
-        woodsl4 = this.add.tileSprite(0,0, width * 4, height, 'woodsl4').setOrigin(0,0).setScrollFactor(1)
-
-        woodsl4.setDepth(3)
+        // lvlBG8 = this.add.tileSprite(0,0, width * 4, height, 'woodsBG8').setOrigin(0,0).setScrollFactor(0)
+        // lvlBG2 = this.add.tileSprite(0,0, width * 4, height, 'woodsBG2').setOrigin(0,0).setScrollFactor(0.5)
+        // lvlBG1 = this.add.tileSprite(0,0, width * 4, height, 'woodsBG1').setOrigin(0,0).setScrollFactor(0.75)
+        // lvlFG1 = this.add.tileSprite(0,0, width * 4, height, 'woodsFG1').setOrigin(0,0).setScrollFactor(1.25).setDepth(3)
+        
+        var scale = 1
+        lvlBG8 = this.add.tileSprite(0,0,width * 3,height, 'dawnBG8').setOrigin(0,0).setScrollFactor(0).setScale(scale)
+        lvlBG7 = this.add.tileSprite(0,0,width * 3,height, 'dawnBG7').setOrigin(0,0).setScrollFactor(0).setScale(scale)
+        lvlBG6 = this.add.tileSprite(0,0, width * 3,height, 'dawnBG6').setOrigin(0,0).setScrollFactor(0).setScale(scale)
+        lvlBG5 = this.add.tileSprite(0,0, width * 3,height, 'dawnBG5').setOrigin(0,0).setScrollFactor(0.01).setScale(scale)
+        lvlBG4 = this.add.tileSprite(0,0, width * 3,height, 'dawnBG4').setOrigin(0,0).setScrollFactor(0.025).setScale(scale)
+        lvlBG3 = this.add.tileSprite(0,0, width * 3,height, 'dawnBG3').setOrigin(0,0).setScrollFactor(0.025).setScale(scale)
+        lvlBG2 = this.add.tileSprite(0,0, width * 3 ,height, 'dawnBG2').setOrigin(0,0).setScrollFactor(1).setScale(scale)
+        lvlBG1 = this.add.tileSprite(0,0, width * 3,height, 'dawnBG1').setOrigin(0,0).setScrollFactor(1).setScale(scale)
+        // lvlFG2 = this.add.tileSprite(0,0, width * 4, height, '').setOrigin(0,0).setScrollFactor(1).setDepth(3)
+        // lvlFG1 = this.add.tileSprite(0,0, width * 4, height, '').setOrigin(0,0).setScrollFactor(1.5).setDepth(3)
 
         this.lights.enable();
         this.lights.setAmbientColor(0x808080);
 
        
         platforms = this.physics.add.staticGroup();
-        platforms.create(0, height - 50, 'ground').setOrigin(0,0).setScale(width * 3 /400).refreshBody().setVisible(1);
+        platforms.create(0, height - 100, 'ground').setOrigin(0,0).setScale(width * 3 /400, 2).refreshBody().setVisible(0);
 
-        player = this.physics.add.sprite(width * 1.3, height - 90 ,'heroF').setScale(2)//.setPipeline('Light2D');
+        player = this.physics.add.sprite(width * 1.3, height /2 ,'heroF').setScale(4)//.setPipeline('Light2D');
         player.setDepth(2)
         player.body.setSize(10, 30).setOffset(25,15).setAllowDrag(true)
         
@@ -2667,12 +2757,12 @@ class Badlands extends Phaser.Scene {
         sword.body.checkCollision.none = true
 
 
-        highObstacle = this.add.image(0,player.y - 120, 'vines').setScale(0.35,0.5)
+        highObstacle = this.add.image(350,player.y + 100, 'vines').setAlpha(0.75)
         this.physics.add.existing(highObstacle,false)
         highObstacle.body.setSize(474,175).setOffset(0,-7.5)
         highObstacle.body.setAllowGravity(false)
 
-        lowObstacle = this.add.image(0,height - 110, 'treeTrunk')
+        lowObstacle = this.add.image(0,height - 200, 'treeTrunk')
         this.physics.add.existing(lowObstacle,false)
         lowObstacle.body.setSize(150,57).setOffset(5,10)
 
@@ -2690,7 +2780,7 @@ class Badlands extends Phaser.Scene {
 
             // NightBorne
             
-            nightBorne = this.physics.add.sprite(0, 0, 'nightBorne').setScale(3.25).setOrigin(0.5,1).setDepth(2)
+            nightBorne = this.physics.add.sprite(0, 0, 'nightBorne').setScale(8).setOrigin(0.5,1).setDepth(2)
             nightBorneVitals = new EnemyHealthBar(this,nightBorne.x, nightBorne.y - 150);
             nightBorneLife = (income * 0.3) * Phaser.Math.Between(0.8,1.7) 
             nightBorneMaxLife = nightBorneLife
@@ -2713,7 +2803,7 @@ class Badlands extends Phaser.Scene {
             nightBorneSword.body.checkCollision.none = true
             this.physics.add.overlap(nightBorneSword, player, playerHit);
 
-            nightBorneOutline = this.physics.add.sprite(nightBorne.x - 1, nightBorne.y - 2.5, 'nightBorne').setScale(3.25).setOrigin()
+            nightBorneOutline = this.physics.add.sprite(nightBorne.x - 1, nightBorne.y - 2.5, 'nightBorne').setScale(8).setOrigin()
             nightBorneOutline.setTintFill(0x7851a9).setDepth(0).setAlpha(0.75)
             nightBorneOutline.body.setAllowGravity(0)
             nightBorneOutline.body.setSize(45, 50)
@@ -2721,7 +2811,7 @@ class Badlands extends Phaser.Scene {
             this.tweens.add({
                                     targets     : nightBorneOutline,
                                     alpha       : 0, 
-                                    scale      : 3.35,
+                                    scale      : 8.35,
                                    
                                     ease        : 'Power2',
                                     duration    : 2000,
@@ -2733,39 +2823,11 @@ class Badlands extends Phaser.Scene {
             nightBorneVFX = this.add.sprite(nightBorne.x, nightBorne.y + 100)
             nightBorneVFX.setScale(1).setTint(0x00CED1).setDepth(4).setVisible(1)
 
-            nightBorneNecromancerOutline = this.physics.add.sprite(0, 0, 'nightBorneNecromancer').setScale(2.1).setOrigin()
-            nightBorneNecromancerOutline.setTintFill(0x7851a9).setDepth(0).setAlpha(1)
-            nightBorneNecromancerOutline.body.setAllowGravity(0)
-            nightBorneNecromancerOutline.setSize(60, 60).setOffset(50,50)
-            nightBorneNecromancerOutline.setCollideWorldBounds(true)
-            this.tweens.add({
-                                    targets     : nightBorneNecromancerOutline,
-                                    alpha       : 0, 
-                                    scale      : 1.9,
-                                   
-                                    ease        : 'Power2',
-                                    duration    : 2000,
-                                    yoyo        : 1,
-                                    //loop        : -1,
-                                    repeat      : -1
-            });
-
-            nightBorneNecromancer = this.physics.add.sprite(nightBorne.x - 100, nightBorne.y + 75, 'nightBorneNecromancer').setScale(1.75).setOrigin()
-            nightBorneNecromancer.setDepth(0)
-            nightBorneNecromancer.setSize(60, 60).setOffset(50,50)
-            nightBorneNecromancer.body.maxVelocity.x = 500
-            nightBorneNecromancer.setCollideWorldBounds(true)
-            nightBorneNecromancer.body.setAllowGravity(0)
-            this.physics.add.collider(platforms,nightBorneNecromancer);
             
-            
-
-            nightBorneNecromancerVFX = this.add.sprite(nightBorneNecromancer.x, nightBorneNecromancer.y)
-            nightBorneNecromancerVFX.setDepth(0).setScale(0.25)
 
             // Creep
 
-            creep = this.physics.add.sprite(0, 0, 'doomsayer').setScale(1).setOrigin()
+            creep = this.physics.add.sprite(0, 0, 'doomsayer')
             creep.setCollideWorldBounds(true)
             creep.body.setAllowGravity(1)
             this.physics.add.collider(platforms,creep);
@@ -2780,27 +2842,29 @@ class Badlands extends Phaser.Scene {
  
         camera.fadeIn(12000)
         
-        playerIconBox = this.add.image(0,0,'playerIconBox').setDepth(3).setScale(0.0125,0.035).setOrigin(0.5,0.5)
-        playerIcon = this.add.image(0,0,'playerIcon').setDepth(3).setScale(0.02,0.0175).setOrigin(0.5,0.5)
+        playerIconBox = this.add.image(0,0,'playerIconBox').setDepth(3).setScale(0.0775,0.25).setOrigin(0.5,0.5)
+        playerIcon = this.add.image(0,0,'playerIcon').setDepth(3).setScale(0.125).setOrigin(0.5,0.5)
         
 
-        levelIcon = this.add.image(0,0,'levelIcon').setDepth(4).setScale(0.35).setOrigin(0.5,0.5)
+        levelIcon = this.add.image(0,0,'levelIcon').setDepth(4).setScale(0.65).setOrigin(0.5,0.5)
         levelText = this.add.text(levelIcon + 5, levelIcon.y, Math.floor(level)).setFontFamily('Arial').setFontSize(28).setColor('#674EA7').setDepth(4).setOrigin(0.5,0.5)
         
-        playerVitalsBox = this.add.image(0,0,'playerVitalsBox').setDepth(3).setScale(0.072,0.035).setOrigin(0,0.5)
-        playerVitals = new HealthBar(this,startLife, levelIcon.x + 30, playerIcon.y + 20,5,2)
+        gloryIcon = this.add.image(levelIcon.x + 100,camera.scrollY + 20,'gloryIcon').setDepth(4).setScale(0.65).setOrigin(0.5,0.5)
+        gloryText = this.add.text(gloryIcon + 20, gloryIcon.y, Math.floor(glory)).setFontFamily('Arial').setFontSize(28).setColor('#BC3823').setDepth(4).setOrigin(0.5,0.5);
+        goldIcon = this.add.image(gloryIcon.x + 130,camera.scrollY + 60,'goldIcon').setDepth(4).setScale(0.65).setOrigin(0.5,0.5)
+        goldText = this.add.text(goldIcon, goldIcon.y, Math.floor(gold)).setFontFamily('Arial').setFontSize(28).setColor('#ffd700').setDepth(4).setOrigin(0.5,0.5);
+
+        playerVitalsBox = this.add.image(0,0,'playerVitalsBox').setDepth(3).setScale(0.25,0.2).setOrigin(0,0.5)
+        playerVitals = new HealthBar(this,startLife, levelIcon.x + 30, playerIcon.y + 20)
        
+        playerVitalsTextL = this.add.text(0, 0, 'Life').setFontFamily('Arial').setFontSize(18).setColor('#cc0000').setDepth(4).setOrigin(0.5,0.5);
+        playerVitalsTextF = this.add.text(0, 0, 'Focus').setFontFamily('Arial').setFontSize(18).setColor('#f1c232').setDepth(4).setOrigin(0.5,0.5);
+        playerVitalsTextE = this.add.text(0, 0, 'Energy').setFontFamily('Arial').setFontSize(18).setColor('#00a86b').setDepth(4).setOrigin(0.5,0.5);       
 
-        gloryIcon = this.add.image(levelIcon.x + 100,camera.scrollY + 20,'gloryIcon').setDepth(4).setScale(0.35).setOrigin(0.5,0.5)
-        gloryText = this.add.text(gloryIcon + 20, gloryIcon.y, Math.floor(level)).setFontFamily('Arial').setFontSize(28).setColor('#BC3823').setDepth(4).setOrigin(0.5,0.5);
-        goldIcon = this.add.image(gloryIcon.x + 130,camera.scrollY + 60,'goldIcon').setDepth(4).setScale(0.35).setOrigin(0.5,0.5)
-        goldText = this.add.text(goldIcon, goldIcon.y, Math.floor(glory)).setFontFamily('Arial').setFontSize(28).setColor('#ffd700').setDepth(4).setOrigin(0.5,0.5);
-
-
-        skillABox = this.add.image(0,0,'playerVitalsBox').setDepth(3).setScale(0.0125,0.0375).setOrigin(0.5,0.5)
-        skillAIcon = this.add.image(0,0,'deadlyCombatAssaultIcon').setDepth(3).setScale(0.125).setOrigin(0.5,0.5)
-        skillBBox = this.add.image(0,0,'playerVitalsBox').setDepth(3).setScale(0.0125,0.0375).setOrigin(0.5,0.5)
-        skillBIcon = this.add.image(0,0,'thunderStrikeIcon').setDepth(3).setScale(0.125).setOrigin(0.5,0.5)
+        skillABox = this.add.image(0,0,'playerVitalsBox').setDepth(3).setScale(0.04,0.125).setOrigin(0.5,0.5)
+        skillAIcon = this.add.image(0,0,'deadlyCombatAssaultIcon').setDepth(3).setScale(0.4).setOrigin(0.5,0.5)
+        skillBBox = this.add.image(0,0,'playerVitalsBox').setDepth(3).setScale(0.04,0.125).setOrigin(0.5,0.5)
+        skillBIcon = this.add.image(0,0,'thunderStrikeIcon').setDepth(3).setScale(0.4).setOrigin(0.5,0.5)
 
        
 
@@ -3411,7 +3475,7 @@ class Badlands extends Phaser.Scene {
             })
 
             enemies.add(nightBorne)
-            //enemies.add(nightBorneNecromancer)  
+
             enemies.add(creep) 
 
             enemies.setDepth(1)
@@ -3422,8 +3486,8 @@ class Badlands extends Phaser.Scene {
     update ()
     {
        
-       console.log('Regen: '+ regenActive)
-       console.log('Skill Key A: '+ skillKeyAIsDown)
+    
+       console.log(creep.visible)
        
 
             closest = this.physics.closest(player,enemies.getChildren()) 
@@ -3454,48 +3518,67 @@ class Badlands extends Phaser.Scene {
 
             // UI 
 
-                playerIconBox.x = camera.scrollX + (width * 0.04)
-                playerIconBox.y = camera.scrollY + (height * 0.075)
+                if(camera.zoom != 1){
+                    hideHUD()
+                } else {
+                    showHUD()
+                }
+
+                playerIconBox.x = camera.scrollX + (width * 0.075)
+                playerIconBox.y =  (height * 0.15)
 
                 playerIcon.x = playerIconBox.x
                 playerIcon.y = playerIconBox.y
 
-                playerVitals.x = playerIconBox.x + 25
-                playerVitals.y = playerIconBox.y - 12.5
+                
+
+                
+
+                playerVitalsBox.x = playerIconBox.x + 125
+                playerVitalsBox.y = playerIcon.y
+
+                playerVitals.x = playerIconBox.x + 242.5
+                playerVitals.y = playerIconBox.y - 75
                 playerVitals.draw()
 
-                levelIcon.x = camera.scrollX + (width * 0.75)
-                levelIcon.y = playerIcon.y + 15
-                levelText.x = levelIcon.x + 30
+                playerVitalsTextL.x = playerVitals.x - 50
+                playerVitalsTextL.y = playerVitals.y + 17.5
+
+                playerVitalsTextF.x = playerVitals.x - 50
+                playerVitalsTextF.y = playerVitals.y + 47.5
+
+                playerVitalsTextE.x = playerVitals.x - 50
+                playerVitalsTextE.y = playerVitals.y + 72.5
+
+                levelIcon.x = playerIconBox.x + 185
+                levelIcon.y = playerIcon.y + 50
+                levelText.x = levelIcon.x + 55
                 levelText.y = levelIcon.y
                 levelText.setText(Math.floor(level))
 
-                playerVitalsBox.x = playerIconBox.x + 25 - 4 //playerVitals.x - 4
-                playerVitalsBox.y = playerIcon.y
-
-                gloryIcon.x = camera.scrollX + (width * 0.865)
-                gloryIcon.y = levelIcon.y - 15
-                gloryText.x = gloryIcon.x + 47.5
+                gloryIcon.x = levelIcon.x + 120
+                gloryIcon.y = levelIcon.y
+                gloryText.x = gloryIcon.x + 75
                 gloryText.y = gloryIcon.y
                 gloryText.setText(Math.floor(glory))
 
-                goldIcon.x = gloryIcon.x
-                goldIcon.y = levelIcon.y + 15
-                goldText.x = gloryText.x
+                goldIcon.x = gloryIcon.x + 150
+                goldIcon.y = gloryIcon.y
+                goldText.x = goldIcon.x + 75
                 goldText.y = goldIcon.y
                 goldText.setText(Math.floor(gold))
 
                 levelProgress.x = camera.scrollX + width * 0.25
-                levelProgress.y = camera.scrollY + (height * 0.9)
+                levelProgress.y = (height * 0.975)
                 levelProgress.draw()
 
-                skillABox.x = playerVitalsBox.x + 150
-                skillABox.y = playerVitalsBox.y + 32.5
+                skillABox.x = playerVitalsBox.x + 515
+                skillABox.y = playerVitalsBox.y + 75
 
                 skillAIcon.x = skillABox.x
                 skillAIcon.y = skillABox.y
 
-                skillBBox.x = skillABox.x + 40
+                skillBBox.x = skillABox.x + 125
                 skillBBox.y = skillABox.y
 
                 skillBIcon.x = skillBBox.x
@@ -4009,21 +4092,18 @@ class Badlands extends Phaser.Scene {
                
 
                     // NightBorne outline follows NightBorne
-                        nightBorneOutline.x = nightBorne.x - 2.5
-                        nightBorneOutline.y = nightBorne.y - 135
+                        nightBorneOutline.x = nightBorne.x - 15
+                        nightBorneOutline.y = nightBorne.y - 325
+                        nightBorneOutline.flipX = nightBorne.flipX
 
-                    // NightBorne outline copies current playing animation of necromancer sprite, with optional delay
+                    // NightBorne outline copies current playing animation of  sprite, with optional delay
                         nightBorneOutline.play({key:nightBorne.anims.getName(),frameRate:Phaser.Math.Between(8,16)},true) 
 
-                    // Necromancer
+          // Drag Settings
+                
+                // Set player drag based on if in air or on ground
 
-                    // Necromancer outline follows necromancer
-                    
-                        nightBorneNecromancerOutline.x = nightBorneNecromancer.x - 2.5
-                        nightBorneNecromancerOutline.y = nightBorneNecromancer.y - 10
-
-                    // Necormancer outline copies current playing animation of necromancer sprite, with optional delay
-                        nightBorneNecromancerOutline.play({key:nightBorneNecromancer.anims.getName(),frameRate:Phaser.Math.Between(8,16)},true)
+                        
 
         // Travel Mode
         if (gameMode == 0){
@@ -4048,7 +4128,7 @@ class Badlands extends Phaser.Scene {
                 player.flipX = false
                 nightBorneCam()
                 if(nightBorneCamLocked){
-                    enemyChase(0.3)
+                    enemyChase(1)
                 }
                 
             }
@@ -4056,9 +4136,6 @@ class Badlands extends Phaser.Scene {
             nightBorneVFX.setVisible(0)
 
             
-
-
-                nightBorneNecromancer.play({key:'nightBorneNecromancer_Idle',frameRate: 8 * playerSpeed},true)
                 nightBorne.play({key:'nightBorne_Move',frameRate: 8 * playerSpeed},true)
 
                 
@@ -4069,46 +4146,48 @@ class Badlands extends Phaser.Scene {
 
                 // Parallax Background layers scrolls at variable speed multiplied by playerSpeed %
                 if(!gameOver){
-                    if(!nightBorneCamActive || nightBorneCamLocked){
-                    
-                    woodsl2.tilePositionX += 1.5 * (playerSpeed)
-                    woodsl3.tilePositionX += 3 * (playerSpeed)
-                    woodsl4.tilePositionX += 4.5 * (playerSpeed)
-                    moveHighObstacle(highObstacle, 4 * (playerSpeed))
-                    moveLowObstacle(lowObstacle, 4.5 * (playerSpeed))
+                    //lvlFG1.tilePositionX += 4.5 * (playerSpeed)
+                    lvlBG1.tilePositionX += 12 * (playerSpeed)
+                    lvlBG2.tilePositionX += 12 * (playerSpeed)
+                    lvlBG3.tilePositionX += 0.25 * (playerSpeed)
+                    lvlBG4.tilePositionX += 0.25 * (playerSpeed)
+                    lvlBG5.tilePositionX += 0.1 * (playerSpeed)
+                    lvlBG6.tilePositionX += 0 * (playerSpeed)
+                    lvlBG7.tilePositionX += 0 * (playerSpeed)
+                    lvlBG8.tilePositionX += 0 * (playerSpeed)
 
-                        if(creep.anims.getName() == 'nightBorneMinion_Move'){
-                           moveCreep(creep, 6 * (playerSpeed))
-                        } else if (creep.anims.getName() == 'nightBorneMinion_Idle') {
-                            moveCreep(creep, 3 * (playerSpeed))
-                        } else {
-                           moveCreep(creep, 4 * (playerSpeed))
-                        }
+                    moveHighObstacle(highObstacle, 12 * (playerSpeed))
+                    moveLowObstacle(lowObstacle, 12 * (playerSpeed))
+
+                    if(creep.anims.getName() == 'nightBorneMinion_Move'){
+                        moveCreep(creep, 18 * (playerSpeed))
+                     } else if (creep.anims.getName() == 'nightBorneMinion_Idle') {
+                         moveCreep(creep, 12 * (playerSpeed))
+                     } else {
+                         moveCreep(creep, 6 * (playerSpeed))
+                     }
+
+                    if(!nightBorneCamActive || nightBorneCamLocked){
+
                     } else if(nightBorneCamActive && !nightBorneCamLocked) {
                     
-
-                        moveHighObstacle(highObstacle, 2 * (playerSpeed))
-                        moveLowObstacle(lowObstacle, 2.25 * (playerSpeed))
-
-                        if(creep.anims.getName() == 'nightBorneMinion_Move'){
-                            moveCreep(creep, 3 * (playerSpeed))
-                        } else if (creep.anims.getName() == 'nightBorneMinion_Idle') {
-                           moveCreep(creep, 1.5 * (playerSpeed))
-                        } else {
-                            moveCreep(creep, 2 * (playerSpeed))
-                        }
                     }
                 } 
             // Player
             
-            player.setDragX(400)
+           
 
             // NightBorne
 
                 // Dynamic Panning based on nightBorne distance to player
                 if (!nightBorneCamActive){
                     
-                        camera.pan(width * 1.5,0,2000) 
+                    if(focusModeActive){
+                        
+                    } else {
+                        camera.pan(width * 1.5,player.y,2000)
+                    }    
+                     
                     
                 } else if (nightBorneCamActive && !controlsEnabled) {
                     player.play({key:'pRun',frameRate: 16},true);
@@ -4116,12 +4195,7 @@ class Badlands extends Phaser.Scene {
 
                 // NightBorne Elite
 
-                // Necromancer
-
-                    //  Necromancer follows behind NightBorne Elite at constant distance
-
-                    nightBorneNecromancer.x = nightBorne.x - 55
-                    nightBorneNecromancer.y = nightBorne.y - 175
+ 
 
 
 
@@ -4130,7 +4204,7 @@ class Badlands extends Phaser.Scene {
         } else if (gameMode == 1){
 
                 // Camera
-                if (player.x > closest.x - 150 && playerLockedOn){
+                if (player.x > closest.x - 300 && playerLockedOn){
                     
                     camera.pan(player.x - 100,0,100,'Sine.easeInOut',true,
                     (camera, progress) => { 
@@ -4142,7 +4216,7 @@ class Badlands extends Phaser.Scene {
                     
                 } else 
 
-                if (player.x < closest.x + 150 && playerLockedOn){
+                if (player.x < closest.x + 300 && playerLockedOn){
                     
                     camera.pan(player.x + 100,0,100,'Sine.easeInOut', true,
                     (camera, progress) => { 
@@ -4166,7 +4240,7 @@ class Badlands extends Phaser.Scene {
 
 
                 // Auto lock - Enables Player to automatically face closest enemy
-                if(Math.abs(player.x - closest.x) <= 300){
+                if(Math.abs(player.x - closest.x) <= 350){
                     playerLockedOn = true
                     if(player.x < closest.x){
                         player.flipX = false
@@ -4180,7 +4254,7 @@ class Badlands extends Phaser.Scene {
                 }
 
                 // Enables closest enemy to automatically face and move towards player
-                if(Math.abs(closest.x - player.x) <= 200){
+                if(Math.abs(closest.x - player.x) <= 250){
                     enemyLockedOn = true
                     if(closest.x < player.x){
                         closest.flipX = false
@@ -4191,15 +4265,7 @@ class Badlands extends Phaser.Scene {
                     enemyLockedOn = false
                 }
 
-                // Drag Settings
                 
-                // Set player drag based on if in air or on ground
-
-                if (player.body.onFloor()){
-                    player.setDragX(750)
-                } else {
-                    player.setDragX(300)
-                }
 
 
                 // NightBorne
@@ -4238,9 +4304,9 @@ class Badlands extends Phaser.Scene {
                         nightBorne.once('animationcomplete', function (anim,frame) {
 
                                         nightBorne.setDragX(0)
-                                        nightBorneNecromancer.setDragX(0)
+
                                         nightBorne.setVelocityX(0)
-                                        nightBorneNecromancer.setVelocityX(0)
+
                                         nightBorne.flipX = false
                                         nightBorne.x = 0
                                         nightBorne.y = 0
@@ -4262,31 +4328,7 @@ class Badlands extends Phaser.Scene {
         }
 
 
-         // Move to "Start NightBorne Battle" function
-        if (inBattle){
-           
-            if(startNecroFloat){
-                startNecroFloat = false
-            this.tweens.add({
-                                    targets     : [nightBorneNecromancer],
-                                    x       : nightBorne.x - 75, 
-                                    ease        : 'Quad.easeIn',
-                                    duration    : 12000,
-                                    yoyo        : 1,
-                                    repeat      : -1
-            });
-            this.tweens.add({
-                                    targets     : [nightBorneNecromancer],
-                                    y       : nightBorne.y - 230, 
-                                    ease        : 'Power2',
-                                    duration    : 7500,
-                                    yoyo        : 1,
-                                    repeat      : -1
-                                    
-            });
-        }
-
-        } 
+         
 
 
         // // REPLACE WITH CASE: FORMAT FOR CLEANER CODE, ADD ALL TO BATTLE MODE SECTION ONLY AND PLAYER ONLY VERSION TO RUNNING MODE
