@@ -3390,7 +3390,7 @@ class Badlands extends Phaser.Scene {
                     var alpha = 1
                 }
 
-                playerVitals.pL = (39.5 * playerVitals.scaleX) / maxLife
+                playerVitals.pL = 574 / maxLife
                 playerVitals.draw()
                 
 
@@ -3420,7 +3420,7 @@ class Badlands extends Phaser.Scene {
                 }
 
                 
-                playerVitals.pF = (39.5 * playerVitals.scaleX) / maxFocus
+                playerVitals.pF = 574 / maxFocus
                 playerVitals.draw()
              
 
@@ -3446,7 +3446,7 @@ class Badlands extends Phaser.Scene {
                 }
 
                 //spendingBuffTierIcon.setTexture('t'+ tier +'BuffIcon').setAlpha(alpha)
-                playerVitals.pE = (39.5 * playerVitals.scaleX) / maxEnergy
+                playerVitals.pE = 574 / maxEnergy
                 playerVitals.draw()
               
 

@@ -23,9 +23,9 @@ class Title extends Phaser.Scene {
     
     create(){
         
-        titleImage = this.add.image(40,-200,'titleA').setScale(0.5).setOrigin(0,0)
-        titleText = this.add.image(400,100,'titleText').setScale(0.35).setAlpha(0)
-        titleSubText = this.add.text(titleText.x - 35,215,"A myFi Project",{align: 'center'}).setFontFamily('Arial').setAlpha(0)
+        titleImage = this.add.image(0,0,'titleA').setScale(1.94,1.1).setOrigin(0,0)
+        titleText = this.add.image(1350,300,'titleText').setScale(1.5).setAlpha(0)
+        titleSubText = this.add.text(titleText.x - 100,600,"A myFi Project",{align: 'center'}).setFontFamily('Gothic').setAlpha(0).setFontSize(38)
         
         camera = this.cameras.main.fadeIn(2000)
         this.sound.play('bgMusic0d')

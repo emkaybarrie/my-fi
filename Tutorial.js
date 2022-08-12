@@ -17,59 +17,59 @@ var Tutorial = class Tutorial extends Phaser.Scene {
 
     create(){
         camera = this.cameras.main.fadeIn(2000)
-        this.tutorialImage = this.add.image(0,0,'tutorialA').setScale(0.3).setOrigin(0,0)
+        this.tutorialImage = this.add.image(0,0,'tutorialA').setScale(1,1.1).setOrigin(0,0)
         
         
         // Intro & Summary
         controlsText1 = this.make.text({
             alpha: 0,
-            x: 450,
-            y: 50,
+            x: 1500,
+            y: 200,
             text: 'Traverse the Badlands, avoid obstacles and defeating enemies in your path',
             origin: { x: 0.5, y: 0.5 },
             style: {
-                font: '12px Gothic',
+                font: '32px Gothic',
                 fill: 'white',
                 align: 'center',
-                wordWrap: { width: 250 },
+                wordWrap: { width: 750 },
             }
         });
 
         controlsText2 = this.make.text({
             alpha: 0,
-            x: 450,
-            y: 100,
+            x: 1500,
+            y: 400,
             text: 'Controls Diagram Here',
             origin: { x: 0.5, y: 0.5 },
             style: {
-                font: '12px Gothic',
+                font: '32px Gothic',
                 fill: 'white',
-                wordWrap: { width: 250 },
+                wordWrap: { width: 750 },
             }
         });
 
         controlsText3 = this.make.text({
             alpha: 0,
-            x: 450,
-            y: 150,
+            x: 1500,
+            y: 600,
             text: 'Randomised Game/Controls Hint',
             origin: { x: 0.5, y: 0.5 },
             style: {
-                font: '12px Gothic',
+                font: '32px Gothic',
                 fill: 'white',
-                wordWrap: { width: 250 },
+                wordWrap: { width: 750 },
             }
         });
 
         startText = this.make.text({
             alpha : 0,
-            x: 450,
-            y: 200,
+            x: 1500,
+            y: 850,
             align: 'center',
             text: 'Welcome to the Badlands',
             origin: { x: 0.5, y: 0.5 },
             style: {
-                font: 'bold 26px Gothic',
+                font: 'bold 58px Gothic',
                 fill: 'purple',
                 //wordWrap: { width: 200 },
             }
