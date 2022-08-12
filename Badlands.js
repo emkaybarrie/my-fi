@@ -913,7 +913,7 @@
      
    function modeSwitch(mode){
     if (mode == 0){
-        //lvlFG1.setAlpha(1)
+        
         gameMode = 0
         inBattle = false
         levelProgress.show()
@@ -933,7 +933,7 @@
     } else if (mode == 1){
             
             
-            //lvlFG1.setAlpha(0.95)
+           
             inBattle = true
             gameMode = 1
             progressToNextCheckPoint += progressToNextLevel * 0.25
@@ -2598,10 +2598,9 @@ class Badlands extends Phaser.Scene {
             
             
 
-        this.load.audio("playerSwordSwing", ["assets/sFX/SFX_Whoosh_Sword_02.mp3"]);
-        this.load.audio("playerHeavySwordSwing", ["assets/sFX/SFX_Whoosh_Sword_03.mp3"]);        
-        this.load.audio("enemySwordSwing", ["assets/sFX/SFX_Sword_Whoosh_01.mp3"]);
-        this.load.audio("charge", ["assets/sFX/SFX_Potion_01.mp3"]);
+        // this.load.audio("playerSwordSwing", ["assets/sFX/SFX_Whoosh_Sword_02.mp3"]);
+        // this.load.audio("playerHeavySwordSwing", ["assets/sFX/SFX_Whoosh_Sword_03.mp3"]);        
+        // this.load.audio("enemySwordSwing", ["assets/sFX/SFX_Sword_Whoosh_01.mp3"]);
         
         this.load.image('playerIconBox', 'assets/vFX/playerHUDBox.png');
         this.load.image('playerIcon', 'assets/icons/playerIcon1.png');
@@ -2612,7 +2611,6 @@ class Badlands extends Phaser.Scene {
         this.load.image('storingBuffIcon', 'assets/ach_00059.png');
         this.load.image('spendingBuffIcon', 'assets/ach_00046.png');
         this.load.image('growingBuffIcon', 'assets/ach_00057.png');
-
 
         this.load.image('levelIcon', 'assets/ach_00006.png');
         this.load.image('gloryIcon', 'assets/ach_00035.png');
@@ -2642,7 +2640,6 @@ class Badlands extends Phaser.Scene {
         this.load.image('dawnBG2', 'assets/dawn7.png');
         this.load.image('dawnBG1', 'assets/dawn8.png');
 
-        this.load.image('preview', 'assets/preview.png');
         this.load.image('riverBG9', 'assets/river9.png');
         this.load.image('riverBG8', 'assets/river8.png');
         this.load.image('riverBG7', 'assets/river7.png');
@@ -2672,31 +2669,28 @@ class Badlands extends Phaser.Scene {
 
         this.load.atlas('doomsayer', 'assets/doomsayer.png','assets/doomsayersprites.json');
         this.load.spritesheet('nightBorne', 'assets/nightBorne.png', { frameWidth: 80, frameHeight: 80});
-        this.load.spritesheet('nightBorneNecromancer', 'assets/nightBorneNecromancer.png', { frameWidth: 160, frameHeight: 128});
+        // this.load.spritesheet('nightBorneNecromancer', 'assets/nightBorneNecromancer.png', { frameWidth: 160, frameHeight: 128});
 
-        this.load.spritesheet('energyStance', 'assets/energyStance.png', { frameWidth: 96, frameHeight: 192});
-        this.load.spritesheet('focusStance', 'assets/focusStance.png', { frameWidth: 96, frameHeight: 192});
-        this.load.spritesheet('chargeEnergy', 'assets/chargeEnergy.png', { frameWidth: 100, frameHeight: 100});
-        this.load.spritesheet('chargeDash', 'assets/chargeDash.png', { frameWidth: 128, frameHeight: 128});
+ 
         // VFX - Hit Animation
-        this.load.spritesheet('whiteHitSmear', 'assets/whiteHitSmear.png', { frameWidth: 1048, frameHeight: 1048});
-        this.load.spritesheet('whiteHitSmear2', 'assets/whiteHitSmear2.png', { frameWidth: 1048, frameHeight: 1048});  
+        // this.load.spritesheet('whiteHitSmear', 'assets/whiteHitSmear.png', { frameWidth: 1048, frameHeight: 1048});
+        // this.load.spritesheet('whiteHitSmear2', 'assets/whiteHitSmear2.png', { frameWidth: 1048, frameHeight: 1048});  
 
-        // Skills
-        this.load.spritesheet('explosiveStrikeIcon', 'assets/skills/explosiveStrikeIcon.png', { frameWidth: 256, frameHeight: 256});
-        this.load.spritesheet('explosiveStrike', 'assets/skills/explosiveStrike.png', { frameWidth: 48, frameHeight: 48}); 
+        // // Skills
+        // this.load.spritesheet('explosiveStrikeIcon', 'assets/skills/explosiveStrikeIcon.png', { frameWidth: 256, frameHeight: 256});
+        // this.load.spritesheet('explosiveStrike', 'assets/skills/explosiveStrike.png', { frameWidth: 48, frameHeight: 48}); 
         
 
         this.load.spritesheet('thunderStrikeIcon', 'assets/skills/thunderStrikeIcon.png', { frameWidth: 256, frameHeight: 256});
-        this.load.spritesheet('thunderStrike', 'assets/skills/thunderStrike.png', { frameWidth: 64, frameHeight: 64}); 
-        this.load.spritesheet('thunderStrikeSmear', 'assets/skills/thunderStrikeSmear.png', { frameWidth: 1048, frameHeight: 1048});
+        // this.load.spritesheet('thunderStrike', 'assets/skills/thunderStrike.png', { frameWidth: 64, frameHeight: 64}); 
+        // this.load.spritesheet('thunderStrikeSmear', 'assets/skills/thunderStrikeSmear.png', { frameWidth: 1048, frameHeight: 1048});
 
         this.load.spritesheet('deadlyCombatAssaultIcon', 'assets/skills/deadlyCombatAssaultIcon.png', { frameWidth: 256, frameHeight: 256});
-        this.load.spritesheet('deadlyCombatAssaultSmear', 'assets/skills/deadlyCombatAssaultSmear.png', { frameWidth: 1048, frameHeight: 1048});
+        // this.load.spritesheet('deadlyCombatAssaultSmear', 'assets/skills/deadlyCombatAssaultSmear.png', { frameWidth: 1048, frameHeight: 1048});
 
-        this.load.spritesheet('eagleStrikeIcon', 'assets/skills/eagleStrikeIcon.png', { frameWidth: 256, frameHeight: 256});
+        // this.load.spritesheet('eagleStrikeIcon', 'assets/skills/eagleStrikeIcon.png', { frameWidth: 256, frameHeight: 256});
 
-        this.load.spritesheet('coveringFireIcon', 'assets/skills/coveringFireIcon.png', { frameWidth: 256, frameHeight: 256});
+        // this.load.spritesheet('coveringFireIcon', 'assets/skills/coveringFireIcon.png', { frameWidth: 256, frameHeight: 256});
 
     }
 
@@ -2763,9 +2757,9 @@ class Badlands extends Phaser.Scene {
         //bgMusic.play()
         
 
-        playerSwordSwing = this.sound.add("playerSwordSwing", {volume: 0.5})
-        playerHeavySwordSwing = this.sound.add("playerHeavySwordSwing", {volume: 0.5})
-        enemySwordSwing = this.sound.add("enemySwordSwing", {volume: 0.5})
+        // playerSwordSwing = this.sound.add("playerSwordSwing", {volume: 0.5})
+        // playerHeavySwordSwing = this.sound.add("playerHeavySwordSwing", {volume: 0.5})
+        // enemySwordSwing = this.sound.add("enemySwordSwing", {volume: 0.5})
         
         this.physics.world.setBounds(0, 0, width * 3,  height);
         
@@ -4545,7 +4539,7 @@ class Badlands extends Phaser.Scene {
         
         // Enable player sword collision detection
         if (player.anims.getName() == 'pDoubleAttack'){
-                    playerSwordSwing.play()
+                    // playerSwordSwing.play()
                     
                     
 
@@ -4558,7 +4552,7 @@ class Badlands extends Phaser.Scene {
                     }
 
         } if (player.anims.getName() == 'pAttack1'){
-                    playerSwordSwing.play()
+                    // playerSwordSwing.play()
                     
                     
 
@@ -4570,7 +4564,7 @@ class Badlands extends Phaser.Scene {
                         sword.body.checkCollision.none = true
                     }
         } else if (player.anims.getName() == 'pAttack2'){
-                    playerSwordSwing.play()
+                    // playerSwordSwing.play()
                     
                     
 
@@ -4582,7 +4576,7 @@ class Badlands extends Phaser.Scene {
                         sword.body.checkCollision.none = true
                     }
         } else if (player.anims.getName() == 'pHeavyAttack'){
-                    playerHeavySwordSwing.play()
+                    // playerHeavySwordSwing.play()
 
                       
                     if (player.anims.currentFrame.index >= 4 && player.anims.currentFrame.index < 6){
@@ -4596,7 +4590,7 @@ class Badlands extends Phaser.Scene {
         }
 
         if (nightBorne.anims.getName() == 'nightBorne_Attack'){
-                enemySwordSwing.play()
+                // enemySwordSwing.play()
                     
                     if (nightBorne.anims.currentFrame.index >= 10 && nightBorne.anims.currentFrame.index < 12){
                         
