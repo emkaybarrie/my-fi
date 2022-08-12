@@ -194,7 +194,7 @@
     var playerIsHit = false
     var level = 90
     var progress = 0
-    var progressToNextLevel = Phaser.Math.Between(175,225) /25
+    var progressToNextLevel = Phaser.Math.Between(75,125)
     var progressToNextCheckPoint = progressToNextLevel * 0.25
     
 
@@ -2933,7 +2933,7 @@ class Badlands extends Phaser.Scene {
 
         camera.setBounds(0, 0, width * 3, height)
  
-        //camera.fadeIn(12000)
+        camera.fadeIn(12000)
         
         playerIconBox = this.add.image(0,0,'playerIconBox').setDepth(3).setScale(0.0775,0.25).setOrigin(0.5,0.5)
         playerIcon = this.add.image(0,0,'playerIcon').setDepth(3).setScale(0.125).setOrigin(0.5,0.5)
