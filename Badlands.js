@@ -21,6 +21,9 @@
     var enemySwordSwing
     var width = 1980
     var height = 1080
+
+    var map
+    var mapPL
     
     var lvlFG1
     var lvlFG2
@@ -31,7 +34,48 @@
     var lvlBG5 
     var lvlBG6
     var lvlBG7
-    var lvlBG8   
+    var lvlBG8
+    var lvlBG9  
+    var lvlBG10
+
+    var lvlBG1ScrollMod
+    var lvlBG2ScrollMod 
+    var lvlBG3ScrollMod 
+    var lvlBG3ScrollMod 
+    var lvlBG4ScrollMod
+    var lvlBG5ScrollMod 
+    var lvlBG6ScrollMod
+    var lvlBG7ScrollMod
+    var lvlBG8ScrollMod 
+    var lvlBG9ScrollMod 
+
+    var lvlFG1PL
+    var lvlFG2PL
+    var lvlBG1PL 
+    var lvlBG2PL 
+    var lvlBG3PL 
+    var lvlBG4PL 
+    var lvlBG5PL 
+    var lvlBG6PL
+    var lvlBG7PL
+    var lvlBG8PL
+    var lvlBG9PL  
+    var lvlBG10PL
+
+    var lvlBG1ScrollModPL
+    var lvlBG2ScrollModPL 
+    var lvlBG3ScrollModPL 
+    var lvlBG3ScrollModPL 
+    var lvlBG4ScrollModPL
+    var lvlBG5ScrollModPL 
+    var lvlBG6ScrollModPL
+    var lvlBG7ScrollModPL
+    var lvlBG8ScrollModPL 
+    var lvlBG9ScrollModPL 
+    
+    
+
+    
 
     var platforms
     var player
@@ -44,8 +88,10 @@
     var nightBorneSword
     var nightBorneOutline
     var nightBorneVFX
+    var nightBorneAlive = true
 
     var creep
+    var creepAlive
     var camera
 
         
@@ -75,12 +121,14 @@
 
        
 
-        var levelProgress 
+        var levelProgress
+        var lvlTransition = false
 
         
 
         var inspirationPlayerIconBox
         var inspirationPlayerIcon
+        var inspirationPic = Phaser.Math.Between(1,3)
         var  inspirationTextBox 
         var inspirationText 
             
@@ -118,8 +166,8 @@
     var gameOver = false
     var gameRestart = false
 
-    var glory = 9000
-    var gold = 9000
+    var glory = 0
+    var gold = 0
     var highScore = parseInt(localStorage.getItem('highScore')) || 0;
 
     var gameMode = 0
@@ -146,7 +194,7 @@
     var playerIsHit = false
     var level = 90
     var progress = 0
-    var progressToNextLevel = Phaser.Math.Between(175,225)
+    var progressToNextLevel = Phaser.Math.Between(175,225) /25
     var progressToNextCheckPoint = progressToNextLevel * 0.25
     
 
@@ -577,21 +625,17 @@
 
         function toggleSkillTree(){
 
-       
+            inspirationPic = Phaser.Math.Between(1,3)
+
+            inspirationPlayerIcon.setTexture('playerInspirationIcon' + inspirationPic )
 
         if (skillTreeOpen){
             highObstacle.body.checkCollision.none = false
             lowObstacle.body.checkCollision.none = false
             //
-            playerIconBox.setVisible(1)
-            playerIcon.setVisible(1)
-            playerVitalsBox.setVisible(1)
-            playerVitals.show()
-            
-            skillABox.setVisible(1)
-            skillAIcon.setVisible(1)
-            skillBBox.setVisible(1)
-            skillBIcon.setVisible(1)
+ 
+
+            showHUD()
             
             //
             inspirationTextBox.setVisible(0)
@@ -618,15 +662,8 @@
             highObstacle.body.checkCollision.none = true
             lowObstacle.body.checkCollision.none = true
             //
-            playerIconBox.setVisible(0)
-            playerIcon.setVisible(0)
-            playerVitalsBox.setVisible(0)
-            playerVitals.hide()
-            //
-            skillABox.setVisible(0)
-            skillAIcon.setVisible(0)
-            skillBBox.setVisible(0)
-            skillBIcon.setVisible(0)
+
+            hideHUD()
 
             //
             inspirationTextBox.setVisible(1)
@@ -1802,7 +1839,7 @@
 
 
     function creepHit(){
-    
+        if (creepAlive){
         glory += level + 1
         gold += (level * 2) + 1
         //creep.play('nightBorneMinion_Hurt',true)
@@ -1813,10 +1850,11 @@
             //creep.once('animationcomplete_nightBorneMinion_Hurt', function (anim,frame) {
             creep.play('nightBorneMinion_Death',true)
             creep.once('animationcomplete', function(){
-
-                creep.x = width * 3
+                creepAlive = false
+                //creep.x = width * 3
                 
            },creep)
+        }
        //},creep)
             
         //},creep)
@@ -1830,6 +1868,7 @@
 
     function nightBorneHit(){
 
+        if(nightBorneAlive){
         nightBorneIsHit = true
 
         if (inBattle) {   
@@ -1861,7 +1900,8 @@
             }
             
     
-    }             
+    }   
+}          
                  
     }
 
@@ -1924,6 +1964,8 @@
     }
 
     function nightBorne_EliteAI(){
+
+        if((nightBorneAlive)){
 
         if(Math.abs(nightBorne.x - player.x) > 150){
             nightBorne.setDragX(250)
@@ -1989,7 +2031,7 @@
             }
         }
 
-        
+    }
         
     }
 
@@ -2508,7 +2550,7 @@
                             highObstacle.body.checkCollision.none = false
                             lowObstacle.body.checkCollision.none = false
                             if(player.x > width * 1.35){
-                                player.x -= 1
+                                player.x -= 6
                             }
                         }
                         
@@ -2563,6 +2605,9 @@ class Badlands extends Phaser.Scene {
         
         this.load.image('playerIconBox', 'assets/vFX/playerHUDBox.png');
         this.load.image('playerIcon', 'assets/icons/playerIcon1.png');
+        this.load.image('playerInspirationIcon1', 'assets/icons/playerInspirationIcon1.png');
+        this.load.image('playerInspirationIcon2', 'assets/icons/playerInspirationIcon2.png');
+        this.load.image('playerInspirationIcon3', 'assets/icons/playerInspirationIcon3.png');
         
         this.load.image('storingBuffIcon', 'assets/ach_00059.png');
         this.load.image('spendingBuffIcon', 'assets/ach_00046.png');
@@ -2597,10 +2642,17 @@ class Badlands extends Phaser.Scene {
         this.load.image('dawnBG2', 'assets/dawn7.png');
         this.load.image('dawnBG1', 'assets/dawn8.png');
 
-        this.load.image('woodsBG8', 'assets/woods1.png');
-        this.load.image('woodsBG2', 'assets/woods2.png');
-        this.load.image('woodsBG1', 'assets/woods3.png');
-        this.load.image('woodsFG1', 'assets/woods4.png');
+        this.load.image('preview', 'assets/preview.png');
+        this.load.image('riverBG9', 'assets/river9.png');
+        this.load.image('riverBG8', 'assets/river8.png');
+        this.load.image('riverBG7', 'assets/river7.png');
+        this.load.image('riverBG6', 'assets/river6.png');
+        this.load.image('riverBG5', 'assets/river5.png');
+        this.load.image('riverBG4', 'assets/river4.png');
+        this.load.image('riverBG3', 'assets/river3.png');
+        this.load.image('riverBG2', 'assets/river2.png');
+        this.load.image('riverBG1', 'assets/river1.png');
+
 
         this.load.image('vines', 'assets/vines.png');
         this.load.image('treeTrunk', 'assets/treeTrunk.png');
@@ -2608,7 +2660,7 @@ class Badlands extends Phaser.Scene {
         this.load.image('ground', 'assets/woodground.png');
 
         this.load.atlas('heroF', 'assets/heroF.png','assets/heroF.json');
-        this.load.atlas('heroM', 'assets/heroM.png','assets/heroM.json');
+
 
         
 
@@ -2659,16 +2711,16 @@ class Badlands extends Phaser.Scene {
 
                 this.input.addPointer(8);
                 //Anchor buttons
-                left = this.add.image(0,0, 'left').setInteractive().setDepth(4).setScale(0.75).setAlpha(0.5);
-                actionA = this.add.image(0, 0, 'defaultAction').setInteractive().setDepth(4).setScale(.6).setAlpha(0.5).setTint(0x00a86b);
-                actionB = this.add.image(0, 0, 'defaultAction').setInteractive().setDepth(4).setScale(.6).setAlpha(0.5).setTint(0x90ee90);
-                skillA = this.add.image(0, 0, 'charge').setInteractive().setDepth(4).setScale(.6).setAlpha(0.5).setTint(0xf1c232);//Focus - 0xf1c232
-                skillB = this.add.image(0, 0, 'charge').setInteractive().setDepth(4).setScale(.6).setAlpha(0.5).setTint(0xffffe0);//Focus - 0xf1c232
+                left = this.add.image(0,0, 'left').setInteractive().setDepth(4).setScale(2.5).setAlpha(0.5);
+                actionA = this.add.image(0, 0, 'defaultAction').setInteractive().setDepth(4).setScale(2).setAlpha(0.5).setTint(0x00a86b);
+                actionB = this.add.image(0, 0, 'defaultAction').setInteractive().setDepth(4).setScale(2).setAlpha(0.5).setTint(0x90ee90);
+                skillA = this.add.image(0, 0, 'charge').setInteractive().setDepth(4).setScale(2).setAlpha(0.5).setTint(0xf1c232);//Focus - 0xf1c232
+                skillB = this.add.image(0, 0, 'charge').setInteractive().setDepth(4).setScale(2).setAlpha(0.5).setTint(0xffffe0);//Focus - 0xf1c232
                 // Remaining buttons
-                deadSpace = this.add.image(left.x + 35.5, left.y, 'deadSpace').setDepth(4).setScale(0.75).setVisible(0);
-                right = this.add.image(deadSpace.x + 35.5, deadSpace.y, 'right').setInteractive().setDepth(4).setScale(0.75).setAlpha(0.5);
-                up = this.add.image(deadSpace.x, deadSpace.y - 40.5, 'up').setInteractive().setDepth(4).setScale(0.75).setAlpha(0.5);
-                down = this.add.image(deadSpace.x, left.y + 40.5 , 'down').setInteractive().setDepth(4).setScale(0.75).setAlpha(0.5);
+                deadSpace = this.add.image(left.x + 35.5, left.y, 'deadSpace').setDepth(4).setScale(2.5).setVisible(0);
+                right = this.add.image(deadSpace.x + 35.5, deadSpace.y, 'right').setInteractive().setDepth(4).setScale(2.5).setAlpha(0.5);
+                up = this.add.image(deadSpace.x, deadSpace.y - 40.5, 'up').setInteractive().setDepth(4).setScale(2.5).setAlpha(0.5);
+                down = this.add.image(deadSpace.x, left.y + 40.5 , 'down').setInteractive().setDepth(4).setScale(2.5).setAlpha(0.5);
 
                 // Checks if player is on Desktop.  If YES, touch controls disabled on initialisation
 
@@ -2722,17 +2774,66 @@ class Badlands extends Phaser.Scene {
         // lvlBG1 = this.add.tileSprite(0,0, width * 4, height, 'woodsBG1').setOrigin(0,0).setScrollFactor(0.75)
         // lvlFG1 = this.add.tileSprite(0,0, width * 4, height, 'woodsFG1').setOrigin(0,0).setScrollFactor(1.25).setDepth(3)
         
-        var scale = 1
-        lvlBG8 = this.add.tileSprite(0,0,width * 3,height, 'dawnBG8').setOrigin(0,0).setScrollFactor(0).setScale(scale)
-        lvlBG7 = this.add.tileSprite(0,0,width * 3,height, 'dawnBG7').setOrigin(0,0).setScrollFactor(0).setScale(scale)
-        lvlBG6 = this.add.tileSprite(0,0, width * 3,height, 'dawnBG6').setOrigin(0,0).setScrollFactor(0).setScale(scale)
-        lvlBG5 = this.add.tileSprite(0,0, width * 3,height, 'dawnBG5').setOrigin(0,0).setScrollFactor(0.01).setScale(scale)
-        lvlBG4 = this.add.tileSprite(0,0, width * 3,height, 'dawnBG4').setOrigin(0,0).setScrollFactor(0.025).setScale(scale)
-        lvlBG3 = this.add.tileSprite(0,0, width * 3,height, 'dawnBG3').setOrigin(0,0).setScrollFactor(0.025).setScale(scale)
-        lvlBG2 = this.add.tileSprite(0,0, width * 3 ,height, 'dawnBG2').setOrigin(0,0).setScrollFactor(1).setScale(scale)
-        lvlBG1 = this.add.tileSprite(0,0, width * 3,height, 'dawnBG1').setOrigin(0,0).setScrollFactor(1).setScale(scale)
-        // lvlFG2 = this.add.tileSprite(0,0, width * 4, height, '').setOrigin(0,0).setScrollFactor(1).setDepth(3)
-        // lvlFG1 = this.add.tileSprite(0,0, width * 4, height, '').setOrigin(0,0).setScrollFactor(1.5).setDepth(3)
+
+        var x = 0
+        var y = 0
+        var wM = 3
+        map = 'dawn'
+        mapPL = 'river'
+
+        lvlBG1ScrollModPL = 1
+        lvlBG2ScrollModPL = 0.5
+        lvlBG3ScrollModPL = 0.95
+        lvlBG4ScrollModPL = 0.75
+        lvlBG5ScrollModPL = 0.75
+        lvlBG6ScrollModPL = 0.5
+        lvlBG7ScrollModPL = 0.25
+        lvlBG8ScrollModPL = 0.1
+        lvlBG9ScrollModPL = 0
+
+        lvlBG9PL = this.add.tileSprite(x,y,width * wM,height, mapPL + 'BG9').setOrigin(0,0).setScrollFactor(lvlBG9ScrollModPL)
+        lvlBG8PL = this.add.tileSprite(x,y,width * wM,height, mapPL + 'BG8').setOrigin(0,0).setScrollFactor(lvlBG8ScrollModPL)
+        lvlBG7PL = this.add.tileSprite(x,y,width * wM,height,mapPL + 'BG7').setOrigin(0,0).setScrollFactor(lvlBG7ScrollModPL)
+        lvlBG6PL = this.add.tileSprite(x,y,width * wM,height,mapPL + 'BG6').setOrigin(0,0).setScrollFactor(lvlBG6ScrollModPL)
+        lvlBG5PL = this.add.tileSprite(x,y,width * wM,height, mapPL + 'BG5').setOrigin(0,0).setScrollFactor(lvlBG5ScrollModPL)
+        lvlBG4PL = this.add.tileSprite(x,y,width * wM,height, mapPL + 'BG4').setOrigin(0,0).setScrollFactor(lvlBG4ScrollModPL)
+        lvlBG3PL = this.add.tileSprite(x,y,width * wM,height, mapPL + 'BG3').setOrigin(0,0).setScrollFactor(lvlBG3ScrollModPL)
+        lvlBG2PL = this.add.tileSprite(x,y,width * wM,height, mapPL + 'BG2').setOrigin(0,0).setScrollFactor(lvlBG2ScrollModPL)
+        lvlBG1PL = this.add.tileSprite(x,y,width * wM,height, mapPL + 'BG1').setOrigin(0,0).setScrollFactor(lvlBG1ScrollModPL).setDepth(2).setAlpha(0)
+ 
+        lvlBG1ScrollMod = 1
+        lvlBG2ScrollMod = 1
+        lvlBG3ScrollMod = 0.025
+        lvlBG4ScrollMod = 0.025
+        lvlBG5ScrollMod = 0.01
+        lvlBG6ScrollMod = 0
+        lvlBG7ScrollMod = 0
+        lvlBG8ScrollMod = 0
+        lvlBG9ScrollMod = 0
+
+        lvlBG9 = this.add.tileSprite(x,y,width * wM,height).setOrigin(0,0).setScrollFactor(lvlBG9ScrollMod)
+        lvlBG8 = this.add.tileSprite(x,y,width * wM,height, map + 'BG8').setOrigin(0,0).setScrollFactor(lvlBG8ScrollMod)
+        lvlBG7 = this.add.tileSprite(x,y,width * wM,height,map + 'BG7').setOrigin(0,0).setScrollFactor(lvlBG7ScrollMod)
+        lvlBG6 = this.add.tileSprite(x,y,width * wM,height,map + 'BG6').setOrigin(0,0).setScrollFactor(lvlBG6ScrollMod)
+        lvlBG5 = this.add.tileSprite(x,y,width * wM,height, map + 'BG5').setOrigin(0,0).setScrollFactor(lvlBG5ScrollMod)
+        lvlBG4 = this.add.tileSprite(x,y,width * wM,height, map + 'BG4').setOrigin(0,0).setScrollFactor(lvlBG4ScrollMod)
+        lvlBG3 = this.add.tileSprite(x,y,width * wM,height, map + 'BG3').setOrigin(0,0).setScrollFactor(lvlBG3ScrollMod)
+        lvlBG2 = this.add.tileSprite(x,y,width * wM,height, map + 'BG2').setOrigin(0,0).setScrollFactor(lvlBG2ScrollMod).setDepth(2)
+        lvlBG1 = this.add.tileSprite(x,y,width * wM,height, map + 'BG1').setOrigin(0,0).setScrollFactor(lvlBG1ScrollMod).setDepth(2)
+
+        
+        lvlFG2 = this.add.tileSprite(x,y, width * wM,height).setOrigin(0,0)
+        lvlFG1 = this.add.tileSprite(x,y, width * wM,height).setOrigin(0,0)
+
+
+
+        
+
+
+        
+
+
+
 
         this.lights.enable();
         this.lights.setAmbientColor(0x808080);
@@ -2741,16 +2842,14 @@ class Badlands extends Phaser.Scene {
         platforms = this.physics.add.staticGroup();
         platforms.create(0, height - 100, 'ground').setOrigin(0,0).setScale(width * 3 /400, 2).refreshBody().setVisible(0);
 
-        player = this.physics.add.sprite(width * 1.3, height /2 ,'heroF').setScale(4)//.setPipeline('Light2D');
-        player.setDepth(2)
+        player = this.physics.add.sprite(width * 1.5, height /2 ,'heroF').setScale(4)//.setPipeline('Light2D');
+        player.setDepth(3)
         player.body.setSize(10, 30).setOffset(25,15).setAllowDrag(true)
         
         player.setBounceY(0.05);
         player.setCollideWorldBounds(true);
         this.physics.add.collider(player,platforms);
 
-       
-        
         sword = this.add.rectangle(player.x, player.y, 60, 60);
         this.physics.add.existing(sword, false)
         sword.body.setAllowGravity(false).setOffset(0,5).setSize(100, 55)
@@ -2774,13 +2873,13 @@ class Badlands extends Phaser.Scene {
         this.physics.add.overlap(player,obstacles,obstacleCollision)
         this.physics.add.collider(platforms,obstacles);
         
-        obstacles.setDepth(1)
+        obstacles.setDepth(3)
         obstacles.setOrigin(0,0)  
         
 
             // NightBorne
             
-            nightBorne = this.physics.add.sprite(0, 0, 'nightBorne').setScale(8).setOrigin(0.5,1).setDepth(2)
+            nightBorne = this.physics.add.sprite(0, 0, 'nightBorne').setScale(8).setOrigin(0.5,1).setDepth(3)
             nightBorneVitals = new EnemyHealthBar(this,nightBorne.x, nightBorne.y - 150);
             nightBorneLife = (income * 0.3) * Phaser.Math.Between(0.8,1.7) 
             nightBorneMaxLife = nightBorneLife
@@ -2840,7 +2939,7 @@ class Badlands extends Phaser.Scene {
 
         camera.setBounds(0, 0, width * 3, height)
  
-        camera.fadeIn(12000)
+        //camera.fadeIn(12000)
         
         playerIconBox = this.add.image(0,0,'playerIconBox').setDepth(3).setScale(0.0775,0.25).setOrigin(0.5,0.5)
         playerIcon = this.add.image(0,0,'playerIcon').setDepth(3).setScale(0.125).setOrigin(0.5,0.5)
@@ -2872,27 +2971,28 @@ class Badlands extends Phaser.Scene {
 
         
 
-        inspirationPlayerIconBox = this.add.image(0,camera.scrollY + (height * 0.15),'playerIconBox').setDepth(3).setScale(0.025,0.07).setOrigin(0.5,0.5).setVisible(0)
-        inspirationPlayerIcon = this.add.image(0,inspirationPlayerIconBox.y,'playerIcon').setDepth(3).setScale(0.04,0.035).setOrigin(0.5,0.5).setVisible(0)
+        inspirationPlayerIconBox = this.add.image(0,camera.scrollY + (height * 0.2),'playerIconBox').setDepth(3).setScale(0.13,0.425).setOrigin(0.5,0.5).setVisible(0)
+        
+        inspirationPlayerIcon = this.add.image(0,inspirationPlayerIconBox.y,'playerInspirationIcon' + inspirationPic).setDepth(3).setScale(.35).setOrigin(0.5,0.5).setVisible(0)
 
-        inspirationTextBox = this.add.image(width * 0.5,inspirationPlayerIconBox.y,'playerIconBox').setDepth(3).setScale(0.075,0.0375).setOrigin(0.5,0.5).setVisible(1).setAlpha(0.75).setVisible(0)
-        inspirationText = this.add.text(inspirationTextBox.x, inspirationTextBox.y, 'Choose an Inspiration').setFontFamily('Arial').setFontSize(16).setDepth(4).setOrigin(0.5,0.5).setVisible(0);
+        inspirationTextBox = this.add.image(width * 0.5,camera.scrollY + (height * 0.125),'playerIconBox').setDepth(3).setScale(0.25,0.1).setOrigin(0.5,0.5).setVisible(1).setAlpha(0.75).setVisible(0)
+        inspirationText = this.add.text(inspirationTextBox.x, inspirationTextBox.y, 'Choose an Inspiration').setFontFamily('Arial').setFontSize(32).setDepth(4).setOrigin(0.5,0.5).setVisible(0);
         
             
             
-        inspirationBoxEnergy = this.add.image(0,inspirationPlayerIconBox.y + 115,'inspirationBox').setDepth(3).setScale(0.125,0.075).setOrigin(0.5,0.5).setVisible(0).setAlpha(0.75)
-        inspirationTextEnergy = this.add.text(inspirationBoxEnergy.x, inspirationBoxEnergy.y,null,{align: 'center'}).setFontFamily('Arial').setFontSize(12).setDepth(3).setOrigin(0.5,0.5).setVisible(0);
+        inspirationBoxEnergy = this.add.image(0,camera.scrollY + (height * 0.5),'inspirationBox').setDepth(3).setScale(0.4,0.25).setOrigin(0.5,0.5).setVisible(0).setAlpha(0.75)
+        inspirationTextEnergy = this.add.text(inspirationBoxEnergy.x, inspirationBoxEnergy.y,null,{align: 'center'}).setFontFamily('Arial').setFontSize(32).setDepth(3).setOrigin(0.5,0.5).setVisible(0);
         inspirationTextEnergy.setText("Improve Energy\nRegeneration Rate\n& Maximum Energy\n\nAffected by 'Spending\nRating'")
-        inspirationBoxFocus = this.add.image(0,inspirationBoxEnergy.y,'inspirationBox').setDepth(3).setScale(0.125,0.075).setOrigin(0.5,0.5).setVisible(0).setAlpha(0.75)
-        inspirationTextFocus = this.add.text(inspirationBoxFocus.x, inspirationBoxFocus.y,null,{align: 'center'}).setFontFamily('Arial').setFontSize(12).setDepth(3).setOrigin(0.5,0.5).setVisible(0);
+        inspirationBoxFocus = this.add.image(0,inspirationBoxEnergy.y,'inspirationBox').setDepth(3).setScale(0.4,0.25).setOrigin(0.5,0.5).setVisible(0).setAlpha(0.75)
+        inspirationTextFocus = this.add.text(inspirationBoxFocus.x, inspirationBoxFocus.y,null,{align: 'center'}).setFontFamily('Arial').setFontSize(32).setDepth(3).setOrigin(0.5,0.5).setVisible(0);
         inspirationTextFocus.setText("Improve Focus\nRegeneration Rate\n& Maximum Focus\n\nAffected by 'Saving\nRating'")
-        inspirationBoxPower = this.add.image(0,inspirationBoxEnergy.y,'inspirationBox').setDepth(3).setScale(0.125,0.075).setOrigin(0.5,0.5).setVisible(0).setAlpha(0.75)
-        inspirationTextPower = this.add.text(inspirationBoxPower.x, inspirationBoxPower.y,null,{align: 'center'}).setFontFamily('Arial').setFontSize(12).setDepth(3).setOrigin(0.5,0.5).setVisible(0);
+        inspirationBoxPower = this.add.image(0,inspirationBoxEnergy.y,'inspirationBox').setDepth(3).setScale(0.4,0.25).setOrigin(0.5,0.5).setVisible(0).setAlpha(0.75)
+        inspirationTextPower = this.add.text(inspirationBoxPower.x, inspirationBoxPower.y,null,{align: 'center'}).setFontFamily('Arial').setFontSize(32).setDepth(3).setOrigin(0.5,0.5).setVisible(0);
         inspirationTextPower.setText("Improve Life\nRegeneration Rate\n& Maximum Life\n\nAffected by 'Storing\nRating'")
         
-        skillTreeEnergyIcon = this.add.image(width * 0.25, inspirationPlayerIconBox.y + 40,'spendingBuffIcon').setDepth(4).setScale(0.5).setVisible(0).setAlpha(0.95)
-        skillTreeFocusIcon = this.add.image(width * 0.5 , inspirationPlayerIconBox.y + 40,'growingBuffIcon').setDepth(4).setScale(0.5).setVisible(0).setAlpha(0.95)
-        skillTreeLifeIcon = this.add.image(width * 0.75, inspirationPlayerIconBox.y + 40,'storingBuffIcon').setDepth(4).setScale(0.5).setVisible(0).setAlpha(0.95)
+        skillTreeEnergyIcon = this.add.image(width * 0.25, camera.scrollY + (height * 0.25),'spendingBuffIcon').setDepth(4).setScale(1.5).setVisible(0).setAlpha(0.95)
+        skillTreeFocusIcon = this.add.image(width * 0.5 , camera.scrollY + (height * 0.25),'growingBuffIcon').setDepth(4).setScale(1.5).setVisible(0).setAlpha(0.95)
+        skillTreeLifeIcon = this.add.image(width * 0.75, camera.scrollY + (height * 0.25),'storingBuffIcon').setDepth(4).setScale(1.5).setVisible(0).setAlpha(0.95)
  
 
         yearlyFunctionsTimer = this.time.addEvent({delay: 60000, callback: runYearlyFunctions, args: [], callbackScope: this, loop: true});
@@ -3478,7 +3578,7 @@ class Badlands extends Phaser.Scene {
 
             enemies.add(creep) 
 
-            enemies.setDepth(1)
+            enemies.setDepth(2)
 
     }
 
@@ -3487,8 +3587,57 @@ class Badlands extends Phaser.Scene {
     {
        
     
-       console.log(creep.visible)
+       //console.log(creep.visible)
+      // console.log(creep.anims.getName())
+       //console.log(creep.x)
        
+       
+        if(lvlTransition){
+            lvlTransition = false
+
+            lvlBG1ScrollMod = lvlBG1ScrollModPL
+            lvlBG2ScrollMod = lvlBG2ScrollModPL
+            lvlBG3ScrollMod = lvlBG3ScrollModPL
+            lvlBG4ScrollMod = lvlBG4ScrollModPL
+            lvlBG5ScrollMod = lvlBG5ScrollModPL
+            lvlBG6ScrollMod = lvlBG6ScrollModPL
+            lvlBG7ScrollMod = lvlBG7ScrollModPL
+            lvlBG8ScrollMod = lvlBG8ScrollModPL
+            lvlBG9ScrollMod = lvlBG9ScrollModPL
+
+            lvlBG1.setTexture(mapPL + 'BG1')
+            lvlBG2.setTexture(mapPL + 'BG2')
+            lvlBG3.setTexture(mapPL + 'BG3')
+            lvlBG4.setTexture(mapPL + 'BG4')
+            lvlBG5.setTexture(mapPL + 'BG5')
+            lvlBG6.setTexture(mapPL + 'BG6')
+            lvlBG7.setTexture(mapPL + 'BG7')
+            lvlBG8.setTexture(mapPL + 'BG8')
+            lvlBG9.setTexture(mapPL + 'BG9')
+
+            camera.flash()
+
+            lvlBG1.setAlpha(1)
+            lvlBG2.setAlpha(1)
+            lvlBG3.setAlpha(1)
+            lvlBG4.setAlpha(1)
+            lvlBG5.setAlpha(1)
+            lvlBG6.setAlpha(1)
+            lvlBG7.setAlpha(1)
+            lvlBG8.setAlpha(1)
+            lvlBG9.setAlpha(1)
+
+
+            lvlBG1PL.setVisible()
+            lvlBG2PL.setVisible()
+            lvlBG3PL.setVisible()
+            lvlBG4PL.setVisible()
+            lvlBG5PL.setVisible()
+            lvlBG6PL.setVisible()
+            lvlBG7PL.setVisible()
+            lvlBG8PL.setVisible()
+            lvlBG9PL.setVisible()
+        }
 
             closest = this.physics.closest(player,enemies.getChildren()) 
 
@@ -3520,7 +3669,7 @@ class Badlands extends Phaser.Scene {
 
                 if(camera.zoom != 1){
                     hideHUD()
-                } else {
+                } else if (!skillTreeOpen) {
                     showHUD()
                 }
 
@@ -3584,20 +3733,20 @@ class Badlands extends Phaser.Scene {
                 skillBIcon.x = skillBBox.x
                 skillBIcon.y = skillBBox.y
 
-                inspirationPlayerIconBox.x = camera.scrollX + (width * 0.075)
+                inspirationPlayerIconBox.x = camera.scrollX + (width * 0.1)
 
 
                 inspirationPlayerIcon.x = inspirationPlayerIconBox.x
 
 
-                inspirationTextBox.x = camera.scrollX + (width * 0.5)
+                inspirationTextBox.x = camera.scrollX + (width * 0.6)
                 inspirationText.x = inspirationTextBox.x
 
-                inspirationBoxEnergy.x = camera.scrollX + (width * 0.25)
+                inspirationBoxEnergy.x = camera.scrollX + (width * 0.35)
                 inspirationTextEnergy.x = inspirationBoxEnergy.x
-                inspirationBoxFocus.x = camera.scrollX + (width * 0.5)
+                inspirationBoxFocus.x = camera.scrollX + (width * 0.6)
                 inspirationTextFocus.x = inspirationBoxFocus.x
-                inspirationBoxPower.x = camera.scrollX + (width * 0.75)
+                inspirationBoxPower.x = camera.scrollX + (width * 0.85)
                 inspirationTextPower.x = inspirationBoxPower.x
             
                 skillTreeEnergyIcon.x = inspirationBoxEnergy.x
@@ -3909,29 +4058,29 @@ class Badlands extends Phaser.Scene {
                     // Touch Control Screen Tracking
 
                         // Anchor Buttons
-                        left.x = camera.scrollX + (width * 0.05)
-                        left.y = camera.scrollY + (height - 90)
+                        left.x = camera.scrollX + (width * 0.075)
+                        left.y = camera.scrollY + (height * 0.8)
 
                         actionA.x = camera.scrollX + (width * 0.925)
-                        actionA.y = camera.scrollY + (height * 0.75)
-                        actionB.x = actionA.x - 60
-                        actionB.y = camera.scrollY + (height * 0.8)
+                        actionA.y = camera.scrollY + (height * 0.85)
+                        actionB.x = camera.scrollX + (width * 0.825)
+                        actionB.y = camera.scrollY + (height * 0.9)
 
                         
                         // Remaining Buttons                        
-                        deadSpace.x = left.x + 35.5
-                        deadSpace.y =left.y
-                        right.x = deadSpace.x + 35.5
+                        deadSpace.x = left.x + (width * 0.05)
+                        deadSpace.y = left.y
+                        right.x = deadSpace.x + (width * 0.05)
                         right.y = deadSpace.y
                         up.x = deadSpace.x
-                        up.y = deadSpace.y - 40.5
+                        up.y = deadSpace.y - (height * 0.1)
                         down.x = deadSpace.x
-                        down.y = left.y + 40.5 
+                        down.y = left.y + (height * 0.1) 
 
                         skillA.x = actionA.x 
-                        skillA.y = actionA.y - 60
+                        skillA.y = actionA.y - (height * 0.2)
                         skillB.x = actionB.x 
-                        skillB.y = actionB.y - 60
+                        skillB.y = actionB.y - (height * 0.2)
                     
                     
                     left.on('pointerdown', function(){
@@ -4120,6 +4269,42 @@ class Badlands extends Phaser.Scene {
 
             if (progress >= progressToNextLevel){
             glory += ((100 / 60) * 100) * (playerSpeed)
+            var d = 4000
+
+            this.tweens.add({
+                delay: d,
+                targets: [lvlBG1,lvlBG2],
+                alpha: { value: 0, duration: d, ease: 'Power1'}
+
+            });
+
+
+            this.tweens.add({
+                delay: d,
+                targets: lvlBG1PL,
+                alpha: { value: 1, duration: d, ease: 'Power1'}
+            });
+
+
+
+            this.tweens.add({
+                delay: d * 3,
+                targets: [lvlBG3,lvlBG4,lvlBG5,lvlBG6,lvlBG7,lvlBG8,lvlBG9],
+                
+                alphaBottomRight: { value: 0, duration: d, ease: 'Power1' },
+                alphaBottomLeft: { value: 0, duration: d, ease: 'Power1'},
+                alphaTopRight: { value: 0, duration: d * 3, ease: 'Power1' },
+                alphaTopLeft: { value: 0, duration: d * 3, ease: 'Power1' },
+                
+                //alpha: { value: 0, duration: d, ease: 'Power1'},
+
+                onComplete: function ()
+                    {
+                        lvlTransition = true
+
+                    },
+
+            });
             levelUp()
 
             }
@@ -4128,7 +4313,7 @@ class Badlands extends Phaser.Scene {
                 player.flipX = false
                 nightBorneCam()
                 if(nightBorneCamLocked){
-                    enemyChase(1)
+                    enemyChase(2)
                 }
                 
             }
@@ -4144,17 +4329,30 @@ class Badlands extends Phaser.Scene {
 
             // Background 
 
+
+
                 // Parallax Background layers scrolls at variable speed multiplied by playerSpeed %
                 if(!gameOver){
                     //lvlFG1.tilePositionX += 4.5 * (playerSpeed)
-                    lvlBG1.tilePositionX += 12 * (playerSpeed)
-                    lvlBG2.tilePositionX += 12 * (playerSpeed)
-                    lvlBG3.tilePositionX += 0.25 * (playerSpeed)
-                    lvlBG4.tilePositionX += 0.25 * (playerSpeed)
-                    lvlBG5.tilePositionX += 0.1 * (playerSpeed)
-                    lvlBG6.tilePositionX += 0 * (playerSpeed)
-                    lvlBG7.tilePositionX += 0 * (playerSpeed)
-                    lvlBG8.tilePositionX += 0 * (playerSpeed)
+                    lvlBG1.tilePositionX += (12 * lvlBG1ScrollMod) * (playerSpeed * 1.5)
+                    lvlBG2.tilePositionX += (12 * lvlBG2ScrollMod) * (playerSpeed * 1.5)
+                    lvlBG3.tilePositionX += (12 * lvlBG3ScrollMod) * (playerSpeed)
+                    lvlBG4.tilePositionX += (12 * lvlBG4ScrollMod) * (playerSpeed)
+                    lvlBG5.tilePositionX += (12 * lvlBG5ScrollMod) * (playerSpeed)
+                    lvlBG6.tilePositionX += (12 * lvlBG6ScrollMod) * (playerSpeed)
+                    lvlBG7.tilePositionX += (12 * lvlBG7ScrollMod) * (playerSpeed)
+                    lvlBG8.tilePositionX += (12 * lvlBG8ScrollMod) * (playerSpeed)
+                    lvlBG9.tilePositionX += (12 * lvlBG9ScrollMod) * (playerSpeed)
+
+                    lvlBG1PL.tilePositionX += (12 * lvlBG1ScrollModPL) * (playerSpeed * 1.5)
+                    lvlBG2PL.tilePositionX += (12 * lvlBG2ScrollModPL) * (playerSpeed * 1.5)
+                    lvlBG3PL.tilePositionX += (12 * lvlBG3ScrollModPL) * (playerSpeed)
+                    lvlBG4PL.tilePositionX += (12 * lvlBG4ScrollModPL) * (playerSpeed)
+                    lvlBG5PL.tilePositionX += (12 * lvlBG5ScrollModPL) * (playerSpeed)
+                    lvlBG6PL.tilePositionX += (12 * lvlBG6ScrollModPL) * (playerSpeed)
+                    lvlBG7PL.tilePositionX += (12 * lvlBG7ScrollModPL) * (playerSpeed)
+                    lvlBG8PL.tilePositionX += (12 * lvlBG8ScrollModPL) * (playerSpeed)
+                    lvlBG9PL.tilePositionX += (12 * lvlBG9ScrollModPL) * (playerSpeed)
 
                     moveHighObstacle(highObstacle, 12 * (playerSpeed))
                     moveLowObstacle(lowObstacle, 12 * (playerSpeed))
@@ -4202,6 +4400,9 @@ class Badlands extends Phaser.Scene {
         // Battle Mode
 
         } else if (gameMode == 1){
+
+   
+          
 
                 // Camera
                 if (player.x > closest.x - 300 && playerLockedOn){
@@ -4298,8 +4499,13 @@ class Badlands extends Phaser.Scene {
                     // INTEGRATE WITH NIGHTBORNEHIT FUNCTION
                     // Check for enemy death
 
-                    if (nightBorneLife <= 0 && !nightBorneIsHit){
+                    if (nightBorneLife <= 0 && !nightBorneIsHit && nightBorneAlive){
+
+                        nightBorneAlive = false
                         nightBorne.anims.play({key:'nightBorne_Death',frameRate: 23},true);
+
+                        
+                        
               
                         nightBorne.once('animationcomplete', function (anim,frame) {
 
@@ -4313,8 +4519,11 @@ class Badlands extends Phaser.Scene {
                                         nightBorneMaxLife = Phaser.Math.Between(income * 0.8, (income * 0.8) * chaosFactor) 
                                         nightBorneLife = nightBorneMaxLife
                                         nightBorneVitals.p = 38 / nightBorneMaxLife
-                                        toggleSkillTree()
+                                        
+                                        nightBorneAlive = true
+                                        
                                         modeSwitch(0)
+                                        toggleSkillTree()
                                         
                                         
                         }, nightBorne)
