@@ -35,7 +35,7 @@ var config = {
         smoothStep: false,
         target: 60
     },
-    scene: [Badlands,Title,Tutorial]//,Badlands]
+    scene: [Title,Tutorial,Badlands]
  
 };
 
