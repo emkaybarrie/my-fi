@@ -21,6 +21,11 @@
     var enemySwordSwing
     var width = 1980
     var height = 1080
+    var spotlightPlayerHealth
+    var spotlightPlayerPower
+    var spotlightNightBorne
+    var spotlightCreep
+    var spotlightSun
 
     var map
     var mapPL
@@ -78,20 +83,29 @@
     
 
     var platforms
+    var playerShadow
     var player
     var sword
+    var playerAttackHitSmear
+    var playerHitVFX
+    var highObstacleShadow
     var highObstacle
+    var lowObstacleShadow
     var lowObstacle
     var obstacles
     var nightBorne
     var nightBorneVitals
     var nightBorneSword
     var nightBorneOutline
+    var nightBorneShadow
     var nightBorneVFX
     var nightBorneAlive = true
 
     var creep
-    var creepAlive
+    var creepShadow
+    var creepIsHit
+    var creepChase
+    var enemyIsHit
     var camera
 
         
@@ -192,9 +206,10 @@
 
     var regenActive = true
     var playerIsHit = false
-    var level = 90
+    var level = 0
     var progress = 0
-    var progressToNextLevel = Phaser.Math.Between(75,125)
+    var progressToNextLevel = Phaser.Math.Between(175,225)
+
     var progressToNextCheckPoint = progressToNextLevel * 0.25
     
 
@@ -276,6 +291,7 @@
 
 
     // TBC
+
 
     var skillTreeOpen = false
     var storingBuffTier = 0
@@ -431,137 +447,137 @@
                     
                 }
         
-            }
-
-        class LevelProgressBar {
-
-    constructor (scene,progress, x, y)
-    {
-        this.bg = new Phaser.GameObjects.Graphics(scene).setDepth(4);
-        this.levelProgressBar = new Phaser.GameObjects.Graphics(scene).setDepth(4);
-        this.checkPoint1 = new Phaser.GameObjects.Graphics(scene).setDepth(4);
-        this.checkPoint2 = new Phaser.GameObjects.Graphics(scene).setDepth(4);
-        this.checkPoint3 = new Phaser.GameObjects.Graphics(scene).setDepth(4);
-        //this.checkPoint4 = new Phaser.GameObjects.Graphics(scene).setDepth(4);
-
-        this.x = x;
-        this.y = y;
-        
-        this.p =  ((width * 0.5)-2) / progressToNextLevel
-
-        this.draw();
-
-        scene.add.existing(this.bg)
-        scene.add.existing(this.levelProgressBar);
-        scene.add.existing(this.checkPoint1);
-        scene.add.existing(this.checkPoint2);
-        scene.add.existing(this.checkPoint3);
-        //scene.add.existing(this.checkPoint4);
-        
     }
 
-    increaseProgress (amount)
+    class LevelProgressBar {
+
+constructor (scene,progress, x, y)
+{
+    this.bg = new Phaser.GameObjects.Graphics(scene).setDepth(4);
+    this.levelProgressBar = new Phaser.GameObjects.Graphics(scene).setDepth(4);
+    this.checkPoint1 = new Phaser.GameObjects.Graphics(scene).setDepth(4);
+    this.checkPoint2 = new Phaser.GameObjects.Graphics(scene).setDepth(4);
+    this.checkPoint3 = new Phaser.GameObjects.Graphics(scene).setDepth(4);
+    //this.checkPoint4 = new Phaser.GameObjects.Graphics(scene).setDepth(4);
+
+    this.x = x;
+    this.y = y;
+    
+    this.p =  ((width * 0.5)-2) / progressToNextLevel
+
+    this.draw();
+
+    scene.add.existing(this.bg)
+    scene.add.existing(this.levelProgressBar);
+    scene.add.existing(this.checkPoint1);
+    scene.add.existing(this.checkPoint2);
+    scene.add.existing(this.checkPoint3);
+    //scene.add.existing(this.checkPoint4);
+    
+}
+
+increaseProgress (amount)
+{
+    progress += amount;
+
+    if (progress > progressToNextLevel)
     {
-        progress += amount;
-
-        if (progress > progressToNextLevel)
-        {
-            progress = progressToNextLevel;
-        }
-
-        this.draw();
-
-        return (progress === progressToNextLevel);
+        progress = progressToNextLevel;
     }
 
-    hide ()
-        {
-            this.bg.setVisible(0)
-            this.levelProgressBar.setVisible(0)
-            this.checkPoint1.setVisible(0)
-            this.checkPoint2.setVisible(0)
-            this.checkPoint3.setVisible(0)
+    this.draw();
+
+    return (progress === progressToNextLevel);
+}
+
+hide ()
+    {
+        this.bg.setVisible(0)
+        this.levelProgressBar.setVisible(0)
+        this.checkPoint1.setVisible(0)
+        this.checkPoint2.setVisible(0)
+        this.checkPoint3.setVisible(0)
+    }
+
+    show ()
+    {
+        this.bg.setVisible(1)
+        this.levelProgressBar.setVisible(1)
+        this.checkPoint1.setVisible(1)
+        this.checkPoint2.setVisible(1)
+        this.checkPoint3.setVisible(1)
+
+    }
+
+
+    draw ()
+    {
+        this.bg.clear()
+        this.levelProgressBar.clear();
+        this.checkPoint1.clear()
+        this.checkPoint2.clear()
+        this.checkPoint3.clear()
+        //this.checkPoint4.clear()
+        
+
+        //  BG
+        this.bg.fillStyle(0x000000);
+        this.bg.fillRect(this.x, this.y, width * 0.5, 10);
+
+        //  Progress
+
+        this.levelProgressBar.fillStyle(0xffffff);
+        this.levelProgressBar.fillRect(this.x + 1 , this.y + 1, (width * 0.5) - 2 , 8);
+        this.levelProgressBar.fillStyle(0x674EA7);
+
+        var d = Math.floor(this.p * progress);
+
+        this.levelProgressBar.fillRect(this.x + 1 , this.y + 1, d, 8);
+
+        // Checkpoints
+        // 1
+        this.checkPoint1.fillStyle(0x000000);
+        this.checkPoint1.fillCircle(this.x + (width * 0.125 * 1), this.y + 5, 14);
+        if(progress >= (progressToNextLevel * 0.25 * 1)){
+            this.checkPoint1.fillStyle(0x674EA7);
+        } else {
+            this.checkPoint1.fillStyle(0xffffff);
         }
+        this.checkPoint1.fillCircle(this.x + (width * 0.125 * 1), this.y + 5, 12.5);
 
-        show ()
-        {
-            this.bg.setVisible(1)
-            this.levelProgressBar.setVisible(1)
-            this.checkPoint1.setVisible(1)
-            this.checkPoint2.setVisible(1)
-            this.checkPoint3.setVisible(1)
-
+        // 2
+        this.checkPoint2.fillStyle(0x000000);
+        this.checkPoint2.fillCircle(this.x + (width * 0.125 * 2), this.y + 5, 14);
+        if(progress >= (progressToNextLevel * 0.25 * 2)){
+            this.checkPoint2.fillStyle(0x674EA7);
+        } else {
+            this.checkPoint2.fillStyle(0xffffff);
         }
+        this.checkPoint2.fillCircle(this.x + (width * 0.125 * 2), this.y + 5, 12.5);
 
-
-        draw ()
-        {
-            this.bg.clear()
-            this.levelProgressBar.clear();
-            this.checkPoint1.clear()
-            this.checkPoint2.clear()
-            this.checkPoint3.clear()
-            //this.checkPoint4.clear()
-           
-
-            //  BG
-            this.bg.fillStyle(0x000000);
-            this.bg.fillRect(this.x, this.y, width * 0.5, 10);
-
-            //  Progress
-
-            this.levelProgressBar.fillStyle(0xffffff);
-            this.levelProgressBar.fillRect(this.x + 1 , this.y + 1, (width * 0.5) - 2 , 8);
-            this.levelProgressBar.fillStyle(0x674EA7);
-
-            var d = Math.floor(this.p * progress);
-
-            this.levelProgressBar.fillRect(this.x + 1 , this.y + 1, d, 8);
-
-            // Checkpoints
-            // 1
-            this.checkPoint1.fillStyle(0x000000);
-            this.checkPoint1.fillCircle(this.x + (width * 0.125 * 1), this.y + 5, 14);
-            if(progress >= (progressToNextLevel * 0.25 * 1)){
-                this.checkPoint1.fillStyle(0x674EA7);
-            } else {
-                this.checkPoint1.fillStyle(0xffffff);
-            }
-            this.checkPoint1.fillCircle(this.x + (width * 0.125 * 1), this.y + 5, 12.5);
-
-            // 2
-            this.checkPoint2.fillStyle(0x000000);
-            this.checkPoint2.fillCircle(this.x + (width * 0.125 * 2), this.y + 5, 14);
-            if(progress >= (progressToNextLevel * 0.25 * 2)){
-                this.checkPoint2.fillStyle(0x674EA7);
-            } else {
-                this.checkPoint2.fillStyle(0xffffff);
-            }
-            this.checkPoint2.fillCircle(this.x + (width * 0.125 * 2), this.y + 5, 12.5);
-
-            // 3
-            this.checkPoint3.fillStyle(0x000000);
-            this.checkPoint3.fillCircle(this.x + (width * 0.125 * 3), this.y + 5, 14);
-            if(progress >= (progressToNextLevel * 0.25 * 3)){
-                this.checkPoint3.fillStyle(0x674EA7);
-            } else {
-                this.checkPoint3.fillStyle(0xffffff);
-            }
-            this.checkPoint3.fillCircle(this.x + (width * 0.125 * 3), this.y + 5, 12.5);
-
-            // 4
-            // this.checkPoint4.fillStyle(0x000000);
-            // this.checkPoint4.fillCircle(this.x + (width * 0.125 * 4), this.y + 5, 14);
-            // if(progress >= (progressToNextLevel * 0.25 * 4)){
-            //     this.checkPoint4.fillStyle(0x674EA7);
-            // } else {
-            //     this.checkPoint4.fillStyle(0xffffff);
-            // }
-            // this.checkPoint4.fillCircle(this.x + (width * 0.125 * 4), this.y + 5, 12.5);
-            
-            
-            
+        // 3
+        this.checkPoint3.fillStyle(0x000000);
+        this.checkPoint3.fillCircle(this.x + (width * 0.125 * 3), this.y + 5, 14);
+        if(progress >= (progressToNextLevel * 0.25 * 3)){
+            this.checkPoint3.fillStyle(0x674EA7);
+        } else {
+            this.checkPoint3.fillStyle(0xffffff);
         }
+        this.checkPoint3.fillCircle(this.x + (width * 0.125 * 3), this.y + 5, 12.5);
+
+        // 4
+        // this.checkPoint4.fillStyle(0x000000);
+        // this.checkPoint4.fillCircle(this.x + (width * 0.125 * 4), this.y + 5, 14);
+        // if(progress >= (progressToNextLevel * 0.25 * 4)){
+        //     this.checkPoint4.fillStyle(0x674EA7);
+        // } else {
+        //     this.checkPoint4.fillStyle(0xffffff);
+        // }
+        // this.checkPoint4.fillCircle(this.x + (width * 0.125 * 4), this.y + 5, 12.5);
+        
+        
+        
+    }
 
     }
 
@@ -728,21 +744,22 @@
 
     function resetHighObstacle (highObstacle){
         highObstacle.x = width * 3
-        var scaleXRandom = Phaser.Math.FloatBetween(0.5,0.75)
-        var scaleYRandom = Phaser.Math.FloatBetween(1.25,2.5)
+        var scaleXRandom = Phaser.Math.FloatBetween(4,4)
+        var scaleYRandom = Phaser.Math.FloatBetween(4,4)
         highObstacle.setScale(scaleXRandom,scaleYRandom)
     }
 
     function resetLowObstacle (lowObstacle){
         lowObstacle.x = width * 3
-        var scaleXRandom = Phaser.Math.FloatBetween(0.75,2)
-        var scaleYRandom = Phaser.Math.FloatBetween(1.6,2.4)
+        var scaleXRandom = Phaser.Math.FloatBetween(1.5,1.5)
+        var scaleYRandom = Phaser.Math.FloatBetween(1.5,1.5)
         lowObstacle.setScale(scaleXRandom,scaleYRandom)
     }
 
     function resetCreep (creep){
-        
+        creepChase = false
         creep.x = Phaser.Math.Between(width * 2.5,width * 3)
+        creep.y = height - 250
         var creepAnimationRandomiser = Phaser.Math.Between(1,3)
         if (creepAnimationRandomiser == 1){
             creep.flipX = false
@@ -755,8 +772,8 @@
             creep.play('nightBorneMinion_Idle',true)
         }
         
-        var scaleXRandom = Phaser.Math.FloatBetween(3.9,4.2)
-        var scaleYRandom = Phaser.Math.FloatBetween(1.9,2.35)
+        var scaleXRandom = Phaser.Math.FloatBetween(4,4)
+        var scaleYRandom = Phaser.Math.FloatBetween(2,2)
         creep.setScale(scaleXRandom,scaleYRandom)
     }
 
@@ -852,6 +869,8 @@
     }
 
         function nightBorneCam(){
+            player.play({key:'pRun',frameRate: 16},true);
+            nightBorne.play({key:'nightBorne_Move',frameRate: 8 * playerSpeed},true)
         if(!nightBorneCamActive){
             camera.resetFX()
             playerIsHit = false
@@ -1135,7 +1154,7 @@
             
 
             player.once('animationcomplete', function(){
-
+                player.setDragY(0)
                scanningForDanger = true
            },this)
                     
@@ -1158,7 +1177,7 @@
             }
             
             player.once('animationcomplete', function(){
-
+                player.setDragY(0)
                 scanningForDanger = true
             },this)
         
@@ -1166,12 +1185,16 @@
             scanningForDanger = false
             
             
+            if(creep.anims.getName() != 'nightBorneMinion_Attack'){
+
+           
             if (player.body.onFloor()){
 
-                player.x += 1
-                creep.x += 2
+                player.x += 3
+                creep.x += 5
+                
                         
-                camera.zoomTo(2,1500)
+                camera.zoomTo(1.5,1000)
                 camera.pan(player.x,player.y,1000)
 
                 
@@ -1190,8 +1213,9 @@
                     
                     
                 player.x += 3
+                creep.x += 5
 
-                camera.zoomTo(2,1500)
+                camera.zoomTo(1.5,1000)
                 camera.pan(player.x,player.y,1000)
                 
                
@@ -1204,17 +1228,39 @@
                               scanningForDanger = true
                             },this)
                     
-                }  
+                } 
+            } else {
+                camera.zoomTo(1.5,1000)
+                camera.pan(player.x,player.y,1000)
+                if(player.body.onFloor()) {
+                    player.play({key:'pSlide',frameRate:4},true)
+                    player.x += 0.5
+                    } else {
+                        player.play({key:'pUptoFall',frameRate:4},true)
+                        player.x += 2
+                        player.setDragY(250)
+                        
+                    }
+                    
+                    player.once('animationcomplete', function(){
+                        player.setDragY(0)
+                        scanningForDanger = true
+                    },this)
+            } 
                
         } else {
             
-            
-            
             camera.pan(width * 1.5,player.y,1000)
-            
+            player.setDragY(0)
             player.play({key:'pRun',frameRate:6},true)
-            if(player.x > width * 1.25)
-            player.x -= 0.5
+            if(player.x > width * 1.5){
+                player.x -= 0.5
+            } else {
+                player.x += 1
+            }
+            if (creep.x <= player.x){
+                creep.x -= 5
+            }
             scanningForDanger = true
         }
         }
@@ -1262,7 +1308,9 @@
         
     function normalAttack(){
 
-    
+    // VFX Loading
+
+    playerAttackHitSmear = 'whiteHitSmear'
 
     // Damage Stats
 
@@ -1372,6 +1420,12 @@
     }
 
     function dashAttack(){
+
+        // VFX Loading
+
+    playerAttackHitSmear = 'whiteHitSmear'
+
+    // Animation
         if(!playerCrouching){
             player.play({key:'pDash',frameRate:18},true)
             
@@ -1417,6 +1471,11 @@
     }
 
     function deadlyCombatAssault(){
+    
+    // VFX Loading
+
+    playerAttackHitSmear = 'deadlyCombatAssaultHitSmear'
+
 
     // Damage Stats
 
@@ -1638,7 +1697,7 @@
             player.play({key:'pJump',frameRate: 10},true);
             
 
-            player.setVelocityY(-350)
+            player.setVelocityY(-750)
             
 
         
@@ -1646,10 +1705,10 @@
             if(player.anims.getName() == 'pJump'){
                 if (player.flipX){
                     
-                    fireTowardsTarget(player,closest.x - 150,1)
+                    fireTowardsTarget(player,closest.x,1)
                 } else {
                     
-                    fireTowardsTarget(player,closest.x + 150,1)
+                    fireTowardsTarget(player,closest.x,1)
                 }
                 
                     
@@ -1834,86 +1893,25 @@
             
             
 
-        }   
+        } else {
+            playerIsHit = true
+            
+                    
+                    
+                    playerVitals.decreaseLife((nightBorneMaxLife * 0.2) / 50)
+                    player.anims.play({key:'pHurt',frameRate: 12},true); 
+
+                    camera.shake(150, 0.0025);
+                    
+
+                    player.once('animationcomplete', function () {
+                        playerIsHit = false 
+                        player.play('pIdle', true)
+                    }, this);
+
+        }  
     }
 
-
-    function creepHit(){
-        if (creepAlive){
-        glory += level + 1
-        gold += (level * 2) + 1
-        //creep.play('nightBorneMinion_Hurt',true)
-        creep.x = player.x + 35
-        camera.shake(150, 0.0015)
-        //creep.once('animationcomplete', function (anim,frame) {
-            //creep.emit('animationcomplete_' + anim.key, frame)
-            //creep.once('animationcomplete_nightBorneMinion_Hurt', function (anim,frame) {
-            creep.play('nightBorneMinion_Death',true)
-            creep.once('animationcomplete', function(){
-                creepAlive = false
-                //creep.x = width * 3
-                
-           },creep)
-        }
-       //},creep)
-            
-        //},creep)
-
-        
-        
-        
-    }
-
- 
-
-    function nightBorneHit(){
-
-        if(nightBorneAlive){
-        nightBorneIsHit = true
-
-        if (inBattle) {   
-
-          
-            
-
-            var chaos = Phaser.Math.FloatBetween(0.00,1.00)
-            if (chaos < 0.25){
-           
-            camera.flash(150);
-            camera.shake(500, 0.0075);
-            damage *= Phaser.Math.Between(1.75,2.25)
-            nightBorneVitals.decreaseNightborneLife(damage)
-           
-            } else
-            if (chaos < 0.75){
-            camera.shake(500, 0.0025);
-            damage *= Phaser.Math.Between(1.25,1.55)
-            nightBorneVitals.decreaseNightborneLife(damage)
-            
-            } else {
-                camera.shake(250, 0.0025);
-                damage *= Phaser.Math.Between(0.85,1.1)
-                nightBorneVitals.decreaseNightborneLife(damage)
-            
-
-       
-            }
-            
-    
-    }   
-}          
-                 
-    }
-
-    function nightBorneRecover(){
-
-        if (nightBorneIsHit){
-            nightBorneIsHit  = false
-            nightBorne.anims.play({key:'nightBorne_Idle',frameRate: 12},true); 
-                
-        }
-
-    }
 
 
     function enemyChase(velocityBoost)
@@ -1967,30 +1965,30 @@
 
         if((nightBorneAlive)){
 
-        if(Math.abs(nightBorne.x - player.x) > 150){
-            nightBorne.setDragX(250)
+        if(Math.abs(nightBorne.x - player.x) > 350){
+            nightBorne.setDragX(500)
             var actionChoice = Phaser.Math.Between(1,3)
         
             if (actionChoice == 1){
                 nightBorne.play({key:'nightBorne_Move',frameRate:8},true)
                 if(nightBorne.x < player.x){
                     
-                    nightBorne.setVelocityX(1000)
+                    nightBorne.setVelocityX(1500)
 
                     
                 } else {
 
-                    nightBorne.setVelocityX(-1000)
+                    nightBorne.setVelocityX(-1500)
                    
                 }
 
             } else if (actionChoice == 2){
                 nightBorne.play({key:'nightBorne_Move',frameRate:10},true)
                 if(nightBorne.x < player.x){
-                    nightBorne.setVelocityX(750)
+                    nightBorne.setVelocityX(1000)
                     
                 } else {
-                    nightBorne.setVelocityX(-750)
+                    nightBorne.setVelocityX(-1000)
                 }
             } else if (actionChoice == 3) {
                 nightBorne.play('nightBorne_Idle',true)
@@ -1999,19 +1997,22 @@
 
         } else {
             var actionChoice = Phaser.Math.Between(1,3)
-            nightBorne.setVelocityX(0)
-            nightBorne.setDragX(450)
+            
+                nightBorne.setVelocityX(0)
+            
+            
+            nightBorne.setDragX(1000)
             if (actionChoice == 1){
                 nightBorne.play({key:'nightBorne_Attack',frameRate:12,repeat:Phaser.Math.Between(0,1)},true)
                 
 
                 nightBorne.on('animationcomplete', function(){
-
+                    nightBorne.setDragX(500)
                     if(nightBorne.x < player.x){
-                    nightBorne.setVelocityX(100)
+                    nightBorne.setVelocityX(150)
                     
                     } else {
-                        nightBorne.setVelocityX(-100)
+                        nightBorne.setVelocityX(-150)
                     }
 
                     nightBorne.play('nightBorne_Idle',true)
@@ -2025,6 +2026,12 @@
                     } else {
                         nightBorne.setVelocityX(-300)
                     }
+
+                    nightBorne.on('animationcomplete', function(){
+                        nightBorne.setDragX(500)
+                        
+                        }, nightBorne)
+
 
             } else if (actionChoice == 3) {
                 nightBorne.play('nightBorne_Idle',true)
@@ -2318,6 +2325,7 @@
                 } else
                 //
                 if(upIsDown){
+                    player.setDragY(0)
                     if(inBattle){
                         if (player.body.onFloor()){
                             playerJumping = true
@@ -2559,16 +2567,151 @@
             }
     }
 
+    function hitImpactAnimation(game,sprite,power){
+
+        if (sprite.x < player.x){
+            var impactDir = -1
+        } else {
+            var impactDir = 1
+        }
+
+        power = 1
+        
+        sprite.setVelocityX(impactDir * 500 * power)
+        sprite.setVelocityY(-150 * power)
+        //game.physics.moveTo(sprite,null,sprite.y - Phaser.Math.Between(500,750),1750 * power)
+
+        // game.tweens.add({
+        //     targets     : sprite,
+        //     x       :     sprite.x + (impactDir * (15 * power)),//Phaser.Math.Between(-500,500),                
+        //     ease        : 'Power2',
+        //     duration    : 50,
+        //     yoyo        : 1,
+        //     //loop        : -1,
+        //     repeat      : 1,
+
+        //     onComplete: function(){
+                
+        //         //game.physics.moveTo(sprite,sprite.x + (impactDir * width * power),null,1000 * power)
+        //         //
+                
+        //     }
+        // });
+
+        
+
+        camera.shake(350 * power, 0.0075);
+
+        if(power > 0.75){
+            camera.flash(100 * power);
+        }
+        
+
+
+    }
+
+    
+    function enemyHit(playerAttackHitBox,enemy){
+        if(!enemyIsHit){
+        enemyIsHit = true
+        console.log('Enemy: ' + enemy)
+        var chaos = Phaser.Math.FloatBetween(0.00,1.00)
+        console.log('Chaos: ' + chaos)
+        var power
+        var fDamage = damage
+
+        if (chaos < 0.01){
+            power = Phaser.Math.FloatBetween(0.75,1.25)
+            fDamage *= Phaser.Math.Between(1.5,1.75)
+        } else if (chaos < 0.05){
+            power = Phaser.Math.FloatBetween(0.25,0.75)
+            fDamage *= Phaser.Math.Between(1,1.25)
+        } else {
+            power = Phaser.Math.FloatBetween(0,0.25)
+            fDamage *= Phaser.Math.Between(0.85,1.1)
+        }
+
+        console.log('fDamage: ' + fDamage)
+        playerHitVFX.x = enemy.x
+        playerHitVFX.y = playerAttackHitBox.y
+        if(!player.flipX){
+            playerHitVFX.flipX = false
+        } else {
+            playerHitVFX.flipX = true
+        }
+        playerHitVFX.play(playerAttackHitSmear,true)
+        hitImpactAnimation(this,enemy,power)
+        playerHitVFX.on('animationcomplete', function (){
+            enemyIsHit = false
+        },this)
+        
+        if(enemy == nightBorne){
+            nightBorneVitals.decreaseNightborneLife(fDamage)
+            enemy.play({key:'nightBorne_Hurt',frameRate: 12},true); 
+                        
+            enemy.once('animationcomplete', function () {
+                    
+                if (nightBorneLife <= 0 && nightBorneAlive){
+                    
+                    nightBorneAlive = false
+                    enemy.play({key:'nightBorne_Death',frameRate: 23},true);
+                    enemy.body.enable = false
+                    enemy.once('animationcomplete', function (anim,frame) {
+
+                                    enemy.setDragX(0)
+                                    enemy.setVelocityX(0)
+                                    enemy.flipX = false
+                                    enemy.x = 0
+                                    enemy.y = 0
+                                    nightBorneMaxLife = Phaser.Math.Between(income * 0.8, (income * 0.8) * chaosFactor) 
+                                    nightBorneLife = nightBorneMaxLife
+                                    nightBorneVitals.p = 38 / nightBorneMaxLife
+                                    
+                                    nightBorneAlive = true
+                                    enemy.body.enable = true
+                                    modeSwitch(0)
+                                    toggleSkillTree()
+                                    
+                                    
+                    }, enemy)
+                }
+                                
+                                
+                            }, this);
+        } else if (enemy == creep){
+            creepIsHit = true
+            glory += level + 1
+            gold += (level * 2) + 1
+            enemy.play('nightBorneMinion_Hurt',true)
+            if(creepIsHit){
+                enemy.x = player.x + 35
+            }
+            enemy.once('animationcomplete', function(){ 
+                enemy.play('nightBorneMinion_Death',true)
+                enemy.body.enable = false
+                enemy.once('animationcomplete', function(){
+                    creepIsHit = false
+                    resetCreep(enemy)
+                    enemy.body.enable = true
+                    enemy.setVelocityX(0)
+                    
+                },enemy)
+            },this)
+        }
+        
+        
+        }
+    }
+
 
 class Badlands extends Phaser.Scene {
 
 
     constructor() {
-        super("loadBadlands")
+        super("Badlands")
         
     }
 
-   
     
     preload ()
     {   
@@ -2653,6 +2796,10 @@ class Badlands extends Phaser.Scene {
 
         this.load.image('vines', 'assets/vines.png');
         this.load.image('treeTrunk', 'assets/treeTrunk.png');
+        this.load.image('lamp', 'assets/lamp.png')
+        this.load.image('rock1', 'assets/rock_1.png')
+        this.load.image('rock2', 'assets/rock_2.png')
+        this.load.image('rock3', 'assets/rock_3.png')
 
         this.load.image('ground', 'assets/woodground.png');
 
@@ -2673,8 +2820,8 @@ class Badlands extends Phaser.Scene {
 
  
         // VFX - Hit Animation
-        // this.load.spritesheet('whiteHitSmear', 'assets/whiteHitSmear.png', { frameWidth: 1048, frameHeight: 1048});
-        // this.load.spritesheet('whiteHitSmear2', 'assets/whiteHitSmear2.png', { frameWidth: 1048, frameHeight: 1048});  
+         this.load.spritesheet('whiteHitSmear', 'assets/whiteHitSmear.png', { frameWidth: 1048, frameHeight: 1048});
+         //this.load.spritesheet('whiteHitSmear2', 'assets/whiteHitSmear2.png', { frameWidth: 1048, frameHeight: 1048});  
 
         // // Skills
         // this.load.spritesheet('explosiveStrikeIcon', 'assets/skills/explosiveStrikeIcon.png', { frameWidth: 256, frameHeight: 256});
@@ -2682,11 +2829,11 @@ class Badlands extends Phaser.Scene {
         
 
         this.load.spritesheet('thunderStrikeIcon', 'assets/skills/thunderStrikeIcon.png', { frameWidth: 256, frameHeight: 256});
-        // this.load.spritesheet('thunderStrike', 'assets/skills/thunderStrike.png', { frameWidth: 64, frameHeight: 64}); 
+        this.load.spritesheet('thunderStrike', 'assets/skills/thunderStrike.png', { frameWidth: 64, frameHeight: 64}); 
         // this.load.spritesheet('thunderStrikeSmear', 'assets/skills/thunderStrikeSmear.png', { frameWidth: 1048, frameHeight: 1048});
 
         this.load.spritesheet('deadlyCombatAssaultIcon', 'assets/skills/deadlyCombatAssaultIcon.png', { frameWidth: 256, frameHeight: 256});
-        // this.load.spritesheet('deadlyCombatAssaultSmear', 'assets/skills/deadlyCombatAssaultSmear.png', { frameWidth: 1048, frameHeight: 1048});
+        this.load.spritesheet('deadlyCombatAssaultHitSmear', 'assets/skills/deadlyCombatAssaultHitSmear.png', { frameWidth: 1048, frameHeight: 1048});
 
         // this.load.spritesheet('eagleStrikeIcon', 'assets/skills/eagleStrikeIcon.png', { frameWidth: 256, frameHeight: 256});
 
@@ -2696,7 +2843,7 @@ class Badlands extends Phaser.Scene {
 
     create ()
     {
-
+       
         // General 
 
             // Controls
@@ -2763,11 +2910,6 @@ class Badlands extends Phaser.Scene {
         
         this.physics.world.setBounds(0, 0, width * 3,  height);
         
-        // lvlBG8 = this.add.tileSprite(0,0, width * 4, height, 'woodsBG8').setOrigin(0,0).setScrollFactor(0)
-        // lvlBG2 = this.add.tileSprite(0,0, width * 4, height, 'woodsBG2').setOrigin(0,0).setScrollFactor(0.5)
-        // lvlBG1 = this.add.tileSprite(0,0, width * 4, height, 'woodsBG1').setOrigin(0,0).setScrollFactor(0.75)
-        // lvlFG1 = this.add.tileSprite(0,0, width * 4, height, 'woodsFG1').setOrigin(0,0).setScrollFactor(1.25).setDepth(3)
-        
 
         var x = 0
         var y = 0
@@ -2785,15 +2927,15 @@ class Badlands extends Phaser.Scene {
         lvlBG8ScrollModPL = 0.1
         lvlBG9ScrollModPL = 0
 
-        lvlBG9PL = this.add.tileSprite(x,y,width * wM,height, mapPL + 'BG9').setOrigin(0,0).setScrollFactor(lvlBG9ScrollModPL)
-        lvlBG8PL = this.add.tileSprite(x,y,width * wM,height, mapPL + 'BG8').setOrigin(0,0).setScrollFactor(lvlBG8ScrollModPL)
-        lvlBG7PL = this.add.tileSprite(x,y,width * wM,height,mapPL + 'BG7').setOrigin(0,0).setScrollFactor(lvlBG7ScrollModPL)
-        lvlBG6PL = this.add.tileSprite(x,y,width * wM,height,mapPL + 'BG6').setOrigin(0,0).setScrollFactor(lvlBG6ScrollModPL)
-        lvlBG5PL = this.add.tileSprite(x,y,width * wM,height, mapPL + 'BG5').setOrigin(0,0).setScrollFactor(lvlBG5ScrollModPL)
-        lvlBG4PL = this.add.tileSprite(x,y,width * wM,height, mapPL + 'BG4').setOrigin(0,0).setScrollFactor(lvlBG4ScrollModPL)
-        lvlBG3PL = this.add.tileSprite(x,y,width * wM,height, mapPL + 'BG3').setOrigin(0,0).setScrollFactor(lvlBG3ScrollModPL)
-        lvlBG2PL = this.add.tileSprite(x,y,width * wM,height, mapPL + 'BG2').setOrigin(0,0).setScrollFactor(lvlBG2ScrollModPL)
-        lvlBG1PL = this.add.tileSprite(x,y,width * wM,height, mapPL + 'BG1').setOrigin(0,0).setScrollFactor(lvlBG1ScrollModPL).setDepth(2).setAlpha(0)
+        lvlBG9PL = this.add.tileSprite(x,y,width * wM,height, mapPL + 'BG9').setOrigin(0,0).setScrollFactor(lvlBG9ScrollModPL).setPipeline('Light2D')
+        lvlBG8PL = this.add.tileSprite(x,y,width * wM,height, mapPL + 'BG8').setOrigin(0,0).setScrollFactor(lvlBG8ScrollModPL).setPipeline('Light2D')
+        lvlBG7PL = this.add.tileSprite(x,y,width * wM,height,mapPL + 'BG7').setOrigin(0,0).setScrollFactor(lvlBG7ScrollModPL).setPipeline('Light2D')
+        lvlBG6PL = this.add.tileSprite(x,y,width * wM,height,mapPL + 'BG6').setOrigin(0,0).setScrollFactor(lvlBG6ScrollModPL).setPipeline('Light2D')
+        lvlBG5PL = this.add.tileSprite(x,y,width * wM,height, mapPL + 'BG5').setOrigin(0,0).setScrollFactor(lvlBG5ScrollModPL).setPipeline('Light2D')
+        lvlBG4PL = this.add.tileSprite(x,y,width * wM,height, mapPL + 'BG4').setOrigin(0,0).setScrollFactor(lvlBG4ScrollModPL).setPipeline('Light2D')
+        lvlBG3PL = this.add.tileSprite(x,y,width * wM,height, mapPL + 'BG3').setOrigin(0,0).setScrollFactor(lvlBG3ScrollModPL).setPipeline('Light2D')
+        lvlBG2PL = this.add.tileSprite(x,y,width * wM,height, mapPL + 'BG2').setOrigin(0,0).setScrollFactor(lvlBG2ScrollModPL).setPipeline('Light2D')
+        lvlBG1PL = this.add.tileSprite(x,y,width * wM,height, mapPL + 'BG1').setOrigin(0,0).setScrollFactor(lvlBG1ScrollModPL).setDepth(2).setAlpha(0).setPipeline('Light2D')
  
         lvlBG1ScrollMod = 1
         lvlBG2ScrollMod = 1
@@ -2805,38 +2947,54 @@ class Badlands extends Phaser.Scene {
         lvlBG8ScrollMod = 0
         lvlBG9ScrollMod = 0
 
-        lvlBG9 = this.add.tileSprite(x,y,width * wM,height).setOrigin(0,0).setScrollFactor(lvlBG9ScrollMod)
-        lvlBG8 = this.add.tileSprite(x,y,width * wM,height, map + 'BG8').setOrigin(0,0).setScrollFactor(lvlBG8ScrollMod)
-        lvlBG7 = this.add.tileSprite(x,y,width * wM,height,map + 'BG7').setOrigin(0,0).setScrollFactor(lvlBG7ScrollMod)
-        lvlBG6 = this.add.tileSprite(x,y,width * wM,height,map + 'BG6').setOrigin(0,0).setScrollFactor(lvlBG6ScrollMod)
-        lvlBG5 = this.add.tileSprite(x,y,width * wM,height, map + 'BG5').setOrigin(0,0).setScrollFactor(lvlBG5ScrollMod)
-        lvlBG4 = this.add.tileSprite(x,y,width * wM,height, map + 'BG4').setOrigin(0,0).setScrollFactor(lvlBG4ScrollMod)
-        lvlBG3 = this.add.tileSprite(x,y,width * wM,height, map + 'BG3').setOrigin(0,0).setScrollFactor(lvlBG3ScrollMod)
-        lvlBG2 = this.add.tileSprite(x,y,width * wM,height, map + 'BG2').setOrigin(0,0).setScrollFactor(lvlBG2ScrollMod).setDepth(2)
-        lvlBG1 = this.add.tileSprite(x,y,width * wM,height, map + 'BG1').setOrigin(0,0).setScrollFactor(lvlBG1ScrollMod).setDepth(2)
+        lvlBG9 = this.add.tileSprite(x,y,width * wM,height,map + 'BG9').setOrigin(0,0).setScrollFactor(lvlBG9ScrollMod).setPipeline('Light2D');
+        lvlBG8 = this.add.tileSprite(x,y,width * wM,height, map + 'BG8').setOrigin(0,0).setScrollFactor(lvlBG8ScrollMod).setPipeline('Light2D');
+        lvlBG7 = this.add.tileSprite(x,y,width * wM,height,map + 'BG7').setOrigin(0,0).setScrollFactor(lvlBG7ScrollMod).setPipeline('Light2D');
+        lvlBG6 = this.add.tileSprite(x,y,width * wM,height,map + 'BG6').setOrigin(0,0).setScrollFactor(lvlBG6ScrollMod).setPipeline('Light2D');
+        lvlBG5 = this.add.tileSprite(x,y,width * wM,height, map + 'BG5').setOrigin(0,0).setScrollFactor(lvlBG5ScrollMod).setPipeline('Light2D');
+        lvlBG4 = this.add.tileSprite(x,y,width * wM,height, map + 'BG4').setOrigin(0,0).setScrollFactor(lvlBG4ScrollMod).setPipeline('Light2D');
+        lvlBG3 = this.add.tileSprite(x,y,width * wM,height, map + 'BG3').setOrigin(0,0).setScrollFactor(lvlBG3ScrollMod).setPipeline('Light2D');
+        lvlBG2 = this.add.tileSprite(x,y,width * wM,height, map + 'BG2').setOrigin(0,0).setScrollFactor(lvlBG2ScrollMod).setDepth(2).setPipeline('Light2D');
+        lvlBG1 = this.add.tileSprite(x,y,width * wM,height, map + 'BG1').setOrigin(0,0).setScrollFactor(lvlBG1ScrollMod).setDepth(2).setPipeline('Light2D');
 
         
         lvlFG2 = this.add.tileSprite(x,y, width * wM,height).setOrigin(0,0)
         lvlFG1 = this.add.tileSprite(x,y, width * wM,height).setOrigin(0,0)
 
-
-
         
 
+        spotlightPlayerHealth = this.lights.addLight(0, 0, height,0xd4b9e2);
+        spotlightPlayerPower = this.lights.addLight(0, 0, height,0x6d54a9);
 
-        
+        spotlightNightBorne = this.lights.addLight(0, 0, 300,0x6d54a9,0);
+        spotlightCreep = this.lights.addLight(0, 0, 300,0xd4b9e2,0);
+        spotlightSun = this.lights.addLight(0, 0, width * 3,0xE49759,5);
 
 
-
-
+       
         this.lights.enable();
-        this.lights.setAmbientColor(0x808080);
+        this.lights.setAmbientColor(0x808080)//0xE49759);
+        //d4b9e2 = light purple
+        //6d54a9 = deep purple
+        //0xE49759 = dawn
+        //EC9706
+        //DB907D
+       
+       
 
        
         platforms = this.physics.add.staticGroup();
-        platforms.create(0, height - 100, 'ground').setOrigin(0,0).setScale(width * 3 /400, 2).refreshBody().setVisible(0);
+        platforms.create(0, height - 85, 'ground').setOrigin(0,0).setScale(width * 3 /400, 2).refreshBody().setVisible(0);
 
-        player = this.physics.add.sprite(width * 1.5, height /2 ,'heroF').setScale(4)//.setPipeline('Light2D');
+        playerShadow = this.add.sprite(width * 1.5, height /2 ,'heroF').setScale(3.5)
+        playerShadow.setDepth(3)
+        playerShadow.flipY = 1
+        
+        playerShadow.tint = 0x100c08//0x000000
+        //playerShadow.setTintFill(0x100c08)//.setAlpha(0.5)
+       
+
+        player = this.physics.add.sprite(width * 1.5, height /2 ,'heroF').setScale(4).setPipeline('Light2D');
         player.setDepth(3)
         player.body.setSize(10, 30).setOffset(25,15).setAllowDrag(true)
         
@@ -2844,18 +3002,28 @@ class Badlands extends Phaser.Scene {
         player.setCollideWorldBounds(true);
         this.physics.add.collider(player,platforms);
 
-        sword = this.add.rectangle(player.x, player.y, 60, 60);
+        
+
+        sword = this.add.sprite(player.x, player.y);
         this.physics.add.existing(sword, false)
         sword.body.setAllowGravity(false).setOffset(0,5).setSize(100, 55)
         sword.body.checkCollision.none = true
 
+        playerHitVFX = this.add.sprite(sword.x, sword.y,'whiteHitSmear').setDepth(4).setScale(0.75) 
+        
+        highObstacleShadow = this.add.image(player.x,height - 35, 'lamp').setScale(4).setDepth(2)
+        highObstacleShadow.flipY = 1
+        highObstacleShadow.tint = 0x100c08
 
-        highObstacle = this.add.image(350,player.y + 100, 'vines').setAlpha(0.75)
+        highObstacle = this.add.image(0,height - 320, 'lamp').setPipeline('Light2D');
         this.physics.add.existing(highObstacle,false)
-        highObstacle.body.setSize(474,175).setOffset(0,-7.5)
         highObstacle.body.setAllowGravity(false)
 
-        lowObstacle = this.add.image(0,height - 200, 'treeTrunk')
+        lowObstacleShadow = this.add.image(0,0, 'treeTrunk').setScale(1.5).setDepth(3)
+        lowObstacleShadow.flipY = 1
+        lowObstacleShadow.tint = 0x100c08
+
+        lowObstacle = this.add.image(0,height - 150, 'treeTrunk').setPipeline('Light2D');  
         this.physics.add.existing(lowObstacle,false)
         lowObstacle.body.setSize(150,57).setOffset(5,10)
 
@@ -2867,39 +3035,17 @@ class Badlands extends Phaser.Scene {
         this.physics.add.overlap(player,obstacles,obstacleCollision)
         this.physics.add.collider(platforms,obstacles);
         
-        obstacles.setDepth(3)
-        obstacles.setOrigin(0,0)  
+        obstacles.setDepth(2)
+        obstacles.setOrigin(0,0)
+        lowObstacle.setDepth(3)        
         
 
             // NightBorne
-            
-            nightBorne = this.physics.add.sprite(0, 0, 'nightBorne').setScale(8).setOrigin(0.5,1).setDepth(3)
-            nightBorneVitals = new EnemyHealthBar(this,nightBorne.x, nightBorne.y - 150);
-            nightBorneLife = (income * 0.3) * Phaser.Math.Between(0.8,1.7) 
-            nightBorneMaxLife = nightBorneLife
-         
-            nightBorne.body.maxVelocity.x = 500
-            nightBorne.body.setSize(45, 50)
 
-            nightBorne.body.setAllowDrag(true)
+            nightBorneOutline = this.physics.add.sprite(0,0, 'nightBorne').setScale(8).setTintFill(0x7851a9).setDepth(2).setAlpha(0.75)
            
-            nightBorne.setCollideWorldBounds(true)
-            nightBorne.body.setAllowGravity(1)
-            this.physics.add.overlap(nightBorne, player, startNightBorneBattle);
-            this.physics.add.overlap(sword, nightBorne, nightBorneHit)
-    
-            this.physics.add.collider(platforms,nightBorne);
-
-            nightBorneSword = this.add.rectangle(nightBorne.x, nightBorne.y, 150, 175);
-            this.physics.add.existing(nightBorneSword, false)
-            nightBorneSword.body.setAllowGravity(false)
-            nightBorneSword.body.checkCollision.none = true
-            this.physics.add.overlap(nightBorneSword, player, playerHit);
-
-            nightBorneOutline = this.physics.add.sprite(nightBorne.x - 1, nightBorne.y - 2.5, 'nightBorne').setScale(8).setOrigin()
-            nightBorneOutline.setTintFill(0x7851a9).setDepth(0).setAlpha(0.75)
             nightBorneOutline.body.setAllowGravity(0)
-            nightBorneOutline.body.setSize(45, 50)
+            nightBorneOutline.body.setSize(50, 50)
             nightBorneOutline.setCollideWorldBounds(false)
             this.tweens.add({
                                     targets     : nightBorneOutline,
@@ -2912,24 +3058,57 @@ class Badlands extends Phaser.Scene {
                                     //loop        : -1,
                                     repeat      : -1
             });
-            
-            nightBorneVFX = this.add.sprite(nightBorne.x, nightBorne.y + 100)
-            nightBorneVFX.setScale(1).setTint(0x00CED1).setDepth(4).setVisible(1)
 
+            nightBorneShadow = this.add.sprite(width * 1.5, height /2 ,'nightBorne').setScale(6)
+            nightBorneShadow.setDepth(2)
+            nightBorneShadow.flipY = 1
+            nightBorneShadow.tint = 0x100c08
             
+            nightBorne = this.physics.add.sprite(0, 0, 'nightBorne').setScale(8).setOrigin(0.5,1).setDepth(3).setPipeline('Light2D')
+            nightBorneVitals = new EnemyHealthBar(this,nightBorne.x, nightBorne.y - 150);
+            nightBorneLife = (income * 0.3) * Phaser.Math.Between(0.8,1.7) 
+            nightBorneMaxLife = nightBorneLife
+         
+            nightBorne.body.maxVelocity.x = 500
+            nightBorne.body.setSize(50, 50)
+
+            nightBorne.body.setAllowDrag(true)
+           
+            nightBorne.setCollideWorldBounds(true)
+            nightBorne.body.setAllowGravity(1)
+            this.physics.add.overlap(nightBorne, player, startNightBorneBattle);
+            
+            this.physics.add.collider(platforms,nightBorne);
+
+            nightBorneSword = this.add.rectangle(nightBorne.x, nightBorne.y, 150, 175);
+            this.physics.add.existing(nightBorneSword, false)
+            nightBorneSword.body.setAllowGravity(false)
+            nightBorneSword.body.checkCollision.none = true
+            this.physics.add.overlap(nightBorneSword, player, playerHit);
+
+            nightBorneVFX = this.add.sprite(nightBorne.x, nightBorne.y + 600)
+            nightBorneVFX.setScale(3).setTint(0x00CED1).setDepth(4).setVisible(1)
 
             // Creep
-
-            creep = this.physics.add.sprite(0, 0, 'doomsayer')
+            creepShadow = this.add.sprite(width * 1.5, height /2 ,'doomsayer').setScale(4,2)
+            creepShadow.setDepth(2)
+            creepShadow.flipY = 1
+            creepShadow.tint = 0x100c08
+            creep = this.physics.add.sprite(0, 0, 'doomsayer').setScale(3.5,2.1).setPipeline('Light2D')
             creep.setCollideWorldBounds(true)
             creep.body.setAllowGravity(1)
             this.physics.add.collider(platforms,creep);
-            this.physics.add.overlap(creep, sword, creepHit);
-            //this.physics.add.overlap(creep, player, playerCreepHit);
+            this.physics.add.overlap(creep, player, playerHit);
 
+            enemies = this.physics.add.group({
+                setCollideWorldBounds: 1 
+            })
+            enemies.add(nightBorne)
+            enemies.add(creep) 
+            enemies.setDepth(2)
+            this.physics.add.overlap(sword,enemies,enemyHit,null,this)
+            
         camera = this.cameras.main.centerOn(width * 1.5,0)
-        
-
 
         camera.setBounds(0, 0, width * 3, height)
  
@@ -2937,14 +3116,13 @@ class Badlands extends Phaser.Scene {
         
         playerIconBox = this.add.image(0,0,'playerIconBox').setDepth(3).setScale(0.0775,0.25).setOrigin(0.5,0.5)
         playerIcon = this.add.image(0,0,'playerIcon').setDepth(3).setScale(0.125).setOrigin(0.5,0.5)
-        
-
+    
         levelIcon = this.add.image(0,0,'levelIcon').setDepth(4).setScale(0.65).setOrigin(0.5,0.5)
         levelText = this.add.text(levelIcon + 5, levelIcon.y, Math.floor(level)).setFontFamily('Arial').setFontSize(28).setColor('#674EA7').setDepth(4).setOrigin(0.5,0.5)
         
-        gloryIcon = this.add.image(levelIcon.x + 100,camera.scrollY + 20,'gloryIcon').setDepth(4).setScale(0.65).setOrigin(0.5,0.5)
+        gloryIcon = this.add.image(levelIcon.x + 100,camera.worldView.y + 20,'gloryIcon').setDepth(4).setScale(0.65).setOrigin(0.5,0.5)
         gloryText = this.add.text(gloryIcon + 20, gloryIcon.y, Math.floor(glory)).setFontFamily('Arial').setFontSize(28).setColor('#BC3823').setDepth(4).setOrigin(0.5,0.5);
-        goldIcon = this.add.image(gloryIcon.x + 130,camera.scrollY + 60,'goldIcon').setDepth(4).setScale(0.65).setOrigin(0.5,0.5)
+        goldIcon = this.add.image(gloryIcon.x + 130,camera.worldView.y + 60,'goldIcon').setDepth(4).setScale(0.65).setOrigin(0.5,0.5)
         goldText = this.add.text(goldIcon, goldIcon.y, Math.floor(gold)).setFontFamily('Arial').setFontSize(28).setColor('#ffd700').setDepth(4).setOrigin(0.5,0.5);
 
         playerVitalsBox = this.add.image(0,0,'playerVitalsBox').setDepth(3).setScale(0.25,0.2).setOrigin(0,0.5)
@@ -2959,22 +3137,16 @@ class Badlands extends Phaser.Scene {
         skillBBox = this.add.image(0,0,'playerVitalsBox').setDepth(3).setScale(0.04,0.125).setOrigin(0.5,0.5)
         skillBIcon = this.add.image(0,0,'thunderStrikeIcon').setDepth(3).setScale(0.4).setOrigin(0.5,0.5)
 
-       
+        levelProgress = new LevelProgressBar(this,progress, camera.worldView.x + width * 0.33, camera.worldView.y + (height - 85));
 
-        levelProgress = new LevelProgressBar(this,progress, camera.scrollX + width * 0.33, camera.scrollY + (height - 85));
-
-        
-
-        inspirationPlayerIconBox = this.add.image(0,camera.scrollY + (height * 0.2),'playerIconBox').setDepth(3).setScale(0.13,0.425).setOrigin(0.5,0.5).setVisible(0)
+        inspirationPlayerIconBox = this.add.image(0,camera.worldView.y + (height * 0.2),'playerIconBox').setDepth(3).setScale(0.13,0.425).setOrigin(0.5,0.5).setVisible(0)
         
         inspirationPlayerIcon = this.add.image(0,inspirationPlayerIconBox.y,'playerInspirationIcon' + inspirationPic).setDepth(3).setScale(.35).setOrigin(0.5,0.5).setVisible(0)
 
-        inspirationTextBox = this.add.image(width * 0.5,camera.scrollY + (height * 0.125),'playerIconBox').setDepth(3).setScale(0.25,0.1).setOrigin(0.5,0.5).setVisible(1).setAlpha(0.75).setVisible(0)
+        inspirationTextBox = this.add.image(width * 0.5,camera.worldView.y + (height * 0.125),'playerIconBox').setDepth(3).setScale(0.25,0.1).setOrigin(0.5,0.5).setVisible(1).setAlpha(0.75).setVisible(0)
         inspirationText = this.add.text(inspirationTextBox.x, inspirationTextBox.y, 'Choose an Inspiration').setFontFamily('Arial').setFontSize(32).setDepth(4).setOrigin(0.5,0.5).setVisible(0);
-        
-            
-            
-        inspirationBoxEnergy = this.add.image(0,camera.scrollY + (height * 0.5),'inspirationBox').setDepth(3).setScale(0.4,0.25).setOrigin(0.5,0.5).setVisible(0).setAlpha(0.75)
+          
+        inspirationBoxEnergy = this.add.image(0,camera.worldView.y + (height * 0.5),'inspirationBox').setDepth(3).setScale(0.4,0.25).setOrigin(0.5,0.5).setVisible(0).setAlpha(0.75)
         inspirationTextEnergy = this.add.text(inspirationBoxEnergy.x, inspirationBoxEnergy.y,null,{align: 'center'}).setFontFamily('Arial').setFontSize(32).setDepth(3).setOrigin(0.5,0.5).setVisible(0);
         inspirationTextEnergy.setText("Improve Energy\nRegeneration Rate\n& Maximum Energy\n\nAffected by 'Spending\nRating'")
         inspirationBoxFocus = this.add.image(0,inspirationBoxEnergy.y,'inspirationBox').setDepth(3).setScale(0.4,0.25).setOrigin(0.5,0.5).setVisible(0).setAlpha(0.75)
@@ -2984,11 +3156,10 @@ class Badlands extends Phaser.Scene {
         inspirationTextPower = this.add.text(inspirationBoxPower.x, inspirationBoxPower.y,null,{align: 'center'}).setFontFamily('Arial').setFontSize(32).setDepth(3).setOrigin(0.5,0.5).setVisible(0);
         inspirationTextPower.setText("Improve Life\nRegeneration Rate\n& Maximum Life\n\nAffected by 'Storing\nRating'")
         
-        skillTreeEnergyIcon = this.add.image(width * 0.25, camera.scrollY + (height * 0.25),'spendingBuffIcon').setDepth(4).setScale(1.5).setVisible(0).setAlpha(0.95)
-        skillTreeFocusIcon = this.add.image(width * 0.5 , camera.scrollY + (height * 0.25),'growingBuffIcon').setDepth(4).setScale(1.5).setVisible(0).setAlpha(0.95)
-        skillTreeLifeIcon = this.add.image(width * 0.75, camera.scrollY + (height * 0.25),'storingBuffIcon').setDepth(4).setScale(1.5).setVisible(0).setAlpha(0.95)
+        skillTreeEnergyIcon = this.add.image(width * 0.25, camera.worldView.y + (height * 0.25),'spendingBuffIcon').setDepth(4).setScale(1.5).setVisible(0).setAlpha(0.95)
+        skillTreeFocusIcon = this.add.image(width * 0.5 , camera.worldView.y + (height * 0.25),'growingBuffIcon').setDepth(4).setScale(1.5).setVisible(0).setAlpha(0.95)
+        skillTreeLifeIcon = this.add.image(width * 0.75, camera.worldView.y + (height * 0.25),'storingBuffIcon').setDepth(4).setScale(1.5).setVisible(0).setAlpha(0.95)
  
-
         yearlyFunctionsTimer = this.time.addEvent({delay: 60000, callback: runYearlyFunctions, args: [], callbackScope: this, loop: true});
     
         monthlyFunctionsTimer = this.time.addEvent({delay: 5000, callback: runMonthlyFunctions, args: [], callbackScope: this, loop: true});
@@ -3011,38 +3182,6 @@ class Badlands extends Phaser.Scene {
         });
 
         this.anims.create({
-            key: 'energyStance',
-            frames: this.anims.generateFrameNumbers('energyStance', { start:0, end: 35}),
-            frameRate: 100,
-            repeat: 0,
-            //yoyo: true
-        });
-
-        this.anims.create({
-            key: 'focusStance',
-            frames: this.anims.generateFrameNumbers('focusStance', { start:0, end: 35}),
-            frameRate: 100,
-            repeat: 0,
-            //yoyo: true
-        });
-
-        this.anims.create({
-            key: 'chargeEnergy',
-            frames: this.anims.generateFrameNumbers('chargeEnergy', { start:0, end: 91}),
-            frameRate: 100,
-            repeat: 0,
-            //yoyo: true
-        });
-
-        this.anims.create({
-            key: 'chargeDash',
-            frames: this.anims.generateFrameNumbers('chargeDash', { start:0, end: 5}),
-            frameRate: 6,
-            repeat: 0,
-            //yoyo: true
-        });
-
-        this.anims.create({
             key: 'whiteHitSmear',
             frames: this.anims.generateFrameNumbers('whiteHitSmear', { start:0, end: 16}),
             frameRate: 16,
@@ -3061,23 +3200,12 @@ class Badlands extends Phaser.Scene {
         });
 
         this.anims.create({
-            key: 'deadlyCombatAssaultSmear',
-            frames: this.anims.generateFrameNumbers('deadlyCombatAssaultSmear', { start:0, end: 16}),
+            key: 'deadlyCombatAssaultHitSmear',
+            frames: this.anims.generateFrameNumbers('deadlyCombatAssaultHitSmear', { start:0, end: 16}),
             frameRate: 20,
             repeat: 0,
             showOnStart: 1,
             hideOnComplete: 1
-        });
-
-        // Meditate
-
-        this.anims.create({
-            key: 'meditateStance',
-            frames: this.anims.generateFrameNames('heroF',{prefix: 'Warrior_Crouch_', start: 1, end: 5, suffix: '.png'}),
-            frameRate: 6,
-            repeat: 0,
-            //yoyo: true,
-            //delay: 1
         });
 
         // Thunder Strike
@@ -3110,7 +3238,7 @@ class Badlands extends Phaser.Scene {
         });
 
         thunderStrikeVFX = this.add.sprite(0,0)
-        thunderStrikeVFX.setDepth(1).setScale(2,5).setOrigin(0.5,1)
+        thunderStrikeVFX.setDepth(2).setScale(5,15).setOrigin(0.5,1)
         thunderStrikeLighting = this.lights.addLight(0, 0, 0).setIntensity(1.5)
         thunderStrikeLighting.setColor(0xFFBF1F)
         
@@ -3191,30 +3319,6 @@ class Badlands extends Phaser.Scene {
         });
 
         this.anims.create({
-            key: 'pDownStance',
-            frames: this.anims.generateFrameNames('heroF',{prefix: 'Warrior_Dash-Attack_', start: 1, end: 3, suffix: '.png'}),
-            frameRate: 6,
-            repeat: 0,
-            //delay: 1
-        });
-
-        this.anims.create({
-            key: 'pChargeSpecial1',
-            frames: this.anims.generateFrameNames('heroF',{prefix: 'Warrior_Dash-Attack_', start: 10, end: 10, suffix: '.png'}),
-            frameRate: 14,
-            repeat: 0,
-            //delay: 1
-        });
-
-        this.anims.create({
-            key: 'pChargeSpecial2',
-            frames: this.anims.generateFrameNames('heroF',{prefix: 'Warrior_Dash-Attack_', start: 1, end: 2, suffix: '.png'}),
-            frameRate: 14,
-            repeat: 0,
-            //delay: 1
-        });
-
-        this.anims.create({
             key: 'pDash',
             frames: this.anims.generateFrameNames('heroF',{prefix: 'Warrior_Dash_', start: 1, end: 7, suffix: '.png'}),
             frameRate: 14,
@@ -3263,28 +3367,10 @@ class Badlands extends Phaser.Scene {
         });
 
         this.anims.create({
-            key: 'pStance0',
-            frames: this.anims.generateFrameNames('heroF',{prefix: 'Warrior_Attack_', start: 1, end: 3, suffix: '.png'}),
-            frameRate: 6,
-            repeat: 0,
-            //yoyo: true,
-            //delay: 1
-        });
-
-        this.anims.create({
             key: 'pBlock',
             frames: this.anims.generateFrameNames('heroF',{prefix: 'Warrior_Attack_', start: 8, end: 9, suffix: '.png'}),
             frameRate: 8,
             repeat: 0,
-            //delay: 1
-        });
-
-        this.anims.create({
-            key: 'deadlyCombatAssaultStance',
-            frames: this.anims.generateFrameNames('heroF',{prefix: 'Warrior_Attack_', start: 1, end: 4, suffix: '.png'}),
-            frameRate: 6,
-            repeat: 0,
-            //yoyo: true,
             //delay: 1
         });
 
@@ -3294,15 +3380,6 @@ class Badlands extends Phaser.Scene {
             frameRate: 10,
             repeat: 0,
             //delay: 1
-        });
-
-        this.anims.create({
-            key: 'pChargeEnergy',
-            frames: this.anims.generateFrameNames('heroF',{prefix: 'Warrior_Crouch_', start: 1, end: 6, suffix: '.png'}),
-            frameRate: 4,
-            repeat: 0,
-            //yoyo: true,
-            //delay: 500
         });
 
         // NightBorne Animation
@@ -3486,11 +3563,9 @@ class Badlands extends Phaser.Scene {
 
                 playerVitals.pL = 574 / maxLife
                 playerVitals.draw()
-                
 
                 toggleSkillTree()
-            
-                
+               
             } 
 
             if (gameObject == inspirationBoxFocus){
@@ -3563,29 +3638,177 @@ class Badlands extends Phaser.Scene {
             gameObject.setAlpha(0.5);
 
         });
-            
-            enemies = this.physics.add.group({
-                setCollideWorldBounds: 1 
-            })
-
-            enemies.add(nightBorne)
-
-            enemies.add(creep) 
-
-            enemies.setDepth(2)
 
     }
 
-
-    update ()
+    update (time,delta)
     {
-       
-    
+            //this.anims.globalTimeScale = 2
+            //       this.tweens.timeScale = 0.5; // tweens
+            //this.physics.world.timeScale = 1; // physics
+            //this.time.timeScale = 2.5; // time events
+
+            // Creep AI Proto
+            if(gameMode == 0){
+            if(!creepIsHit && creep.x < player.x + 750 && creep.x > player.x - 300 && !creep.flipX){
+                if(creep.body.onFloor()){
+                    creep.setVelocityY(-600)
+                    
+                } else if(!creep.body.onFloor()) {
+                    creep.x -= 17.5
+                }
+                
+
+            creep.play('nightBorneMinion_Attack',true)
+                
+                
+            } else if (!creepIsHit && creep.x < player.x && creep.x > width && creep.flipX) {
+                
+                if (creep.x < player.x - Phaser.Math.Between(450,300)){
+                    creepChase = true
+                }
+
+                if (creepChase && creep.x < player.x - Phaser.Math.Between(100,150)){
+                    if (playerSpeed <= 1 ) {
+                        creep.play({key:'nightBorneMinion_Move',frameRate: 18},true)
+                        creep.x += Phaser.Math.Between(18,24) * playerSpeed
+                    } else if (playerSpeed > 1 && playerSpeed < 1.25 ) {
+                        creep.play({key:'nightBorneMinion_Move',frameRate: 16},true)
+                        creep.x += Phaser.Math.Between(16,22) * playerSpeed
+                    } else if (playerSpeed >= 1.15) {
+                        creep.play({key:'nightBorneMinion_Move',frameRate: 12},true)
+                        creep.x += Phaser.Math.Between(12,16)
+                    }
+                }
+                
+                
+                
+                
+            } else if(!creepIsHit && creep.x < width * 2) {
+                creep.play('nightBorneMinion_Idle',true)
+                creep.setVelocityX(0)
+                
+            }
+            }
+
+            if (creep.y > height + 100){
+                creep.y = height
+                creep.x = 5
+            }
+
+            if (nightBorne.y > height + 100){
+                nightBorne.y = height
+                nightBorne.x = 5
+            }
+
+
+            playerShadow.flipX = player.flipX
+            if(playerShadow.flipX){
+                playerShadow.x = player.x + 10
+            } else {
+                playerShadow.x = player.x - 10
+            }
+
+            if(playerShadow.flipY){
+                playerShadow.y = player.y + 150
+            } else {
+                playerShadow.y = player.y + 35
+            }
+
+
+            playerShadow.play(player.anims.getName(),true)
+            playerShadow.anims.msPerFrame = player.anims.msPerFrame
+            if (player.body.onFloor()){
+                playerShadow.setVisible(1)
+                
+            } else {
+                playerShadow.setVisible()
+            
+            }
+
+            nightBorneShadow.flipX = nightBorne.flipX
+            if(nightBorneShadow.flipX){
+                nightBorneShadow.x = nightBorne.x + 10
+            } else {
+                nightBorneShadow.x = nightBorne.x - 10
+            }
+
+            if(nightBorneShadow.flipY){
+                nightBorneShadow.y = nightBorne.y - 5
+            } else {
+                nightBorneShadow.y = nightBorne.y
+            }
+
+
+            nightBorneShadow.play(nightBorne.anims.getName(),true)
+            nightBorneShadow.anims.msPerFrame = nightBorne.anims.msPerFrame
+            if (nightBorne.body.onFloor()){
+                nightBorneShadow.setVisible(1)
+                
+            } else {
+                nightBorneShadow.setVisible()
+            
+            }
+
+            creepShadow.flipX = creep.flipX
+            if(creepShadow.flipX){
+                creepShadow.x = creep.x + 10
+            } else {
+                creepShadow.x = creep.x - 10
+            }
+
+            if(creepShadow.flipY){
+                creepShadow.y = creep.y + 105
+            } else {
+                creepShadow.y = creep.y
+            }
+
+
+            creepShadow.play(creep.anims.getName(),true)
+            creepShadow.anims.msPerFrame = creep.anims.msPerFrame
+            if (creep.body.onFloor()){
+                creepShadow.setVisible(1)
+                
+            } else {
+                creepShadow.setVisible()
+            
+            }
+
+            highObstacleShadow.flipX = highObstacle.flipX
+            if(highObstacleShadow.flipX){
+                highObstacleShadow.x = highObstacle.x - 25
+            } else {
+                highObstacleShadow.x = highObstacle.x + 25
+            }
+
+            if(highObstacleShadow.flipY){
+                highObstacleShadow.y = highObstacle.y + 340
+            } else {
+                highObstacleShadow.y = highObstacle.y
+            }
+
+            lowObstacleShadow.flipX = lowObstacle.flipX
+            if(lowObstacleShadow.flipX){
+                lowObstacleShadow.x = lowObstacle.x
+            } else {
+                lowObstacleShadow.x = lowObstacle.x + 110
+            }
+
+            if(lowObstacleShadow.flipY){
+                lowObstacleShadow.y = lowObstacle.y + 125
+            } else {
+                lowObstacleShadow.y = lowObstacle.y
+            }
+
+
+        spotlightPlayerHealth.intensity =  (0.5 * (currentLife / maxLife))
+        spotlightPlayerPower.intensity =  (0.5 * (currentLife / maxLife))
+
        //console.log(creep.visible)
-      // console.log(creep.anims.getName())
+      //console.log(creep.anims.getName())
        //console.log(creep.x)
-       
-       
+       console.log('Nightborne HP: ' + nightBorneLife)
+
         if(lvlTransition){
             lvlTransition = false
 
@@ -3638,8 +3861,7 @@ class Badlands extends Phaser.Scene {
 
 
                 if (Phaser.Input.Keyboard.JustDown(keyZ)){
-
-                    
+                    this.scene.get('Tutorial').functionAccessTest(this)
                     
                     if (touchEnabled){
                         enableTouchControls(0)
@@ -3667,15 +3889,12 @@ class Badlands extends Phaser.Scene {
                     showHUD()
                 }
 
-                playerIconBox.x = camera.scrollX + (width * 0.075)
-                playerIconBox.y =  (height * 0.15)
+             
+                playerIconBox.x = camera.worldView.x + (width * 0.075)
+                playerIconBox.y = camera.worldView.y +  (height * 0.15)
 
                 playerIcon.x = playerIconBox.x
                 playerIcon.y = playerIconBox.y
-
-                
-
-                
 
                 playerVitalsBox.x = playerIconBox.x + 125
                 playerVitalsBox.y = playerIcon.y
@@ -3711,7 +3930,7 @@ class Badlands extends Phaser.Scene {
                 goldText.y = goldIcon.y
                 goldText.setText(Math.floor(gold))
 
-                levelProgress.x = camera.scrollX + width * 0.25
+                levelProgress.x = camera.worldView.x + width * 0.25
                 levelProgress.y = (height * 0.975)
                 levelProgress.draw()
 
@@ -3727,27 +3946,37 @@ class Badlands extends Phaser.Scene {
                 skillBIcon.x = skillBBox.x
                 skillBIcon.y = skillBBox.y
 
-                inspirationPlayerIconBox.x = camera.scrollX + (width * 0.1)
-
-
+                inspirationPlayerIconBox.x = camera.worldView.x + (width * 0.125)
                 inspirationPlayerIcon.x = inspirationPlayerIconBox.x
 
-
-                inspirationTextBox.x = camera.scrollX + (width * 0.6)
+                inspirationTextBox.x = camera.worldView.x + (width * 0.6)
                 inspirationText.x = inspirationTextBox.x
 
-                inspirationBoxEnergy.x = camera.scrollX + (width * 0.35)
+                inspirationBoxEnergy.x = camera.worldView.x + (width * 0.35)
                 inspirationTextEnergy.x = inspirationBoxEnergy.x
-                inspirationBoxFocus.x = camera.scrollX + (width * 0.6)
+                inspirationBoxFocus.x = camera.worldView.x + (width * 0.6)
                 inspirationTextFocus.x = inspirationBoxFocus.x
-                inspirationBoxPower.x = camera.scrollX + (width * 0.85)
+                inspirationBoxPower.x = camera.worldView.x + (width * 0.85)
                 inspirationTextPower.x = inspirationBoxPower.x
             
                 skillTreeEnergyIcon.x = inspirationBoxEnergy.x
                 skillTreeFocusIcon.x = inspirationBoxFocus.x
                 skillTreeLifeIcon.x = inspirationBoxPower.x
 
+                spotlightPlayerHealth.x = player.x;
+                spotlightPlayerHealth.y = player.y;
 
+                spotlightPlayerPower.x = player.x;
+                spotlightPlayerPower.y = player.y;
+
+                spotlightNightBorne.x = nightBorne.x;
+                spotlightNightBorne.y = nightBorne.y;
+
+                spotlightCreep.x = creep.x;
+                spotlightCreep.y = creep.y;
+
+                spotlightSun.x = camera.scrollX + (width * 0.55)
+                spotlightSun.y = camera.scrollY + (height * 0.125)
             // Audio
 
                 // Background Music
@@ -3847,9 +4076,7 @@ class Badlands extends Phaser.Scene {
                 }
 
                 }
-
-
-                
+      
                 // Gamepad Control Mapping
                 
                 if (gamePadEnabled){
@@ -3922,7 +4149,7 @@ class Badlands extends Phaser.Scene {
                                     var alpha = 1
                                 }
 
-                                playerVitals.pL = (39.5 * playerVitals.scaleX) / maxLife
+                                playerVitals.pL = 574 / maxLife
                                 playerVitals.draw()
                               
 
@@ -3948,7 +4175,7 @@ class Badlands extends Phaser.Scene {
                                     var alpha = 1
                                 }
                                 
-                                playerVitals.pF = (39.5 * playerVitals.scaleX) / maxFocus
+                                playerVitals.pF = 574 / maxFocus
                                 playerVitals.draw()
                                 
 
@@ -3972,7 +4199,7 @@ class Badlands extends Phaser.Scene {
                                     var alpha = 1
                                 }
 
-                                playerVitals.pE = (39.5 * playerVitals.scaleX) / maxEnergy
+                                playerVitals.pE = 574 / maxEnergy
                                 playerVitals.draw()
                                 
 
@@ -4052,13 +4279,13 @@ class Badlands extends Phaser.Scene {
                     // Touch Control Screen Tracking
 
                         // Anchor Buttons
-                        left.x = camera.scrollX + (width * 0.075)
-                        left.y = camera.scrollY + (height * 0.8)
+                        left.x = camera.worldView.x + (width * 0.075)
+                        left.y = camera.worldView.y + (height * 0.8)
 
-                        actionA.x = camera.scrollX + (width * 0.925)
-                        actionA.y = camera.scrollY + (height * 0.85)
-                        actionB.x = camera.scrollX + (width * 0.825)
-                        actionB.y = camera.scrollY + (height * 0.9)
+                        actionA.x = camera.worldView.x + (width * 0.925)
+                        actionA.y = camera.worldView.y + (height * 0.85)
+                        actionB.x = camera.worldView.x + (width * 0.825)
+                        actionB.y = camera.worldView.y + (height * 0.9)
 
                         
                         // Remaining Buttons                        
@@ -4232,8 +4459,6 @@ class Badlands extends Phaser.Scene {
            
                // NightBorne Elite
 
-               
-
                     // NightBorne outline follows NightBorne
                         nightBorneOutline.x = nightBorne.x - 15
                         nightBorneOutline.y = nightBorne.y - 325
@@ -4241,12 +4466,6 @@ class Badlands extends Phaser.Scene {
 
                     // NightBorne outline copies current playing animation of  sprite, with optional delay
                         nightBorneOutline.play({key:nightBorne.anims.getName(),frameRate:Phaser.Math.Between(8,16)},true) 
-
-          // Drag Settings
-                
-                // Set player drag based on if in air or on ground
-
-                        
 
         // Travel Mode
         if (gameMode == 0){
@@ -4265,6 +4484,8 @@ class Badlands extends Phaser.Scene {
             glory += ((100 / 60) * 100) * (playerSpeed)
             var d = 4000
 
+            
+
             this.tweens.add({
                 delay: d,
                 targets: [lvlBG1,lvlBG2],
@@ -4276,8 +4497,9 @@ class Badlands extends Phaser.Scene {
             this.tweens.add({
                 delay: d,
                 targets: lvlBG1PL,
-                alpha: { value: 1, duration: d, ease: 'Power1'}
-            });
+                alpha: { value: 1, duration: d, ease: 'Power1'},
+
+            },this);
 
 
 
@@ -4312,24 +4534,13 @@ class Badlands extends Phaser.Scene {
                 
             }
 
-            nightBorneVFX.setVisible(0)
-
-            
-                nightBorne.play({key:'nightBorne_Move',frameRate: 8 * playerSpeed},true)
-
-                
-
-            
-
             // Background 
-
-
 
                 // Parallax Background layers scrolls at variable speed multiplied by playerSpeed %
                 if(!gameOver){
                     //lvlFG1.tilePositionX += 4.5 * (playerSpeed)
-                    lvlBG1.tilePositionX += (12 * lvlBG1ScrollMod) * (playerSpeed * 1.5)
-                    lvlBG2.tilePositionX += (12 * lvlBG2ScrollMod) * (playerSpeed * 1.5)
+                    lvlBG1.tilePositionX += (12 * lvlBG1ScrollMod) * (playerSpeed)
+                    lvlBG2.tilePositionX += (12 * lvlBG2ScrollMod) * (playerSpeed)
                     lvlBG3.tilePositionX += (12 * lvlBG3ScrollMod) * (playerSpeed)
                     lvlBG4.tilePositionX += (12 * lvlBG4ScrollMod) * (playerSpeed)
                     lvlBG5.tilePositionX += (12 * lvlBG5ScrollMod) * (playerSpeed)
@@ -4338,8 +4549,8 @@ class Badlands extends Phaser.Scene {
                     lvlBG8.tilePositionX += (12 * lvlBG8ScrollMod) * (playerSpeed)
                     lvlBG9.tilePositionX += (12 * lvlBG9ScrollMod) * (playerSpeed)
 
-                    lvlBG1PL.tilePositionX += (12 * lvlBG1ScrollModPL) * (playerSpeed * 1.5)
-                    lvlBG2PL.tilePositionX += (12 * lvlBG2ScrollModPL) * (playerSpeed * 1.5)
+                    lvlBG1PL.tilePositionX += (12 * lvlBG1ScrollModPL) * (playerSpeed)
+                    lvlBG2PL.tilePositionX += (12 * lvlBG2ScrollModPL) * (playerSpeed)
                     lvlBG3PL.tilePositionX += (12 * lvlBG3ScrollModPL) * (playerSpeed)
                     lvlBG4PL.tilePositionX += (12 * lvlBG4ScrollModPL) * (playerSpeed)
                     lvlBG5PL.tilePositionX += (12 * lvlBG5ScrollModPL) * (playerSpeed)
@@ -4352,51 +4563,27 @@ class Badlands extends Phaser.Scene {
                     moveLowObstacle(lowObstacle, 12 * (playerSpeed))
 
                     if(creep.anims.getName() == 'nightBorneMinion_Move'){
-                        moveCreep(creep, 18 * (playerSpeed))
+                       moveCreep(creep, 18 * (playerSpeed))
                      } else if (creep.anims.getName() == 'nightBorneMinion_Idle') {
-                         moveCreep(creep, 12 * (playerSpeed))
-                     } else {
-                         moveCreep(creep, 6 * (playerSpeed))
+                          moveCreep(creep, 12 * (playerSpeed))
+                      } else {
+                          moveCreep(creep, 14 * (playerSpeed))
                      }
 
-                    if(!nightBorneCamActive || nightBorneCamLocked){
-
-                    } else if(nightBorneCamActive && !nightBorneCamLocked) {
-                    
-                    }
                 } 
-            // Player
-            
-           
-
+   
             // NightBorne
 
                 // Dynamic Panning based on nightBorne distance to player
-                if (!nightBorneCamActive){
-                    
-                    if(focusModeActive){
-                        
-                    } else {
+                if (!nightBorneCamActive && !focusModeActive){
                         camera.pan(width * 1.5,player.y,2000)
-                    }    
-                     
-                    
-                } else if (nightBorneCamActive && !controlsEnabled) {
-                    player.play({key:'pRun',frameRate: 16},true);
-                }
 
-                // NightBorne Elite
-
- 
-
+                } 
 
 
         // Battle Mode
 
         } else if (gameMode == 1){
-
-   
-          
 
                 // Camera
                 if (player.x > closest.x - 300 && playerLockedOn){
@@ -4468,60 +4655,40 @@ class Badlands extends Phaser.Scene {
                 // INTEGRATE WITH NIGHTBORNEHIT FUNCTION
                     // Enemy detects collision with player sword
 
-                    if (nightBorneIsHit){
-                        nightBorne.play({key:'nightBorne_Hurt',frameRate: 12},true); 
-                        nightBorne.once('animationstart', function(){
-                            if (player.flipX){
-                                nightBorne.setVelocity(-Phaser.Math.Between(50,150),-Phaser.Math.Between(50,200))
-                                
-                                
-                            } else {
-                                nightBorne.setVelocity(Phaser.Math.Between(50,150),-Phaser.Math.Between(50,200))
-                            }
-                            // if(nightBorne.body.onFloor()){
-                            //     nightBorne.setVelocityY(-Phaser.Math.Between(50,200))
-                            // }
-                        }, nightBorne)
-                        nightBorne.once('animationcomplete', function () {
-                                
-                            nightBorneRecover();
-                                
-                                
-                            }, this);
-                    }
+                   
 
                     // INTEGRATE WITH NIGHTBORNEHIT FUNCTION
                     // Check for enemy death
 
-                    if (nightBorneLife <= 0 && !nightBorneIsHit && nightBorneAlive){
+                    // if (nightBorneLife <= 0 && nightBorneAlive){
 
-                        nightBorneAlive = false
-                        nightBorne.anims.play({key:'nightBorne_Death',frameRate: 23},true);
+                    //     nightBorneAlive = false
+                    //     nightBorne.anims.play({key:'nightBorne_Death',frameRate: 23},true);
 
                         
                         
               
-                        nightBorne.once('animationcomplete', function (anim,frame) {
+                    //     nightBorne.once('animationcomplete', function (anim,frame) {
 
-                                        nightBorne.setDragX(0)
+                    //                     nightBorne.setDragX(0)
 
-                                        nightBorne.setVelocityX(0)
+                    //                     nightBorne.setVelocityX(0)
 
-                                        nightBorne.flipX = false
-                                        nightBorne.x = 0
-                                        nightBorne.y = 0
-                                        nightBorneMaxLife = Phaser.Math.Between(income * 0.8, (income * 0.8) * chaosFactor) 
-                                        nightBorneLife = nightBorneMaxLife
-                                        nightBorneVitals.p = 38 / nightBorneMaxLife
+                    //                     nightBorne.flipX = false
+                    //                     nightBorne.x = 0
+                    //                     nightBorne.y = 0
+                    //                     nightBorneMaxLife = Phaser.Math.Between(income * 0.8, (income * 0.8) * chaosFactor) 
+                    //                     nightBorneLife = nightBorneMaxLife
+                    //                     nightBorneVitals.p = 38 / nightBorneMaxLife
                                         
-                                        nightBorneAlive = true
+                    //                     nightBorneAlive = true
                                         
-                                        modeSwitch(0)
-                                        toggleSkillTree()
+                    //                     modeSwitch(0)
+                    //                     toggleSkillTree()
                                         
                                         
-                        }, nightBorne)
-                    }
+                    //     }, nightBorne)
+                    // }
 
                     
             
@@ -4530,13 +4697,8 @@ class Badlands extends Phaser.Scene {
             
         }
 
-
-         
-
-
         // // REPLACE WITH CASE: FORMAT FOR CLEANER CODE, ADD ALL TO BATTLE MODE SECTION ONLY AND PLAYER ONLY VERSION TO RUNNING MODE
-        
-        
+
         // Enable player sword collision detection
         if (player.anims.getName() == 'pDoubleAttack'){
                     // playerSwordSwing.play()
@@ -4546,7 +4708,7 @@ class Badlands extends Phaser.Scene {
                     if (player.anims.currentFrame.index >= 6 && player.anims.currentFrame.index < 12){
                         
                         sword.body.checkCollision.none = false
-                        damage = 0.05 * maxEnergy *  baseDamageMultiplier
+                        damage = 0.5 * maxEnergy *  baseDamageMultiplier
                     } else {
                         sword.body.checkCollision.none = true
                     }
@@ -4559,7 +4721,7 @@ class Badlands extends Phaser.Scene {
                     if (player.anims.currentFrame.index >= 6 && player.anims.currentFrame.index < 8){
                         
                         sword.body.checkCollision.none = false
-                        damage = 0.1 * maxEnergy * baseDamageMultiplier
+                        damage = maxEnergy * baseDamageMultiplier
                     } else {
                         sword.body.checkCollision.none = true
                     }
@@ -4571,7 +4733,7 @@ class Badlands extends Phaser.Scene {
                     if (player.anims.currentFrame.index >= 2 && player.anims.currentFrame.index < 3){
                         
                         sword.body.checkCollision.none = false
-                        damage = 0.1 * maxEnergy  * baseDamageMultiplier
+                        damage = maxEnergy  * baseDamageMultiplier
                     } else {
                         sword.body.checkCollision.none = true
                     }
@@ -4582,7 +4744,7 @@ class Badlands extends Phaser.Scene {
                     if (player.anims.currentFrame.index >= 4 && player.anims.currentFrame.index < 6){
                         
                     sword.body.checkCollision.none = false
-                    damage =  0.15 * maxEnergy * baseDamageMultiplier
+                    damage =  1.5 * maxEnergy * baseDamageMultiplier
                     } else {
                         sword.body.checkCollision.none = true
                     }
@@ -4645,14 +4807,8 @@ class Badlands extends Phaser.Scene {
                  }, this);
             } 
 
-        
-
-        
 
         }
-
-        
-
 
 
 

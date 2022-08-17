@@ -8,7 +8,7 @@ class Title extends Phaser.Scene {
     
     constructor() {
         
-        super("loadTitle")
+        super("Title")
 
     }
 
@@ -71,7 +71,7 @@ class Title extends Phaser.Scene {
             nextScene = false
             camera.fadeOut(1000)
             camera.once('camerafadeoutcomplete',function(){
-                this.scene.start("loadTutorial")
+                this.scene.start("Tutorial")
             },this)
         }
             

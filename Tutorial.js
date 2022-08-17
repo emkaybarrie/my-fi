@@ -1,4 +1,3 @@
-var camera
 var controlsText1
 var controlsText2
 var controlsText3
@@ -6,10 +5,28 @@ var controlsText3
 var startText
 var nextScene
 
-var Tutorial = class Tutorial extends Phaser.Scene {
+
+
+class Tutorial extends Phaser.Scene {
+
+
     constructor() {
-        super("loadTutorial")
+        super("Tutorial")
     }
+
+    functionAccessTest(game){
+        game.tweens.add({
+            delay: 0,
+            targets: [lvlBG1,lvlBG2],
+            alpha: { value: 0, duration: 1000, ease: 'Power1'}
+    
+        });
+    
+        nightBorne.setDragX(0)
+        game.physics.moveTo(nightBorne, width * 3, 0,400)
+    }
+
+
 
     preload(){
         this.load.image('tutorialA', 'assets/TutorialScreenA.png');
@@ -140,7 +157,7 @@ var Tutorial = class Tutorial extends Phaser.Scene {
 
         if (nextScene){
             
-            this.scene.start("loadBadlands")
+            this.scene.start("Badlands")
             nextScene = false
             
         }
