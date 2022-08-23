@@ -1486,12 +1486,13 @@ hide ()
 
     // Attack 1
        
-        
+        moveCancelActive = false
         
             player.play({key:'pDoubleAttack',frameRate: 20},true);
 
 
             player.once('animationcomplete', function (anim,frame) {
+                moveCancelActive = true
                 player.emit('animationcomplete_' + anim.key, frame)
             }, player)
         
@@ -1505,18 +1506,20 @@ hide ()
         
         
             player.play({key:'pAttack1',frameRate: 16},true);
+            moveCancelActive = false
 
             if(player.anims.getName() == 'pAttack1'){
                 
                 if(player.flipX){
-                    player.setVelocityX(25)
+                    player.setVelocityX(-750)
                 } else {
-                    player.setVelocityX(-25)
+                    player.setVelocityX(750)
                 }
                   
             }
 
             player.once('animationcomplete', function (anim,frame) {
+                moveCancelActive = true
                 player.emit('animationcomplete_' + anim.key, frame)
             }, player)
         
@@ -1529,8 +1532,10 @@ hide ()
             
             
                 player.play({key:'pAttack2',frameRate: 16},true);
+                moveCancelActive = false
 
                 player.once('animationcomplete', function (anim,frame) {
+                    moveCancelActive = true
                     player.emit('animationcomplete_' + anim.key, frame)
                 }, player)
             
@@ -1542,14 +1547,19 @@ hide ()
             
             
                 player.play({key:'pJump',frameRate: 14},true);
+                moveCancelActive = false
 
                 
-                    player.setVelocityX(100)
+                if(player.flipX){
+                    player.setVelocityX(-1000)
+                } else {
+                    player.setVelocityX(1000)
+                }
                 
 
                 if (player.body.onFloor()){
                     if(player.anims.currentFrame.index >= 1){
-                        player.setVelocityY(-150)
+                        player.setVelocityY(-650)
                     }
                 }
 
@@ -1568,9 +1578,9 @@ hide ()
                     
 
                     if (player.flipX){
-                        player.setVelocityX(-50)
+                        player.setVelocityX(-500)
                     } else {
-                        player.setVelocityX(50)
+                        player.setVelocityX(500)
                     }
 
                     player.body.maxVelocity.y = 500
@@ -1592,7 +1602,8 @@ hide ()
     
                 
            
-         
+                moveCancelActive = true  
+                usingPower = true
             
          
 
@@ -1684,14 +1695,16 @@ hide ()
 
 
         player.play({key:'pDash',frameRate: 12},true);
+        player.body.maxVelocity.x = 1500
         if(player.flipX){
-            player.setVelocityX(-3500)
+            player.setVelocityX(-1500)
         } else {
-            player.setVelocityX(3500) 
+            player.setVelocityX(1500) 
         }
 
         player.once('animationcomplete', function (anim,frame) {
             player.emit('animationcomplete_' + anim.key, frame)
+            player.body.maxVelocity.x = 750
             
         }, player)
 
@@ -1701,6 +1714,11 @@ hide ()
             moveCancelActive = false
 
             player.play({key:'pHeavyAttack',frameRate: 16},true);
+            if(player.flipX){
+                player.setVelocityX(-500)
+            } else {
+                player.setVelocityX(500) 
+            }
 
             player.once('animationcomplete', function (anim,frame) {
                 player.emit('animationcomplete_' + anim.key, frame)
@@ -1849,7 +1867,7 @@ hide ()
         } else if (controlsEnabled) {
             playerIsHit = true
             
-                    
+
                     
                     playerVitals.decreaseLife((nightBorneMaxLife * 0.2) / 50)
                     player.anims.play({key:'pHurt',frameRate: 12},true); 
@@ -3796,6 +3814,7 @@ class Badlands extends Phaser.Scene {
        //console.log(creep.x)
        
        console.log('Blocking: ' + playerBlocking)
+       console.log('BVelocity X: ' + player.body.velocity.x)
        console.log('Nightborne HP: ' + nightBorneLife)
        console.log('Nightborne Armour: ' + nArmour)
        console.log('Nightborne Weapon Inactive: ' + nightBorneSword.body.checkCollision.none)
@@ -4788,9 +4807,10 @@ class Badlands extends Phaser.Scene {
         chaosFactor = Phaser.Math.FloatBetween(chaosMultiplierMin,chaosMultiplierMax)
 
         if (currentLife <= 0 && gameOver == false){
+                
+                player.anims.play({key:'pDeath',frameRate: 12},true); 
                 gameOver = true
                 controlsEnabled = false
-                player.anims.play({key:'pDeath',frameRate: 12},true); 
                 player.once('animationcomplete', function () {
                     updateHighScore()
                     finish();
