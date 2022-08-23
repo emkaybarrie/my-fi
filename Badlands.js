@@ -208,7 +208,7 @@
     var playerIsHit = false
     var level = 0
     var progress = 0
-    var progressToNextLevel = Phaser.Math.Between(175,225)
+    var progressToNextLevel = Phaser.Math.Between(175,225) /4
 
     var progressToNextCheckPoint = progressToNextLevel * 0.25
     
@@ -257,6 +257,7 @@
       
         var nightBorneIsHit = false
         var nightBorneLife = (income * 0.8) 
+        var nArmour
         var nightBorneMaxLife = (income * 0.8) 
 
     // Character Management & Stats
@@ -1678,141 +1679,95 @@ hide ()
 
     function thunderStrike(){
 
+        playerAttackHitSmear = 'thunderStrikeHitSmear'
+
         // Damage Stats
 
-        baseDamageMultiplier = Phaser.Math.Between(0.25,3)
+        baseDamageMultiplier = Phaser.Math.Between(0.25,1.5)
 
-        // In Range Movement
-        
 
-        // Player Crouches
-
-        player.play({key:'pCrouch',frameRate: 10},true);
+        player.play({key:'pDash',frameRate: 12},true);
+        if(player.flipX){
+            player.setVelocityX(-3500)
+        } else {
+            player.setVelocityX(3500) 
+        }
 
         player.once('animationcomplete', function (anim,frame) {
-                player.emit('animationcomplete_' + anim.key, frame)
-            }, player)
-        // Player Jumps up
-            player.once('animationcomplete_pCrouch', function (anim,frame) {
-            player.play({key:'pJump',frameRate: 10},true);
+            player.emit('animationcomplete_' + anim.key, frame)
+            
+        }, player)
+
+
+        player.once('animationcomplete_pDash', function (anim,frame) {
+            
             
 
-            player.setVelocityY(-750)
-            
-
-        
-
-            if(player.anims.getName() == 'pJump'){
-                if (player.flipX){
-                    
-                    fireTowardsTarget(player,closest.x,1)
-                } else {
-                    
-                    fireTowardsTarget(player,closest.x,1)
-                }
-                
-                    
-            }
+            player.play({key:'pHeavyAttack',frameRate: 16},true);
 
             player.once('animationcomplete', function (anim,frame) {
                 player.emit('animationcomplete_' + anim.key, frame)
+                
             }, player)
+                
+            player.once('animationcomplete_pHeavyAttack', function (anim,frame) {
 
-        },player)
-
-
-        // Player floats in air
-            player.once('animationcomplete_pJump', function (anim,frame) {
-            
-            
-                player.play({key:'pUptoFall',frameRate: 8},true);
-
-
-
-                player.once('animationcomplete', function (anim,frame) {
-                    player.emit('animationcomplete_' + anim.key, frame)
-                }, player)
-            
-
-            }, player)
-
-
-        // Attack / Skill
-
-        // Attack 1
-        player.once('animationcomplete_pUptoFall', function (anim,frame) {
-            
-            
-
-            player.play({key:'pHeavyAttack',frameRate: 12},true);
-
-            if(player.anims.currentFrame.index >= 1){
-
-            player.setVelocityY(500)
-            thunderStrikeVFX.x = closest.x
-                        thunderStrikeVFX.y = nightBorne.y + 50
-                        camera.flash(500)      
+                thunderStrikeVFX.x = player.x
+                thunderStrikeVFX.y = player.y
+                    if(player.flipX){
+                        var thunderDir = -1
+                    } else {
+                        var thunderDir = 1 
+                    }
+                    thunderStrikeVFX.x += (150 * thunderDir)
+                    
+                    camera.flash(250)      
+                    camera.once('cameraflashcomplete',function(){
+                    thunderStrikeVFX.play({key:'thunderStrike',frameRate:36},true)
+                    thunderStrikeVFX.body.checkCollision.none = false
+                    camera.shake(250,0.05)
+                    thunderStrikeVFX.once('animationcomplete', function (anim,frame){
+                        
+                        thunderStrikeVFX.x += (250 * thunderDir)
+                        
+                        camera.flash(150)      
                         camera.once('cameraflashcomplete',function(){
-                                thunderStrikeVFX.play({key:'thunderStrike',frameRate:36},true)
-                                camera.shake(500,0.05)
-                                // chaserVFX.angle = 0
-                                // chaserVFX.play('thunderStrikeSmear')        
-                        },this)
-            
-            }
-
-
-            player.once('animationcomplete', function (anim,frame) {
-                
-                player.emit('animationcomplete_' + anim.key, frame)
-            }, player)
-
-
-        }, player) 
-
-
-            // Attack 2
-                player.once('animationcomplete_pHeavyAttack', function (anim,frame) {
-                
-                
-                    player.play({key:'pAttack2',frameRate:8},true);
-                    thunderStrikeVFX.x = closest.x
-                    thunderStrikeVFX.y = closest.y + 50
-                    camera.flash(500)      
-                        camera.once('cameraflashcomplete',function(){
-                                thunderStrikeVFX.play({key:'thunderStrike',frameRate:24},true)
-                                camera.shake(500,0.05)  
+                        thunderStrikeVFX.play({key:'thunderStrike',frameRate:36},true)
+                        
+                        camera.shake(150,0.05)
+                        thunderStrikeVFX.once('animationcomplete', function (anim,frame){
+                            
+                            thunderStrikeVFX.x += (350 * thunderDir)
+                            
+                            camera.flash(50)      
+                            camera.once('cameraflashcomplete',function(){
+                            thunderStrikeVFX.play({key:'thunderStrike',frameRate:36},true)
+                           
+                            camera.shake(50,0.05)
+                            thunderStrikeVFX.once('animationcomplete', function (anim,frame){
+                               usingPower = true
+                               thunderStrikeVFX.body.checkCollision.none = true
                             },this)
-
-                    player.once('animationcomplete', function (anim,frame) {
-                        
-                        player.emit('animationcomplete_' + anim.key, frame)
-                    }, player)
-
+                                    
+                            },this)
+                        },this)
+                                
+                        },this)
+                    },this)
+                            
+                    },this)
+                
+                },this)
                     
                 
-
-                }, player)
-            
-
-                
-                // Return to Idle
-                player.once('animationcomplete_pAttack2', function (anim,frame) {
-
-                        
-                player.play({key:'pIdle', frameRate: 8},true);
-                usingPower = true
-             
                 
             
 
-                player.once('animationcomplete', function (anim,frame) {
-                    player.emit('animationcomplete_' + anim.key, frame)
-                    
-                }, player)
+            
 
+        }, player)
 
-                }, player)
+       
 
 
         }
@@ -1844,9 +1799,11 @@ hide ()
         })
     }
 
-    function playerHit(){
+    function playerHit(enemy,player){
 
         if (inBattle){
+
+            if(enemy != creep){
 
             if(playerBlocking){
                     
@@ -1884,16 +1841,13 @@ hide ()
                         player.play('pIdle', true)
                     }, this);
             }
+        }
                 
                 
-            
-            
-            
-            
-            
             
 
-        } else {
+
+        } else if (controlsEnabled) {
             playerIsHit = true
             
                     
@@ -2518,6 +2472,7 @@ hide ()
                 else 
                 //
                 if (player.body.onFloor() && !gameOver && controlsEnabled){
+
                     regenActive = true
                     sword.body.checkCollision.none = true
                     player.setDragY(0)
@@ -2530,12 +2485,15 @@ hide ()
                             player.setDragX(3000)       
                         }
 
-                        player.play('pIdle',true)
+                        player.on('animationcomplete',function(){
+                            player.play('pIdle',true)
                         
-                        playerDodging = false 
-                        playerCrouching = false
-                        attackModeActive = false
-                        usingPower = false
+                            playerDodging = false 
+                            playerCrouching = false
+                            attackModeActive = false
+                            usingPower = false
+                        }, player)
+                        
                     } else {
                         player.play({key:'pRun',frameRate: 12},true);
                         player.flipX = false
@@ -2563,6 +2521,11 @@ hide ()
                         }
                         
                     }
+
+                  
+
+
+                    
                 }
             }
     }
@@ -2646,13 +2609,23 @@ hide ()
         },this)
         
         if(enemy == nightBorne){
+            if(enemy.anims.getName() != 'nightBorne_Idle'){
+            nArmour = nightBorneMaxLife * 0.15
             nightBorneVitals.decreaseNightborneLife(fDamage)
-            enemy.play({key:'nightBorne_Hurt',frameRate: 12},true); 
+            nArmour -= (fDamage)
+            } else {
+                nArmour = nightBorneMaxLife * 0.05
+            }
+
+            if(nArmour <= 0){
+                enemy.play({key:'nightBorne_Hurt',frameRate: 12},true); 
+            }
+            
                         
-            enemy.once('animationcomplete', function () {
+            
                     
                 if (nightBorneLife <= 0 && nightBorneAlive){
-                    
+                    enemy.once('animationcomplete', function () {    
                     nightBorneAlive = false
                     enemy.play({key:'nightBorne_Death',frameRate: 23},true);
                     enemy.body.enable = false
@@ -2674,10 +2647,11 @@ hide ()
                                     
                                     
                     }, enemy)
+                }, this)
                 }
                                 
                                 
-                            }, this);
+            ;
         } else if (enemy == creep){
             creepIsHit = true
             glory += level + 1
@@ -2830,7 +2804,7 @@ class Badlands extends Phaser.Scene {
 
         this.load.spritesheet('thunderStrikeIcon', 'assets/skills/thunderStrikeIcon.png', { frameWidth: 256, frameHeight: 256});
         this.load.spritesheet('thunderStrike', 'assets/skills/thunderStrike.png', { frameWidth: 64, frameHeight: 64}); 
-        // this.load.spritesheet('thunderStrikeSmear', 'assets/skills/thunderStrikeSmear.png', { frameWidth: 1048, frameHeight: 1048});
+        this.load.spritesheet('thunderStrikeHitSmear', 'assets/skills/thunderStrikeSmear.png', { frameWidth: 1048, frameHeight: 1048});
 
         this.load.spritesheet('deadlyCombatAssaultIcon', 'assets/skills/deadlyCombatAssaultIcon.png', { frameWidth: 256, frameHeight: 256});
         this.load.spritesheet('deadlyCombatAssaultHitSmear', 'assets/skills/deadlyCombatAssaultHitSmear.png', { frameWidth: 1048, frameHeight: 1048});
@@ -3009,7 +2983,7 @@ class Badlands extends Phaser.Scene {
         sword.body.setAllowGravity(false).setOffset(0,5).setSize(100, 55)
         sword.body.checkCollision.none = true
 
-        playerHitVFX = this.add.sprite(sword.x, sword.y,'whiteHitSmear').setDepth(4).setScale(0.75) 
+        playerHitVFX = this.add.sprite(sword.x, sword.y,'whiteHitSmear').setDepth(4).setScale(0.5) 
         
         highObstacleShadow = this.add.image(player.x,height - 35, 'lamp').setScale(4).setDepth(2)
         highObstacleShadow.flipY = 1
@@ -3080,7 +3054,7 @@ class Badlands extends Phaser.Scene {
             
             this.physics.add.collider(platforms,nightBorne);
 
-            nightBorneSword = this.add.rectangle(nightBorne.x, nightBorne.y, 150, 175);
+            nightBorneSword = this.add.rectangle(nightBorne.x, nightBorne.y, 350, 300);
             this.physics.add.existing(nightBorneSword, false)
             nightBorneSword.body.setAllowGravity(false)
             nightBorneSword.body.checkCollision.none = true
@@ -3107,6 +3081,7 @@ class Badlands extends Phaser.Scene {
             enemies.add(creep) 
             enemies.setDepth(2)
             this.physics.add.overlap(sword,enemies,enemyHit,null,this)
+            
             
         camera = this.cameras.main.centerOn(width * 1.5,0)
 
@@ -3220,8 +3195,8 @@ class Badlands extends Phaser.Scene {
         });
 
         this.anims.create({
-            key: 'thunderStrikeSmear',
-            frames: this.anims.generateFrameNumbers('thunderStrikeSmear', { start:0, end: 16}),
+            key: 'thunderStrikeHitSmear',
+            frames: this.anims.generateFrameNumbers('thunderStrikeHitSmear', { start:0, end: 16}),
             frameRate: 20,
             repeat: 0,
             showOnStart: 1,
@@ -3237,8 +3212,14 @@ class Badlands extends Phaser.Scene {
             //delay: 1
         });
 
-        thunderStrikeVFX = this.add.sprite(0,0)
-        thunderStrikeVFX.setDepth(2).setScale(5,15).setOrigin(0.5,1)
+        thunderStrikeVFX = this.physics.add.sprite(player.x,0).setOffset(0,30)
+        //this.physics.add.existing(thunderStrikeVFX, false)
+        //thunderStrikeVFX.body.setAllowGravity(false)
+        thunderStrikeVFX.body.checkCollision.none = true
+        this.physics.add.overlap(thunderStrikeVFX,enemies,enemyHit,null,this)
+        this.physics.add.collider(platforms,thunderStrikeVFX);
+        thunderStrikeVFX.setCollideWorldBounds(true)
+        thunderStrikeVFX.setDepth(2).setScale(3.5,15).setOrigin(0.5,1)
         thunderStrikeLighting = this.lights.addLight(0, 0, 0).setIntensity(1.5)
         thunderStrikeLighting.setColor(0xFFBF1F)
         
@@ -3650,6 +3631,7 @@ class Badlands extends Phaser.Scene {
 
             // Creep AI Proto
             if(gameMode == 0){
+               
             if(!creepIsHit && creep.x < player.x + 750 && creep.x > player.x - 300 && !creep.flipX){
                 if(creep.body.onFloor()){
                     creep.setVelocityY(-600)
@@ -3689,7 +3671,7 @@ class Badlands extends Phaser.Scene {
                 creep.setVelocityX(0)
                 
             }
-            }
+            } 
 
             if (creep.y > height + 100){
                 creep.y = height
@@ -3808,6 +3790,9 @@ class Badlands extends Phaser.Scene {
       //console.log(creep.anims.getName())
        //console.log(creep.x)
        console.log('Nightborne HP: ' + nightBorneLife)
+       console.log('Nightborne Armour: ' + nArmour)
+       console.log('Nightborne Weapon Inactive: ' + nightBorneSword.body.checkCollision.none)
+       console.log('Thunder Strike  Inactive: ' + thunderStrikeVFX.body.checkCollision.none)
 
         if(lvlTransition){
             lvlTransition = false
@@ -4254,19 +4239,14 @@ class Badlands extends Phaser.Scene {
                         } else if (button == 5){
                             skillKeyAIsDown = false
    
-                                player.play('pBackDash',true)
-
-                                player.once('animationcomplete',function(){
-                                    player.play('pIdle',true)
-                                },player)
-
-
                         } else if (button == 6){
                             
                             actionKeyBIsDown = false
                                
                         } else if (button == 4){
                             skillKeyBIsDown = false
+
+                            
 
 
                         }
@@ -4776,10 +4756,10 @@ class Badlands extends Phaser.Scene {
 
         if (nightBorne.flipX){
             nightBorneSword.x = nightBorne.x - 50
-            nightBorneSword.y = nightBorne.y - 125
+            nightBorneSword.y = nightBorne.y - 250
         } else {
             nightBorneSword.x = nightBorne.x + 50
-            nightBorneSword.y = nightBorne.y - 125
+            nightBorneSword.y = nightBorne.y - 250
         }
 
         nightBorneVitals.x = nightBorne.x + 30
