@@ -4440,10 +4440,10 @@ class Badlands extends Phaser.Scene {
                             controlsEnabled = true
                             }, this);
             
-                    } else {
+                    } else if (controlsEnabled) {
                         abstractedControls()
                     }
-                } else if (!playerIsHit) {
+                } else if (!playerIsHit && controlsEnabled) {
                 //
                 abstractedControls()
                 }
