@@ -192,6 +192,8 @@
     var gamePad 
     var gamePadEnabled = false
 
+    var moveCancelActive = true
+
     var actionKeyAIsDown = false
     var actionKeyBIsDown = false
     var skillKeyAIsDown = false
@@ -779,18 +781,16 @@ hide ()
     }
 
     function finish(){
-        if (gameOver == false){
-            gameOver = true
+        
             camera.fadeOut(6000)
             camera.on('camerafadeoutcomplete', function () {
-            gameOver = true
             bgMusic.stop()
             gameRestart = true
             
 
             }, this);
             
-        }
+        
         
     }
 
@@ -1361,8 +1361,6 @@ hide ()
                 // Return to Idle - Neutral
                     player.once('animationcomplete_pHeavyAttack', function (anim,frame) {
 
-                            
-                    player.play({key:'pIdle'},true);
 
                   
                     usingPower = true
@@ -1397,7 +1395,7 @@ hide ()
                 player.once('animationcomplete_pAttack1', function (anim,frame) {
 
                         
-                player.play({key:'pIdle'},true);
+   
 
               
                 usingPower = true
@@ -1592,8 +1590,7 @@ hide ()
             // Return to Idle
             player.once('animationcomplete_pHeavyAttack', function (anim,frame) {
     
-                    
-            player.play({key:'pIdle', frameRate: 8},true);
+                
            
          
             
@@ -1659,7 +1656,7 @@ hide ()
             player.once('animationcomplete_pBackDash', function (anim,frame) {
 
                     
-            player.play({key:'pIdle', frameRate: 8},true);
+
             playerAttacking = false
            
             
@@ -1701,7 +1698,7 @@ hide ()
 
         player.once('animationcomplete_pDash', function (anim,frame) {
             
-            
+            moveCancelActive = false
 
             player.play({key:'pHeavyAttack',frameRate: 16},true);
 
@@ -1720,6 +1717,8 @@ hide ()
                         var thunderDir = 1 
                     }
                     thunderStrikeVFX.x += (150 * thunderDir)
+
+                    moveCancelActive = true
                     
                     camera.flash(250)      
                     camera.once('cameraflashcomplete',function(){
@@ -1801,6 +1800,7 @@ hide ()
 
     function playerHit(enemy,player){
 
+    if(!gameOver){
         if (inBattle){
 
             if(enemy != creep){
@@ -1838,7 +1838,6 @@ hide ()
 
                     player.once('animationcomplete', function () {
                         playerIsHit = false 
-                        player.play('pIdle', true)
                     }, this);
             }
         }
@@ -1860,10 +1859,11 @@ hide ()
 
                     player.once('animationcomplete', function () {
                         playerIsHit = false 
-                        player.play('pIdle', true)
+                     
                     }, this);
 
         }  
+    }
     }
 
 
@@ -2471,7 +2471,7 @@ hide ()
                 } 
                 else 
                 //
-                if (player.body.onFloor() && !gameOver && controlsEnabled){
+                if (player.body.onFloor() && controlsEnabled && !playerIsHit){
 
                     regenActive = true
                     sword.body.checkCollision.none = true
@@ -2485,14 +2485,19 @@ hide ()
                             player.setDragX(3000)       
                         }
 
-                        player.on('animationcomplete',function(){
+                        
+                        if(moveCancelActive){
+                            
                             player.play('pIdle',true)
+                            
                         
                             playerDodging = false 
                             playerCrouching = false
                             attackModeActive = false
                             usingPower = false
-                        }, player)
+                        }
+                        
+                        
                         
                     } else {
                         player.play({key:'pRun',frameRate: 12},true);
@@ -3789,6 +3794,8 @@ class Badlands extends Phaser.Scene {
        //console.log(creep.visible)
       //console.log(creep.anims.getName())
        //console.log(creep.x)
+       
+       console.log('Blocking: ' + playerBlocking)
        console.log('Nightborne HP: ' + nightBorneLife)
        console.log('Nightborne Armour: ' + nArmour)
        console.log('Nightborne Weapon Inactive: ' + nightBorneSword.body.checkCollision.none)
@@ -4397,8 +4404,10 @@ class Badlands extends Phaser.Scene {
 
                     
                 // Abstracted Controls
-                if (playerIsHit){ 
+                if (playerIsHit){
+                    if(!inBattle){ 
                     playerHitAnimation()
+                    }
                 } else
                 // Players crouch animation when player lands back on ground
                 if (!playerLanded){
@@ -4415,7 +4424,7 @@ class Badlands extends Phaser.Scene {
                     } else {
                         abstractedControls()
                     }
-                } else {
+                } else if (!playerIsHit) {
                 //
                 abstractedControls()
                 }
@@ -4745,7 +4754,7 @@ class Badlands extends Phaser.Scene {
 
 
         if (gameRestart){
-            //reset()
+            reset()
             this.scene.restart()
             gameRestart = false
             gameOver = false
@@ -4780,6 +4789,7 @@ class Badlands extends Phaser.Scene {
 
         if (currentLife <= 0 && gameOver == false){
                 gameOver = true
+                controlsEnabled = false
                 player.anims.play({key:'pDeath',frameRate: 12},true); 
                 player.once('animationcomplete', function () {
                     updateHighScore()
