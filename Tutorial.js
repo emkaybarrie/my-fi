@@ -202,11 +202,11 @@ class Tutorial extends Phaser.Scene {
     update(){
 
 
-        // if (nextScene){
+        if (nextScene){
             
-        //     this.scene.start("Badlands")
-        //     nextScene = false
+            this.scene.start("Badlands")
+            nextScene = false
             
-        // }
+        }
     }
 }
