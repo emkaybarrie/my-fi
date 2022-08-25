@@ -210,7 +210,7 @@
     var playerIsHit = false
     var level = 0
     var progress = 0
-    var progressToNextLevel = Phaser.Math.Between(175,225) /4
+    var progressToNextLevel = Phaser.Math.Between(175,225)
 
     var progressToNextCheckPoint = progressToNextLevel * 0.25
     
