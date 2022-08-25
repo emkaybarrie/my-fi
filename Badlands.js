@@ -1824,24 +1824,23 @@ hide ()
             if(enemy != creep){
 
             if(playerBlocking){
-                    
-                   
+                     
                     
                     if (player.flipX){
-                        fireTowardsTarget(player,player.x + 50,1)
+                        fireTowardsTarget(player,player.x + 100,1)
                     } else {
-                        fireTowardsTarget(player,player.x - 50,1)
+                        fireTowardsTarget(player,player.x - 100,1)
                     }
                     
                     camera.shake(100, 0.0015);
                     
                     
-                    playerVitals.decreaseLife((nightBorneMaxLife * 0.2) / 50)
+                    playerVitals.decreaseLife((nightBorneMaxLife * 0.1) / 50)
                     
             } else if (!playerBlocking){
                 playerIsHit = true
 
-                playerVitals.decreaseLife((nightBorneMaxLife * 0.5) / 50)
+                playerVitals.decreaseLife((nightBorneMaxLife * 0.25) / 50)
 
                     maxEnergy *= 1 - (0.04 / 12 / 50)
                     if(glory - (25/60) < 0){
@@ -2045,7 +2044,7 @@ hide ()
         }  else {
             playerVitals.decreaseLife(-lifeRegen / 200) 
         playerVitals.decreaseEnergy(-energyRegen / 200)
-        playerVitals.decreaseFocus(-focusRegen * 100 / 200) 
+        playerVitals.decreaseFocus(-focusRegen / 200) 
         }  
         
 
@@ -2297,9 +2296,10 @@ hide ()
                 } else
                 //
                 if(upIsDown){
-                    player.setDragY(0)
+                    
                     if(inBattle){
                         if (player.body.onFloor()){
+                            player.setDragY(0)
                             playerJumping = true
                             
 
@@ -2329,11 +2329,7 @@ hide ()
                                 playerLanded = false
                             },player)
                             }
-
-
-                            
-
-                             
+  
                         } 
                     } else {
                         if (currentEnergy > maxEnergy * 0.1){
@@ -2633,25 +2629,42 @@ hide ()
         
         if(enemy == nightBorne){
             if(enemy.anims.getName() != 'nightBorne_Idle'){
-            nArmour = nightBorneMaxLife * 0.15
-            nightBorneVitals.decreaseNightborneLife(fDamage)
-            nArmour -= (fDamage)
+            if(nArmour <= 0){
+                enemy.play({key:'nightBorne_Hurt',frameRate: 8},true);
+                nightBorneVitals.decreaseNightborneLife(fDamage) 
+                nArmour = nightBorneMaxLife * 0.15
             } else {
-                nArmour = nightBorneMaxLife * 0.05
+                nArmour -= (fDamage)
+                enemy.play({key:'nightBorne_Hurt',frameRate: 12},true);
+                    nightBorneVitals.decreaseNightborneLife(fDamage * 0.85) 
+            }
+            
+            nightBorneVitals.decreaseNightborneLife(fDamage * 0.85)
+            
+            } else {
+                if(nArmour <= 0){
+                    enemy.play({key:'nightBorne_Hurt',frameRate: 8},true);
+                    nightBorneVitals.decreaseNightborneLife(fDamage) 
+                    nArmour = nightBorneMaxLife * 0.05
+                } else {
+                    nArmour -= (fDamage)
+                    enemy.play({key:'nightBorne_Hurt',frameRate: 12},true);
+                    nightBorneVitals.decreaseNightborneLife(fDamage * 0.95) 
+                }
+                
             }
 
-            if(nArmour <= 0){
-                enemy.play({key:'nightBorne_Hurt',frameRate: 12},true); 
-            }
+            
             
                         
             
                     
                 if (nightBorneLife <= 0 && nightBorneAlive){
-                    enemy.once('animationcomplete', function () {    
+                    enemy.once('animationcomplete', function () {  
+                    enemy.body.enable = false  
                     nightBorneAlive = false
                     enemy.play({key:'nightBorne_Death',frameRate: 23},true);
-                    enemy.body.enable = false
+                    
                     enemy.once('animationcomplete', function (anim,frame) {
 
                                     enemy.setDragX(0)
@@ -3813,12 +3826,12 @@ class Badlands extends Phaser.Scene {
       //console.log(creep.anims.getName())
        //console.log(creep.x)
        
-       console.log('Blocking: ' + playerBlocking)
-       console.log('BVelocity X: ' + player.body.velocity.x)
-       console.log('Nightborne HP: ' + nightBorneLife)
-       console.log('Nightborne Armour: ' + nArmour)
-       console.log('Nightborne Weapon Inactive: ' + nightBorneSword.body.checkCollision.none)
-       console.log('Thunder Strike  Inactive: ' + thunderStrikeVFX.body.checkCollision.none)
+       console.log('Drag Y: ' + player.body.drag.y)
+       console.log('UpIsDown: ' + upIsDown)
+
+    //    console.log('Nightborne HP: ' + nightBorneLife)
+    //    console.log('Nightborne Armour: ' + nArmour)
+
 
         if(lvlTransition){
             lvlTransition = false
