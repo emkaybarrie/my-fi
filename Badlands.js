@@ -179,6 +179,7 @@
 
     var gameOver = false
     var gameRestart = false
+    var returnToKianova = false
 
     var glory = 0
     var gold = 0
@@ -784,8 +785,9 @@ hide ()
         
             camera.fadeOut(6000)
             camera.on('camerafadeoutcomplete', function () {
-            bgMusic.stop()
-            gameRestart = true
+            //bgMusic.stop()
+            //gameRestart = true
+            this.scene.start('Kianova')
             
 
             }, this);
@@ -869,28 +871,28 @@ hide ()
   
     }
 
-        function nightBorneCam(){
-            player.play({key:'pRun',frameRate: 16},true);
-            nightBorne.play({key:'nightBorne_Move',frameRate: 8 * playerSpeed},true)
-        if(!nightBorneCamActive){
-            camera.resetFX()
-            playerIsHit = false
-            controlsEnabled = false
-            hideHUD()
-            levelProgress.hide()
-            nightBorneCamActive = true
-            highObstacle.body.checkCollision.none = true
-            lowObstacle.body.checkCollision.none = true
-            camera.pan(nightBorne.x + 200,0,2500)
-            camera.once('camerapancomplete', function () {
-                nightBorneCamLocked = true
-                camera.startFollow(nightBorne,true,0.5,0.5,-200,0)
-            },this)
-            
-            
-        }
+    function nightBorneCam(){
+        player.play({key:'pRun',frameRate: 16},true);
+        nightBorne.play({key:'nightBorne_Move',frameRate: 8 * playerSpeed},true)
+    if(!nightBorneCamActive){
+        camera.resetFX()
+        playerIsHit = false
+        controlsEnabled = false
+        hideHUD()
+        levelProgress.hide()
+        nightBorneCamActive = true
+        highObstacle.body.checkCollision.none = true
+        lowObstacle.body.checkCollision.none = true
+        camera.pan(nightBorne.x + 200,0,2500)
+        camera.once('camerapancomplete', function () {
+            nightBorneCamLocked = true
+            camera.startFollow(nightBorne,true,0.5,0.5,-200,0)
+        },this)
+        
         
     }
+    
+}
 
 
     function enableTouchControls(isEnabled){
@@ -2540,10 +2542,6 @@ hide ()
                         }
                         
                     }
-
-                  
-
-
                     
                 }
             }
@@ -2596,9 +2594,8 @@ hide ()
     function enemyHit(playerAttackHitBox,enemy){
         if(!enemyIsHit){
         enemyIsHit = true
-        console.log('Enemy: ' + enemy)
         var chaos = Phaser.Math.FloatBetween(0.00,1.00)
-        console.log('Chaos: ' + chaos)
+        
         var power
         var fDamage = damage
 
@@ -2613,7 +2610,7 @@ hide ()
             fDamage *= Phaser.Math.Between(0.85,1.1)
         }
 
-        console.log('fDamage: ' + fDamage)
+
         playerHitVFX.x = enemy.x
         playerHitVFX.y = playerAttackHitBox.y
         if(!player.flipX){
@@ -3124,6 +3121,7 @@ class Badlands extends Phaser.Scene {
         camera.setBounds(0, 0, width * 3, height)
  
         camera.fadeIn(12000)
+        
         
         playerIconBox = this.add.image(0,0,'playerIconBox').setDepth(3).setScale(0.0775,0.25).setOrigin(0.5,0.5)
         playerIcon = this.add.image(0,0,'playerIcon').setDepth(3).setScale(0.125).setOrigin(0.5,0.5)
@@ -3826,8 +3824,8 @@ class Badlands extends Phaser.Scene {
       //console.log(creep.anims.getName())
        //console.log(creep.x)
        
-       console.log('Drag Y: ' + player.body.drag.y)
-       console.log('UpIsDown: ' + upIsDown)
+       console.log('Controls Enabled: ' + controlsEnabled)
+
 
     //    console.log('Nightborne HP: ' + nightBorneLife)
     //    console.log('Nightborne Armour: ' + nArmour)
@@ -4503,47 +4501,57 @@ class Badlands extends Phaser.Scene {
 
             if (progress >= progressToNextLevel){
             glory += ((100 / 60) * 100) * (playerSpeed)
-            var d = 4000
+            progress = 0
 
-            
+            // var d = 4000
+            // this.tweens.add({
+            //     delay: d,
+            //     targets: [lvlBG1,lvlBG2],
+            //     alpha: { value: 0, duration: d, ease: 'Power1'}
 
-            this.tweens.add({
-                delay: d,
-                targets: [lvlBG1,lvlBG2],
-                alpha: { value: 0, duration: d, ease: 'Power1'}
-
-            });
-
-
-            this.tweens.add({
-                delay: d,
-                targets: lvlBG1PL,
-                alpha: { value: 1, duration: d, ease: 'Power1'},
-
-            },this);
+            // });
 
 
+            // this.tweens.add({
+            //     delay: d,
+            //     targets: lvlBG1PL,
+            //     alpha: { value: 1, duration: d, ease: 'Power1'},
 
-            this.tweens.add({
-                delay: d * 3,
-                targets: [lvlBG3,lvlBG4,lvlBG5,lvlBG6,lvlBG7,lvlBG8,lvlBG9],
+            // },this);
+
+
+
+            // this.tweens.add({
+            //     delay: d * 3,
+            //     targets: [lvlBG3,lvlBG4,lvlBG5,lvlBG6,lvlBG7,lvlBG8,lvlBG9],
                 
-                alphaBottomRight: { value: 0, duration: d, ease: 'Power1' },
-                alphaBottomLeft: { value: 0, duration: d, ease: 'Power1'},
-                alphaTopRight: { value: 0, duration: d * 3, ease: 'Power1' },
-                alphaTopLeft: { value: 0, duration: d * 3, ease: 'Power1' },
+            //     alphaBottomRight: { value: 0, duration: d, ease: 'Power1' },
+            //     alphaBottomLeft: { value: 0, duration: d, ease: 'Power1'},
+            //     alphaTopRight: { value: 0, duration: d * 3, ease: 'Power1' },
+            //     alphaTopLeft: { value: 0, duration: d * 3, ease: 'Power1' },
                 
-                //alpha: { value: 0, duration: d, ease: 'Power1'},
+            //     //alpha: { value: 0, duration: d, ease: 'Power1'},
 
-                onComplete: function ()
-                    {
-                        lvlTransition = true
+            //     onComplete: function ()
+            //         {
+            //             lvlTransition = true
 
-                    },
+            //         },
 
-            });
-            levelUp()
+            // });
+            //levelUp()
 
+            camera.fadeOut(6000)
+
+            camera.once('camerafadeoutcomplete',function(){
+                returnToKianova = true
+                
+            })
+
+            }
+
+            if (returnToKianova){
+                this.scene.start("Kianova")
             }
 
             if (progress >= progressToNextCheckPoint){
