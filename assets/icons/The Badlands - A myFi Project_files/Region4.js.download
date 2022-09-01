@@ -1,0 +1,703 @@
+
+// Region ID
+var regionID = 4
+var region = 'South'
+var regionPatron = 'Illivius'
+var regionAffinity = 'Digital Assets'
+
+// Sector List
+var sector0Array = []
+var sector1Array = []
+var sector2Array = []
+var sector3Array = []
+var sector4Array = []
+var sector5Array = []
+var sector6Array = []
+var sector7Array = []
+var sector8Array = []
+var sector9Array = []
+var sector10Array = []
+var sector11Array = []
+var sector12Array = []
+
+// Rarity List
+var commonArray = [] // Array of Common Scenes for Region
+var uncommonArray = []
+var rareArray = []
+var mythicalArray = []
+
+// Root Array   
+var rarityArray = []
+
+// Stage Data Output
+var createdStageData
+
+function createStageObjectDataArray(rarity,sector,stage){
+    id = rarityArray[rarity][sector][stage].data.get('id')
+   
+    stageName = rarityArray[rarity][sector][stage].data.get('stageName')
+  
+    assetPathRoot = rarityArray[rarity][sector][stage].data.get('assetPathRoot')
+  
+
+    stageMusicFileName = rarityArray[rarity][sector][stage].data.get('stageMusicFileName')
+
+    bgL1FileName = rarityArray[rarity][sector][stage].data.get('bgL1FileName')
+    bgL2FileName = rarityArray[rarity][sector][stage].data.get('bgL2FileName')
+    bgL3FileName = rarityArray[rarity][sector][stage].data.get('bgL3FileName')
+    bgL4FileName = rarityArray[rarity][sector][stage].data.get('bgL4FileName')
+    bgL5FileName = rarityArray[rarity][sector][stage].data.get('bgL5FileName')
+    bgL6FileName = rarityArray[rarity][sector][stage].data.get('bgL6FileName')
+    bgL7FileName = rarityArray[rarity][sector][stage].data.get('bgL7FileName')
+    bgL8FileName = rarityArray[rarity][sector][stage].data.get('bgL8FileName')
+    bgL9FileName = rarityArray[rarity][sector][stage].data.get('bgL9FileName')
+    bgL10FileName = rarityArray[rarity][sector][stage].data.get('bgL10FileName')
+
+    fgL1FileName = rarityArray[rarity][sector][stage].data.get('fgL1FileName')
+    fgL2FileName = rarityArray[rarity][sector][stage].data.get('fgL2FileName')
+
+    // Light Settings
+        // Dawn
+            dawnLight1Colour = rarityArray[rarity][sector][stage].data.get('dawnLight1Colour')
+            dawnLight1PosX = rarityArray[rarity][sector][stage].data.get('dawnLight1PosX')
+            dawnLight1PosY = rarityArray[rarity][sector][stage].data.get('dawnLight1PosY')
+            dawnLight1Intensity = rarityArray[rarity][sector][stage].data.get('dawnLight1Intensity')
+            dawnLight1Radius = rarityArray[rarity][sector][stage].data.get('dawnLight1Radius')
+
+            dawnLight2Colour = rarityArray[rarity][sector][stage].data.get('dawnLight2Colour')
+            dawnLight2PosX = rarityArray[rarity][sector][stage].data.get('dawnLight2PosX')
+            dawnLight2PosY = rarityArray[rarity][sector][stage].data.get('dawnLight2PosY')
+            dawnLight2Intensity = rarityArray[rarity][sector][stage].data.get('dawnLight2Intensity')
+            dawnLight2Radius = rarityArray[rarity][sector][stage].data.get('dawnLight2Radius')
+
+            dawnLight3Colour = rarityArray[rarity][sector][stage].data.get('dawnLight3Colour')
+            dawnLight3PosX = rarityArray[rarity][sector][stage].data.get('dawnLight3PosX')
+            dawnLight3PosY = rarityArray[rarity][sector][stage].data.get('dawnLight3PosY')
+            dawnLight3Intensity = rarityArray[rarity][sector][stage].data.get('dawnLight3Intensity')
+            dawnLight3Radius = rarityArray[rarity][sector][stage].data.get('dawnLight3Radius')
+
+        // Day
+            dayLight1Colour = rarityArray[rarity][sector][stage].data.get('dayLight1Colour')
+            dayLight1PosX = rarityArray[rarity][sector][stage].data.get('dayLight1PosX')
+            dayLight1PosY = rarityArray[rarity][sector][stage].data.get('dayLight1PosY')
+            dayLight1Intensity = rarityArray[rarity][sector][stage].data.get('dayLight1Intensity')
+            dayLight1Radius = rarityArray[rarity][sector][stage].data.get('dayLight1Radius')
+
+            dayLight2Colour = rarityArray[rarity][sector][stage].data.get('dayLight2Colour')
+            dayLight2PosX = rarityArray[rarity][sector][stage].data.get('dayLight2PosX')
+            dayLight2PosY = rarityArray[rarity][sector][stage].data.get('dayLight2PosY')
+            dayLight2Intensity = rarityArray[rarity][sector][stage].data.get('dayLight2Intensity')
+            dayLight2Radius = rarityArray[rarity][sector][stage].data.get('dayLight2Radius')
+
+            dayLight3Colour = rarityArray[rarity][sector][stage].data.get('dayLight3Colour')
+            dayLight3PosX = rarityArray[rarity][sector][stage].data.get('dayLight3PosX')
+            dayLight3PosY = rarityArray[rarity][sector][stage].data.get('dayLight3PosY')
+            dayLight3Intensity = rarityArray[rarity][sector][stage].data.get('dayLight3Intensity')
+            dayLight3Radius = rarityArray[rarity][sector][stage].data.get('dayLight3Radius')
+
+        // Dusk
+            duskLight1Colour = rarityArray[rarity][sector][stage].data.get('duskLight1Colour')
+            duskLight1PosX = rarityArray[rarity][sector][stage].data.get('duskLight1PosX')
+            duskLight1PosY = rarityArray[rarity][sector][stage].data.get('duskLight1PosY')
+            duskLight1Intensity = rarityArray[rarity][sector][stage].data.get('duskLight1Intensity')
+            duskLight1Radius = rarityArray[rarity][sector][stage].data.get('duskLight1Radius')
+
+            duskLight2Colour = rarityArray[rarity][sector][stage].data.get('duskLight2Colour')
+            duskLight2PosX = rarityArray[rarity][sector][stage].data.get('duskLight2PosX')
+            duskLight2PosY = rarityArray[rarity][sector][stage].data.get('duskLight2PosY')
+            duskLight2Intensity = rarityArray[rarity][sector][stage].data.get('duskLight2Intensity')
+            duskLight2Radius = rarityArray[rarity][sector][stage].data.get('duskLight2Radius')
+
+            duskLight3Colour = rarityArray[rarity][sector][stage].data.get('duskLight3Colour')
+            duskLight3PosX = rarityArray[rarity][sector][stage].data.get('duskLight3PosX')
+            duskLight3PosY = rarityArray[rarity][sector][stage].data.get('duskLight3PosY')
+            duskLight3Intensity = rarityArray[rarity][sector][stage].data.get('duskLight3Intensity')
+            duskLight3Radius = rarityArray[rarity][sector][stage].data.get('duskLight3Radius')
+
+        // Night
+            nightLight1Colour = rarityArray[rarity][sector][stage].data.get('nightLight1Colour')
+            nightLight1PosX = rarityArray[rarity][sector][stage].data.get('nightLight1PosX')
+            nightLight1PosY = rarityArray[rarity][sector][stage].data.get('nightLight1PosY')
+            nightLight1Intensity = rarityArray[rarity][sector][stage].data.get('nightLight1Intensity')
+            nightLight1Radius = rarityArray[rarity][sector][stage].data.get('nightLight1Radius')
+
+            nightLight2Colour = rarityArray[rarity][sector][stage].data.get('nightLight2Colour')
+            nightLight2PosX = rarityArray[rarity][sector][stage].data.get('nightLight2PosX')
+            nightLight2PosY = rarityArray[rarity][sector][stage].data.get('nightLight2PosY')
+            nightLight2Intensity = rarityArray[rarity][sector][stage].data.get('nightLight2Intensity')
+            nightLight2Radius = rarityArray[rarity][sector][stage].data.get('nightLight2Radius')
+
+            nightLight3Colour = rarityArray[rarity][sector][stage].data.get('nightLight3Colour')
+            nightLight3PosX = rarityArray[rarity][sector][stage].data.get('nightLight3PosY')
+            nightLight3PosY = rarityArray[rarity][sector][stage].data.get('nightLight3PosY')
+            nightLight3Intensity = rarityArray[rarity][sector][stage].data.get('nightLight3Intensity')
+            nightLight3Radius = rarityArray[rarity][sector][stage].data.get('nightLight3Radius')
+
+    // Floor Settings
+
+        floorPosYMin = rarityArray[rarity][sector][stage].data.get('floorPosYMin')
+        floorPosYMax = rarityArray[rarity][sector][stage].data.get('floorPosYMax')
+
+    // Platform Settings
+
+        platformSpriteFileName = rarityArray[rarity][sector][stage].data.get('platformSpriteFileName')
+        platformMaxNumber = rarityArray[rarity][sector][stage].data.get('platformMaxNumber')
+        // Spawn Time
+            platformMinSpawnTime = rarityArray[rarity][sector][stage].data.get('platformMinSpawnTime')
+            platformMaxSpawnTime = rarityArray[rarity][sector][stage].data.get('platformMaxSpawnTime')
+        // Dimensions
+            platformHeightMin = rarityArray[rarity][sector][stage].data.get('platformHeightMin')
+            platformHeightMax = rarityArray[rarity][sector][stage].data.get('platformHeightMax')
+            platformWidthMin = rarityArray[rarity][sector][stage].data.get('platformWidthMin')
+            platformWidthMax = rarityArray[rarity][sector][stage].data.get('platformWidthMax')
+        // Respawn Settings
+            platformRespawnTimeMin = rarityArray[rarity][sector][stage].data.get('platformRespawnTimeMin')
+            platformRespawnTimeMax = rarityArray[rarity][sector][stage].data.get('platformRespawnTimeMax')
+            platformRespawnPosYMin = rarityArray[rarity][sector][stage].data.get('platformRespawnPosYMin')
+            platformRespawnPosYMax = rarityArray[rarity][sector][stage].data.get('platformRespawnPosYMax')
+
+    // Scenery Settings
+
+        // Scenery 1
+            scenery1SpawnChance = rarityArray[rarity][sector][stage].data.get('scenery1SpawnChance')
+            scenery1SpriteFileName = rarityArray[rarity][sector][stage].data.get('scenery1SpriteFileName')
+            scenery1ScrollSpeedModifier = rarityArray[rarity][sector][stage].data.get('scenery1ScrollSpeedModifier')
+            scenery1SpriteFileName = rarityArray[rarity][sector][stage].data.get('scenery1SpriteFileName')
+            scenery1RespawnTimeMin = rarityArray[rarity][sector][stage].data.get('scenery1RespawnTimeMin')
+            scenery1RespawnTimeMax = rarityArray[rarity][sector][stage].data.get('scenery1RespawnTimeMax')
+
+        // Scenery 2
+            scenery2SpawnChance = rarityArray[rarity][sector][stage].data.get('scenery2SpawnChance')
+            scenery2SpriteFileName = rarityArray[rarity][sector][stage].data.get('scenery2SpriteFileName')
+            scenery2ScrollSpeedModifier = rarityArray[rarity][sector][stage].data.get('scenery2ScrollSpeedModifier')
+            scenery2SpriteFileName = rarityArray[rarity][sector][stage].data.get('scenery2SpriteFileName')
+            scenery2RespawnTimeMin = rarityArray[rarity][sector][stage].data.get('scenery2RespawnTimeMin')
+            scenery2RespawnTimeMax = rarityArray[rarity][sector][stage].data.get('scenery2RespawnTimeMax')
+
+        // Scenery 3
+            scenery3SpawnChance = rarityArray[rarity][sector][stage].data.get('scenery3SpawnChance')
+            scenery3SpriteFileName = rarityArray[rarity][sector][stage].data.get('scenery3SpriteFileName')
+            scenery3ScrollSpeedModifier = rarityArray[rarity][sector][stage].data.get('scenery3ScrollSpeedModifier')
+            scenery3SpriteFileName = rarityArray[rarity][sector][stage].data.get('scenery3SpriteFileName')
+            scenery3RespawnTimeMin = rarityArray[rarity][sector][stage].data.get('scenery3RespawnTimeMin')
+            scenery3RespawnTimeMax = rarityArray[rarity][sector][stage].data.get('scenery3RespawnTimeMax')
+
+    // Pick-Up Settings
+
+        pickupSpawnChance = rarityArray[rarity][sector][stage].data.get('pickupSpawnChance')
+        pickupType = rarityArray[rarity][sector][stage].data.get('pickupType')
+        pickupSpriteFileName = rarityArray[rarity][sector][stage].data.get('pickupSpriteFileName')
+        pickupRespawnTimeMin = rarityArray[rarity][sector][stage].data.get('pickupRespawnTimeMin')
+        pickupRespawnTimeMax = rarityArray[rarity][sector][stage].data.get('pickupRespawnTimeMax')
+
+
+        var stageDataArray = [
+            id,
+            stageName,
+            assetPathRoot,
+            stageMusicFileName,
+            bgL1FileName,
+            bgL2FileName ,
+            bgL3FileName ,
+            bgL4FileName ,
+            bgL5FileName,
+            bgL6FileName,
+            bgL7FileName,
+            bgL8FileName,
+            bgL9FileName,
+            bgL10FileName,
+        
+            fgL1FileName,
+            fgL2FileName,
+        
+            // Light Settings
+                // Dawn
+                    dawnLight1Colour,
+                    dawnLight1PosX,
+                    dawnLight1PosY,
+                    dawnLight1Intensity,
+                    dawnLight1Radius,
+        
+                    dawnLight2Colour,
+                    dawnLight2PosX,
+                    dawnLight2PosY,
+                    dawnLight2Intensity,
+                    dawnLight2Radius,
+        
+                    dawnLight3Colour,
+                    dawnLight3PosX,
+                    dawnLight3PosY,
+                    dawnLight3Intensity ,
+                    dawnLight3Radius,
+        
+                // Day
+                    dayLight1Colour,
+                    dayLight1PosX,
+                    dayLight1PosY,
+                    dayLight1Intensity,
+                    dayLight1Radius,
+        
+                    dayLight2Colour,
+                    dayLight2PosX,
+                    dayLight2PosY,
+                    dayLight2Intensity,
+                    dayLight2Radius,
+        
+                    dayLight3Colour ,
+                    dayLight3PosX,
+                    dayLight3PosY ,
+                    dayLight3Intensity,
+                    dayLight3Radius ,
+        
+                // Dusk
+                    duskLight1Colour ,
+                    duskLight1PosX ,
+                    duskLight1PosY,
+                    duskLight1Intensity,
+                    duskLight1Radius,
+        
+                    duskLight2Colour,
+                    duskLight2PosX,
+                    duskLight2PosY,
+                    duskLight2Intensity,
+                    duskLight2Radius,
+        
+                    duskLight3Colour,
+                    duskLight3PosX,
+                    duskLight3PosY,
+                    duskLight3Intensity,
+                    duskLight3Radius,
+        
+                // Night
+                    nightLight1Colour,
+                    nightLight1PosX,
+                    nightLight1PosY,
+                    nightLight1Intensity,
+                    nightLight1Radius,
+        
+                    nightLight2Colour,
+                    nightLight2PosX,
+                    nightLight2PosY,
+                    nightLight2Intensity,
+                    nightLight2Radius,
+        
+                    nightLight3Colour,
+                    nightLight3PosX,
+                    nightLight3PosY,
+                    nightLight3Intensity,
+                    nightLight3Radius,
+        
+            // Floor Settings
+        
+                floorPosYMin,
+                floorPosYMax,
+        
+            // Platform Settings
+        
+                platformSpriteFileName,
+                platformMaxNumber,
+                // Spawn Time
+                    platformMinSpawnTime,
+                    platformMaxSpawnTime,
+                // Dimensions
+                    platformHeightMin,
+                    platformHeightMax,
+                    platformWidthMin,
+                    platformWidthMax,
+                // Respawn Settings
+                    platformRespawnTimeMin,
+                    platformRespawnTimeMax,
+                    platformRespawnPosYMin,
+                    platformRespawnPosYMax,
+        
+            // Scenery Settings
+        
+                // Scenery 1
+                    scenery1SpawnChance,
+                    scenery1SpriteFileName,
+                    scenery1ScrollSpeedModifier,
+                    scenery1SpriteFileName,
+                    scenery1RespawnTimeMin,
+                    scenery1RespawnTimeMax,
+        
+                // Scenery 2
+                    scenery2SpawnChance,
+                    scenery2SpriteFileName,
+                    scenery2ScrollSpeedModifier,
+                    scenery2SpriteFileName,
+                    scenery2RespawnTimeMin,
+                    scenery2RespawnTimeMax,
+        
+                // Scenery 3
+                    scenery3SpawnChance,
+                    scenery3SpriteFileName,
+                    scenery3ScrollSpeedModifier,
+                    scenery3SpriteFileName,
+                    scenery3RespawnTimeMin,
+                    scenery3RespawnTimeMax,
+        
+            // Pick-Up Settings
+        
+                pickupSpawnChance,
+                pickupType ,
+                pickupSpriteFileName ,
+                pickupRespawnTimeMin,
+                pickupRespawnTimeMax]
+}
+
+function stageV0(game){
+// Outputs a Stage Data Object Instance encoded with this stages parameters 
+
+    // Stage Code
+
+       // Stage 0
+
+       // Stage Data Object
+       // Create Stage Data Object and Set Stage Object Name
+       var stageV0 = game.add.container()
+       var stageObjectName = stageV0.setName('stageV0')
+
+       
+       // Enable Data Storage
+       stageObjectName.setDataEnabled();
+
+       // Store Global Region Settings
+       stageObjectName.data.set('regionID',regionID)
+       stageObjectName.data.set('region',region)
+       stageObjectName.data.set('regionPatron',regionPatron)
+       stageObjectName.data.set('regionAffinity',regionAffinity)
+
+       // Store Stage Data
+
+       stageObjectName.data.set('id','4-0-0-0')
+       stageObjectName.data.set('stageName','Illuvium Riverbank')
+
+       stageObjectName.data.set('assetPathRoot','assets/')
+
+       stageObjectName.data.set('stageMusicFileName','music/Katana.mp3')
+
+       // Set BGFG Parameters
+       var stageVBGFGPrefix = 'river'
+       var stageVBGMax = 9
+       var stageVFGMax = 0
+       var BGMax = 10
+       var FGMax = 2
+
+
+       var bgScrollModArray = [1,0.5,0.95,0.75,0.75,0.5,0.25,0.1,0,0]
+       var fgScrollModArray = [0,0,0,0,0,0,0,0,0,0]
+
+       // Populate Data for applicable BG
+       for (var i = 1; i < stageVBGMax + 1; i++){
+        stageObjectName.data.set('bgL'+ i + 'FileName',stageVBGFGPrefix + i)
+       }
+
+       if (stageVBGMax < BGMax){
+        for (var i = stageVBGMax + 1; i < BGMax + 1; i++){
+            stageObjectName.data.set('bgL'+ i + 'FileName', null) 
+        }
+       }
+
+       // Populate Data for applicable FG
+       for (var i = 1; i < stageVFGMax + 1; i++){
+        stageObjectName.data.set('fgL'+ i + 'FileName',stageVBGFGPrefix + i)
+       }
+
+       if (stageVFGMax < FGMax){
+        for (var i = stageVFGMax + 1; i < FGMax + 1; i++){
+            stageObjectName.data.set('fgL'+ i + 'FileName', null) 
+        }
+       }
+
+       // Populate Data for Scroll Modifiers 
+
+       for (var i = 0; i < 10; i++){
+        stageObjectName.data.set('bgL'+ (i+1) + 'ScrollMod', bgScrollModArray[i])
+        stageObjectName.data.set('fgL'+ (i+1) + 'ScrollMod', fgScrollModArray[i])  
+    }
+       
+
+    // Light Settings
+        // Dawn
+        stageObjectName.data.set('dawnLight1Colour',0xE49759)
+        stageObjectName.data.set('dawnLight1PosX',1750)
+        stageObjectName.data.set('dawnLight1PosY', 250)
+        stageObjectName.data.set('dawnLight1Intensity',5)
+        stageObjectName.data.set('dawnLight1Radius',1980)
+
+        stageObjectName.data.set('dawnLight2Colour', null)
+        stageObjectName.data.set('dawnLight2PosX', null)
+        stageObjectName.data.set('dawnLight2PosY', null)
+        stageObjectName.data.set('dawnLight2Intensity', null)
+        stageObjectName.data.set('dawnLight2Radius', null)
+
+        stageObjectName.data.set('dawnLight3Colour', null)
+        stageObjectName.data.set('dawnLight3PosX', null)
+        stageObjectName.data.set('dawnLight3PosY', null)
+        stageObjectName.data.set('dawnLight3Intensity', null)
+        stageObjectName.data.set('dawnLight3Radius', null)
+
+        // Day
+        stageObjectName.data.set('dayLight1Colour', null)
+        stageObjectName.data.set('dayLight1PosX', null)
+        stageObjectName.data.set('dayLight1PosY', null)
+        stageObjectName.data.set('dayLight1Intensity', null)
+        stageObjectName.data.set('dayLight1Radius', null)
+
+        stageObjectName.data.set('dayLight2Colour', null)
+        stageObjectName.data.set('dayLight2PosX', null)
+        stageObjectName.data.set('dayLight2PosY', null)
+        stageObjectName.data.set('dayLight2Intensity', null)
+        stageObjectName.data.set('dayLight2Radius', null)
+
+        stageObjectName.data.set('dayLight3Colour', null)
+        stageObjectName.data.set('dayLight3PosX', null)
+        stageObjectName.data.set('dayLight3PosY', null)
+        stageObjectName.data.set('dayLight3Intensity', null)
+        stageObjectName.data.set('dayLight3Radius', null)
+
+        // Dusk
+        stageObjectName.data.set('duskLight1Colour', null)
+        stageObjectName.data.set('duskLight1PosX', null)
+        stageObjectName.data.set('duskLight1PosY', null)
+        stageObjectName.data.set('duskLight1Intensity', null)
+        stageObjectName.data.set('duskLight1Radius', null)
+
+        stageObjectName.data.set('duskLight2Colour', null)
+        stageObjectName.data.set('duskLight2PosX', null)
+        stageObjectName.data.set('duskLight2PosY', null)
+        stageObjectName.data.set('duskLight2Intensity', null)
+        stageObjectName.data.set('duskLight2Radius', null)
+
+        stageObjectName.data.set('duskLight3Colour', null)
+        stageObjectName.data.set('duskLight3PosX', null)
+        stageObjectName.data.set('duskLight3PosY', null)
+        stageObjectName.data.set('duskLight3Intensity', null)
+        stageObjectName.data.set('duskLight3Radius', null)
+
+        // Night
+        stageObjectName.data.set('nightLight1Colour', null)
+        stageObjectName.data.set('nightLight1PosX', null)
+        stageObjectName.data.set('nightLight1PosY', null)
+        stageObjectName.data.set('nightLight1Intensity', null)
+        stageObjectName.data.set('nightLight1Radius', null)
+
+        stageObjectName.data.set('nightLight2Colour', null)
+        stageObjectName.data.set('nightLight2PosX', null)
+        stageObjectName.data.set('nightLight2PosY', null)
+        stageObjectName.data.set('nightLight2Intensity', null)
+        stageObjectName.data.set('nightLight2Radius', null)
+
+        stageObjectName.data.set('nightLight3Colour', null)
+        stageObjectName.data.set('nightLight3PosY', null)
+        stageObjectName.data.set('nightLight3PosY', null)
+        stageObjectName.data.set('nightLight3Intensity', null)
+        stageObjectName.data.set('nightLight3Radius', null)
+
+    // Floor Settings
+
+    stageObjectName.data.set('floorPosYMin', 1000)
+    stageObjectName.data.set('floorPosYMax', 900)
+
+    // Platform Settings
+
+    stageObjectName.data.set('platformSpriteFileName', null)
+    stageObjectName.data.set('platformMaxNumber', null)
+        // Spawn Time
+        stageObjectName.data.set('platformMinSpawnTime', null)
+        stageObjectName.data.set('platformMaxSpawnTime', null)
+        // Dimensions
+        stageObjectName.data.set('platformHeightMin', null)
+        stageObjectName.data.set('platformHeightMax', null)
+        stageObjectName.data.set('platformWidthMin', null)
+        stageObjectName.data.set('platformWidthMax', null)
+        // Respawn Settings
+        stageObjectName.data.set('platformRespawnTimeMin', null)
+        stageObjectName.data.set('platformRespawnTimeMax', null)
+        stageObjectName.data.set('platformRespawnPosYMin', null)
+        stageObjectName.data.set('platformRespawnPosYMax', null)
+
+    // Scenery Settings
+
+        // Scenery 1
+        stageObjectName.data.set('scenery1SpawnChance', null)
+        stageObjectName.data.set('scenery1SpriteFileName', null)
+        stageObjectName.data.set('scenery1ScrollSpeedModifier', null)
+        stageObjectName.data.set('scenery1SpriteFileName', null)
+        stageObjectName.data.set('scenery1RespawnTimeMin', null)
+        stageObjectName.data.set('scenery1RespawnTimeMax', null)
+
+        // Scenery 2
+        stageObjectName.data.set('scenery2SpawnChance', null)
+        stageObjectName.data.set('scenery2SpriteFileName')
+        stageObjectName.data.set('scenery2ScrollSpeedModifier', null)
+        stageObjectName.data.set('scenery2SpriteFileName', null)
+        stageObjectName.data.set('scenery2RespawnTimeMin', null)
+        stageObjectName.data.set('scenery2RespawnTimeMax', null)
+
+        // Scenery 3
+        stageObjectName.data.set('scenery3SpawnChance', null)
+        stageObjectName.data.set('scenery3SpriteFileName', null)
+        stageObjectName.data.set('scenery3ScrollSpeedModifier', null)
+        stageObjectName.data.set('scenery3SpriteFileName', null)
+        stageObjectName.data.set('scenery3RespawnTimeMin', null)
+        stageObjectName.data.set('scenery3RespawnTimeMax', null)
+
+    // Pick-Up Settings
+
+    stageObjectName.data.set('pickupSpawnChance', null)
+    stageObjectName.data.set('pickupType', null)
+    stageObjectName.data.set('pickupSpriteFileName', null)
+    stageObjectName.data.set('pickupRespawnTimeMin', null)
+    stageObjectName.data.set('pickupRespawnTimeMax', null)
+
+
+    return stageObjectName
+}
+
+function getRarity(){
+    var rarityCheck = Phaser.Math.FloatBetween(0.00,1.00)
+    var generatedRarityIndex
+
+    if (rarityCheck <= 0.01){
+        // 'Mythical'
+        generatedRarityIndex = 3
+    } else if (rarityCheck <= 0.1){
+        // 'Rare'
+        generatedRarityIndex = 2
+    } else if (rarityCheck <= 0.25){
+       // 'Uncommon'
+       generatedRarityIndex = 1
+    } else {
+        // 'Common'
+        generatedRarityIndex = 0
+    }
+
+    return generatedRarityIndex
+
+}
+
+
+class Region4 extends Phaser.Scene {
+
+
+    constructor() {
+        super("Region4")
+        
+    }
+
+    createStageData(rarityOverrideIndex,sectorIndex) {
+
+
+        // DEFAULT settings if selected arrays are unpopulated
+    
+        var defaultRarityIndex = 0
+        var defaultSectorIndex = 0
+        
+        // Applies rarityOverride or selects random rarity.  Checks if valid array, and replaces with default rarity if not
+    
+        var rarityOverrideEnabled = false
+        var rarity
+    
+        // Rarity Override Trigger Code
+        // if (){
+    
+            //rarityOverrideEnabled = true
+            
+        // } else {
+            //rarityOverrideEnabled = false
+        // }
+        //
+      
+        if (rarityOverrideEnabled){
+            if(rarityArray[rarityOverrideIndex].length > 0){
+                rarity = rarityOverrideIndex
+            } else {
+                rarity = defaultRarityIndex
+            }
+        } else {
+            var randomisedRarityIndex = getRarity()
+            
+            if(rarityArray[randomisedRarityIndex].length > 0){
+                rarity = randomisedRarityIndex
+            } else {
+                rarity = defaultRarityIndex
+            }
+
+    
+        }
+    
+        // Checks array for selected sector.  Checks if valid array, and replaces with default sector if not
+    
+        var sector
+        
+        if (rarityArray[rarity][sectorIndex].length > 0){
+            sector = sectorIndex
+        } else {
+            sector = defaultSector
+        }
+
+        // Selects Stage to load
+    
+        var stage = Phaser.Math.Between(0,rarityArray[rarity][sector].length - 1)
+
+        console.log('Generating Stage Data....')
+        console.log('Selected Rarity: ' + rarity)
+        console.log('Selected Sector: ' + sector)
+        console.log('Selected Stage: ' + stage)
+        
+        console.log('Source Data Transfered....\n', rarityArray[rarity][sector][stage].data.getAll())
+        var stageDataObject = rarityArray[rarity][sector][stage]
+        console.log('Stage Data Preparing for Creation....\n', stageDataObject.data.getAll())
+
+            return stageDataObject
+    }
+    
+    create ()
+    {
+    
+    // Update Array Lists 
+        
+        console.log('Refreshing Array Lists...')
+       // Sector Lists
+       sector0Array = [stageV0(this)]
+       sector1Array = []
+       sector2Array = []
+       sector3Array = []
+       sector4Array = []
+       sector5Array = []
+       sector6Array = []
+       sector7Array = []
+       sector8Array = []
+       sector9Array = []
+       sector10Array = []
+       sector11Array = []
+       sector12Array = []
+
+    // Rarity Lists
+       commonArray = [sector0Array] // Array of Common Scenes for Region
+       uncommonArray = []
+       rareArray = []
+       mythicalArray = []
+
+    // Root Array   
+       rarityArray = [commonArray,uncommonArray,rareArray,mythicalArray]
+
+    // Create Stage Instance Data Object
+
+        console.log('Commencing Stage Data Creation....')
+        createdStageData = this.createStageData(null,0)
+
+        console.log('Stage Data Object Created: ', createdStageData)
+
+        console.log('Stage ID:\n',createdStageData.data.values.id)
+        console.log('Transmitting Stage Data Object to Badlands Engine....')
+        this.scene.run("Badlands", createdStageData)
+        console.log('Running  Badlands Engine....')
+        //this.scene.stop("Region4")
+
+
+    }
+
+
+}

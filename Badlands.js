@@ -1,4 +1,6 @@
 // Scene Variables
+
+
     // To be Sorted
     var yearlyFunctionsTimer
     var monthlyFunctionsTimer 
@@ -32,6 +34,7 @@
     
     var lvlFG1
     var lvlFG2
+    var lvlFG3
     var lvlBG1 
     var lvlBG2 
     var lvlBG3 
@@ -43,44 +46,8 @@
     var lvlBG9  
     var lvlBG10
 
-    var lvlBG1ScrollMod
-    var lvlBG2ScrollMod 
-    var lvlBG3ScrollMod 
-    var lvlBG3ScrollMod 
-    var lvlBG4ScrollMod
-    var lvlBG5ScrollMod 
-    var lvlBG6ScrollMod
-    var lvlBG7ScrollMod
-    var lvlBG8ScrollMod 
-    var lvlBG9ScrollMod 
 
-    var lvlFG1PL
-    var lvlFG2PL
-    var lvlBG1PL 
-    var lvlBG2PL 
-    var lvlBG3PL 
-    var lvlBG4PL 
-    var lvlBG5PL 
-    var lvlBG6PL
-    var lvlBG7PL
-    var lvlBG8PL
-    var lvlBG9PL  
-    var lvlBG10PL
 
-    var lvlBG1ScrollModPL
-    var lvlBG2ScrollModPL 
-    var lvlBG3ScrollModPL 
-    var lvlBG3ScrollModPL 
-    var lvlBG4ScrollModPL
-    var lvlBG5ScrollModPL 
-    var lvlBG6ScrollModPL
-    var lvlBG7ScrollModPL
-    var lvlBG8ScrollModPL 
-    var lvlBG9ScrollModPL 
-    
-    
-
-    
 
     var platforms
     var playerShadow
@@ -302,6 +269,156 @@
     var spendingBuffTier = 0
     var growingBuffTier = 0
     var kianovaBuffTier = 0
+
+    function reset(){
+
+        
+
+        nightBorneAlive = false
+        nightBorne.x = 0
+        nightBorne.y = 0
+        nightBorneMaxLife = Phaser.Math.Between(income * 0.8, (income * 0.8) * chaosFactor) 
+        nightBorneLife = nightBorneMaxLife
+        nightBorneVitals.p = 38 / nightBorneMaxLife
+                                    
+                              
+
+    var width = 1980
+    var height = 1080
+
+     nightBorneAlive = true
+
+         lvlTransition = false
+
+         inspirationPic = Phaser.Math.Between(1,3)
+       
+        
+    //System & Game Settings
+
+     gameOver = false
+     gameRestart = false
+     returnToKianova = false
+
+    glory = 0
+     gold = 0
+     highScore = parseInt(localStorage.getItem('highScore')) || 0;
+
+     gameMode = 0
+     inBattle = 0
+
+    // Controls
+    
+     gamePadEnabled = false
+
+     moveCancelActive = true
+
+     actionKeyAIsDown = false
+     actionKeyBIsDown = false
+    skillKeyAIsDown = false
+     skillKeyBIsDown = false
+     leftIsDown = false
+     rightIsDown = false
+     upIsDown = false
+     downIsDown = false
+  
+
+    // Travel & Battle Mode
+
+     regenActive = true
+     playerIsHit = false
+     level = 0
+     progress = 0
+     progressToNextLevel = Phaser.Math.Between(175,225)
+
+     progressToNextCheckPoint = progressToNextLevel * 0.25
+    
+
+    // Travel Mode
+
+     playerFocusing = false
+    focusModeActive = false
+     scanningForDanger = true
+     playerSpeed = 1
+
+        //NightBorne
+        startNecroFloat = true
+         nightBorneCamActive= false
+         nightBorneCamLocked= false
+        
+
+    // Battle Mode
+
+        // Camera
+        cameraPanning = false
+
+        // Player
+         playerLockedOn
+         controlsEnabled = true
+        playerBlocking = false
+         playerDodging = false
+         playerJumping = false
+        playerCrouching = false
+
+         playerAttacking = false 
+         attackModeActive = false
+         usingPower = false
+     
+
+         playerLanded = true
+
+        // Enemies
+       
+         chaosFactor = 1.0
+         chaosMultiplierMin = 0.7
+         chaosMultiplierMax = 2.5
+
+        // NightBorne
+      
+         nightBorneIsHit = false
+         nightBorneLife = (income * 0.8) 
+       
+         nightBorneMaxLife = (income * 0.8) 
+
+    // Character Management & Stats
+
+        // Financial Data
+         income = 100
+            //TBC
+         lifeRegenAllocation = 0.0 
+         focusRegenAllocation = 0.3 // a) self -report budget driven (i.e. how much do you save/invest a month) b) queried - eventually determined by funds in specific location (myFi designated/directed savings/funds)
+        energyRegenAllocation = 0.7  // a) self-report buidget driven b) delta of non-saved/invested income
+
+        // Game Stats
+        
+         lifeRegen = lifeRegenAllocation * income // Calc TBD - Buy-in to myFi stable/pension/emergency fund provides buff to regen - lock tokens/stables and earn 1 - x% 'regen' i.e return
+         focusRegen = focusRegenAllocation * income
+         energyRegen = 0// energyRegenAllocation * income 
+         lifeMultiplier = 3
+
+       maxLife = income * lifeMultiplier
+        startLife = maxLife
+        currentLife = maxLife
+
+        maxEnergy = income
+       currentEnergy = maxEnergy
+
+        startMaxEnergy = 100
+        currentFocus = 200
+         maxFocus = maxEnergy * 3
+
+        damage = 0
+        baseDamageMultiplier = 1
+
+
+    // TBC
+
+
+    skillTreeOpen = false
+    storingBuffTier = 0
+    spendingBuffTier = 0
+    growingBuffTier = 0
+     kianovaBuffTier = 0
+    }
 
     class HealthBar {
 
@@ -781,16 +898,14 @@ hide ()
         creep.setScale(scaleXRandom,scaleYRandom)
     }
 
-    function finish(){
+    function finish(game){
         
             camera.fadeOut(6000)
             camera.on('camerafadeoutcomplete', function () {
-            //bgMusic.stop()
-            //gameRestart = true
-            this.scene.start('Kianova')
-            
-
-            }, this);
+                game.scene.run('Kianova')
+                reset()
+                game.scene.stop('Badlands')
+            });
             
         
         
@@ -2710,6 +2825,12 @@ hide ()
         }
     }
 
+        var bgLayers 
+        var fgLayers 
+        var bgScroll 
+        var fgScroll
+        var activeStage
+
 
 class Badlands extends Phaser.Scene {
 
@@ -2719,6 +2840,65 @@ class Badlands extends Phaser.Scene {
         
     }
 
+    init(data)
+    {
+        
+        
+        console.log('Stage Data Received: ', data.data.getAll())
+        activeStage = data;
+        console.log('Staging Complete')
+        console.log('Entering ' + activeStage.data.values.stageName)
+        console.log('Time ' + activeStage.data.values.timeText)
+        
+       this.stageRefresh()
+
+       var t = this.make.text({
+        x: width * 1.85,
+        y: height * 0.175,
+        text:   'Region: ' + activeStage.data.values.region + ' (' + activeStage.data.values.regionID + ')' +  '\n' + 
+                'Region Patron: ' + activeStage.data.values.regionPatron + '\n' + 
+                'Region Affinity : ' + activeStage.data.values.regionAffinity + '\n' + 
+                'Stage: ' + activeStage.data.values.stageName + ' (' + activeStage.data.values.id + ')' + '\n' +
+                'Time of Day: ' + activeStage.data.values.timeText + ' (' + activeStage.data.values.timeCode + ')' + '\n' +
+                'Stage Music: ' + activeStage.data.values.stageMusicFileName + '\n',
+        origin: { x: 0.5, y: 0.5 },
+        style: {
+            font: 'bold 26px Gothic',
+
+            fill: 'white',
+            align: 'left',
+            wordWrap: { width: 750},
+        }
+    }).setDepth(1);
+
+    
+
+    
+        
+    }
+
+    stageRefresh ()
+    {
+
+        console.log('Refreshing Stage')
+
+        for(var i = 1; i < bgLayers + 1;i++){
+            this.textures.remove('bgL' + i);
+        }
+
+        for(var i = 1; i < fgLayers + 1;i++){
+            this.textures.remove('fgL' + i);
+        }
+        
+       
+        console.log('Stage Refreshed')
+        
+
+       
+
+
+    }
+
     
     preload ()
     {   
@@ -2726,7 +2906,6 @@ class Badlands extends Phaser.Scene {
 
         // Music
         bgMusicArray = []
-        
         
             
             // this.load.audio("bgMusic0a", ["assets/music/Riptide.mp3"]);
@@ -2780,26 +2959,25 @@ class Badlands extends Phaser.Scene {
         
         this.load.image('inspirationBox', 'assets/vFX/inspirationBox.png');
         this.load.image('playerVitalsBox', 'assets/vFX/playerHUDBox.png');
+       
+        // Stage Data Docking Bay
+        console.log('Loading Textures for: ' + activeStage.data.values.stageName + '\nAsset Name: ' + activeStage.data.values.stageAssetName)
 
-        this.load.image('dawnBG8', 'assets/dawn1.png');
-        this.load.image('dawnBG7', 'assets/dawn2.png');
-        this.load.image('dawnBG6', 'assets/dawn3.png');
-        this.load.image('dawnBG5', 'assets/dawn4.png');
-        this.load.image('dawnBG4', 'assets/dawn5.png');
-        this.load.image('dawnBG3', 'assets/dawn6.png');
-        this.load.image('dawnBG2', 'assets/dawn7.png');
-        this.load.image('dawnBG1', 'assets/dawn8.png');
+        bgLayers = activeStage.data.values.bgLayers
+        fgLayers = activeStage.data.values.fgLayers
+        bgScroll = activeStage.data.values.bgScroll
+        fgScroll = activeStage.data.values.fgScroll
 
-        this.load.image('riverBG9', 'assets/river9.png');
-        this.load.image('riverBG8', 'assets/river8.png');
-        this.load.image('riverBG7', 'assets/river7.png');
-        this.load.image('riverBG6', 'assets/river6.png');
-        this.load.image('riverBG5', 'assets/river5.png');
-        this.load.image('riverBG4', 'assets/river4.png');
-        this.load.image('riverBG3', 'assets/river3.png');
-        this.load.image('riverBG2', 'assets/river2.png');
-        this.load.image('riverBG1', 'assets/river1.png');
+        for (var i = 1; i < bgLayers + 1; i++){
+            console.log('bgL'+ i, activeStage.data.values.assetPathRoot + 'BG' + activeStage.data.values.stageAssetName + i)
+            this.load.image('bgL'+ i, activeStage.data.values.assetPathRoot + 'BG' + activeStage.data.values.stageAssetName + i);
+        }
 
+        for (var i = 1; i < fgLayers + 1; i++){
+            console.log('fgL'+ i, activeStage.data.values.assetPathRoot + 'FG' + activeStage.data.values.stageAssetName + i)
+            this.load.image('fgL'+ i, activeStage.data.values.assetPathRoot + 'FG' + activeStage.data.values.stageAssetName + i);
+        }
+ 
 
         this.load.image('vines', 'assets/vines.png');
         this.load.image('treeTrunk', 'assets/treeTrunk.png');
@@ -2807,13 +2985,9 @@ class Badlands extends Phaser.Scene {
         this.load.image('rock1', 'assets/rock_1.png')
         this.load.image('rock2', 'assets/rock_2.png')
         this.load.image('rock3', 'assets/rock_3.png')
-
         this.load.image('ground', 'assets/woodground.png');
 
         this.load.atlas('heroF', 'assets/heroF.png','assets/heroF.json');
-
-
-        
 
 
         // General 
@@ -2823,33 +2997,121 @@ class Badlands extends Phaser.Scene {
 
         this.load.atlas('doomsayer', 'assets/doomsayer.png','assets/doomsayersprites.json');
         this.load.spritesheet('nightBorne', 'assets/nightBorne.png', { frameWidth: 80, frameHeight: 80});
-        // this.load.spritesheet('nightBorneNecromancer', 'assets/nightBorneNecromancer.png', { frameWidth: 160, frameHeight: 128});
+         this.load.spritesheet('nightBorneNecromancer', 'assets/nightBorneNecromancer.png', { frameWidth: 160, frameHeight: 128});
 
  
         // VFX - Hit Animation
-         this.load.spritesheet('whiteHitSmear', 'assets/whiteHitSmear.png', { frameWidth: 1048, frameHeight: 1048});
-         //this.load.spritesheet('whiteHitSmear2', 'assets/whiteHitSmear2.png', { frameWidth: 1048, frameHeight: 1048});  
+         this.load.spritesheet('whiteHitSmear', 'assets/whiteHitSmear.png', { frameWidth: 1024, frameHeight: 1024});
+         this.load.spritesheet('whiteHitSmear2', 'assets/whiteHitSmear2.png', { frameWidth: 1048, frameHeight: 1048});  
 
         // // Skills
-        // this.load.spritesheet('explosiveStrikeIcon', 'assets/skills/explosiveStrikeIcon.png', { frameWidth: 256, frameHeight: 256});
-        // this.load.spritesheet('explosiveStrike', 'assets/skills/explosiveStrike.png', { frameWidth: 48, frameHeight: 48}); 
+         this.load.spritesheet('explosiveStrikeIcon', 'assets/skills/explosiveStrikeIcon.png', { frameWidth: 256, frameHeight: 256});
+         this.load.spritesheet('explosiveStrike', 'assets/skills/explosiveStrike.png', { frameWidth: 48, frameHeight: 48}); 
         
 
         this.load.spritesheet('thunderStrikeIcon', 'assets/skills/thunderStrikeIcon.png', { frameWidth: 256, frameHeight: 256});
         this.load.spritesheet('thunderStrike', 'assets/skills/thunderStrike.png', { frameWidth: 64, frameHeight: 64}); 
-        this.load.spritesheet('thunderStrikeHitSmear', 'assets/skills/thunderStrikeSmear.png', { frameWidth: 1048, frameHeight: 1048});
+        this.load.spritesheet('thunderStrikeHitSmear', 'assets/skills/thunderStrikeSmear.png', { frameWidth: 1024, frameHeight: 1024});
 
         this.load.spritesheet('deadlyCombatAssaultIcon', 'assets/skills/deadlyCombatAssaultIcon.png', { frameWidth: 256, frameHeight: 256});
-        this.load.spritesheet('deadlyCombatAssaultHitSmear', 'assets/skills/deadlyCombatAssaultHitSmear.png', { frameWidth: 1048, frameHeight: 1048});
+        this.load.spritesheet('deadlyCombatAssaultHitSmear', 'assets/skills/deadlyCombatAssaultHitSmear.png', { frameWidth: 1024, frameHeight: 1024});
 
-        // this.load.spritesheet('eagleStrikeIcon', 'assets/skills/eagleStrikeIcon.png', { frameWidth: 256, frameHeight: 256});
+         this.load.spritesheet('eagleStrikeIcon', 'assets/skills/eagleStrikeIcon.png', { frameWidth: 256, frameHeight: 256});
 
-        // this.load.spritesheet('coveringFireIcon', 'assets/skills/coveringFireIcon.png', { frameWidth: 256, frameHeight: 256});
+         this.load.spritesheet('coveringFireIcon', 'assets/skills/coveringFireIcon.png', { frameWidth: 256, frameHeight: 256});
 
     }
 
     create ()
     {
+        var x = 0
+        var y = 0
+        var wM = 3
+        // Load Stage Object
+        for (var i = bgLayers; i > 0; i--){
+            window['bgL'+i] =  this.add.tileSprite(x,y,width * wM,height,'bgL'+i).setOrigin(0,0).setScrollFactor(bgScroll[i-1]).setPipeline('Light2D').setDepth(0);
+            window['bgL'+i+'ScrollMod'] = + bgScroll[i - 1]
+            
+           
+        }
+
+        for (var i = fgLayers; i > 0; i--){
+            window['fgL'+i] =  this.add.tileSprite(x,y,width * wM,height,'fgL'+i).setOrigin(0,0).setScrollFactor(fgScroll[i-1]).setPipeline('Light2D').setDepth(1);
+            window['fgL'+i+'ScrollMod'] = + fgScroll[i - 1]
+        }
+
+        if(activeStage.data.values.stageAssetName == 'forest'){
+            fgL1.setAlpha(0.4)
+        }
+
+        var dawnAmbientLightDefault = 0xE49759
+        var dayAmbientLightDefault = 0x199eda
+        var duskAmbientLightDefault = 0xECC1B2
+        var nightAmbientLightDefault = 0x131862
+
+        var dawnSunLightDefault = 0xE49759
+        var daySunLightDefault = 0x199eda
+        var duskSunLightDefault = 0xECC1B2
+        var nightSunLightDefault = 0x131862
+
+        var ambientLightSetting
+        var sunLightSetting
+
+        if (activeStage.data.values.timeCode == 1){
+            if(activeStage.data.values.dawnAmbientLightOverride != null){
+                ambientLightSetting = activeStage.data.values.dawnAmbientLightOverride
+            } else {
+                ambientLightSetting = dawnAmbientLightDefault
+            }
+
+            if(activeStage.data.values.dawnSunLightOverride != null){
+                sunLightSetting = activeStage.data.values.dawnSunLightOverride
+            } else {
+                sunLightSetting = dawnSunLightDefault
+            }
+        } else if (activeStage.data.values.timeCode == 2){
+            if(activeStage.data.values.dayAmbientLightOverride != null){
+                ambientLightSetting = activeStage.data.values.dayAmbientLightOverride
+            } else {
+                ambientLightSetting = dayAmbientLightDefault
+            }
+
+            if(activeStage.data.values.daySunLightOverride != null){
+                sunLightSetting = activeStage.data.values.daySunLightOverride
+            } else {
+                sunLightSetting = daySunLightDefault
+            }
+        } else if (activeStage.data.values.timeCode == 3){
+            if(activeStage.data.values.duskAmbientLightOverride != null){
+                ambientLightSetting = activeStage.data.values.duskAmbientLightOverride
+            } else {
+                ambientLightSetting = duskAmbientLightDefault
+            }
+
+            if(activeStage.data.values.duskSunLightOverride != null){
+                sunLightSetting = activeStage.data.values.duskSunLightOverride
+            } else {
+                sunLightSetting = duskSunLightDefault
+            }
+        } else if (activeStage.data.values.timeCode == 4){
+            if(activeStage.data.values.dayAmbientLightOverride != null){
+                ambientLightSetting = activeStage.data.values.nightAmbientLightOverride
+            } else {
+                ambientLightSetting = nightAmbientLightDefault
+            }
+
+            if(activeStage.data.values.daySunLightOverride != null){
+                sunLightSetting = activeStage.data.values.nightSunLightOverride
+            } else {
+                sunLightSetting = nightSunLightDefault
+            }
+        }
+
+        // Initialise Lighting Settings
+       
+        this.lights.enable();
+        this.lights.setAmbientColor(ambientLightSetting);
+        spotlightSun = this.lights.addLight(0, 0, width * 3,dawnSunLightDefault,3);
        
         // General 
 
@@ -2918,83 +3180,24 @@ class Badlands extends Phaser.Scene {
         this.physics.world.setBounds(0, 0, width * 3,  height);
         
 
-        var x = 0
-        var y = 0
-        var wM = 3
-        map = 'dawn'
-        mapPL = 'river'
-
-        lvlBG1ScrollModPL = 1
-        lvlBG2ScrollModPL = 0.5
-        lvlBG3ScrollModPL = 0.95
-        lvlBG4ScrollModPL = 0.75
-        lvlBG5ScrollModPL = 0.75
-        lvlBG6ScrollModPL = 0.5
-        lvlBG7ScrollModPL = 0.25
-        lvlBG8ScrollModPL = 0.1
-        lvlBG9ScrollModPL = 0
-
-        lvlBG9PL = this.add.tileSprite(x,y,width * wM,height, mapPL + 'BG9').setOrigin(0,0).setScrollFactor(lvlBG9ScrollModPL).setPipeline('Light2D')
-        lvlBG8PL = this.add.tileSprite(x,y,width * wM,height, mapPL + 'BG8').setOrigin(0,0).setScrollFactor(lvlBG8ScrollModPL).setPipeline('Light2D')
-        lvlBG7PL = this.add.tileSprite(x,y,width * wM,height,mapPL + 'BG7').setOrigin(0,0).setScrollFactor(lvlBG7ScrollModPL).setPipeline('Light2D')
-        lvlBG6PL = this.add.tileSprite(x,y,width * wM,height,mapPL + 'BG6').setOrigin(0,0).setScrollFactor(lvlBG6ScrollModPL).setPipeline('Light2D')
-        lvlBG5PL = this.add.tileSprite(x,y,width * wM,height, mapPL + 'BG5').setOrigin(0,0).setScrollFactor(lvlBG5ScrollModPL).setPipeline('Light2D')
-        lvlBG4PL = this.add.tileSprite(x,y,width * wM,height, mapPL + 'BG4').setOrigin(0,0).setScrollFactor(lvlBG4ScrollModPL).setPipeline('Light2D')
-        lvlBG3PL = this.add.tileSprite(x,y,width * wM,height, mapPL + 'BG3').setOrigin(0,0).setScrollFactor(lvlBG3ScrollModPL).setPipeline('Light2D')
-        lvlBG2PL = this.add.tileSprite(x,y,width * wM,height, mapPL + 'BG2').setOrigin(0,0).setScrollFactor(lvlBG2ScrollModPL).setPipeline('Light2D')
-        lvlBG1PL = this.add.tileSprite(x,y,width * wM,height, mapPL + 'BG1').setOrigin(0,0).setScrollFactor(lvlBG1ScrollModPL).setDepth(2).setAlpha(0).setPipeline('Light2D')
- 
-        lvlBG1ScrollMod = 1
-        lvlBG2ScrollMod = 1
-        lvlBG3ScrollMod = 0.025
-        lvlBG4ScrollMod = 0.025
-        lvlBG5ScrollMod = 0.01
-        lvlBG6ScrollMod = 0
-        lvlBG7ScrollMod = 0
-        lvlBG8ScrollMod = 0
-        lvlBG9ScrollMod = 0
-
-        lvlBG9 = this.add.tileSprite(x,y,width * wM,height,map + 'BG9').setOrigin(0,0).setScrollFactor(lvlBG9ScrollMod).setPipeline('Light2D');
-        lvlBG8 = this.add.tileSprite(x,y,width * wM,height, map + 'BG8').setOrigin(0,0).setScrollFactor(lvlBG8ScrollMod).setPipeline('Light2D');
-        lvlBG7 = this.add.tileSprite(x,y,width * wM,height,map + 'BG7').setOrigin(0,0).setScrollFactor(lvlBG7ScrollMod).setPipeline('Light2D');
-        lvlBG6 = this.add.tileSprite(x,y,width * wM,height,map + 'BG6').setOrigin(0,0).setScrollFactor(lvlBG6ScrollMod).setPipeline('Light2D');
-        lvlBG5 = this.add.tileSprite(x,y,width * wM,height, map + 'BG5').setOrigin(0,0).setScrollFactor(lvlBG5ScrollMod).setPipeline('Light2D');
-        lvlBG4 = this.add.tileSprite(x,y,width * wM,height, map + 'BG4').setOrigin(0,0).setScrollFactor(lvlBG4ScrollMod).setPipeline('Light2D');
-        lvlBG3 = this.add.tileSprite(x,y,width * wM,height, map + 'BG3').setOrigin(0,0).setScrollFactor(lvlBG3ScrollMod).setPipeline('Light2D');
-        lvlBG2 = this.add.tileSprite(x,y,width * wM,height, map + 'BG2').setOrigin(0,0).setScrollFactor(lvlBG2ScrollMod).setDepth(2).setPipeline('Light2D');
-        lvlBG1 = this.add.tileSprite(x,y,width * wM,height, map + 'BG1').setOrigin(0,0).setScrollFactor(lvlBG1ScrollMod).setDepth(2).setPipeline('Light2D');
-
-        
-        lvlFG2 = this.add.tileSprite(x,y, width * wM,height).setOrigin(0,0)
-        lvlFG1 = this.add.tileSprite(x,y, width * wM,height).setOrigin(0,0)
-
-        
-
         spotlightPlayerHealth = this.lights.addLight(0, 0, height,0xd4b9e2);
         spotlightPlayerPower = this.lights.addLight(0, 0, height,0x6d54a9);
 
         spotlightNightBorne = this.lights.addLight(0, 0, 300,0x6d54a9,0);
         spotlightCreep = this.lights.addLight(0, 0, 300,0xd4b9e2,0);
-        spotlightSun = this.lights.addLight(0, 0, width * 3,0xE49759,5);
 
 
-       
-        this.lights.enable();
-        this.lights.setAmbientColor(0x808080)//0xE49759);
-        //d4b9e2 = light purple
-        //6d54a9 = deep purple
-        //0xE49759 = dawn
-        //EC9706
-        //DB907D
-       
-       
+        
 
-       
+        
+
+
+
         platforms = this.physics.add.staticGroup();
         platforms.create(0, height - 85, 'ground').setOrigin(0,0).setScale(width * 3 /400, 2).refreshBody().setVisible(0);
 
         playerShadow = this.add.sprite(width * 1.5, height /2 ,'heroF').setScale(3.5)
-        playerShadow.setDepth(3)
+        
         playerShadow.flipY = 1
         
         playerShadow.tint = 0x100c08//0x000000
@@ -3002,7 +3205,7 @@ class Badlands extends Phaser.Scene {
        
 
         player = this.physics.add.sprite(width * 1.5, height /2 ,'heroF').setScale(4).setPipeline('Light2D');
-        player.setDepth(3)
+        
         player.body.setSize(10, 30).setOffset(25,15).setAllowDrag(true)
         
         player.setBounceY(0.05);
@@ -3016,9 +3219,9 @@ class Badlands extends Phaser.Scene {
         sword.body.setAllowGravity(false).setOffset(0,5).setSize(100, 55)
         sword.body.checkCollision.none = true
 
-        playerHitVFX = this.add.sprite(sword.x, sword.y,'whiteHitSmear').setDepth(4).setScale(0.5) 
+        playerHitVFX = this.add.sprite(sword.x, sword.y,'whiteHitSmear').setScale(0.5) 
         
-        highObstacleShadow = this.add.image(player.x,height - 35, 'lamp').setScale(4).setDepth(2)
+        highObstacleShadow = this.add.image(player.x,height - 35, 'lamp').setScale(4)
         highObstacleShadow.flipY = 1
         highObstacleShadow.tint = 0x100c08
 
@@ -3026,7 +3229,7 @@ class Badlands extends Phaser.Scene {
         this.physics.add.existing(highObstacle,false)
         highObstacle.body.setAllowGravity(false)
 
-        lowObstacleShadow = this.add.image(0,0, 'treeTrunk').setScale(1.5).setDepth(3)
+        lowObstacleShadow = this.add.image(0,0, 'treeTrunk').setScale(1.5)
         lowObstacleShadow.flipY = 1
         lowObstacleShadow.tint = 0x100c08
 
@@ -3042,14 +3245,14 @@ class Badlands extends Phaser.Scene {
         this.physics.add.overlap(player,obstacles,obstacleCollision)
         this.physics.add.collider(platforms,obstacles);
         
-        obstacles.setDepth(2)
+        
         obstacles.setOrigin(0,0)
-        lowObstacle.setDepth(3)        
+               
         
 
             // NightBorne
 
-            nightBorneOutline = this.physics.add.sprite(0,0, 'nightBorne').setScale(8).setTintFill(0x7851a9).setDepth(2).setAlpha(0.75)
+            nightBorneOutline = this.physics.add.sprite(0,0, 'nightBorne').setScale(8).setTintFill(0x7851a9).setAlpha(0.75)
            
             nightBorneOutline.body.setAllowGravity(0)
             nightBorneOutline.body.setSize(50, 50)
@@ -3067,11 +3270,11 @@ class Badlands extends Phaser.Scene {
             });
 
             nightBorneShadow = this.add.sprite(width * 1.5, height /2 ,'nightBorne').setScale(6)
-            nightBorneShadow.setDepth(2)
+            nightBorneShadow
             nightBorneShadow.flipY = 1
             nightBorneShadow.tint = 0x100c08
             
-            nightBorne = this.physics.add.sprite(0, 0, 'nightBorne').setScale(8).setOrigin(0.5,1).setDepth(3).setPipeline('Light2D')
+            nightBorne = this.physics.add.sprite(0, 0, 'nightBorne').setScale(8).setOrigin(0.5,1).setPipeline('Light2D')
             nightBorneVitals = new EnemyHealthBar(this,nightBorne.x, nightBorne.y - 150);
             nightBorneLife = (income * 0.3) * Phaser.Math.Between(0.8,1.7) 
             nightBorneMaxLife = nightBorneLife
@@ -3094,11 +3297,11 @@ class Badlands extends Phaser.Scene {
             this.physics.add.overlap(nightBorneSword, player, playerHit);
 
             nightBorneVFX = this.add.sprite(nightBorne.x, nightBorne.y + 600)
-            nightBorneVFX.setScale(3).setTint(0x00CED1).setDepth(4).setVisible(1)
+            nightBorneVFX.setScale(3).setTint(0x00CED1).setVisible(1)
 
             // Creep
             creepShadow = this.add.sprite(width * 1.5, height /2 ,'doomsayer').setScale(4,2)
-            creepShadow.setDepth(2)
+            creepShadow
             creepShadow.flipY = 1
             creepShadow.tint = 0x100c08
             creep = this.physics.add.sprite(0, 0, 'doomsayer').setScale(3.5,2.1).setPipeline('Light2D')
@@ -3112,7 +3315,7 @@ class Badlands extends Phaser.Scene {
             })
             enemies.add(nightBorne)
             enemies.add(creep) 
-            enemies.setDepth(2)
+            //enemies.setDepth(1)
             this.physics.add.overlap(sword,enemies,enemyHit,null,this)
             
             
@@ -3199,14 +3402,14 @@ class Badlands extends Phaser.Scene {
             hideOnComplete: 1
         });
 
-        this.anims.create({
-            key: 'whiteHitSmear2',
-            frames: this.anims.generateFrameNumbers('whiteHitSmear2', { start:0, end: 16}),
-            frameRate: 16,
-            repeat: 0,
-            showOnStart: 1,
-            hideOnComplete: 1
-        });
+        // this.anims.create({
+        //     key: 'whiteHitSmear2',
+        //     frames: this.anims.generateFrameNumbers('whiteHitSmear2', { start:0, end: 16}),
+        //     frameRate: 16,
+        //     repeat: 0,
+        //     showOnStart: 1,
+        //     hideOnComplete: 1
+        // });
 
         this.anims.create({
             key: 'deadlyCombatAssaultHitSmear',
@@ -3658,10 +3861,10 @@ class Badlands extends Phaser.Scene {
 
     update (time,delta)
     {
-            //this.anims.globalTimeScale = 2
-            //       this.tweens.timeScale = 0.5; // tweens
-            //this.physics.world.timeScale = 1; // physics
-            //this.time.timeScale = 2.5; // time events
+
+        
+
+
 
             // Creep AI Proto
             if(gameMode == 0){
@@ -3730,7 +3933,6 @@ class Badlands extends Phaser.Scene {
             } else {
                 playerShadow.y = player.y + 35
             }
-
 
             playerShadow.play(player.anims.getName(),true)
             playerShadow.anims.msPerFrame = player.anims.msPerFrame
@@ -3820,76 +4022,30 @@ class Badlands extends Phaser.Scene {
         spotlightPlayerHealth.intensity =  (0.5 * (currentLife / maxLife))
         spotlightPlayerPower.intensity =  (0.5 * (currentLife / maxLife))
 
-       //console.log(creep.visible)
-      //console.log(creep.anims.getName())
-       //console.log(creep.x)
-       
-       console.log('Controls Enabled: ' + controlsEnabled)
 
 
-    //    console.log('Nightborne HP: ' + nightBorneLife)
-    //    console.log('Nightborne Armour: ' + nArmour)
-
-
-        if(lvlTransition){
-            lvlTransition = false
-
-            lvlBG1ScrollMod = lvlBG1ScrollModPL
-            lvlBG2ScrollMod = lvlBG2ScrollModPL
-            lvlBG3ScrollMod = lvlBG3ScrollModPL
-            lvlBG4ScrollMod = lvlBG4ScrollModPL
-            lvlBG5ScrollMod = lvlBG5ScrollModPL
-            lvlBG6ScrollMod = lvlBG6ScrollModPL
-            lvlBG7ScrollMod = lvlBG7ScrollModPL
-            lvlBG8ScrollMod = lvlBG8ScrollModPL
-            lvlBG9ScrollMod = lvlBG9ScrollModPL
-
-            lvlBG1.setTexture(mapPL + 'BG1')
-            lvlBG2.setTexture(mapPL + 'BG2')
-            lvlBG3.setTexture(mapPL + 'BG3')
-            lvlBG4.setTexture(mapPL + 'BG4')
-            lvlBG5.setTexture(mapPL + 'BG5')
-            lvlBG6.setTexture(mapPL + 'BG6')
-            lvlBG7.setTexture(mapPL + 'BG7')
-            lvlBG8.setTexture(mapPL + 'BG8')
-            lvlBG9.setTexture(mapPL + 'BG9')
-
-            camera.flash()
-
-            lvlBG1.setAlpha(1)
-            lvlBG2.setAlpha(1)
-            lvlBG3.setAlpha(1)
-            lvlBG4.setAlpha(1)
-            lvlBG5.setAlpha(1)
-            lvlBG6.setAlpha(1)
-            lvlBG7.setAlpha(1)
-            lvlBG8.setAlpha(1)
-            lvlBG9.setAlpha(1)
-
-
-            lvlBG1PL.setVisible()
-            lvlBG2PL.setVisible()
-            lvlBG3PL.setVisible()
-            lvlBG4PL.setVisible()
-            lvlBG5PL.setVisible()
-            lvlBG6PL.setVisible()
-            lvlBG7PL.setVisible()
-            lvlBG8PL.setVisible()
-            lvlBG9PL.setVisible()
-        }
+        
 
             closest = this.physics.closest(player,enemies.getChildren()) 
 
 
 
                 if (Phaser.Input.Keyboard.JustDown(keyZ)){
-                    this.scene.get('Tutorial').functionAccessTest(this)
                     
-                    if (touchEnabled){
-                        enableTouchControls(0)
-                    } else {
-                        enableTouchControls(1)
-                    }
+                    reset()
+                    this.scene.stop('Badlands')
+                    this.scene.start('Kianova')
+
+                    // Decommissioned
+
+                    //this.scene.restart(activeStage)
+                    
+                    
+                    // if (touchEnabled){
+                    //     enableTouchControls(0)
+                    // } else {
+                    //     enableTouchControls(1)
+                    // }
 
                 }
 
@@ -3997,8 +4153,8 @@ class Badlands extends Phaser.Scene {
                 spotlightCreep.x = creep.x;
                 spotlightCreep.y = creep.y;
 
-                spotlightSun.x = camera.scrollX + (width * 0.55)
-                spotlightSun.y = camera.scrollY + (height * 0.125)
+                 spotlightSun.x = camera.scrollX + (width * 0.55)
+                 spotlightSun.y = camera.scrollY + (height * 0.125)
             // Audio
 
                 // Background Music
@@ -4503,43 +4659,7 @@ class Badlands extends Phaser.Scene {
             glory += ((100 / 60) * 100) * (playerSpeed)
             progress = 0
 
-            // var d = 4000
-            // this.tweens.add({
-            //     delay: d,
-            //     targets: [lvlBG1,lvlBG2],
-            //     alpha: { value: 0, duration: d, ease: 'Power1'}
-
-            // });
-
-
-            // this.tweens.add({
-            //     delay: d,
-            //     targets: lvlBG1PL,
-            //     alpha: { value: 1, duration: d, ease: 'Power1'},
-
-            // },this);
-
-
-
-            // this.tweens.add({
-            //     delay: d * 3,
-            //     targets: [lvlBG3,lvlBG4,lvlBG5,lvlBG6,lvlBG7,lvlBG8,lvlBG9],
-                
-            //     alphaBottomRight: { value: 0, duration: d, ease: 'Power1' },
-            //     alphaBottomLeft: { value: 0, duration: d, ease: 'Power1'},
-            //     alphaTopRight: { value: 0, duration: d * 3, ease: 'Power1' },
-            //     alphaTopLeft: { value: 0, duration: d * 3, ease: 'Power1' },
-                
-            //     //alpha: { value: 0, duration: d, ease: 'Power1'},
-
-            //     onComplete: function ()
-            //         {
-            //             lvlTransition = true
-
-            //         },
-
-            // });
-            //levelUp()
+          
 
             camera.fadeOut(6000)
 
@@ -4567,26 +4687,16 @@ class Badlands extends Phaser.Scene {
 
                 // Parallax Background layers scrolls at variable speed multiplied by playerSpeed %
                 if(!gameOver){
-                    //lvlFG1.tilePositionX += 4.5 * (playerSpeed)
-                    lvlBG1.tilePositionX += (12 * lvlBG1ScrollMod) * (playerSpeed)
-                    lvlBG2.tilePositionX += (12 * lvlBG2ScrollMod) * (playerSpeed)
-                    lvlBG3.tilePositionX += (12 * lvlBG3ScrollMod) * (playerSpeed)
-                    lvlBG4.tilePositionX += (12 * lvlBG4ScrollMod) * (playerSpeed)
-                    lvlBG5.tilePositionX += (12 * lvlBG5ScrollMod) * (playerSpeed)
-                    lvlBG6.tilePositionX += (12 * lvlBG6ScrollMod) * (playerSpeed)
-                    lvlBG7.tilePositionX += (12 * lvlBG7ScrollMod) * (playerSpeed)
-                    lvlBG8.tilePositionX += (12 * lvlBG8ScrollMod) * (playerSpeed)
-                    lvlBG9.tilePositionX += (12 * lvlBG9ScrollMod) * (playerSpeed)
 
-                    lvlBG1PL.tilePositionX += (12 * lvlBG1ScrollModPL) * (playerSpeed)
-                    lvlBG2PL.tilePositionX += (12 * lvlBG2ScrollModPL) * (playerSpeed)
-                    lvlBG3PL.tilePositionX += (12 * lvlBG3ScrollModPL) * (playerSpeed)
-                    lvlBG4PL.tilePositionX += (12 * lvlBG4ScrollModPL) * (playerSpeed)
-                    lvlBG5PL.tilePositionX += (12 * lvlBG5ScrollModPL) * (playerSpeed)
-                    lvlBG6PL.tilePositionX += (12 * lvlBG6ScrollModPL) * (playerSpeed)
-                    lvlBG7PL.tilePositionX += (12 * lvlBG7ScrollModPL) * (playerSpeed)
-                    lvlBG8PL.tilePositionX += (12 * lvlBG8ScrollModPL) * (playerSpeed)
-                    lvlBG9PL.tilePositionX += (12 * lvlBG9ScrollModPL) * (playerSpeed)
+                    
+                    for (var i = 1; i < bgLayers + 1 ; i++){
+                        window['bgL'+i].tilePositionX += (12 * window['bgL'+ i + 'ScrollMod'] ) * (playerSpeed)
+                    }
+
+                    for (var i = 1; i < fgLayers + 1; i++){
+                        window['fgL'+i].tilePositionX += (12 * window['fgL'+ i + 'ScrollMod'] ) * (playerSpeed)
+                    }
+
 
                     moveHighObstacle(highObstacle, 12 * (playerSpeed))
                     moveLowObstacle(lowObstacle, 12 * (playerSpeed))
@@ -4834,7 +4944,7 @@ class Badlands extends Phaser.Scene {
                 controlsEnabled = false
                 player.once('animationcomplete', function () {
                     updateHighScore()
-                    finish();
+                    finish(this);
                  }, this);
             } 
 

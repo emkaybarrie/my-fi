@@ -35,7 +35,7 @@ var config = {
         smoothStep: false,
         target: 60
     },
-    scene: [Title,Tutorial,Kianova,Badlands]
+    scene: [Kianova,Badlands,Region1,Region2,Region3,Region4,RegionTemplate]
     //scene: [Title,Tutorial,Kianova,Badlands]
  
 };

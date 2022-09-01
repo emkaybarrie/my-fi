@@ -3,6 +3,7 @@ var loadScreen
 var camera
 var nextScene
 var kControlsEnabled = false
+var activeRegion
 
 var sectors
 var selectedSector = 0
@@ -32,12 +33,10 @@ var sectorOptions
 var patronIcon
 var loyaltyIcon
 var prosperityIcon
-var gloryIcon
+var gloryIconK
 
 var loyaltyStars
 var prosperityStars
-
-
 
 
 class Kianova extends Phaser.Scene {
@@ -65,7 +64,7 @@ class Kianova extends Phaser.Scene {
 
         cursors = this.input.keyboard.createCursorKeys();
 
-        camera = this.cameras.main.fadeIn(6000)
+        camera = this.cameras.main.fadeIn(1500)
         map = this.add.image(0,0,'map').setScale(1.19,0.645).setOrigin(0,0)
         loadScreen = this.add.image(0,0,'load').setScale(1.29,0.705).setOrigin(0,0)
 
@@ -109,9 +108,9 @@ class Kianova extends Phaser.Scene {
         patronIcon = this.add.image(1000,350,'patronIcon').setScale(0.5).setOrigin(0.5,0.5)
         loyaltyIcon = this.add.image(1000,350,'loyaltyIcon').setScale(0.5).setOrigin(0.5,0.5)
         prosperityIcon = this.add.image(1000,350,'prosperityIcon').setScale(0.5).setOrigin(0.5,0.5)
-        gloryIcon = this.add.image(1000,350,'gloryIcon').setScale(0.5).setOrigin(0.5,0.5)
+        gloryIconK = this.add.image(1000,350,'gloryIcon').setScale(0.5).setOrigin(0.5,0.5)
 
-        sectors.addMultiple([textBox,text,patronIcon,loyaltyIcon,prosperityIcon,gloryIcon,selectedSectorIcon,kSectorOuter,kSectorInner,nSectorOuter,nSectorInner,wSectorOuter,wSectorInner,sSectorOuter,sSectorInner,eSectorOuter,eSectorInner]) 
+        sectors.addMultiple([textBox,text,patronIcon,loyaltyIcon,prosperityIcon,gloryIconK,selectedSectorIcon,kSectorOuter,kSectorInner,nSectorOuter,nSectorInner,wSectorOuter,wSectorInner,sSectorOuter,sSectorInner,eSectorOuter,eSectorInner]) 
         
         sectors.setVisible(0)
 
@@ -135,7 +134,7 @@ class Kianova extends Phaser.Scene {
         camera.on('camerafadeincomplete',function(){
 
         this.tweens.add({
-            delay: 2000,
+            delay: 500,
             targets: loadScreen,
             alphaTopLeft: { value: 0, duration: 2500, ease: 'Power1' },
             alphaBottomLeft: { value: 0, duration: 3500, ease: 'Power1'},
@@ -185,8 +184,8 @@ class Kianova extends Phaser.Scene {
             loyaltyIcon.scaleY = 0
             prosperityIcon.alpha = 0
             prosperityIcon.scaleY = 0
-            gloryIcon.alpha = 0
-            gloryIcon.scaleY = 0
+            gloryIconK.alpha = 0
+            gloryIconK.scaleY = 0
             loyaltyStars.setAlpha(0)
             loyaltyStars.children.iterate((child) =>{
                 child.setScale(1,0)
@@ -214,8 +213,8 @@ class Kianova extends Phaser.Scene {
             loyaltyIcon.scaleY = 0
             prosperityIcon.alpha = 0
             prosperityIcon.scaleY = 0
-            gloryIcon.alpha = 0
-            gloryIcon.scaleY = 0
+            gloryIconK.alpha = 0
+            gloryIconK.scaleY = 0
             loyaltyStars.setAlpha(0)
             prosperityStars.setAlpha(0)
 
@@ -238,19 +237,20 @@ class Kianova extends Phaser.Scene {
             gloryScore = '\n\n\n\n\n\n          100'
             sectorOptions = '\n\n- Enter House of the Forerunner\n- Enter House of the Creators\n- Enter House of the Oracles'
             
-        } else if (selectedSector == 1){
-            textBox.setTint(0x0C5D25)
+        } else if (selectedSector == 2){
+            textBox.setTint(0xBC3823)
             selectedSectorIcon.x = 550
             selectedSectorIcon.y = 575
-            sectorName = 'North Sector [Crypto]'
-            sectorDescription = '\n\nHome to the Illuvium Brotherhood.\nA favourite haunt of arcanists and elementalists.' 
-            sectorAffinity = '\n\n         Illuvik'
-            loyaltyScore = 4
-            prosperityScore = 2
-            gloryScore = '\n\n\n\n\n\n          400'
-            sectorOptions = '\n\n- Visit Northern Sector\n- Recruit Illuvium Assassin\n- Explore Northern Badlands'
+            
+            sectorName = 'North Sector [Property]'
+            sectorDescription = '\n\nHome to the Lucarian Guard.\nMasterful warriors known for their fortitude and resilience.' 
+            sectorAffinity = '\n\n\n          Lucarus'
+            loyaltyScore = 5
+            prosperityScore = 3
+            gloryScore = '\n\n\n\n\n\n          224'
+            sectorOptions = '\n\n- Visit Southern Sector\n- Recruit Lucarian Knight\n- Explore Southern Badlands'
   
-        } else if (selectedSector == 2){
+        } else if (selectedSector == 3){
             textBox.setTint(0x0076C)
             selectedSectorIcon.x = 200
             selectedSectorIcon.y = 800
@@ -262,19 +262,21 @@ class Kianova extends Phaser.Scene {
             gloryScore = '\n\n\n\n\n\n          25'
             sectorOptions = '\n\n- Visit Western Sector\n- Recruit Amaran Magus\n- Explore Western Badlands'
             
-        } else if (selectedSector == 3){
-            textBox.setTint(0xBC3823)
+        } else if (selectedSector == 4){
+            textBox.setTint(0x0C5D25)
+            
             selectedSectorIcon.x = 1500
             selectedSectorIcon.y = 800
-            sectorName = 'South Sector [Property]'
-            sectorDescription = '\n\nHome to the Lucarian Guard.\nMasterful warriors known for their fortitude and resilience.' 
-            sectorAffinity = '\n\n\n          Lucarus'
-            loyaltyScore = 5
-            prosperityScore = 3
-            gloryScore = '\n\n\n\n\n\n          224'
-            sectorOptions = '\n\n- Visit Southern Sector\n- Recruit Lucarian Knight\n- Explore Southern Badlands'
 
-        } else if (selectedSector == 4){
+            sectorName = 'South Sector [Crypto]'
+            sectorDescription = '\n\nHome to the Illuvium Brotherhood.\nA favourite haunt of arcanists and elementalists.' 
+            sectorAffinity = '\n\n         Illuvik'
+            loyaltyScore = 4
+            prosperityScore = 2
+            gloryScore = '\n\n\n\n\n\n          400'
+            sectorOptions = '\n\n- Visit Northern Sector\n- Recruit Illuvium Assassin\n- Explore Northern Badlands'
+
+        } else if (selectedSector == 1){
             textBox.setTint(0x877254)
             selectedSectorIcon.x = 1800
             selectedSectorIcon.y = 550
@@ -324,8 +326,8 @@ class Kianova extends Phaser.Scene {
             prosperityStars.getChildren()[i].setTint(0x000000).stop() 
         }
 
-        gloryIcon.x = text.x - 87.5
-        gloryIcon.y = text. y + 110
+        gloryIconK.x = text.x - 87.5
+        gloryIconK.y = text. y + 110
         
         if(textBox.alpha == 0){
 
@@ -334,11 +336,7 @@ class Kianova extends Phaser.Scene {
             alpha: { value: 0.75, duration: 500, ease: 'Power1' },
             scaleY: {value:0.225, duration: 250,ease: 'Power1' },
             
-  
-            onComplete: function () {
-                //text.visible = 1
-                      
-            }
+
         });
 
         this.tweens.add({
@@ -346,15 +344,10 @@ class Kianova extends Phaser.Scene {
             alpha: { value: 1, duration: 500, ease: 'Power1' },
             scaleY: {value:1, duration: 250,ease: 'Power1' },
             
-  
-            onComplete: function () {
-                //text.visible = 1
-                      
-            }
         });
 
         this.tweens.add({
-            targets: [patronIcon,loyaltyIcon,prosperityIcon,gloryIcon],
+            targets: [patronIcon,loyaltyIcon,prosperityIcon,gloryIconK],
             alpha: { value: 1, duration: 1000, ease: 'Power1' },
             scaleY: {value:0.5, duration: 500,ease: 'Power1' },
             
@@ -379,13 +372,25 @@ class Kianova extends Phaser.Scene {
         }
 
         
+        if(Phaser.Input.Keyboard.JustDown(cursors.space) && kControlsEnabled){
+          
 
+            camera.fadeOut(250)
+            
+            camera.once('camerafadeoutcomplete',function(){
+                activeRegion = 'Region'+ String(selectedSector)
+                console.log('Selected Region: ' + activeRegion)
+                nextScene = true
+               
+               
+            })
+        }
 
-        // if (nextScene){
+        if (nextScene){
+            this.scene.run(activeRegion, Phaser.Math.Between(1,4))
+            //this.scene.run('RegionTemplate', Phaser.Math.Between(1,4))
+            nextScene = false
             
-        //     this.scene.start("Badlands")
-        //     nextScene = false
-            
-        // }
+        }
     }
 }
