@@ -58,6 +58,7 @@ class Region1 extends Phaser.Scene {
     console.log('Transmitting Stage Data Object to Badlands Engine....')
 
     this.scene.run("Badlands", createdStageData)
+    this.scene.stop("Region1")
     }
 
     // Stage Repository
