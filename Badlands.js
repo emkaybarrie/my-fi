@@ -4726,8 +4726,8 @@ class Badlands extends Phaser.Scene {
                // NightBorne Elite
 
                     // NightBorne outline follows NightBorne
-                        nightBorneOutline.x = nightBorne.x - 15
-                        nightBorneOutline.y = nightBorne.y - 325
+                        nightBorneOutline.x = nightBorne.x - (15 * scaleMod)
+                        nightBorneOutline.y = nightBorne.y - (325 * scaleMod)
                         nightBorneOutline.flipX = nightBorne.flipX
 
                     // NightBorne outline copies current playing animation of  sprite, with optional delay
