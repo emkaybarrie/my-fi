@@ -60,6 +60,7 @@ class Kianova extends Phaser.Scene {
         gameWidth = this.sys.game.canvas.width
         gameHeight = this.sys.game.canvas.height
         scaleMod = gameHeight/1080
+        console.log('Inner Height: ' + window.innerHeight, 'Inner Width: ' + window.innerWidth, 'Pixel Ratio: ' + window.devicePixelRatio, window.innerHeight * window.devicePixelRatio)
         
        
 
@@ -207,6 +208,8 @@ class Kianova extends Phaser.Scene {
     }
 
     update(data){
+
+        console.log('Inner Height: ' + window.innerHeight, 'Inner Width: ' + window.innerWidth, 'Pixel Ratio: ' + window.devicePixelRatio, window.innerHeight * window.devicePixelRatio)
 
         var starsScale =  1.25 * (scaleMod)
         var textBoxScaleY =  0.225 * (scaleMod)
