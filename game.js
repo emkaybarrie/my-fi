@@ -1,7 +1,8 @@
 window.onload = function(){
 // var ratio = Math.max((window.innerWidth * window.devicePixelRatio)/ (window.innerHeight * window.devicePixelRatio), (window.innerHeight * window.devicePixelRatio) / (window.innerWidth * window.devicePixelRatio)) 
 var DEFAULT_HEIGHT = 1080 / 2 //272 //window.innerHeight * window.devicePixelRatio // 272
-var DEFAULT_WIDTH = 1980 / 2 //1980//592 //ratio * DEFAULT_HEIGHT// * 2
+var DEFAULT_WIDTH = 1920 / 2 //1980//592 //ratio * DEFAULT_HEIGHT// * 2
+var scaleMod = DEFAULT_HEIGHT / 1080
 
 var config = {
     parent: 'myGame',
@@ -25,7 +26,7 @@ var config = {
     physics:{
         default:'arcade',
         arcade:{
-            gravity:{x: 0, y:1500},
+            gravity:{x: 0, y:3000 * scaleMod},
             debug: 0,
             overlapBias: 20
         }

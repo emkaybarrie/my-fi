@@ -4,7 +4,7 @@ var scaleMod
 var map
 var loadScreen
 var camera
-var nextScene = true
+var nextScene
 var kControlsEnabled = false
 var autoPlayActive 
 var activeRegion
@@ -60,9 +60,7 @@ class Kianova extends Phaser.Scene {
         gameWidth = this.sys.game.canvas.width
         gameHeight = this.sys.game.canvas.height
         scaleMod = gameHeight/1080
-        if (!this.sys.game.device.os.desktop){
-            autoPlayActive = true
-        }
+        
        
 
         this.load.image('load', 'assets/KianovaLoadScreen.png');
@@ -80,6 +78,7 @@ class Kianova extends Phaser.Scene {
     create(){
 
         cursors = this.input.keyboard.createCursorKeys();
+        
 
         camera = this.cameras.main.fadeIn(1500)
         var mapScaleX = 1.19 * (scaleMod) 
@@ -127,7 +126,7 @@ class Kianova extends Phaser.Scene {
 
         var textBoxScaleX = 0.31 * (scaleMod) 
         var textBoxScaleY = 0.225 * (scaleMod)
-        textBox = this.add.image(textBoxScaleX,textBoxScaleY,'textBox').setScale(textBoxScaleX,textBoxScaleY).setAlpha(0.75)
+        textBox = this.add.image(textBoxScaleX,textBoxScaleY,'textBox').setScale(textBoxScaleX,textBoxScaleY).setAlpha(0.75).setInteractive()
 
         text = this.make.text({
             x: 1000 * (scaleMod) ,
@@ -163,7 +162,6 @@ class Kianova extends Phaser.Scene {
             yoyo: 0
         });
 
-    
 
         loyaltyStars = this.add.group()
         loyaltyStars.createMultiple({key:'star',frameQuantity: 5, setScale: {x: 1.25 * (scaleMod), y: 1.25 * (scaleMod)}})
@@ -173,7 +171,6 @@ class Kianova extends Phaser.Scene {
         prosperityStars.createMultiple({key:'star',frameQuantity: 5, setScale: {x: 1.25 * (scaleMod), y: 1.25 * (scaleMod)}})
         prosperityStars.setVisible(0)
 
-        
         camera.on('camerafadeincomplete',function(){
 
         this.tweens.add({
@@ -202,10 +199,6 @@ class Kianova extends Phaser.Scene {
             yoyo: true,
             repeat: -1,
   
-            onComplete: function () {
-
-                      
-            }
         });
 
         },this)
@@ -424,35 +417,48 @@ class Kianova extends Phaser.Scene {
 
         }
 
-        
-        // if(Phaser.Input.Keyboard.JustDown(cursors.space) && kControlsEnabled){
+        if(this.sys.game.device.os.desktop){
+
+        if(Phaser.Input.Keyboard.JustDown(cursors.space) && kControlsEnabled){
           
 
-        //     camera.fadeOut(250)
+            camera.fadeOut(250)
             
-        //     camera.once('camerafadeoutcomplete',function(){
-        //         if(selectedSector == 0){
-        //             activeRegion = 'RegionTemplate'
-        //         } else {
-        //             activeRegion = 'Region'+ String(selectedSector)
-        //         }
+            camera.once('camerafadeoutcomplete',function(){
+                if(selectedSector == 0){
+                    activeRegion = 'RegionTemplate'
+                } else {
+                    activeRegion = 'Region'+ String(selectedSector)
+                }
                 
-        //         console.log('Selected Region: ' + activeRegion)
+                console.log('Selected Region: ' + activeRegion)
                 
-        //         nextScene = true
+                nextScene = true
                
                
-        //     })
-        // } else if (autoPlayActive && kControlsEnabled){
-        //     autoPlayActive = false
-        //     activeRegion = 'Region'+ String(Phaser.Math.Between(1,4))
-        //     nextScene = true
+            })
+        }
 
-        // }
+        } else if (kControlsEnabled){
+
+            textBox.on('pointerdown', function(){
+
+                if(selectedSector == 0){
+                    activeRegion = 'Region'+ String(Phaser.Math.Between(1,4))//'RegionTemplate'
+                } else {
+                    activeRegion = 'Region'+ String(selectedSector)
+                }
+
+                console.log('Selected Region: ' + activeRegion)
+                
+                nextScene = true
+    
+            })    
+
+        }
 
         if (nextScene && kControlsEnabled ){
-            //this.scene.run(activeRegion, Phaser.Math.Between(1,4))
-            this.scene.run('Region1', Phaser.Math.Between(1,4))
+            this.scene.run(activeRegion, Phaser.Math.Between(1,4))
             //this.scene.run('RegionTemplate', Phaser.Math.Between(1,4))
             nextScene = false
             this.scene.stop('Kianova')

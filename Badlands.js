@@ -178,7 +178,7 @@
     var playerIsHit = false
     var level = 0
     var progress = 0
-    var progressToNextLevel = Phaser.Math.Between(175,225)
+    var progressToNextLevel = Phaser.Math.Between(175,225) / 3
 
     var progressToNextCheckPoint = progressToNextLevel * 0.25
     
@@ -984,7 +984,7 @@ hide ()
     }
 
     function nightBorneCam(){
-        player.play({key:'pRun',frameRate: 16},true);
+        player.play({key:'pRun',frameRate: 12},true);
         nightBorne.play({key:'nightBorne_Move',frameRate: 8 * playerSpeed},true)
     if(!nightBorneCamActive){
         camera.resetFX()
@@ -2430,7 +2430,7 @@ hide ()
                                 upIsDown = false
                                 player.play({key:'pJump',frameRate:18},true)
                                 
-                                player.setVelocityY(-750)
+                                player.setVelocityY(-1500 * scaleMod)
                                 playerLanded = false
 
                             } else {
@@ -2439,7 +2439,7 @@ hide ()
                                 upIsDown = false
                                 player.play({key:'pJump',frameRate:18},true)
                                 
-                                player.setVelocityY(-750)
+                                player.setVelocityY(-1500 * scaleMod)
                                 playerLanded = false
                             },player)
                             }
@@ -2454,7 +2454,7 @@ hide ()
                             playerVitals.decreaseEnergy(maxEnergy * 0.2)
                             
                             player.play('pJump',true)
-                            player.setVelocityY(-600)
+                            player.setVelocityY(-1200 * scaleMod)
                             player.setVelocityX(100)
 
                             player.once('animationcomplete',function(){
@@ -2971,7 +2971,7 @@ class Badlands extends Phaser.Scene {
             console.log('bgL'+ i, activeStage.data.values.assetPathRoot + 'BG' + activeStage.data.values.stageAssetName + i)
             //this.load.image('bgL'+ i, activeStage.data.values.assetPathRoot + 'BG' + activeStage.data.values.stageAssetName + i);
             if (activeStage.data.values.stageNormalMaps[i - 1]){
-                console.log(activeStage.data.values.stageNormalMaps[i - 1])
+
                 this.load.image('bgL'+ i, [activeStage.data.values.assetPathRoot + 'BG' + activeStage.data.values.stageAssetName + i,activeStage.data.values.assetPathRoot + 'BG' + activeStage.data.values.stageAssetName + i + '_n']);
             } else {
                 this.load.image('bgL'+ i, activeStage.data.values.assetPathRoot + 'BG' + activeStage.data.values.stageAssetName + i);
@@ -3158,28 +3158,20 @@ class Badlands extends Phaser.Scene {
        
         this.lights.enable();
         this.lights.setAmbientColor(ambientLightSetting);
-        console.log(sunPositionX)
         spotlightSun = this.lights.addLight(gameWidth * sunPositionX , gameHeight * sunPositionY, gameWidth * 3,sunLightSetting, 1);
         //spotlightSun.setScrollFactor(1)
     
 
-        var x = 0
-        var y = 0
-        var wM = 3
-        var tileSpriteWidth = 0//width * wM
-        var tileSpriteHeight = 0//height
-        
         
         // Load Stage Object
         for (var i = bgLayers; i > 0; i--){
-            window['bgL'+i] =  this.add.tileSprite(x,y,tileSpriteWidth,tileSpriteHeight,'bgL'+i).setOrigin(0,0).setScrollFactor(bgScroll[i-1]).setPipeline('Light2D').setDepth(0);
+            //window['bgL'+i] =  this.add.tileSprite(0,0,0,0,'bgL'+i).setOrigin(0,0).setScrollFactor(bgScroll[i-1] * scaleMod).setPipeline('Light2D').setDepth(0);
+            window['bgL'+i] =  this.add.tileSprite(0,0,0,0,'bgL'+i).setOrigin(0,0).setPipeline('Light2D').setDepth(0).setScrollFactor(0);
             var textureHeight = window['bgL'+i].displayHeight
             var textureWidth = window['bgL'+i].displayWidth
             var textureWidthScaleMod = gameWidth / textureWidth
             var textureHeightScaleMod = gameHeight / textureHeight
-            console.log(gameWidth)
-            console.log(window['bgL'+i].displayWidth,textureWidthScaleMod)
-            console.log(window['bgL'+i].displayHeight,textureHeightScaleMod)
+            console.log(gameWidth, textureWidthScaleMod,'\n',gameHeight, textureHeightScaleMod)
             window['bgL'+i].setTileScale(textureWidthScaleMod,textureHeightScaleMod)
             window['bgL'+i+'ScrollMod'] = + bgScroll[i - 1]
             
@@ -3187,7 +3179,7 @@ class Badlands extends Phaser.Scene {
         }
 
         for (var i = fgLayers; i > 0; i--){
-            window['fgL'+i] =  this.add.tileSprite(x,y,tileSpriteWidth,tileSpriteHeight,'fgL'+i).setOrigin(0,0).setScrollFactor(fgScroll[i-1]).setPipeline('Light2D').setDepth(1);
+            window['fgL'+i] =  this.add.tileSprite(0,0,0,0,'fgL'+i).setOrigin(0,0).setScrollFactor(fgScroll[i-1]).setPipeline('Light2D').setDepth(1);
             window['fgL'+i].setTileScale(0.5)
             window['fgL'+i+'ScrollMod'] = + fgScroll[i - 1]
         }
@@ -3957,12 +3949,12 @@ class Badlands extends Phaser.Scene {
             // Creep AI Proto
             if(gameMode == 0){
                
-            if(!creepIsHit && creep.x < player.x + 750 && creep.x > player.x - 300 && !creep.flipX){
+            if(!creepIsHit && creep.x < player.x + (750 * scaleMod) && creep.x > player.x - (300 * scaleMod) && !creep.flipX){
                 if(creep.body.onFloor()){
-                    creep.setVelocityY(-600)
+                    creep.setVelocityY(-(600 * scaleMod))
                     
                 } else if(!creep.body.onFloor()) {
-                    creep.x -= 17.5
+                    creep.x -= (17.5 * scaleMod)
                 }
                 
 
@@ -3971,20 +3963,20 @@ class Badlands extends Phaser.Scene {
                 
             } else if (!creepIsHit && creep.x < player.x && creep.x > gameWidth && creep.flipX) {
                 
-                if (creep.x < player.x - Phaser.Math.Between(450,300)){
+                if (creep.x < player.x - Phaser.Math.Between(450 * scaleMod,300 * scaleMod)){
                     creepChase = true
                 }
 
-                if (creepChase && creep.x < player.x - Phaser.Math.Between(100,150)){
+                if (creepChase && creep.x < player.x - Phaser.Math.Between(100 * scaleMod,150 * scaleMod)){
                     if (playerSpeed <= 1 ) {
                         creep.play({key:'nightBorneMinion_Move',frameRate: 18},true)
-                        creep.x += Phaser.Math.Between(18,24) * playerSpeed
+                        creep.x += Phaser.Math.Between(18,24) * playerSpeed * scaleMod
                     } else if (playerSpeed > 1 && playerSpeed < 1.25 ) {
                         creep.play({key:'nightBorneMinion_Move',frameRate: 16},true)
-                        creep.x += Phaser.Math.Between(16,22) * playerSpeed
+                        creep.x += Phaser.Math.Between(16,22) * playerSpeed  * scaleMod
                     } else if (playerSpeed >= 1.15) {
                         creep.play({key:'nightBorneMinion_Move',frameRate: 12},true)
-                        creep.x += Phaser.Math.Between(12,16)
+                        creep.x += Phaser.Math.Between(12,16) * scaleMod
                     }
                 }
                 
@@ -4738,10 +4730,12 @@ class Badlands extends Phaser.Scene {
 
             // Game Variables
 
-            if(!focusModeActive){
+            if(!focusModeActive && !nightBorneCamActive){
                 playerSpeed = player.x / (gameWidth * 1.25)
-            } else {
-                playerSpeed = 0.5
+            } else if (nightBorneCamActive && !nightBorneCamLocked) {
+                playerSpeed = 1.75
+            } else if (nightBorneCamLocked){
+                playerSpeed = 1.5
             }
 
             // To be sorted
@@ -4768,6 +4762,7 @@ class Badlands extends Phaser.Scene {
             if (progress >= progressToNextCheckPoint){
                 player.flipX = false
                 nightBorneCam()
+                //playerSpeed = 1.5
                 if(nightBorneCamLocked){
                     enemyChase(2)
                 }
@@ -4778,15 +4773,15 @@ class Badlands extends Phaser.Scene {
 
                 // Parallax Background layers scrolls at variable speed multiplied by playerSpeed %
                 if(!gameOver){
-
+                   
                     
                     for (var i = 1; i < bgLayers + 1 ; i++){
-                        window['bgL'+i].tilePositionX += (12   * window['bgL'+ i + 'ScrollMod']  * (playerSpeed) * (scaleMod)) 
+                        window['bgL'+i].tilePositionX += 16   * window['bgL'+ i + 'ScrollMod']  * playerSpeed //* (scaleMod)
                        
                     }
 
                     for (var i = 1; i < fgLayers + 1; i++){
-                        window['fgL'+i].tilePositionX += (12 * window['fgL'+ i + 'ScrollMod'] * (playerSpeed) * (scaleMod)) 
+                        window['fgL'+i].tilePositionX += 16 * window['fgL'+ i + 'ScrollMod'] * playerSpeed //* (scaleMod)
                     }
 
 
@@ -4815,6 +4810,11 @@ class Badlands extends Phaser.Scene {
         // Battle Mode
 
         } else if (gameMode == 1){
+
+            for (var i = 1; i < bgLayers + 1 ; i++){
+                window['bgL'+i].tilePositionX = camera.scrollX * window['bgL'+ i + 'ScrollMod'] * (scaleMod)
+               
+            }
 
                 // Camera
                 if (player.x > closest.x - (300 * scaleMod) && playerLockedOn){
