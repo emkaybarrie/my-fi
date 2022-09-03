@@ -4,7 +4,7 @@ var scaleMod
 var map
 var loadScreen
 var camera
-var nextScene
+var nextScene = true
 var kControlsEnabled = false
 var autoPlayActive 
 var activeRegion
@@ -425,36 +425,39 @@ class Kianova extends Phaser.Scene {
         }
 
         
-        if(Phaser.Input.Keyboard.JustDown(cursors.space) && kControlsEnabled){
+        // if(Phaser.Input.Keyboard.JustDown(cursors.space) && kControlsEnabled){
           
 
-            camera.fadeOut(250)
+        //     camera.fadeOut(250)
             
-            camera.once('camerafadeoutcomplete',function(){
-                if(selectedSector == 0){
-                    activeRegion = 'RegionTemplate'
-                } else {
-                    activeRegion = 'Region'+ String(selectedSector)
-                }
+        //     camera.once('camerafadeoutcomplete',function(){
+        //         if(selectedSector == 0){
+        //             activeRegion = 'RegionTemplate'
+        //         } else {
+        //             activeRegion = 'Region'+ String(selectedSector)
+        //         }
                 
-                console.log('Selected Region: ' + activeRegion)
+        //         console.log('Selected Region: ' + activeRegion)
                 
-                nextScene = true
+        //         nextScene = true
                
                
-            })
-        } else if (autoPlayActive && kControlsEnabled){
-            autoPlayActive = false
-            activeRegion = 'Region'+ String(Phaser.Math.Between(1,4))
-            nextScene = true
+        //     })
+        // } else if (autoPlayActive && kControlsEnabled){
+        //     autoPlayActive = false
+        //     activeRegion = 'Region'+ String(Phaser.Math.Between(1,4))
+        //     nextScene = true
 
-        }
+        // }
 
-        if (nextScene ){
-            this.scene.run(activeRegion, Phaser.Math.Between(1,4))
+        if (nextScene && kControlsEnabled ){
+            //this.scene.run(activeRegion, Phaser.Math.Between(1,4))
+            this.scene.run('Region1', Phaser.Math.Between(1,4))
             //this.scene.run('RegionTemplate', Phaser.Math.Between(1,4))
             nextScene = false
             
         }
+
+        
     }
 }

@@ -4781,12 +4781,12 @@ class Badlands extends Phaser.Scene {
 
                     
                     for (var i = 1; i < bgLayers + 1 ; i++){
-                        window['bgL'+i].tilePositionX += (12 * window['bgL'+ i + 'ScrollMod'] ) * (playerSpeed)
+                        window['bgL'+i].tilePositionX += (12  * (scaleMod) * window['bgL'+ i + 'ScrollMod'] ) * (playerSpeed)
                        
                     }
 
                     for (var i = 1; i < fgLayers + 1; i++){
-                        window['fgL'+i].tilePositionX += (12 * window['fgL'+ i + 'ScrollMod'] ) * (playerSpeed)
+                        window['fgL'+i].tilePositionX += (12  * (scaleMod) * window['fgL'+ i + 'ScrollMod'] ) * (playerSpeed)
                     }
 
 
