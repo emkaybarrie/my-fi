@@ -455,6 +455,7 @@ class Kianova extends Phaser.Scene {
             this.scene.run('Region1', Phaser.Math.Between(1,4))
             //this.scene.run('RegionTemplate', Phaser.Math.Between(1,4))
             nextScene = false
+            this.scene.stop('Kianova')
             
         }
 

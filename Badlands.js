@@ -829,7 +829,7 @@ hide ()
 
     function moveHighObstacle (highObstacle,speed){
     
-        highObstacle.x -= speed;
+        highObstacle.x -= speed * scaleMod;
         if (highObstacle.x < Phaser.Math.Between(0,0)){
             resetHighObstacle(highObstacle)
         }
@@ -839,7 +839,7 @@ hide ()
 
     function moveLowObstacle (lowObstacle,speed){
     
-        lowObstacle.x -= speed;
+        lowObstacle.x -= speed * scaleMod;
     if (lowObstacle.x < Phaser.Math.Between(-1000,-200)){
         resetLowObstacle(lowObstacle)
     }
@@ -850,7 +850,7 @@ hide ()
     function moveCreep (creep,speed){
     
         if (creep.anims.getName() != 'nightBorneMinion_Hurt'){
-            creep.x -= speed;
+            creep.x -= speed * scaleMod;
         }
         
         if (creep.x < Phaser.Math.Between(0,0)){
@@ -4781,12 +4781,12 @@ class Badlands extends Phaser.Scene {
 
                     
                     for (var i = 1; i < bgLayers + 1 ; i++){
-                        window['bgL'+i].tilePositionX += (12  * (scaleMod) * window['bgL'+ i + 'ScrollMod'] ) * (playerSpeed)
+                        window['bgL'+i].tilePositionX += (12   * window['bgL'+ i + 'ScrollMod']  * (playerSpeed) * (scaleMod)) 
                        
                     }
 
                     for (var i = 1; i < fgLayers + 1; i++){
-                        window['fgL'+i].tilePositionX += (12  * (scaleMod) * window['fgL'+ i + 'ScrollMod'] ) * (playerSpeed)
+                        window['fgL'+i].tilePositionX += (12 * window['fgL'+ i + 'ScrollMod'] * (playerSpeed) * (scaleMod)) 
                     }
 
 
