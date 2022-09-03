@@ -1,3 +1,6 @@
+var gameWidth
+var gameHeight
+var scaleMod
 var map
 var loadScreen
 var camera
@@ -48,6 +51,14 @@ class Kianova extends Phaser.Scene {
 
 
     preload(){
+
+        //console.log(this.sys.game.scale.gameSize)
+        //console.log(this.scale.gameSize)
+        //console.log(this.sys.game.canvas.width)
+        //console.log(this.sys.game.canvas.height)
+        gameWidth = this.sys.game.canvas.width
+        gameHeight = this.sys.game.canvas.height
+        scaleMod = gameHeight/1080
         this.load.image('load', 'assets/KianovaLoadScreen.png');
         this.load.image('map', 'assets/KianovaMap.png');
         this.load.image('textBox', 'assets/vFX/inspirationBox.png');
@@ -65,50 +76,74 @@ class Kianova extends Phaser.Scene {
         cursors = this.input.keyboard.createCursorKeys();
 
         camera = this.cameras.main.fadeIn(1500)
-        map = this.add.image(0,0,'map').setScale(1.19,0.645).setOrigin(0,0)
-        loadScreen = this.add.image(0,0,'load').setScale(1.29,0.705).setOrigin(0,0)
+        var mapScaleX = 1.19 * (scaleMod) 
+        var mapScaleY = 0.645 * (scaleMod)
+        map = this.add.image(0,0,'map').setScale(mapScaleX,mapScaleY).setOrigin(0,0)
+        var loadScreenScaleX = 1.29 * (scaleMod) 
+        var loadScreenScaleY = 0.705 * (scaleMod)
+        loadScreen = this.add.image(0,0,'load').setScale(loadScreenScaleX,loadScreenScaleY).setOrigin(0,0)
 
 
         sectors = this.add.group({
              
         })
 
-        kSectorOuter = this.add.circle(1000,650,20,0x350035)
-        kSectorInner = this.add.circle(1000,650,15,0xFFFFFF)
+        var sectorOuterScale = 20 * (scaleMod) 
+        var sectorInnerScale = 15 * (scaleMod)
 
-        nSectorOuter = this.add.circle(550,575,20,0x350035)
-        nSectorInner = this.add.circle(550,575,15,0xFFFFFF)
+        var kSectorPosX = 1000 * (scaleMod)
+        var kSectorPosY = 650 * (scaleMod)
+         
+        kSectorOuter = this.add.circle(kSectorPosX,kSectorPosY,sectorOuterScale,0x350035)
+        kSectorInner = this.add.circle(kSectorPosX,kSectorPosY,sectorInnerScale,0xFFFFFF)
 
-        wSectorOuter = this.add.circle(200,800,20,0x350035)
-        wSectorInner = this.add.circle(200,800,15,0xFFFFFF)
+        var nSectorPosX = 550 * (scaleMod)
+        var nSectorPosY = 575 * (scaleMod)
+        nSectorOuter = this.add.circle(nSectorPosX,nSectorPosY,sectorOuterScale,0x350035)
+        nSectorInner = this.add.circle(nSectorPosX,nSectorPosY,sectorInnerScale,0xFFFFFF)
 
-        sSectorOuter = this.add.circle(1500,800,20,0x350035)
-        sSectorInner = this.add.circle(1500,800,15,0xFFFFFF)
+        var wSectorPosX = 200 * (scaleMod)
+        var wSectorPosY = 800 * (scaleMod)
+        wSectorOuter = this.add.circle(wSectorPosX,wSectorPosY,sectorOuterScale,0x350035)
+        wSectorInner = this.add.circle(wSectorPosX,wSectorPosY,sectorInnerScale,0xFFFFFF)
 
-        eSectorOuter = this.add.circle(1800,550,20,0x350035)
-        eSectorInner = this.add.circle(1800,550,15,0xFFFFFF)
+        var sSectorPosX = 1500 * (scaleMod)
+        var sSectorPosY = 800 * (scaleMod)
+        sSectorOuter = this.add.circle(sSectorPosX,sSectorPosY,sectorOuterScale,0x350035)
+        sSectorInner = this.add.circle(sSectorPosX,sSectorPosY,sectorInnerScale,0xFFFFFF)
 
-        selectedSectorIcon = this.add.circle(1000,650,15,0x350035)
-        textBox = this.add.image(1000,350,'textBox').setScale(0.31,0.225).setAlpha(0.75)
+        var eSectorPosX = 1700 * (scaleMod)
+        var eSectorPosY = 550 * (scaleMod)
+        eSectorOuter = this.add.circle(eSectorPosX,eSectorPosY,sectorOuterScale,0x350035)
+        eSectorInner = this.add.circle(eSectorPosX,eSectorPosY,sectorInnerScale,0xFFFFFF)
+
+        selectedSectorIcon = this.add.circle(kSectorPosX,kSectorPosY,sectorInnerScale,0x350035)
+
+        var textBoxScaleX = 0.31 * (scaleMod) 
+        var textBoxScaleY = 0.225 * (scaleMod)
+        textBox = this.add.image(textBoxScaleX,textBoxScaleY,'textBox').setScale(textBoxScaleX,textBoxScaleY).setAlpha(0.75)
 
         text = this.make.text({
-            x: 1000,
-            y: 350,
+            x: 1000 * (scaleMod) ,
+            y: 350 * (scaleMod),
             text: sectorName,
             origin: { x: 0.5, y: 0.5 },
             style: {
-                font: '22px Gothic',
+                font: '20px Gothic',
 
                 fill: 'white',
                 align: 'center',
-                wordWrap: { width: 300},
+                wordWrap: { width: 300 * (scaleMod)},
             }
         });
 
-        patronIcon = this.add.image(1000,350,'patronIcon').setScale(0.5).setOrigin(0.5,0.5)
-        loyaltyIcon = this.add.image(1000,350,'loyaltyIcon').setScale(0.5).setOrigin(0.5,0.5)
-        prosperityIcon = this.add.image(1000,350,'prosperityIcon').setScale(0.5).setOrigin(0.5,0.5)
-        gloryIconK = this.add.image(1000,350,'gloryIcon').setScale(0.5).setOrigin(0.5,0.5)
+        text.setFontSize(20 * (scaleMod))
+
+        var iconScale =  0.5 * (scaleMod)
+        patronIcon = this.add.image(1000 * (scaleMod),350 * (scaleMod),'patronIcon').setScale(iconScale).setOrigin(0.5,0.5)
+        loyaltyIcon = this.add.image(1000 * (scaleMod),350 * (scaleMod),'loyaltyIcon').setScale(iconScale).setOrigin(0.5,0.5)
+        prosperityIcon = this.add.image(1000 * (scaleMod),350 * (scaleMod),'prosperityIcon').setScale(iconScale).setOrigin(0.5,0.5)
+        gloryIconK = this.add.image(1000 * (scaleMod),350 * (scaleMod),'gloryIcon').setScale(iconScale).setOrigin(0.5,0.5)
 
         sectors.addMultiple([textBox,text,patronIcon,loyaltyIcon,prosperityIcon,gloryIconK,selectedSectorIcon,kSectorOuter,kSectorInner,nSectorOuter,nSectorInner,wSectorOuter,wSectorInner,sSectorOuter,sSectorInner,eSectorOuter,eSectorInner]) 
         
@@ -122,24 +157,26 @@ class Kianova extends Phaser.Scene {
             yoyo: 0
         });
 
+    
+
         loyaltyStars = this.add.group()
-
-        loyaltyStars.createMultiple({key:'star',frameQuantity: 5})
+        loyaltyStars.createMultiple({key:'star',frameQuantity: 5, setScale: {x: 1.25 * (scaleMod), y: 1.25 * (scaleMod)}})
         loyaltyStars.setVisible(0)
-
+       
         prosperityStars = this.add.group()
-        prosperityStars.createMultiple({key:'star',frameQuantity: 5})
+        prosperityStars.createMultiple({key:'star',frameQuantity: 5, setScale: {x: 1.25 * (scaleMod), y: 1.25 * (scaleMod)}})
         prosperityStars.setVisible(0)
+
         
         camera.on('camerafadeincomplete',function(){
 
         this.tweens.add({
             delay: 500,
             targets: loadScreen,
-            alphaTopLeft: { value: 0, duration: 2500, ease: 'Power1' },
-            alphaBottomLeft: { value: 0, duration: 3500, ease: 'Power1'},
-            alphaTopRight: { value: 0, duration: 3000, ease: 'Power1' },
-            alphaBottomRight: { value: 0, duration: 4000, ease: 'Power1'},
+            alphaTopLeft: { value: 0, duration: 1250, ease: 'Power1' },
+            alphaBottomLeft: { value: 0, duration: 1750, ease: 'Power1'},
+            alphaTopRight: { value: 0, duration: 1500, ease: 'Power1' },
+            alphaBottomRight: { value: 0, duration: 2000, ease: 'Power1'},
   
             onComplete: function () {
 
@@ -170,7 +207,16 @@ class Kianova extends Phaser.Scene {
         
     }
 
-    update(){
+    update(data){
+
+        var starsScale =  1.25 * (scaleMod)
+        var textBoxScaleY =  0.225 * (scaleMod)
+        var textScaleY =  1 
+        var iconScaleY = 0.5 * (scaleMod)
+
+        var kSectorPosX = 1000 * (scaleMod)
+        var kSectorPosY = 650 * (scaleMod)
+
 
         if(Phaser.Input.Keyboard.JustDown(cursors.down) && kControlsEnabled){
 
@@ -188,11 +234,11 @@ class Kianova extends Phaser.Scene {
             gloryIconK.scaleY = 0
             loyaltyStars.setAlpha(0)
             loyaltyStars.children.iterate((child) =>{
-                child.setScale(1,0)
+                child.setScale(starsScale,0)
             })
             prosperityStars.setAlpha(0)
             prosperityStars.children.iterate((child) =>{
-                child.setScale(1,0)
+                child.setScale(starsScale,0)
             })
 
             if(selectedSector < 4){
@@ -227,8 +273,8 @@ class Kianova extends Phaser.Scene {
 
         if(selectedSector == 0){
             textBox.setTint()
-            selectedSectorIcon.x = 1000
-            selectedSectorIcon.y = 650
+            selectedSectorIcon.x = kSectorPosX
+            selectedSectorIcon.y = kSectorPosY
             sectorName = 'Grand Square [myFi Token]'
             sectorDescription = '\n\nPolitical Hub of Kianova.\nHome to the Great Houses that power the city' 
             sectorAffinity = '\n\n\n          Omnia'
@@ -239,8 +285,8 @@ class Kianova extends Phaser.Scene {
             
         } else if (selectedSector == 2){
             textBox.setTint(0xBC3823)
-            selectedSectorIcon.x = 550
-            selectedSectorIcon.y = 575
+            selectedSectorIcon.x = 550 * (scaleMod)
+            selectedSectorIcon.y = 575 * (scaleMod)
             
             sectorName = 'North Sector [Property]'
             sectorDescription = '\n\nHome to the Lucarian Guard.\nMasterful warriors known for their fortitude and resilience.' 
@@ -252,8 +298,8 @@ class Kianova extends Phaser.Scene {
   
         } else if (selectedSector == 3){
             textBox.setTint(0x0076C)
-            selectedSectorIcon.x = 200
-            selectedSectorIcon.y = 800
+            selectedSectorIcon.x = 200 * (scaleMod)
+            selectedSectorIcon.y = 800 * (scaleMod)
             sectorName = 'West Sector [Stocks]'
             sectorDescription = '\n\nHome to the Order of Amara.\nPractitioners of the ancient Essence Arts.' 
             sectorAffinity = '\n\n\n          Amara'
@@ -265,8 +311,8 @@ class Kianova extends Phaser.Scene {
         } else if (selectedSector == 4){
             textBox.setTint(0x0C5D25)
             
-            selectedSectorIcon.x = 1500
-            selectedSectorIcon.y = 800
+            selectedSectorIcon.x = 1500 * (scaleMod)
+            selectedSectorIcon.y = 800 * (scaleMod)
 
             sectorName = 'South Sector [Crypto]'
             sectorDescription = '\n\nHome to the Illuvium Brotherhood.\nA favourite haunt of arcanists and elementalists.' 
@@ -278,8 +324,8 @@ class Kianova extends Phaser.Scene {
 
         } else if (selectedSector == 1){
             textBox.setTint(0x877254)
-            selectedSectorIcon.x = 1800
-            selectedSectorIcon.y = 550
+            selectedSectorIcon.x = 1700 * (scaleMod)
+            selectedSectorIcon.y = 550 * (scaleMod)
             sectorName = 'East Sector [Commodities]'
             sectorDescription = '\n\nHome to the Disciples of Mundo.\nScholars of the ways of Sustahnus.'  
             sectorAffinity = '\n\n\n          Mundo'
@@ -289,19 +335,20 @@ class Kianova extends Phaser.Scene {
             sectorOptions = '\n\n- Visit Eastern Sector\n- Recruit Mundus Priest\n- Explore Eastern Badlands'
         }
 
-        textBox.x = selectedSectorIcon.x
-        textBox.y = selectedSectorIcon.y - 275
+
+        textBox.x = selectedSectorIcon.x 
+        textBox.y = selectedSectorIcon.y - (gameHeight * 0.25)
         text.x = textBox.x
         text.y = textBox.y
         text.setText(sectorName + sectorDescription + sectorAffinity + gloryScore + sectorOptions)
 
-        patronIcon.x = text.x - 87.5
-        patronIcon.y = text. y - 40
+        patronIcon.x = text.x - (87.5 * (scaleMod))
+        patronIcon.y = text. y - (40 * (scaleMod))
 
-        loyaltyIcon.x = text.x - 87.5
-        loyaltyIcon.y = text. y + 10
+        loyaltyIcon.x = text.x - (87.5 * (scaleMod))
+        loyaltyIcon.y = text. y + (10 * (scaleMod))
 
-        loyaltyStars.setX(loyaltyIcon.x + 65,30)
+        loyaltyStars.setX(loyaltyIcon.x + (65 * (scaleMod)) , 30 * (scaleMod))
         loyaltyStars.setY(loyaltyIcon.y)
 
         for (var i = 0; i < loyaltyScore; i++){
@@ -312,10 +359,10 @@ class Kianova extends Phaser.Scene {
             loyaltyStars.getChildren()[i].setTint(0x000000).stop() 
         }
         
-        prosperityIcon.x = text.x - 87.5
-        prosperityIcon.y = text. y + 60
+        prosperityIcon.x = text.x - (87.5 * (scaleMod)) 
+        prosperityIcon.y = text. y + (60 * (scaleMod))
 
-        prosperityStars.setX(prosperityIcon.x + 65,30)
+        prosperityStars.setX(prosperityIcon.x + (65 * (scaleMod)),30 * (scaleMod))
         prosperityStars.setY(prosperityIcon.y)
 
         for (var i = 0; i < prosperityScore; i++){
@@ -326,15 +373,15 @@ class Kianova extends Phaser.Scene {
             prosperityStars.getChildren()[i].setTint(0x000000).stop() 
         }
 
-        gloryIconK.x = text.x - 87.5
-        gloryIconK.y = text. y + 110
+        gloryIconK.x = text.x - (87.5 * (scaleMod))
+        gloryIconK.y = text. y + (110 * (scaleMod))
         
         if(textBox.alpha == 0){
 
         this.tweens.add({
             targets: textBox,
             alpha: { value: 0.75, duration: 500, ease: 'Power1' },
-            scaleY: {value:0.225, duration: 250,ease: 'Power1' },
+            scaleY: {value:textBoxScaleY, duration: 250,ease: 'Power1' },
             
 
         });
@@ -342,28 +389,28 @@ class Kianova extends Phaser.Scene {
         this.tweens.add({
             targets: text,
             alpha: { value: 1, duration: 500, ease: 'Power1' },
-            scaleY: {value:1, duration: 250,ease: 'Power1' },
+            scaleY: {value:textScaleY, duration: 250,ease: 'Power1' },
             
         });
 
         this.tweens.add({
             targets: [patronIcon,loyaltyIcon,prosperityIcon,gloryIconK],
             alpha: { value: 1, duration: 1000, ease: 'Power1' },
-            scaleY: {value:0.5, duration: 500,ease: 'Power1' },
+            scaleY: {value:iconScaleY, duration: 500,ease: 'Power1' },
             
         });
 
         this.tweens.add({
             targets: loyaltyStars.getChildren(),
             alpha: { value: 1, duration: 1000, ease: 'Power1' },
-            scale: {value:1, duration: 500,ease: 'Power1' },
+            scale: {value:starsScale, duration: 500,ease: 'Power1' },
             
         });
 
         this.tweens.add({
             targets: prosperityStars.getChildren(),
             alpha: { value: 1, duration: 1000, ease: 'Power1' },
-            scale: {value:1, duration: 500,ease: 'Power1' },
+            scale: {value:starsScale, duration: 500,ease: 'Power1' },
             
         });
 
@@ -378,8 +425,14 @@ class Kianova extends Phaser.Scene {
             camera.fadeOut(250)
             
             camera.once('camerafadeoutcomplete',function(){
-                activeRegion = 'Region'+ String(selectedSector)
+                if(selectedSector == 0){
+                    activeRegion = 'RegionTemplate'
+                } else {
+                    activeRegion = 'Region'+ String(selectedSector)
+                }
+                
                 console.log('Selected Region: ' + activeRegion)
+                
                 nextScene = true
                
                

@@ -95,17 +95,20 @@ class RegionTemplate extends Phaser.Scene {
                stage.data.set('stageMusicFileName','music/Katana.mp3')
         
                // Set Background (BG) & Foregorund (FG) Layers
-               var stageAssetName = 'forest'
-               var stageBackgroundLayers = 7
-               var stageForegroundLayers = 3
-               var stageBGScrollSpeedModifierSettings = [1,0.95,0.75,0.65,0.45,0.2,0,0]
-               var stageFGScrollSpeedModifierSettings = [1.1,1.1,1.05]
+               var stageAssetName = 'river'
+               var stageBackgroundLayers = 9
+               var stageForegroundLayers = 0
+               var stageBGScrollSpeedModifierSettings = [1,0.5,0.95,0.9,0.85,0.5,0.35,0.1,0]
+               //var stageBGScrollSpeedModifierSettings = [1,1,0,0,0,0,0,0,0]
+               var stageFGScrollSpeedModifierSettings = []
+               var stageNormalMaps = [0,0,0,0]
                // Create Data Entry for Number of Layers
                 stage.data.set('stageAssetName',stageAssetName)
                 stage.data.set('bgLayers',stageBackgroundLayers)
                 stage.data.set('fgLayers',stageForegroundLayers)
                 stage.data.set('bgScroll',stageBGScrollSpeedModifierSettings)
                 stage.data.set('fgScroll',stageFGScrollSpeedModifierSettings)
+                stage.data.set('stageNormalMaps',stageNormalMaps)
                 
         
             // Day/Night Settings
@@ -117,6 +120,7 @@ class RegionTemplate extends Phaser.Scene {
                 var night = true
 
                 var timeAvailabilityArray = [dawn,day,dusk,night]
+                
                 // Time Availability
                 stage.data.set('timeAvailability',timeAvailabilityArray)
         
@@ -132,6 +136,10 @@ class RegionTemplate extends Phaser.Scene {
                 // Night
                 stage.data.set('nightAmbientLightOverride',null)
                 stage.data.set('nightSunLightOverride',null)
+                // Sun Position
+                stage.data.set('sunPositionXOverride',null)
+                stage.data.set('sunPositionYOverride',null)
+
               
         
             // Floor Settings
@@ -251,7 +259,7 @@ class RegionTemplate extends Phaser.Scene {
             //  Checks Rarity
             if (candidateStageObject.data.values.rarity == selectedRarity){
                 //  Checks Time 
-                    if (candidateStageObject.data.values.timeAvailability[time]){
+                    if (candidateStageObject.data.values.timeAvailability[time-1]){
                     // End while loop
                     console.log('Valid Stage Source Data Found....')
                     findingMatch = false

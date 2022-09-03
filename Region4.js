@@ -34,6 +34,8 @@ class Region4 extends Phaser.Scene {
 
     console.log('Commencing Stage Data Creation....')
 
+    console.log(time)
+
     var createdStageData = this.createStageData(0,time,null)
 
     console.log('Applying Region Data')
@@ -96,13 +98,17 @@ class Region4 extends Phaser.Scene {
                var stageBackgroundLayers = 7
                var stageForegroundLayers = 3
                var stageBGScrollSpeedModifierSettings = [1,0.95,0.75,0.65,0.45,0.2,0,0]
-               var stageFGScrollSpeedModifierSettings = [1.1,1.1,1.05]
+               var stageFGScrollSpeedModifierSettings = [0.25,1,1.05]
+               var stageNormalMaps = [1,0,0,0,0,0,0]
+              // var stageFGNormalMaps = [0,0,0,0,0,0,0]
                // Create Data Entry for Number of Layers
                 stage.data.set('stageAssetName',stageAssetName)
                 stage.data.set('bgLayers',stageBackgroundLayers)
                 stage.data.set('fgLayers',stageForegroundLayers)
                 stage.data.set('bgScroll',stageBGScrollSpeedModifierSettings)
                 stage.data.set('fgScroll',stageFGScrollSpeedModifierSettings)
+                stage.data.set('stageNormalMaps',stageNormalMaps)
+                
                 
         
             // Day/Night Settings
@@ -130,6 +136,9 @@ class Region4 extends Phaser.Scene {
                 // Night
                 stage.data.set('nightAmbientLightOverride',null)
                 stage.data.set('nightSunLightOverride',null)
+                // Sun Position
+                stage.data.set('sunPositionXOverride',null)
+                stage.data.set('sunPositionYOverride',null)
               
         
             // Floor Settings
@@ -197,7 +206,6 @@ class Region4 extends Phaser.Scene {
 
     createStageData(sector,time,rarityOverride) {
 
-
         // DEFAULT settings if selected arrays are unpopulated
             
         var defaultSector = 0
@@ -227,6 +235,8 @@ class Region4 extends Phaser.Scene {
         // }
         //
 
+     
+
         var selectedSectorStage = Phaser.Math.Between(0,sectors[selectedSector].length - 1)
 
         var selectedRarity
@@ -238,20 +248,31 @@ class Region4 extends Phaser.Scene {
             selectedRarity = randomisedRarity
         }
 
+       
+
         var findingMatch = true
         var candidateStageObject
         
         while(findingMatch){
             candidateStageObject = sectors[selectedSector][selectedSectorStage]
             // Checks if candidate stage matches rarity and is valid for time of day
-            if (candidateStageObject.data.values.rarity == selectedRarity && candidateStageObject.data.values.timeAvailability[time]){
-                // End while loop
-                findingMatch = false
+            //  Checks Rarity
+            if (candidateStageObject.data.values.rarity == selectedRarity){
+               
+                //  Checks Time 
+                    if (candidateStageObject.data.values.timeAvailability[time-1]){
+                        
+                    // End while loop
+                    console.log('Valid Stage Source Data Found....')
+                    findingMatch = false
+                    }
             } else {
                 selectedRarity = defaultRarity
                 selectedSectorStage = Phaser.Math.Between(0,sectors[selectedSector].length - 1)
             }
         }
+
+   
 
         var stageDataImport = candidateStageObject
       

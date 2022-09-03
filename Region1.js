@@ -95,14 +95,16 @@ class Region1 extends Phaser.Scene {
                var stageAssetName = 'river'
                var stageBackgroundLayers = 9
                var stageForegroundLayers = 0
-               var stageBGScrollSpeedModifierSettings = [1,0.95,0.75,0.65,0.45,0.2,0,0]
-               var stageFGScrollSpeedModifierSettings = [1.1,1.1,1.05]
+               var stageBGScrollSpeedModifierSettings = [1,0.5,0.95,0.9,0.85,0.5,0.35,0.1,0]
+               var stageFGScrollSpeedModifierSettings = []
+               var stageNormalMaps = [1,1,0,0,0,0,0,0,0]
                // Create Data Entry for Number of Layers
                 stage.data.set('stageAssetName',stageAssetName)
                 stage.data.set('bgLayers',stageBackgroundLayers)
                 stage.data.set('fgLayers',stageForegroundLayers)
                 stage.data.set('bgScroll',stageBGScrollSpeedModifierSettings)
                 stage.data.set('fgScroll',stageFGScrollSpeedModifierSettings)
+                stage.data.set('stageNormalMaps',stageNormalMaps)
                 
         
             // Day/Night Settings
@@ -129,6 +131,9 @@ class Region1 extends Phaser.Scene {
                 // Night
                 stage.data.set('nightAmbientLightOverride',null)
                 stage.data.set('nightSunLightOverride',null)
+                // Sun Position
+                stage.data.set('sunPositionXOverride',null)
+                stage.data.set('sunPositionYOverride',null)
               
         
             // Floor Settings
@@ -241,9 +246,14 @@ class Region1 extends Phaser.Scene {
         while(findingMatch){
             candidateStageObject = sectors[selectedSector][selectedSectorStage]
             // Checks if candidate stage matches rarity and is valid for time of day
-            if (candidateStageObject.data.values.rarity == selectedRarity && candidateStageObject.data.values.timeAvailability[time]){
-                // End while loop
-                findingMatch = false
+            //  Checks Rarity
+            if (candidateStageObject.data.values.rarity == selectedRarity){
+                //  Checks Time 
+                    if (candidateStageObject.data.values.timeAvailability[time-1]){
+                    // End while loop
+                    console.log('Valid Stage Source Data Found....')
+                    findingMatch = false
+                    }
             } else {
                 selectedRarity = defaultRarity
                 selectedSectorStage = Phaser.Math.Between(0,sectors[selectedSector].length - 1)
