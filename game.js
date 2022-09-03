@@ -1,7 +1,7 @@
 window.onload = function(){
-// var ratio = Math.max((window.innerWidth * window.devicePixelRatio)/ (window.innerHeight * window.devicePixelRatio), (window.innerHeight * window.devicePixelRatio) / (window.innerWidth * window.devicePixelRatio)) 
-var DEFAULT_HEIGHT = window.innerHeight * window.devicePixelRatio//1080 / 1.5 //272 //window.innerHeight * window.devicePixelRatio // 272
-var DEFAULT_WIDTH = window.innerWidth * window.devicePixelRatio//1920 / 1.5 //1980//592 //ratio * DEFAULT_HEIGHT// * 2
+var ratio = Math.max((window.innerWidth * window.devicePixelRatio)/ (window.innerHeight * window.devicePixelRatio), (window.innerHeight * window.devicePixelRatio) / (window.innerWidth * window.devicePixelRatio)) 
+var DEFAULT_HEIGHT = window.innerHeight//1080 / 1.5 //window.innerHeight * window.devicePixelRatio
+var DEFAULT_WIDTH = ratio * window.innerHeight //1920 / 1.5//
 var scaleMod = DEFAULT_HEIGHT / 1080
 
 var config = {
@@ -15,9 +15,9 @@ var config = {
         // parent: 'mygame',
         mode: Phaser.Scale.FIT,
         autoCenter: Phaser.Scale.CENTER_BOTH,
-        width:  DEFAULT_WIDTH, //592, //window.innerWidth * window.devicePixelRatio
-        height: DEFAULT_HEIGHT //272, //window.innerHeight * window.devicePixelRatio
-        //resolution: window.devicePixelRatio || 1
+        width:  DEFAULT_WIDTH, 
+        height: DEFAULT_HEIGHT, 
+        resolution: window.devicePixelRatio || 1
     },
     input: {
         keyboard: true,
