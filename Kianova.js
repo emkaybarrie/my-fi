@@ -6,6 +6,7 @@ var loadScreen
 var camera
 var nextScene
 var kControlsEnabled = false
+var autoPlayActive 
 var activeRegion
 
 var sectors
@@ -59,6 +60,11 @@ class Kianova extends Phaser.Scene {
         gameWidth = this.sys.game.canvas.width
         gameHeight = this.sys.game.canvas.height
         scaleMod = gameHeight/1080
+        if (!this.sys.game.device.os.desktop){
+            autoPlayActive = true
+        }
+       
+
         this.load.image('load', 'assets/KianovaLoadScreen.png');
         this.load.image('map', 'assets/KianovaMap.png');
         this.load.image('textBox', 'assets/vFX/inspirationBox.png');
@@ -437,7 +443,8 @@ class Kianova extends Phaser.Scene {
                
                
             })
-        } else if (!this.sys.game.device.os.desktop){
+        } else if (autoPlayActive && kControlsEnabled){
+            autoPlayActive = false
             activeRegion = 'Region'+ String(Phaser.Math.Between(1,4))
             nextScene = true
 
