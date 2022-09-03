@@ -437,9 +437,13 @@ class Kianova extends Phaser.Scene {
                
                
             })
+        } else if (!this.sys.game.device.os.desktop){
+            activeRegion = 'Region'+ String(Phaser.Math.Between(1,4))
+            nextScene = true
+
         }
 
-        if (nextScene){
+        if (nextScene ){
             this.scene.run(activeRegion, Phaser.Math.Between(1,4))
             //this.scene.run('RegionTemplate', Phaser.Math.Between(1,4))
             nextScene = false
