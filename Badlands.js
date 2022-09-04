@@ -3029,8 +3029,9 @@ class Badlands extends Phaser.Scene {
 
     }
 
-    create ()
+    create (data)
     {
+        
         var dawnAmbientLightDefault = 0xE49759
         var dayAmbientLightDefault = 0xfdfbd3
         var duskAmbientLightDefault = 0xECC1B2
