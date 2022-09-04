@@ -96,12 +96,12 @@ class RegionTemplate extends Phaser.Scene {
                stage.data.set('stageMusicFileName','music/Katana.mp3')
         
                // Set Background (BG) & Foregorund (FG) Layers
-               var stageAssetName = 'river'
-               var stageBackgroundLayers = 9
-               var stageForegroundLayers = 0
-               var stageBGScrollSpeedModifierSettings = [1,0.5,0.95,0.9,0.85,0.5,0.35,0.1,0]
+               var stageAssetName = 'woods'
+               var stageBackgroundLayers = 3
+               var stageForegroundLayers = 1
+               var stageBGScrollSpeedModifierSettings = [1,0.5,0]
                //var stageBGScrollSpeedModifierSettings = [1,1,0,0,0,0,0,0,0]
-               var stageFGScrollSpeedModifierSettings = []
+               var stageFGScrollSpeedModifierSettings = [1.1]
                var stageNormalMaps = [0,0,0,0]
                // Create Data Entry for Number of Layers
                 stage.data.set('stageAssetName',stageAssetName)

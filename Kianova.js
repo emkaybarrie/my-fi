@@ -24,9 +24,23 @@ var sSectorInner
 var eSectorOuter 
 var eSectorInner
 
-var textBox
-var text
+var sectorNameBox
+var sectorNameText
 var sectorName
+var sectorIconLight
+var sector0Icon
+var sector1Icon
+var sector2Icon
+var sector3Icon
+var sector4Icon
+
+var chosenSectorArrayIcon = 2
+
+
+
+var textBox
+var textBoxScaleY
+var text
 var sectorDescription
 var sectorAffinity
 var loyaltyScore
@@ -66,7 +80,11 @@ class Kianova extends Phaser.Scene {
 
         this.load.image('load', 'assets/KianovaLoadScreen.png');
         this.load.image('map', 'assets/KianovaMap.png');
+        for(var i = 0; i < 5; i++){
+            this.load.image('r' + i + 'Icon', ['assets/region' + i +'Icon.png','assets/region' + i +'Icon_n.png']);
+        }
         this.load.image('textBox', 'assets/vFX/inspirationBox.png');
+        this.load.image('sectorNameBox', 'assets/vFX/playerHUDBox.png');
         this.load.image('patronIcon', 'assets/ach_00033.png');
         this.load.image('loyaltyIcon', 'assets/ach_00024.png');
         this.load.image('prosperityIcon', 'assets/ach_00028.png');
@@ -82,10 +100,10 @@ class Kianova extends Phaser.Scene {
         
 
         camera = this.cameras.main.fadeIn(1500)
-        var mapScaleX = 1.19 * (scaleMod) 
+        var mapScaleX = 1.325 * (scaleMod) 
         var mapScaleY = 0.645 * (scaleMod)
         map = this.add.image(0,0,'map').setScale(mapScaleX,mapScaleY).setOrigin(0,0)
-        var loadScreenScaleX = 1.29 * (scaleMod) 
+        var loadScreenScaleX = 1.435 * (scaleMod) 
         var loadScreenScaleY = 0.705 * (scaleMod)
         loadScreen = this.add.image(0,0,'load').setScale(loadScreenScaleX,loadScreenScaleY).setOrigin(0,0)
 
@@ -126,7 +144,7 @@ class Kianova extends Phaser.Scene {
         selectedSectorIcon = this.add.circle(kSectorPosX,kSectorPosY,sectorInnerScale,0x350035)
 
         var textBoxScaleX = 0.31 * (scaleMod) 
-        var textBoxScaleY = 0.225 * (scaleMod)
+        textBoxScaleY = 0.175 * (scaleMod)
         textBox = this.add.image(textBoxScaleX,textBoxScaleY,'textBox').setScale(textBoxScaleX,textBoxScaleY).setAlpha(0.75).setInteractive()
 
         text = this.make.text({
@@ -146,10 +164,38 @@ class Kianova extends Phaser.Scene {
         text.setFontSize(20 * (scaleMod))
 
         var iconScale =  0.5 * (scaleMod)
-        patronIcon = this.add.image(1000 * (scaleMod),350 * (scaleMod),'patronIcon').setScale(iconScale).setOrigin(0.5,0.5)
-        loyaltyIcon = this.add.image(1000 * (scaleMod),350 * (scaleMod),'loyaltyIcon').setScale(iconScale).setOrigin(0.5,0.5)
-        prosperityIcon = this.add.image(1000 * (scaleMod),350 * (scaleMod),'prosperityIcon').setScale(iconScale).setOrigin(0.5,0.5)
-        gloryIconK = this.add.image(1000 * (scaleMod),350 * (scaleMod),'gloryIcon').setScale(iconScale).setOrigin(0.5,0.5)
+        sectorNameBox = this.add.image(gameWidth * 0.5, gameHeight * 0.075,'sectorNameBox').setScale(0.25,0.1)
+        sectorNameText = this.make.text({
+            x: sectorNameBox.x,
+            y: sectorNameBox.y,
+            text: sectorName,
+            origin: { x: 0.5, y: 0.5 },
+            style: {
+                font: '4px Gothic',
+
+                fill: 'white',
+                align: 'justify, center',
+                wordWrap: { width: sectorNameBox.displayWidth * 0.75},
+            }
+        });
+
+        sectorNameText.setFontSize(58 * (scaleMod))
+
+        sector0Icon = this.add.image(gameWidth * 0.5, gameHeight * 0.9, 'r0Icon').setScale(0.75 * (scaleMod)).setPipeline('Light2D')
+
+        sector1Icon = this.add.image(gameWidth * 0.25, gameHeight * 0.9, 'r1Icon').setScale(0.5 * (scaleMod)).setPipeline('Light2D').setInteractive()
+        sector2Icon = this.add.image(gameWidth * 0.375, gameHeight * 0.9, 'r2Icon').setScale(0.5 * (scaleMod)).setPipeline('Light2D').setInteractive()
+        sector3Icon = this.add.image(gameWidth * 0.625, gameHeight * 0.9, 'r3Icon').setScale(0.5 * (scaleMod)).setPipeline('Light2D').setInteractive()
+        sector4Icon = this.add.image(gameWidth * 0.75, gameHeight * 0.9, 'r4Icon').setScale(0.5 * (scaleMod)).setPipeline('Light2D').setInteractive()
+
+        this.lights.enable();
+        //this.lights.setAmbientColor();
+        sectorIconLight = this.lights.addLight(sector0Icon.x, sector0Icon.y, gameWidth * 0.1,0xFFFFFF, 1);
+
+        patronIcon = this.add.image(1000 * (scaleMod),350 * (scaleMod),'patronIcon').setScale(iconScale)
+        loyaltyIcon = this.add.image(1000 * (scaleMod),350 * (scaleMod),'loyaltyIcon').setScale(iconScale)
+        prosperityIcon = this.add.image(1000 * (scaleMod),350 * (scaleMod),'prosperityIcon').setScale(iconScale)
+        gloryIconK = this.add.image(1000 * (scaleMod),350 * (scaleMod),'gloryIcon').setScale(iconScale)
 
         sectors.addMultiple([textBox,text,patronIcon,loyaltyIcon,prosperityIcon,gloryIconK,selectedSectorIcon,kSectorOuter,kSectorInner,nSectorOuter,nSectorInner,wSectorOuter,wSectorInner,sSectorOuter,sSectorInner,eSectorOuter,eSectorInner]) 
         
@@ -212,15 +258,59 @@ class Kianova extends Phaser.Scene {
         console.log('Inner Height: ' + window.innerHeight, 'Inner Width: ' + window.innerWidth, 'Pixel Ratio: ' + window.devicePixelRatio, window.innerHeight * window.devicePixelRatio)
 
         var starsScale =  1.25 * (scaleMod)
-        var textBoxScaleY =  0.225 * (scaleMod)
+       
         var textScaleY =  1 
         var iconScaleY = 0.5 * (scaleMod)
 
         var kSectorPosX = 1000 * (scaleMod)
         var kSectorPosY = 650 * (scaleMod)
 
+        var eSectorPosX = 1700 * (scaleMod)
+        var eSectorPosY = 550 * (scaleMod)
 
-        if(Phaser.Input.Keyboard.JustDown(cursors.down) && kControlsEnabled){
+        var nSectorPosX = 550 * (scaleMod)
+        var nSectorPosY = 575 * (scaleMod)
+
+        var wSectorPosX = 200 * (scaleMod)
+        var wSectorPosY = 800 * (scaleMod)
+
+
+        var sSectorPosX = 1500 * (scaleMod)
+        var sSectorPosY = 800 * (scaleMod)
+
+        var sectorIconArray = [1,2,0,3,4]
+        console.log(chosenSectorArrayIcon)
+        
+
+        if(Phaser.Input.Keyboard.JustDown(cursors.left) && kControlsEnabled){
+
+            textBox.alpha = 0
+            textBox.scaleY = 0
+            text.alpha = 0
+            text.scaleY = 0
+            patronIcon.alpha = 0
+            patronIcon.scaleY = 0
+            loyaltyIcon.alpha = 0
+            loyaltyIcon.scaleY = 0
+            prosperityIcon.alpha = 0
+            prosperityIcon.scaleY = 0
+            gloryIconK.alpha = 0
+            gloryIconK.scaleY = 0
+            loyaltyStars.setAlpha(0)
+            loyaltyStars.children.iterate((child) =>{
+                child.setScale(starsScale,0)
+            })
+            prosperityStars.setAlpha(0)
+            prosperityStars.children.iterate((child) =>{
+                child.setScale(starsScale,0)
+            })
+            
+            if(chosenSectorArrayIcon > 0){
+                chosenSectorArrayIcon -= 1
+            } else {
+                chosenSectorArrayIcon = 4
+            } 
+        } else if (Phaser.Input.Keyboard.JustDown(cursors.right) && kControlsEnabled){
 
             textBox.alpha = 0
             textBox.scaleY = 0
@@ -243,112 +333,103 @@ class Kianova extends Phaser.Scene {
                 child.setScale(starsScale,0)
             })
 
-            if(selectedSector < 4){
-                selectedSector += 1
+            if(chosenSectorArrayIcon < 4){
+                chosenSectorArrayIcon += 1
             } else {
-                selectedSector = 0
-            }
-            
-        } else if (Phaser.Input.Keyboard.JustDown(cursors.up) && kControlsEnabled){
-
-            textBox.alpha = 0
-            textBox.scaleY = 0
-            text.alpha = 0
-            text.scaleY = 0
-            patronIcon.alpha = 0
-            patronIcon.scaleY = 0
-            loyaltyIcon.alpha = 0
-            loyaltyIcon.scaleY = 0
-            prosperityIcon.alpha = 0
-            prosperityIcon.scaleY = 0
-            gloryIconK.alpha = 0
-            gloryIconK.scaleY = 0
-            loyaltyStars.setAlpha(0)
-            prosperityStars.setAlpha(0)
-
-            if(selectedSector == 0){
-                selectedSector = 4
-            } else {
-                selectedSector -= 1
-            }
+                chosenSectorArrayIcon = 0
+            } 
         }
 
+        selectedSector = sectorIconArray[chosenSectorArrayIcon]
+
         if(selectedSector == 0){
+            sectorIconLight.x = sector0Icon.x
             textBox.setTint()
             selectedSectorIcon.x = kSectorPosX
             selectedSectorIcon.y = kSectorPosY
-            sectorName = 'Grand Square [myFi Token]'
-            sectorDescription = '\n\nPolitical Hub of Kianova.\nHome to the Great Houses that power the city' 
-            sectorAffinity = '\n\n\n          Omnia'
+            sectorName = 'Grand Square [HQ]'
+            sectorDescription = 'Political Hub of Kianova.\nHome to the Great Houses that power the city' 
+            sectorAffinity = '\n\n          Omnia'
             loyaltyScore = 3
             prosperityScore = 1
-            gloryScore = '\n\n\n\n\n\n          100'
+            gloryScore = '\n\n\n\n\n\n\n          100'
             sectorOptions = '\n\n- Enter House of the Forerunner\n- Enter House of the Creators\n- Enter House of the Oracles'
             
-        } else if (selectedSector == 2){
+        } else if (selectedSector == 1){
+            sectorIconLight.x = sector1Icon.x
             textBox.setTint(0xBC3823)
-            selectedSectorIcon.x = 550 * (scaleMod)
-            selectedSectorIcon.y = 575 * (scaleMod)
+            selectedSectorIcon.x = wSectorPosX
+            selectedSectorIcon.y = wSectorPosY
+            sectorName = 'West Sector [Risk1]'
+
+            sectorDescription = 'Home to the Disciples of Mundo.\nMaster practioners and scholars of the ways of Sustahnus.'  
+            sectorAffinity = '\n\n          Mundo'
+            loyaltyScore = 0
+            prosperityScore = 0
+            gloryScore = '\n\n\n\n\n\n\n          0'
+            sectorOptions = '\n\n- Visit Western Sector\n- Recruit Mundus Priest\n- Explore Eastern Badlands'
+
             
-            sectorName = 'North Sector [Property]'
-            sectorDescription = '\n\nHome to the Lucarian Guard.\nMasterful warriors known for their fortitude and resilience.' 
-            sectorAffinity = '\n\n\n          Lucarus'
+  
+        } else if (selectedSector == 2){
+            sectorIconLight.x = sector2Icon.x
+            textBox.setTint(0x0076C)
+            selectedSectorIcon.x = nSectorPosX
+            selectedSectorIcon.y = nSectorPosY
+            sectorName = 'North Sector [Risk2]'
+
+            sectorDescription = 'Home to the Lucarian Guard.\nMasterful warriors known for their fortitude and resilience.' 
+            sectorAffinity = '\n\n          Lucarus'
             loyaltyScore = 5
             prosperityScore = 3
-            gloryScore = '\n\n\n\n\n\n          224'
-            sectorOptions = '\n\n- Visit Southern Sector\n- Recruit Lucarian Knight\n- Explore Southern Badlands'
-  
+            gloryScore = '\n\n\n\n\n\n\n          224'
+            sectorOptions = '\n\n- Visit Northern Sector\n- Recruit Lucarian Knight\n- Explore Southern Badlands'
+
+            
+            
         } else if (selectedSector == 3){
-            textBox.setTint(0x0076C)
-            selectedSectorIcon.x = 200 * (scaleMod)
-            selectedSectorIcon.y = 800 * (scaleMod)
-            sectorName = 'West Sector [Stocks]'
-            sectorDescription = '\n\nHome to the Order of Amara.\nPractitioners of the ancient Essence Arts.' 
-            sectorAffinity = '\n\n\n          Amara'
+            textBox.setTint(0x0C5D25)
+            sectorIconLight.x = sector3Icon.x
+            selectedSectorIcon.x = sSectorPosX
+            selectedSectorIcon.y = sSectorPosY
+            sectorName = 'South Sector [Risk3]'
+
+            sectorDescription = 'Home to the Order of Amara.\nPractitioners of the ancient Essence Arts.' 
+            sectorAffinity = '\n\n          Amara'
             loyaltyScore = 1
             prosperityScore = 1
-            gloryScore = '\n\n\n\n\n\n          25'
-            sectorOptions = '\n\n- Visit Western Sector\n- Recruit Amaran Magus\n- Explore Western Badlands'
-            
-        } else if (selectedSector == 4){
-            textBox.setTint(0x0C5D25)
-            
-            selectedSectorIcon.x = 1500 * (scaleMod)
-            selectedSectorIcon.y = 800 * (scaleMod)
+            gloryScore = '\n\n\n\n\n\n\n         25'
+            sectorOptions = '\n\n- Visit Southern Sector\n- Recruit Amaran Magus\n- Explore Western Badlands'
 
-            sectorName = 'South Sector [Crypto]'
-            sectorDescription = '\n\nHome to the Illuvium Brotherhood.\nA favourite haunt of arcanists and elementalists.' 
+        } else if (selectedSector == 4){
+            sectorIconLight.x = sector4Icon.x
+            textBox.setTint(0x877254)
+            selectedSectorIcon.x = eSectorPosX
+            selectedSectorIcon.y = eSectorPosY
+            sectorName = 'East Sector [Risk4]'
+
+            sectorDescription = 'Home to the Illuvium Brotherhood.\nA favourite haunt of arcanists and elementalists.' 
             sectorAffinity = '\n\n         Illuvik'
             loyaltyScore = 4
             prosperityScore = 2
-            gloryScore = '\n\n\n\n\n\n          400'
-            sectorOptions = '\n\n- Visit Northern Sector\n- Recruit Illuvium Assassin\n- Explore Northern Badlands'
+            gloryScore = '\n\n\n\n\n\n\n          400'
+            sectorOptions = '\n\n- Visit Eastern Sector\n- Recruit Illuvium Assassin\n- Explore Northern Badlands'
 
-        } else if (selectedSector == 1){
-            textBox.setTint(0x877254)
-            selectedSectorIcon.x = 1700 * (scaleMod)
-            selectedSectorIcon.y = 550 * (scaleMod)
-            sectorName = 'East Sector [Commodities]'
-            sectorDescription = '\n\nHome to the Disciples of Mundo.\nScholars of the ways of Sustahnus.'  
-            sectorAffinity = '\n\n\n          Mundo'
-            loyaltyScore = 0
-            prosperityScore = 0
-            gloryScore = '\n\n\n\n\n\n          0'
-            sectorOptions = '\n\n- Visit Eastern Sector\n- Recruit Mundus Priest\n- Explore Eastern Badlands'
         }
 
 
         textBox.x = selectedSectorIcon.x 
-        textBox.y = selectedSectorIcon.y - (gameHeight * 0.25)
+        textBox.y = selectedSectorIcon.y - (gameHeight * 0.2)
         text.x = textBox.x
         text.y = textBox.y
-        text.setText(sectorName + sectorDescription + sectorAffinity + gloryScore + sectorOptions)
+        sectorNameText.setText(sectorName)
+        text.setText(sectorDescription + sectorAffinity + gloryScore + sectorOptions)
 
         patronIcon.x = text.x - (87.5 * (scaleMod))
-        patronIcon.y = text. y - (40 * (scaleMod))
+        patronIcon.y = text. y - (gameHeight * 0.065)
 
         loyaltyIcon.x = text.x - (87.5 * (scaleMod))
-        loyaltyIcon.y = text. y + (10 * (scaleMod))
+        loyaltyIcon.y = text. y - (gameHeight * 0.02)
 
         loyaltyStars.setX(loyaltyIcon.x + (65 * (scaleMod)) , 30 * (scaleMod))
         loyaltyStars.setY(loyaltyIcon.y)
@@ -362,7 +443,7 @@ class Kianova extends Phaser.Scene {
         }
         
         prosperityIcon.x = text.x - (87.5 * (scaleMod)) 
-        prosperityIcon.y = text. y + (60 * (scaleMod))
+        prosperityIcon.y = text. y + (gameHeight * 0.02)
 
         prosperityStars.setX(prosperityIcon.x + (65 * (scaleMod)),30 * (scaleMod))
         prosperityStars.setY(prosperityIcon.y)
@@ -376,7 +457,7 @@ class Kianova extends Phaser.Scene {
         }
 
         gloryIconK.x = text.x - (87.5 * (scaleMod))
-        gloryIconK.y = text. y + (110 * (scaleMod))
+        gloryIconK.y = text. y + (gameHeight * 0.065)
         
         if(textBox.alpha == 0){
 
@@ -443,6 +524,56 @@ class Kianova extends Phaser.Scene {
         }
 
         } else if (kControlsEnabled){
+
+            sector0Icon.on('pointerdown', function(){
+
+                activeRegion = 'Region0'
+            
+            console.log('Selected Region: ' + activeRegion)
+            
+            nextScene = true
+
+        })
+
+            sector1Icon.on('pointerdown', function(){
+
+                    activeRegion = 'Region1'
+                
+                console.log('Selected Region: ' + activeRegion)
+                
+                nextScene = true
+    
+            })
+
+            sector2Icon.on('pointerdown', function(){
+
+                activeRegion = 'Region2'
+            
+            console.log('Selected Region: ' + activeRegion)
+            
+            nextScene = true
+
+        })
+
+            sector3Icon.on('pointerdown', function(){
+
+                activeRegion = 'Region3'
+            
+            console.log('Selected Region: ' + activeRegion)
+            
+            nextScene = true
+
+            })
+
+            sector4Icon.on('pointerdown', function(){
+
+                activeRegion = 'Region4'
+            
+            console.log('Selected Region: ' + activeRegion)
+            
+            nextScene = true
+
+            })
 
             textBox.on('pointerdown', function(){
 

@@ -3167,21 +3167,28 @@ class Badlands extends Phaser.Scene {
         // Load Stage Object
         for (var i = bgLayers; i > 0; i--){
             //window['bgL'+i] =  this.add.tileSprite(0,0,0,0,'bgL'+i).setOrigin(0,0).setScrollFactor(bgScroll[i-1] * scaleMod).setPipeline('Light2D').setDepth(0);
-            window['bgL'+i] =  this.add.tileSprite(0,0,0,0,'bgL'+i).setOrigin(0,0).setPipeline('Light2D').setDepth(0).setScrollFactor(0);
+            window['bgL'+i] =  this.add.tileSprite(0,0,0,0,'bgL'+i).setOrigin(0,0).setPipeline('Light2D').setDepth(0).setScrollFactor(0)//.setScale(2);
             var textureHeight = window['bgL'+i].displayHeight
             var textureWidth = window['bgL'+i].displayWidth
+            console.log(gameWidth)
+            console.log(textureWidth)
             var textureWidthScaleMod = gameWidth / textureWidth
             var textureHeightScaleMod = gameHeight / textureHeight
-            console.log(gameWidth, textureWidthScaleMod,'\n',gameHeight, textureHeightScaleMod)
-            window['bgL'+i].setTileScale(textureWidthScaleMod,textureHeightScaleMod)
+            //window['bgL'+i].setTileScale(textureWidthScaleMod,textureHeightScaleMod)
             window['bgL'+i+'ScrollMod'] = + bgScroll[i - 1]
             
            
         }
 
         for (var i = fgLayers; i > 0; i--){
-            window['fgL'+i] =  this.add.tileSprite(0,0,0,0,'fgL'+i).setOrigin(0,0).setScrollFactor(fgScroll[i-1]).setPipeline('Light2D').setDepth(1);
-            window['fgL'+i].setTileScale(0.5)
+            //window['fgL'+i] =  this.add.tileSprite(0,0,0,0,'fgL'+i).setOrigin(0,0).setScrollFactor(fgScroll[i-1]).setPipeline('Light2D').setDepth(1);
+            window['fgL'+i] =  this.add.tileSprite(0,0,0,0,'fgL'+i).setOrigin(0,0).setPipeline('Light2D').setDepth(0).setScrollFactor(0).setDepth(1)//.setScale(2);;
+            var textureHeight = window['fgL'+i].displayHeight
+            var textureWidth = window['fgL'+i].displayWidth
+            var textureWidthScaleMod = gameWidth / textureWidth
+            var textureHeightScaleMod = gameHeight / textureHeight
+
+            window['fgL'+i].setTileScale(textureWidthScaleMod,textureHeightScaleMod)
             window['fgL'+i+'ScrollMod'] = + fgScroll[i - 1]
         }
 
@@ -4774,15 +4781,15 @@ class Badlands extends Phaser.Scene {
 
                 // Parallax Background layers scrolls at variable speed multiplied by playerSpeed %
                 if(!gameOver){
-                   
+                   console.log(scaleMod)
                     
                     for (var i = 1; i < bgLayers + 1 ; i++){
-                        window['bgL'+i].tilePositionX += 16   * window['bgL'+ i + 'ScrollMod']  * playerSpeed //* (scaleMod)
+                        window['bgL'+i].tilePositionX += 12   * window['bgL'+ i + 'ScrollMod']  * playerSpeed * (scaleMod)
                        
                     }
 
                     for (var i = 1; i < fgLayers + 1; i++){
-                        window['fgL'+i].tilePositionX += 16 * window['fgL'+ i + 'ScrollMod'] * playerSpeed //* (scaleMod)
+                        window['fgL'+i].tilePositionX += 12 * window['fgL'+ i + 'ScrollMod'] * playerSpeed * (scaleMod)
                     }
 
 

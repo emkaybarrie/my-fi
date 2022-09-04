@@ -1,7 +1,7 @@
 window.onload = function(){
 var ratio = Math.max((window.innerWidth * window.devicePixelRatio)/ (window.innerHeight * window.devicePixelRatio), (window.innerHeight * window.devicePixelRatio) / (window.innerWidth * window.devicePixelRatio)) 
-var DEFAULT_HEIGHT = 1080 / 2//window.innerHeight//1080 / 1.5 //window.innerHeight * window.devicePixelRatio
-var DEFAULT_WIDTH = 1920 / 2//ratio * window.innerHeight //1920 / 1.5//
+var DEFAULT_HEIGHT = window.innerHeight * window.devicePixelRatio//window.innerHeight//1080 / 1.5 //window.innerHeight * window.devicePixelRatio
+var DEFAULT_WIDTH = window.innerWidth * window.devicePixelRatio//ratio * window.innerHeight //1920 / 1.5//
 var scaleMod = DEFAULT_HEIGHT / 1080
 
 var config = {
