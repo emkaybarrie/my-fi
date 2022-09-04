@@ -447,7 +447,7 @@ class Kianova extends Phaser.Scene {
             textBox.on('pointerdown', function(){
 
                 if(selectedSector == 0){
-                    activeRegion = 'Region'+ String(Phaser.Math.Between(1,4))//'RegionTemplate'
+                    activeRegion = 'Region2'//+ String(Phaser.Math.Between(1,4))//'RegionTemplate'
                 } else {
                     activeRegion = 'Region'+ String(selectedSector)
                 }
