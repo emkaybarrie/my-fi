@@ -2969,7 +2969,7 @@ class Badlands extends Phaser.Scene {
 
         for (var i = 1; i < bgLayers + 1; i++){
             console.log('bgL'+ i, activeStage.data.values.assetPathRoot + 'BG' + activeStage.data.values.stageAssetName + i)
-            //this.load.image('bgL'+ i, activeStage.data.values.assetPathRoot + 'BG' + activeStage.data.values.stageAssetName + i);
+          
             if (activeStage.data.values.stageNormalMaps[i - 1]){
 
                 this.load.image('bgL'+ i, [activeStage.data.values.assetPathRoot + 'BG' + activeStage.data.values.stageAssetName + i,activeStage.data.values.assetPathRoot + 'BG' + activeStage.data.values.stageAssetName + i + '_n']);
@@ -3175,9 +3175,13 @@ class Badlands extends Phaser.Scene {
             console.log('Texture Width Scale Mod: ' + gameWidth / textureToApply.width,'\nTexture Width New Size: ' + textureWidthScaleMod * textureToApply.width )
             console.log('Texture Height Scale Mod: ' + gameHeight / textureToApply.height,'\nTexture Height New Size: ' + textureHeightScaleMod * textureToApply.height)            
 
+            if(this.sys.game.device.os.desktop){
             window['bgL'+i] =  this.add.tileSprite(0,0,gameWidth,gameHeight).setScrollFactor(0).setOrigin(0,0).setPipeline('Light2D').setDepth(0)
             window['bgL'+i].setTexture('bgL'+i).setTileScale(textureWidthScaleMod,textureHeightScaleMod)
             window['bgL'+i+'ScrollMod'] = + bgScroll[i - 1]
+            } else {
+                window['bgL'+i] =  this.add.image(0,0,'bgL'+i).setScrollFactor(0).setOrigin(0,0).setPipeline('Light2D').setDepth(0).setScale(textureWidthScaleMod,textureHeightScaleMod)
+            }
            
         }
 
@@ -3191,9 +3195,13 @@ class Badlands extends Phaser.Scene {
             console.log('Texture Width Scale Mod: ' + gameWidth / textureToApply.width,'\nTexture Width New Size: ' + textureWidthScaleMod * textureToApply.width )
             console.log('Texture Height Scale Mod: ' + gameHeight / textureToApply.height,'\nTexture Height New Size: ' + textureHeightScaleMod * textureToApply.height)            
 
+            if(this.sys.game.device.os.desktop){
             window['fgL'+i] =  this.add.tileSprite(0,0,gameWidth,gameHeight).setScrollFactor(0).setOrigin(0,0).setPipeline('Light2D').setDepth(1)
             window['fgL'+i].setTexture('fgL'+i).setTileScale(textureWidthScaleMod,textureHeightScaleMod)
             window['fgL'+i+'ScrollMod'] = + fgScroll[i - 1]
+            } else {
+                window['fgL'+i] =  this.add.image(0,0,'fgL'+i).setScrollFactor(0).setOrigin(0,0).setPipeline('Light2D').setDepth(0).setScale(textureWidthScaleMod,textureHeightScaleMod)
+            }
         }
 
         if(activeStage.data.values.stageAssetName == 'forest'){
@@ -4790,14 +4798,15 @@ class Badlands extends Phaser.Scene {
                 // Parallax Background layers scrolls at variable speed multiplied by playerSpeed %
                 if(!gameOver){
                                  
-                    
-                    for (var i = 1; i < bgLayers + 1 ; i++){
-                        window['bgL'+i].tilePositionX += 12  * window['bgL'+ i + 'ScrollMod']  * playerSpeed * (scaleMod / (gameWidth / this.textures.get('bgL' + i).getSourceImage().width))
+                    if(this.sys.game.device.os.desktop){
+                        for (var i = 1; i < bgLayers + 1 ; i++){
+                            window['bgL'+i].tilePositionX += 12  * window['bgL'+ i + 'ScrollMod']  * playerSpeed * (scaleMod / (gameWidth / this.textures.get('bgL' + i).getSourceImage().width))
 
-                    }
+                        }
 
-                    for (var i = 1; i < fgLayers + 1; i++){
-                        window['fgL'+i].tilePositionX += 12 * window['fgL'+ i + 'ScrollMod'] * playerSpeed * (scaleMod / (gameWidth / this.textures.get('fgL' + i).getSourceImage().width))
+                        for (var i = 1; i < fgLayers + 1; i++){
+                            window['fgL'+i].tilePositionX += 12 * window['fgL'+ i + 'ScrollMod'] * playerSpeed * (scaleMod / (gameWidth / this.textures.get('fgL' + i).getSourceImage().width))
+                        }
                     }
 
                     sunPositionX -= 0.00005
