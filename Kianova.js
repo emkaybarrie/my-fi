@@ -74,7 +74,6 @@ class Kianova extends Phaser.Scene {
         gameWidth = this.sys.game.canvas.width
         gameHeight = this.sys.game.canvas.height
         scaleMod = gameHeight/1080
-        console.log('Inner Height: ' + window.innerHeight, 'Inner Width: ' + window.innerWidth, 'Pixel Ratio: ' + window.devicePixelRatio, window.innerHeight * window.devicePixelRatio)
         
        
 
@@ -175,7 +174,7 @@ class Kianova extends Phaser.Scene {
 
                 fill: 'white',
                 align: 'justify, center',
-                wordWrap: { width: sectorNameBox.displayWidth * 0.75},
+                wordWrap: { width: sectorNameBox.displayWidth * 0.85},
             }
         });
 
@@ -255,7 +254,7 @@ class Kianova extends Phaser.Scene {
 
     update(data){
 
-        console.log('Inner Height: ' + window.innerHeight, 'Inner Width: ' + window.innerWidth, 'Pixel Ratio: ' + window.devicePixelRatio, window.innerHeight * window.devicePixelRatio)
+        console.log('Inner Height: ' + window.innerHeight,'\nInner Width: ' + window.innerWidth,'\nPixel Ratio: ' + window.devicePixelRatio)
 
         var starsScale =  1.25 * (scaleMod)
        
@@ -279,7 +278,7 @@ class Kianova extends Phaser.Scene {
         var sSectorPosY = 800 * (scaleMod)
 
         var sectorIconArray = [1,2,0,3,4]
-        console.log(chosenSectorArrayIcon)
+        
         
 
         if(Phaser.Input.Keyboard.JustDown(cursors.left) && kControlsEnabled){
@@ -360,7 +359,7 @@ class Kianova extends Phaser.Scene {
             textBox.setTint(0xBC3823)
             selectedSectorIcon.x = wSectorPosX
             selectedSectorIcon.y = wSectorPosY
-            sectorName = 'West Sector [Risk1]'
+            sectorName = 'West Sector [Risk Band 1]'
 
             sectorDescription = 'Home to the Disciples of Mundo.\nMaster practioners and scholars of the ways of Sustahnus.'  
             sectorAffinity = '\n\n          Mundo'
@@ -376,7 +375,7 @@ class Kianova extends Phaser.Scene {
             textBox.setTint(0x0076C)
             selectedSectorIcon.x = nSectorPosX
             selectedSectorIcon.y = nSectorPosY
-            sectorName = 'North Sector [Risk2]'
+            sectorName = 'North Sector [Risk Band 2]'
 
             sectorDescription = 'Home to the Lucarian Guard.\nMasterful warriors known for their fortitude and resilience.' 
             sectorAffinity = '\n\n          Lucarus'
@@ -392,7 +391,7 @@ class Kianova extends Phaser.Scene {
             sectorIconLight.x = sector3Icon.x
             selectedSectorIcon.x = sSectorPosX
             selectedSectorIcon.y = sSectorPosY
-            sectorName = 'South Sector [Risk3]'
+            sectorName = 'South Sector [Risk Band 3]'
 
             sectorDescription = 'Home to the Order of Amara.\nPractitioners of the ancient Essence Arts.' 
             sectorAffinity = '\n\n          Amara'
@@ -406,7 +405,7 @@ class Kianova extends Phaser.Scene {
             textBox.setTint(0x877254)
             selectedSectorIcon.x = eSectorPosX
             selectedSectorIcon.y = eSectorPosY
-            sectorName = 'East Sector [Risk4]'
+            sectorName = 'East Sector [Risk Band 4]'
 
             sectorDescription = 'Home to the Illuvium Brotherhood.\nA favourite haunt of arcanists and elementalists.' 
             sectorAffinity = '\n\n         Illuvik'
