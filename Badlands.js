@@ -2967,10 +2967,11 @@ class Badlands extends Phaser.Scene {
         bgScroll = activeStage.data.values.bgScroll
         fgScroll = activeStage.data.values.fgScroll
 
+
         for (var i = 1; i < bgLayers + 1; i++){
             console.log('bgL'+ i, activeStage.data.values.assetPathRoot + 'BG' + activeStage.data.values.stageAssetName + i)
           
-            if (activeStage.data.values.stageNormalMaps[i - 1]){
+            if (activeStage.data.values.stageNormalMaps[i - 1] && this.sys.game.device.os.desktop ){
 
                 this.load.image('bgL'+ i, [activeStage.data.values.assetPathRoot + 'BG' + activeStage.data.values.stageAssetName + i,activeStage.data.values.assetPathRoot + 'BG' + activeStage.data.values.stageAssetName + i + '_n']);
             } else {
