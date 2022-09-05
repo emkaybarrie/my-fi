@@ -15,9 +15,9 @@ class RegionTemplate extends Phaser.Scene {
 
         // Region 
             var regionID = 0
-            var region = 'Template'
-            var regionPatron = 'Illivius'
-            var regionAffinity = 'Digital Assets'
+            var region = '[Region Name]'
+            var regionPatron = '[Patron Name]'
+            var regionAffinity = '[Risk Band]'
 
     // Received Data
         var time = data
@@ -99,10 +99,9 @@ class RegionTemplate extends Phaser.Scene {
                var stageAssetName = 'woods'
                var stageBackgroundLayers = 3
                var stageForegroundLayers = 1
-               var stageBGScrollSpeedModifierSettings = [1,0.5,0]
-               //var stageBGScrollSpeedModifierSettings = [1,1,0,0,0,0,0,0,0]
+               var stageBGScrollSpeedModifierSettings = [0.75,0.5,0]
                var stageFGScrollSpeedModifierSettings = [1]
-               var stageNormalMaps = [0,0,0,0]
+               var stageNormalMaps = [0,0,0]
                // Create Data Entry for Number of Layers
                 stage.data.set('stageAssetName',stageAssetName)
                 stage.data.set('bgLayers',stageBackgroundLayers)

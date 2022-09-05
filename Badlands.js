@@ -3193,7 +3193,7 @@ class Badlands extends Phaser.Scene {
 
             window['fgL'+i] =  this.add.tileSprite(0,0,gameWidth,gameHeight).setScrollFactor(0).setOrigin(0,0).setPipeline('Light2D').setDepth(1)
             window['fgL'+i].setTexture('fgL'+i).setTileScale(textureWidthScaleMod,textureHeightScaleMod)
-            window['fgL'+i+'ScrollMod'] = + bgScroll[i - 1]
+            window['fgL'+i+'ScrollMod'] = + fgScroll[i - 1]
         }
 
         if(activeStage.data.values.stageAssetName == 'forest'){
@@ -4797,7 +4797,7 @@ class Badlands extends Phaser.Scene {
                     }
 
                     for (var i = 1; i < fgLayers + 1; i++){
-                        window['fgL'+i].tilePositionX += 12 * window['fgL'+ i + 'ScrollMod'] * playerSpeed * (scaleMod / (gameWidth / this.textures.get('bgL' + i).getSourceImage().width))
+                        window['fgL'+i].tilePositionX += 12 * window['fgL'+ i + 'ScrollMod'] * playerSpeed * (scaleMod / (gameWidth / this.textures.get('fgL' + i).getSourceImage().width))
                     }
 
 
@@ -4828,9 +4828,11 @@ class Badlands extends Phaser.Scene {
         } else if (gameMode == 1){
 
             for (var i = 1; i < bgLayers + 1 ; i++){
-                window['bgL'+i].tilePositionX = camera.scrollX * window['bgL'+ i + 'ScrollMod'] * (scaleMod)
-                
-               
+                window['bgL'+i].tilePositionX = camera.scrollX * window['bgL'+ i + 'ScrollMod'] * (scaleMod / (gameWidth / this.textures.get('bgL' + i).getSourceImage().width)) 
+            }
+
+            for (var i = 1; i < fgLayers + 1 ; i++){
+                window['fgL'+i].tilePositionX = camera.scrollX * window['fgL'+ i + 'ScrollMod'] * (scaleMod / (gameWidth / this.textures.get('fgL' + i).getSourceImage().width)) 
             }
 
                 // Camera
