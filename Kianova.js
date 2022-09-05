@@ -1,6 +1,7 @@
 var gameWidth
 var gameHeight
 var scaleMod
+var scaleModY
 var map
 var loadScreen
 var camera
@@ -67,16 +68,11 @@ class Kianova extends Phaser.Scene {
 
     preload(){
 
-        //console.log(this.sys.game.scale.gameSize)
-        //console.log(this.scale.gameSize)
-        //console.log(this.sys.game.canvas.width)
-        //console.log(this.sys.game.canvas.height)
         gameWidth = this.sys.game.canvas.width
         gameHeight = this.sys.game.canvas.height
-        scaleMod = gameWidth/1920
+        scaleMod = gameWidth/1980
+        scaleModY = gameHeight/1080
         
-       
-
         this.load.image('load', 'assets/KianovaLoadScreen.png');
         this.load.image('map', 'assets/KianovaMap.png');
         for(var i = 0; i < 5; i++){
@@ -100,10 +96,10 @@ class Kianova extends Phaser.Scene {
 
         camera = this.cameras.main.fadeIn(1500)
         var mapScaleX = 1.325 * (scaleMod) 
-        var mapScaleY = 0.645 * (scaleMod)
+        var mapScaleY = 0.645 * (scaleModY)
         map = this.add.image(0,0,'map').setScale(mapScaleX,mapScaleY).setOrigin(0,0)
-        var loadScreenScaleX = 1.435 * (scaleMod) 
-        var loadScreenScaleY = 0.705 * (scaleMod)
+        var loadScreenScaleX = 1.3 * (scaleMod) 
+        var loadScreenScaleY = 0.705 * (scaleModY) 
         loadScreen = this.add.image(0,0,'load').setScale(loadScreenScaleX,loadScreenScaleY).setOrigin(0,0)
 
 
@@ -115,28 +111,28 @@ class Kianova extends Phaser.Scene {
         var sectorInnerScale = 15 * (scaleMod)
 
         var kSectorPosX = 1000 * (scaleMod)
-        var kSectorPosY = 650 * (scaleMod)
+        var kSectorPosY = 650 * (scaleModY)
          
         kSectorOuter = this.add.circle(kSectorPosX,kSectorPosY,sectorOuterScale,0x350035)
         kSectorInner = this.add.circle(kSectorPosX,kSectorPosY,sectorInnerScale,0xFFFFFF)
 
         var nSectorPosX = 550 * (scaleMod)
-        var nSectorPosY = 575 * (scaleMod)
+        var nSectorPosY = 575 * (scaleModY)
         nSectorOuter = this.add.circle(nSectorPosX,nSectorPosY,sectorOuterScale,0x350035)
         nSectorInner = this.add.circle(nSectorPosX,nSectorPosY,sectorInnerScale,0xFFFFFF)
 
         var wSectorPosX = 200 * (scaleMod)
-        var wSectorPosY = 800 * (scaleMod)
+        var wSectorPosY = 800 * (scaleModY)
         wSectorOuter = this.add.circle(wSectorPosX,wSectorPosY,sectorOuterScale,0x350035)
         wSectorInner = this.add.circle(wSectorPosX,wSectorPosY,sectorInnerScale,0xFFFFFF)
 
         var sSectorPosX = 1500 * (scaleMod)
-        var sSectorPosY = 800 * (scaleMod)
+        var sSectorPosY = 800 * (scaleModY)
         sSectorOuter = this.add.circle(sSectorPosX,sSectorPosY,sectorOuterScale,0x350035)
         sSectorInner = this.add.circle(sSectorPosX,sSectorPosY,sectorInnerScale,0xFFFFFF)
 
         var eSectorPosX = 1700 * (scaleMod)
-        var eSectorPosY = 550 * (scaleMod)
+        var eSectorPosY = 550 * (scaleModY)
         eSectorOuter = this.add.circle(eSectorPosX,eSectorPosY,sectorOuterScale,0x350035)
         eSectorInner = this.add.circle(eSectorPosX,eSectorPosY,sectorInnerScale,0xFFFFFF)
 
@@ -152,7 +148,7 @@ class Kianova extends Phaser.Scene {
             text: sectorName,
             origin: { x: 0.5, y: 0.5 },
             style: {
-                font: '20px Gothic',
+                font: '18px Gothic',
 
                 fill: 'white',
                 align: 'center',
@@ -160,7 +156,7 @@ class Kianova extends Phaser.Scene {
             }
         });
 
-        text.setFontSize(20 * (scaleMod))
+        text.setFontSize(18 * (scaleMod))
 
         var iconScale =  0.5 * (scaleMod)
         sectorNameBox = this.add.image(gameWidth * 0.5, gameHeight * 0.075,'sectorNameBox').setScale(0.25,0.1)
@@ -262,20 +258,20 @@ class Kianova extends Phaser.Scene {
         var iconScaleY = 0.5 * (scaleMod)
 
         var kSectorPosX = 1000 * (scaleMod)
-        var kSectorPosY = 650 * (scaleMod)
+        var kSectorPosY = 650 * (scaleModY)
 
         var eSectorPosX = 1700 * (scaleMod)
-        var eSectorPosY = 550 * (scaleMod)
+        var eSectorPosY = 550 * (scaleModY)
 
         var nSectorPosX = 550 * (scaleMod)
-        var nSectorPosY = 575 * (scaleMod)
+        var nSectorPosY = 575 * (scaleModY)
 
         var wSectorPosX = 200 * (scaleMod)
-        var wSectorPosY = 800 * (scaleMod)
+        var wSectorPosY = 800 * (scaleModY)
 
 
         var sSectorPosX = 1500 * (scaleMod)
-        var sSectorPosY = 800 * (scaleMod)
+        var sSectorPosY = 800 * (scaleModY)
 
         var sectorIconArray = [1,2,0,3,4]
         
@@ -418,17 +414,17 @@ class Kianova extends Phaser.Scene {
 
 
         textBox.x = selectedSectorIcon.x 
-        textBox.y = selectedSectorIcon.y - (gameHeight * 0.2)
+        textBox.y = selectedSectorIcon.y - (gameHeight * 0.25 * scaleModY)
         text.x = textBox.x
         text.y = textBox.y
         sectorNameText.setText(sectorName)
         text.setText(sectorDescription + sectorAffinity + gloryScore + sectorOptions)
 
         patronIcon.x = text.x - (87.5 * (scaleMod))
-        patronIcon.y = text. y - (gameHeight * 0.065)
+        patronIcon.y = text. y - (gameHeight * 0.075 * scaleModY)
 
         loyaltyIcon.x = text.x - (87.5 * (scaleMod))
-        loyaltyIcon.y = text. y - (gameHeight * 0.02)
+        loyaltyIcon.y = text. y - (gameHeight * 0.025 * scaleModY)
 
         loyaltyStars.setX(loyaltyIcon.x + (65 * (scaleMod)) , 30 * (scaleMod))
         loyaltyStars.setY(loyaltyIcon.y)
@@ -442,7 +438,7 @@ class Kianova extends Phaser.Scene {
         }
         
         prosperityIcon.x = text.x - (87.5 * (scaleMod)) 
-        prosperityIcon.y = text. y + (gameHeight * 0.02)
+        prosperityIcon.y = text. y + (gameHeight * 0.025 * scaleModY)
 
         prosperityStars.setX(prosperityIcon.x + (65 * (scaleMod)),30 * (scaleMod))
         prosperityStars.setY(prosperityIcon.y)
@@ -456,7 +452,7 @@ class Kianova extends Phaser.Scene {
         }
 
         gloryIconK.x = text.x - (87.5 * (scaleMod))
-        gloryIconK.y = text. y + (gameHeight * 0.065)
+        gloryIconK.y = text. y + (gameHeight * 0.075 * scaleModY)
         
         if(textBox.alpha == 0){
 

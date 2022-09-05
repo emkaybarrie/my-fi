@@ -4113,9 +4113,13 @@ class Badlands extends Phaser.Scene {
                 lowObstacleShadow.y = lowObstacle.y
             }
 
-
-        spotlightPlayerHealth.intensity =  (0.25 * (currentLife / maxLife))
-        spotlightPlayerPower.intensity =  (0.25 * (currentLife / maxLife))
+        if(activeStage.data.values.timeCode != 4){
+            spotlightPlayerHealth.intensity =  (0.25 * (currentLife / maxLife))
+            spotlightPlayerPower.intensity =  (0.25 * (currentLife / maxLife))
+        } else {
+            spotlightPlayerHealth.intensity =  (0.5 * (currentLife / maxLife))
+            spotlightPlayerPower.intensity =  (0.5 * (currentLife / maxLife))
+        }
 
 
 
