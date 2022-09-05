@@ -100,7 +100,7 @@ class Region4 extends Phaser.Scene {
                var stageForegroundLayers = 3
                var stageBGScrollSpeedModifierSettings = [1,0.95,0.75,0.65,0.45,0.2,0,0]
                var stageFGScrollSpeedModifierSettings = [0.25,1,1.05]
-               var stageNormalMaps = [1,0,0,0,0,0,0]
+               var stageNormalMaps = [0,0,0,0,0,0,0]
               // var stageFGNormalMaps = [0,0,0,0,0,0,0]
                // Create Data Entry for Number of Layers
                 stage.data.set('stageAssetName',stageAssetName)

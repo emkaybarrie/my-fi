@@ -3034,7 +3034,7 @@ class Badlands extends Phaser.Scene {
         
         var dawnAmbientLightDefault = 0xE49759
         var dayAmbientLightDefault = 0xfdfbd3
-        var duskAmbientLightDefault = 0xECC1B2
+        var duskAmbientLightDefault = 0xFF8866
         var nightAmbientLightDefault = 0x131862
 
         var dawnSunLightDefault = 0xE49759
@@ -3043,7 +3043,7 @@ class Badlands extends Phaser.Scene {
         var daySunLightDefault = 0xfdfbd3
         var daySunPositionXPerc =  0.5
         var daySunPositionYPerc =  1
-        var duskSunLightDefault = 0xECC1B2
+        var duskSunLightDefault = 0xFF8866
         var duskSunPositionXPerc = 0.25
         var duskSunPositionYPerc = 0.85
         var nightSunLightDefault = 0x131862

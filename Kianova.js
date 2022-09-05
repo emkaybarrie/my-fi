@@ -92,6 +92,7 @@ class Kianova extends Phaser.Scene {
     create(){
 
         cursors = this.input.keyboard.createCursorKeys();
+        this.input.addPointer(2);
         
 
         camera = this.cameras.main.fadeIn(1500)
@@ -498,6 +499,8 @@ class Kianova extends Phaser.Scene {
 
         if(this.sys.game.device.os.desktop){
 
+              
+
         if(Phaser.Input.Keyboard.JustDown(cursors.space) && kControlsEnabled){
           
 
@@ -517,6 +520,188 @@ class Kianova extends Phaser.Scene {
                
             })
         }
+
+        sector0Icon.on('pointerdown', function(){
+
+            activeRegion = 'Region0'
+        
+        console.log('Selected Region: ' + activeRegion)
+        
+        textBox.alpha = 0
+        textBox.scaleY = 0
+        text.alpha = 0
+        text.scaleY = 0
+        patronIcon.alpha = 0
+        patronIcon.scaleY = 0
+        loyaltyIcon.alpha = 0
+        loyaltyIcon.scaleY = 0
+        prosperityIcon.alpha = 0
+        prosperityIcon.scaleY = 0
+        gloryIconK.alpha = 0
+        gloryIconK.scaleY = 0
+        loyaltyStars.setAlpha(0)
+        loyaltyStars.children.iterate((child) =>{
+            child.setScale(starsScale,0)
+        })
+        prosperityStars.setAlpha(0)
+        prosperityStars.children.iterate((child) =>{
+            child.setScale(starsScale,0)
+        })
+        
+        
+            
+    
+            chosenSectorArrayIcon = 2
+        
+
+        })
+
+        sector1Icon.on('pointerdown', function(){
+
+                activeRegion = 'Region1'
+            
+            console.log('Selected Region: ' + activeRegion)
+            
+            textBox.alpha = 0
+            textBox.scaleY = 0
+            text.alpha = 0
+            text.scaleY = 0
+            patronIcon.alpha = 0
+            patronIcon.scaleY = 0
+            loyaltyIcon.alpha = 0
+            loyaltyIcon.scaleY = 0
+            prosperityIcon.alpha = 0
+            prosperityIcon.scaleY = 0
+            gloryIconK.alpha = 0
+            gloryIconK.scaleY = 0
+            loyaltyStars.setAlpha(0)
+            loyaltyStars.children.iterate((child) =>{
+                child.setScale(starsScale,0)
+            })
+            prosperityStars.setAlpha(0)
+            prosperityStars.children.iterate((child) =>{
+                child.setScale(starsScale,0)
+            })
+            
+            
+           
+                chosenSectorArrayIcon = 0
+            
+
+        })
+
+        sector2Icon.on('pointerdown', function(){
+
+            activeRegion = 'Region2'
+        
+        console.log('Selected Region: ' + activeRegion)
+        
+        textBox.alpha = 0
+        textBox.scaleY = 0
+        text.alpha = 0
+        text.scaleY = 0
+        patronIcon.alpha = 0
+        patronIcon.scaleY = 0
+        loyaltyIcon.alpha = 0
+        loyaltyIcon.scaleY = 0
+        prosperityIcon.alpha = 0
+        prosperityIcon.scaleY = 0
+        gloryIconK.alpha = 0
+        gloryIconK.scaleY = 0
+        loyaltyStars.setAlpha(0)
+        loyaltyStars.children.iterate((child) =>{
+            child.setScale(starsScale,0)
+        })
+        prosperityStars.setAlpha(0)
+        prosperityStars.children.iterate((child) =>{
+            child.setScale(starsScale,0)
+        })
+        
+        
+            chosenSectorArrayIcon = 1
+        
+
+    })
+
+        sector3Icon.on('pointerdown', function(){
+
+            activeRegion = 'Region3'
+        
+        console.log('Selected Region: ' + activeRegion)
+        textBox.alpha = 0
+            textBox.scaleY = 0
+            text.alpha = 0
+            text.scaleY = 0
+            patronIcon.alpha = 0
+            patronIcon.scaleY = 0
+            loyaltyIcon.alpha = 0
+            loyaltyIcon.scaleY = 0
+            prosperityIcon.alpha = 0
+            prosperityIcon.scaleY = 0
+            gloryIconK.alpha = 0
+            gloryIconK.scaleY = 0
+            loyaltyStars.setAlpha(0)
+            loyaltyStars.children.iterate((child) =>{
+                child.setScale(starsScale,0)
+            })
+            prosperityStars.setAlpha(0)
+            prosperityStars.children.iterate((child) =>{
+                child.setScale(starsScale,0)
+            })
+            
+            
+                chosenSectorArrayIcon = 3
+            
+       
+
+        })
+
+        sector4Icon.on('pointerdown', function(){
+
+            activeRegion = 'Region4'
+        
+        console.log('Selected Region: ' + activeRegion)
+        
+        textBox.alpha = 0
+        textBox.scaleY = 0
+        text.alpha = 0
+        text.scaleY = 0
+        patronIcon.alpha = 0
+        patronIcon.scaleY = 0
+        loyaltyIcon.alpha = 0
+        loyaltyIcon.scaleY = 0
+        prosperityIcon.alpha = 0
+        prosperityIcon.scaleY = 0
+        gloryIconK.alpha = 0
+        gloryIconK.scaleY = 0
+        loyaltyStars.setAlpha(0)
+        loyaltyStars.children.iterate((child) =>{
+            child.setScale(starsScale,0)
+        })
+        prosperityStars.setAlpha(0)
+        prosperityStars.children.iterate((child) =>{
+            child.setScale(starsScale,0)
+        })
+        
+        
+            chosenSectorArrayIcon = 4
+        
+
+        })
+
+        textBox.on('pointerdown', function(){
+
+            if(selectedSector == 0){
+                activeRegion = 'Region' + String(Phaser.Math.Between(1,4))//'RegionTemplate'
+            } else {
+                activeRegion = 'Region'+ String(selectedSector)
+            }
+
+            console.log('Selected Region: ' + activeRegion)
+            
+            nextScene = true
+
+        }) 
 
         } else if (kControlsEnabled){
 
