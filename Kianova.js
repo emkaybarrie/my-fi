@@ -415,7 +415,7 @@ class Kianova extends Phaser.Scene {
 
 
         textBox.x = selectedSectorIcon.x 
-        textBox.y = selectedSectorIcon.y - (gameHeight * 0.25 * scaleModY)
+        textBox.y = selectedSectorIcon.y - (gameHeight * 0.3 * scaleModY)
         text.x = textBox.x
         text.y = textBox.y
         sectorNameText.setText(sectorName)
@@ -523,7 +523,7 @@ class Kianova extends Phaser.Scene {
 
         sector0Icon.on('pointerdown', function(){
 
-            activeRegion = 'Region0'
+            activeRegion = 'RegionTemplate'
         
         console.log('Selected Region: ' + activeRegion)
         
@@ -548,11 +548,8 @@ class Kianova extends Phaser.Scene {
             child.setScale(starsScale,0)
         })
         
-        
-            
     
             chosenSectorArrayIcon = 2
-        
 
         })
 

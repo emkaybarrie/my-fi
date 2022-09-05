@@ -3164,7 +3164,8 @@ class Badlands extends Phaser.Scene {
     
 
         
-        // Load Stage Object
+        // Load Stage Background & Foreground Layers
+
         for (var i = bgLayers; i > 0; i--){
             
             var textureToApply = this.textures.get('bgL' + i).getSourceImage()
@@ -3207,6 +3208,12 @@ class Badlands extends Phaser.Scene {
         if(activeStage.data.values.stageAssetName == 'forest'){
             fgL1.setAlpha(0.4)
         }
+
+        // Load Stage Floor
+
+        var floorHeight = Phaser.Math.FloatBetween(activeStage.data.values.floorPosYMin,activeStage.data.values.floorPosYMax)
+        platforms = this.physics.add.staticGroup();
+        platforms.create(0, gameHeight * (1 - floorHeight), 'ground').setOrigin(0,0).setScale(gameWidth * 3 /400, 2 * (scaleMod)).refreshBody().setVisible(0);
 
         
 
@@ -3278,9 +3285,7 @@ class Badlands extends Phaser.Scene {
         
         this.physics.world.setBounds(0, 0, gameWidth * 3,  gameHeight);
         
-
-        platforms = this.physics.add.staticGroup();
-        platforms.create(0, gameHeight - (85 * (scaleMod)), 'ground').setOrigin(0,0).setScale(gameWidth * 3 /400, 2 * (scaleMod)).refreshBody().setVisible(0);
+        
         
         var playerShadowScale = 3.5 * (scaleMod) 
         playerShadow = this.add.sprite(gameWidth * 1.5, gameHeight /2 ,'heroF').setScale(playerShadowScale)

@@ -26,7 +26,7 @@ class Region1 extends Phaser.Scene {
    console.log('Refreshing Region Sector Array Lists...')
 
    // Sector Lists
-   var s0 = [this.mundusRiverbank(this),this.gardenGrove(this)]
+   var s0 = [this.mundusRiverbank(this),this.gardenGrove(this),this.darkmoonGlade(this)]
    // Sector Root Array
    sectors = [s0]
 
@@ -139,8 +139,8 @@ class Region1 extends Phaser.Scene {
         
             // Floor Settings
         
-            stage.data.set('floorPosYMin', 1000)
-            stage.data.set('floorPosYMax', 900)
+            stage.data.set('floorPosYMin', 0.2)
+            stage.data.set('floorPosYMax', 0.05)
         
             // Platform Settings
         
@@ -274,8 +274,143 @@ class Region1 extends Phaser.Scene {
         
             // Floor Settings
         
-            stage.data.set('floorPosYMin', 1000)
-            stage.data.set('floorPosYMax', 900)
+            stage.data.set('floorPosYMin', 0.2)
+            stage.data.set('floorPosYMax', 0.3)
+        
+            // Platform Settings
+        
+            stage.data.set('platformSpriteFileName', null)
+            stage.data.set('platformMaxNumber', null)
+                // Spawn Time
+                stage.data.set('platformMinSpawnTime', null)
+                stage.data.set('platformMaxSpawnTime', null)
+                // Dimensions
+                stage.data.set('platformHeightMin', null)
+                stage.data.set('platformHeightMax', null)
+                stage.data.set('platformWidthMin', null)
+                stage.data.set('platformWidthMax', null)
+                // Respawn Settings
+                stage.data.set('platformRespawnTimeMin', null)
+                stage.data.set('platformRespawnTimeMax', null)
+                stage.data.set('platformRespawnPosYMin', null)
+                stage.data.set('platformRespawnPosYMax', null)
+        
+            // Scenery Settings
+        
+                // Scenery 1
+                stage.data.set('scenery1SpawnChance', null)
+                stage.data.set('scenery1SpriteFileName', null)
+                stage.data.set('scenery1ScrollSpeedModifier', null)
+                stage.data.set('scenery1SpriteFileName', null)
+                stage.data.set('scenery1RespawnTimeMin', null)
+                stage.data.set('scenery1RespawnTimeMax', null)
+        
+                // Scenery 2
+                stage.data.set('scenery2SpawnChance', null)
+                stage.data.set('scenery2SpriteFileName')
+                stage.data.set('scenery2ScrollSpeedModifier', null)
+                stage.data.set('scenery2SpriteFileName', null)
+                stage.data.set('scenery2RespawnTimeMin', null)
+                stage.data.set('scenery2RespawnTimeMax', null)
+        
+                // Scenery 3
+                stage.data.set('scenery3SpawnChance', null)
+                stage.data.set('scenery3SpriteFileName', null)
+                stage.data.set('scenery3ScrollSpeedModifier', null)
+                stage.data.set('scenery3SpriteFileName', null)
+                stage.data.set('scenery3RespawnTimeMin', null)
+                stage.data.set('scenery3RespawnTimeMax', null)
+        
+            // Pick-Up Settings
+        
+            stage.data.set('pickupSpawnChance', null)
+            stage.data.set('pickupType', null)
+            stage.data.set('pickupSpriteFileName', null)
+            stage.data.set('pickupRespawnTimeMin', null)
+            stage.data.set('pickupRespawnTimeMax', null)
+        
+        
+            return stage
+    }
+
+    darkmoonGlade(game){
+        // Outputs a Stage Data Object Instance encoded with this stages parameters 
+        
+            // Stage Code
+        
+               // Stage Data Object
+               // Create Stage Data Object and Set Stage Object Name
+               var stage = game.add.container()
+               var stage = stage.setName('darkmoonGlade')
+               
+               // Enable Data Storage
+               stage.setDataEnabled();
+        
+               // Set Stage Sector & Rarity Data
+               var sector = 0
+               var rarity = 0
+               // Store Sector & Rarity Data
+               stage.data.set('sector',sector)
+               stage.data.set('rarity',rarity)
+        
+               // Store Stage Data
+        
+               stage.data.set('id','1-0-0-2')
+               stage.data.set('stageName','DarkMoon Glade')
+        
+               stage.data.set('assetPathRoot','assets/')
+        
+               stage.data.set('stageMusicFileName','music/Katana.mp3')
+        
+               // Set Background (BG) & Foregorund (FG) Layers
+               var stageAssetName = 'pForest'
+               var stageBackgroundLayers = 10
+               var stageForegroundLayers = 2
+               var stageBGScrollSpeedModifierSettings = [1,0.5,0.95,0.9,1,0.5,0.95,0.9,0,0]
+               var stageFGScrollSpeedModifierSettings = [1.1,1.1]
+               var stageNormalMaps = [0,0,0,0]
+               // Create Data Entry for Number of Layers
+                stage.data.set('stageAssetName',stageAssetName)
+                stage.data.set('bgLayers',stageBackgroundLayers)
+                stage.data.set('fgLayers',stageForegroundLayers)
+                stage.data.set('bgScroll',stageBGScrollSpeedModifierSettings)
+                stage.data.set('fgScroll',stageFGScrollSpeedModifierSettings)
+                stage.data.set('stageNormalMaps',stageNormalMaps)
+                
+        
+            // Day/Night Settings
+                // Enable/Disable Times
+        
+                var dawn = true
+                var day = true
+                var dusk = true
+                var night = true
+
+                var timeAvailabilityArray = [dawn,day,dusk,night]
+        
+                // Time Availability
+                stage.data.set('timeAvailability',timeAvailabilityArray)
+                // Dawn
+                stage.data.set('dawnAmbientLightOverride',null)
+                stage.data.set('dawnSunLightOverride',null)
+                // Day
+                stage.data.set('dayAmbientLightOverride',null)
+                stage.data.set('daySunLightOverride',null)
+                // Dusk
+                stage.data.set('duskAmbientLightOverride',null)
+                stage.data.set('duskSunLightOverride',null)
+                // Night
+                stage.data.set('nightAmbientLightOverride',null)
+                stage.data.set('nightSunLightOverride',null)
+                // Sun Position
+                stage.data.set('sunPositionXOverride',null)
+                stage.data.set('sunPositionYOverride',null)
+              
+        
+            // Floor Settings
+        
+            stage.data.set('floorPosYMin', 0.01)
+            stage.data.set('floorPosYMax', 0.05)
         
             // Platform Settings
         
