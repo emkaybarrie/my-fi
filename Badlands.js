@@ -3166,51 +3166,34 @@ class Badlands extends Phaser.Scene {
         
         // Load Stage Object
         for (var i = bgLayers; i > 0; i--){
-            //window['bgL'+i] =  this.add.tileSprite(0,0,0,0,'bgL'+i).setOrigin(0,0).setScrollFactor(bgScroll[i-1] * scaleMod).setPipeline('Light2D').setDepth(0);
-            window['bgL'+i] =  this.add.tileSprite(0,0,gameWidth,gameHeight).setOrigin(0,0).setPipeline('Light2D').setDepth(0).setScrollFactor(0)//.setScale(2);
-            console.log('TileSprite Width (no texture): ' + window['bgL'+i].displayWidth) // Seems equiv to textureToApply Data
             
             var textureToApply = this.textures.get('bgL' + i).getSourceImage()
-            console.log('Texture Width: ' + textureToApply.width)
-            console.log('Texture Height: ' + textureToApply.height)
-           
+            console.log('Texture Width: ' + textureToApply.width,'\nTexture Height: ' + textureToApply.height)
+        
             var textureWidthScaleMod = gameWidth / textureToApply.width
             var textureHeightScaleMod = gameHeight / textureToApply.height
-            console.log('Texture Width Scale Mod: ' + gameWidth / textureToApply.width)
-            console.log('Texture New size: ' + textureWidthScaleMod * textureToApply.width)
-            console.log('Texture Height Scale Mod: ' + gameHeight / textureToApply.height)            
-            console.log('Texture New size: ' + textureHeightScaleMod * textureToApply.height)
-         
-            window['bgL'+i].setTileScale(textureWidthScaleMod,textureHeightScaleMod)
+            console.log('Texture Width Scale Mod: ' + gameWidth / textureToApply.width,'\nTexture Width New Size: ' + textureWidthScaleMod * textureToApply.width )
+            console.log('Texture Height Scale Mod: ' + gameHeight / textureToApply.height,'\nTexture Height New Size: ' + textureHeightScaleMod * textureToApply.height)            
 
-            window['bgL'+i].setTexture('bgL' + i)
-
+            window['bgL'+i] =  this.add.tileSprite(0,0,gameWidth,gameHeight).setScrollFactor(0).setOrigin(0,0).setPipeline('Light2D').setDepth(0)
+            window['bgL'+i].setTexture('bgL'+i).setTileScale(textureWidthScaleMod,textureHeightScaleMod)
             window['bgL'+i+'ScrollMod'] = + bgScroll[i - 1]
-            
            
         }
 
         for (var i = fgLayers; i > 0; i--){
-            //window['fgL'+i] =  this.add.tileSprite(0,0,0,0,'fgL'+i).setOrigin(0,0).setScrollFactor(fgScroll[i-1]).setPipeline('Light2D').setDepth(1);
-            window['fgL'+i] =  this.add.tileSprite(0,0,gameWidth,gameHeight).setOrigin(0,0).setPipeline('Light2D').setDepth(1).setScrollFactor(0)//.setScale(2);
-            console.log('TileSprite Width (no texture): ' + window['fgL'+i].displayWidth) // Seems equiv to textureToApply Data
-            
+
             var textureToApply = this.textures.get('fgL' + i).getSourceImage()
-            console.log('Texture Width: ' + textureToApply.width)
-            console.log('Texture Height: ' + textureToApply.height)
-           
+            console.log('Texture Width: ' + textureToApply.width,'\nTexture Height: ' + textureToApply.height)
+        
             var textureWidthScaleMod = gameWidth / textureToApply.width
             var textureHeightScaleMod = gameHeight / textureToApply.height
-            console.log('Texture Width Scale Mod: ' + gameWidth / textureToApply.width)
-            console.log('Texture New size: ' + textureWidthScaleMod * textureToApply.width)
-            console.log('Texture Height Scale Mod: ' + gameHeight / textureToApply.height)            
-            console.log('Texture New size: ' + textureHeightScaleMod * textureToApply.height)
-         
-            window['fgL'+i].setTileScale(textureWidthScaleMod,textureHeightScaleMod)
+            console.log('Texture Width Scale Mod: ' + gameWidth / textureToApply.width,'\nTexture Width New Size: ' + textureWidthScaleMod * textureToApply.width )
+            console.log('Texture Height Scale Mod: ' + gameHeight / textureToApply.height,'\nTexture Height New Size: ' + textureHeightScaleMod * textureToApply.height)            
 
-            window['fgL'+i].setTexture('fgL' + i)
-
-            window['fgL'+i+'ScrollMod'] = + fgScroll[i - 1]
+            window['fgL'+i] =  this.add.tileSprite(0,0,gameWidth,gameHeight).setScrollFactor(0).setOrigin(0,0).setPipeline('Light2D').setDepth(1)
+            window['fgL'+i].setTexture('fgL'+i).setTileScale(textureWidthScaleMod,textureHeightScaleMod)
+            window['fgL'+i+'ScrollMod'] = + bgScroll[i - 1]
         }
 
         if(activeStage.data.values.stageAssetName == 'forest'){
@@ -4802,16 +4785,15 @@ class Badlands extends Phaser.Scene {
 
                 // Parallax Background layers scrolls at variable speed multiplied by playerSpeed %
                 if(!gameOver){
-                   console.log(scaleMod)
+                                 
                     
                     for (var i = 1; i < bgLayers + 1 ; i++){
-                        window['bgL'+i].tilePositionX += 12   * window['bgL'+ i + 'ScrollMod']  * playerSpeed * (scaleMod)
-                        
-                       
+                        window['bgL'+i].tilePositionX += 12  * window['bgL'+ i + 'ScrollMod']  * playerSpeed * (scaleMod / (gameWidth / this.textures.get('bgL' + i).getSourceImage().width))
+
                     }
 
                     for (var i = 1; i < fgLayers + 1; i++){
-                        window['fgL'+i].tilePositionX += 12 * window['fgL'+ i + 'ScrollMod'] * playerSpeed * (scaleMod)
+                        window['fgL'+i].tilePositionX += 12 * window['fgL'+ i + 'ScrollMod'] * playerSpeed * (scaleMod / (gameWidth / this.textures.get('bgL' + i).getSourceImage().width))
                     }
 
 
@@ -4843,7 +4825,6 @@ class Badlands extends Phaser.Scene {
 
             for (var i = 1; i < bgLayers + 1 ; i++){
                 window['bgL'+i].tilePositionX = camera.scrollX * window['bgL'+ i + 'ScrollMod'] * (scaleMod)
-                window['bgL'+i].x = camera.scrollX
                 
                
             }

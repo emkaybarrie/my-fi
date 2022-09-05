@@ -73,7 +73,7 @@ class Kianova extends Phaser.Scene {
         //console.log(this.sys.game.canvas.height)
         gameWidth = this.sys.game.canvas.width
         gameHeight = this.sys.game.canvas.height
-        scaleMod = gameHeight/1080
+        scaleMod = gameWidth/1920
         
        
 
