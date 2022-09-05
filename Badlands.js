@@ -3038,17 +3038,17 @@ class Badlands extends Phaser.Scene {
         var nightAmbientLightDefault = 0x131862
 
         var dawnSunLightDefault = 0xE49759
-        var dawnSunPositionX = 0.75
-        var dawnSunPositionY = 0.35
+        var dawnSunPositionXPerc = 1
+        var dawnSunPositionYPerc = 0.65
         var daySunLightDefault = 0xfdfbd3
-        var daySunPositionX =  0.5
-        var daySunPositionY =  0.15
+        var daySunPositionXPerc =  0.5
+        var daySunPositionYPerc =  1
         var duskSunLightDefault = 0xECC1B2
-        var duskSunPositionX = 0.25
-        var duskSunPositionY = 0.35
+        var duskSunPositionXPerc = 0.25
+        var duskSunPositionYPerc = 0.85
         var nightSunLightDefault = 0x131862
-        var nightSunPositionX = 0.15
-        var nightSunPositionY =  0.2
+        var nightSunPositionXPerc = 0
+        var nightSunPositionYPerc =  0.85
 
         
 
@@ -3077,8 +3077,8 @@ class Badlands extends Phaser.Scene {
                 sunPositionX = activeStage.data.values.sunPositionXOverride
                 sunPositionY = activeStage.data.values.sunPositionYOverride
             } else {
-                sunPositionX = dawnSunPositionX
-                sunPositionY = dawnSunPositionY
+                sunPositionX = dawnSunPositionXPerc
+                sunPositionY = 1 - dawnSunPositionYPerc
             }
 
             
@@ -3102,8 +3102,8 @@ class Badlands extends Phaser.Scene {
                 sunPositionX = activeStage.data.values.sunPositionXOverride
                 sunPositionY = activeStage.data.values.sunPositionYOverride
             } else {
-            sunPositionX = daySunPositionX
-            sunPositionY = daySunPositionY
+            sunPositionX = daySunPositionXPerc
+            sunPositionY = 1- daySunPositionYPerc
             }
 
         } else if (activeStage.data.values.timeCode == 3){
@@ -3126,8 +3126,8 @@ class Badlands extends Phaser.Scene {
                 sunPositionX = activeStage.data.values.sunPositionXOverride
                 sunPositionY = activeStage.data.values.sunPositionYOverride
             } else {
-            sunPositionX = duskSunPositionX
-            sunPositionY = duskSunPositionY
+            sunPositionX = duskSunPositionXPerc
+            sunPositionY = 1 - duskSunPositionYPerc
             }
 
         } else if (activeStage.data.values.timeCode == 4){
@@ -3150,8 +3150,8 @@ class Badlands extends Phaser.Scene {
                 sunPositionX = activeStage.data.values.sunPositionXOverride
                 sunPositionY = activeStage.data.values.sunPositionYOverride
             } else {
-            sunPositionX = nightSunPositionX
-            sunPositionY = nightSunPositionY
+            sunPositionX = nightSunPositionXPerc
+            sunPositionY = 1 - nightSunPositionYPerc
             }
         }
 
@@ -3159,7 +3159,7 @@ class Badlands extends Phaser.Scene {
        
         this.lights.enable();
         this.lights.setAmbientColor(ambientLightSetting);
-        spotlightSun = this.lights.addLight(gameWidth * sunPositionX , gameHeight * sunPositionY, gameWidth * 3,sunLightSetting, 1);
+        spotlightSun = this.lights.addLight(gameWidth * sunPositionX , gameHeight * sunPositionY, gameWidth * 2,sunLightSetting, 2);
         //spotlightSun.setScrollFactor(1)
     
 
@@ -3292,8 +3292,8 @@ class Badlands extends Phaser.Scene {
         player.setCollideWorldBounds(true);
         this.physics.add.collider(player,platforms);
 
-        spotlightPlayerHealth = this.lights.addLight(0, 0, player.displayHeight,0xd4b9e2);
-        spotlightPlayerPower = this.lights.addLight(0, 0, player.displayHeight ,0x6d54a9);
+        spotlightPlayerHealth = this.lights.addLight(0, 0, player.displayWidth * 10,0xd4b9e2);
+        spotlightPlayerPower = this.lights.addLight(0, 0, player.displayWidth * 10 ,0x6d54a9);
 
         spotlightNightBorne = this.lights.addLight(0, 0, 300 * (scaleMod),0x6d54a9,0);
         spotlightCreep = this.lights.addLight(0, 0, 300 * (scaleMod),0xd4b9e2,0);
@@ -4114,16 +4114,15 @@ class Badlands extends Phaser.Scene {
             }
 
         if(activeStage.data.values.timeCode != 4){
-            spotlightPlayerHealth.intensity =  (0.25 * (currentLife / maxLife))
-            spotlightPlayerPower.intensity =  (0.25 * (currentLife / maxLife))
+            spotlightPlayerHealth.intensity =  0.5 * (currentLife / maxLife)
+            spotlightPlayerPower.intensity =  0.5 * (currentFocus / maxFocus)
         } else {
-            spotlightPlayerHealth.intensity =  (0.5 * (currentLife / maxLife))
-            spotlightPlayerPower.intensity =  (0.5 * (currentLife / maxLife))
+            spotlightPlayerHealth.intensity =  1 * (currentLife / maxLife)
+            spotlightPlayerPower.intensity =  1 * (currentFocus / maxFocus)
         }
 
-
-
-        
+            spotlightPlayerHealth.radius = (player.displayWidth * 10) * (currentLife / maxLife)
+            spotlightPlayerPower.radius =  (player.displayWidth * 10) * (currentFocus / maxFocus)
 
             closest = this.physics.closest(player,enemies.getChildren()) 
 
@@ -4240,11 +4239,11 @@ class Badlands extends Phaser.Scene {
                 skillTreeFocusIcon.x = inspirationBoxFocus.x
                 skillTreeLifeIcon.x = inspirationBoxPower.x
 
-                spotlightPlayerHealth.x = player.x + (10 * (scaleMod));
-                spotlightPlayerHealth.y = player.y;
+                spotlightPlayerHealth.x = player.x + (0 * (scaleMod));
+                spotlightPlayerHealth.y = player.y - (10 * (scaleMod));
 
-                spotlightPlayerPower.x = player.x + (10 * (scaleMod));
-                spotlightPlayerPower.y = player.y;
+                spotlightPlayerPower.x = player.x + (0 * (scaleMod));
+                spotlightPlayerPower.y = player.y - (10 * (scaleMod));
 
                 spotlightNightBorne.x = nightBorne.x;
                 spotlightNightBorne.y = nightBorne.y;
@@ -4252,8 +4251,8 @@ class Badlands extends Phaser.Scene {
                 spotlightCreep.x = creep.x;
                 spotlightCreep.y = creep.y;
 
-                 spotlightSun.x =   camera.scrollX + (gameWidth *  sunPositionX) // camera.scrollX +
-                 spotlightSun.y =  camera.scrollY - (gameHeight * sunPositionY)
+                 spotlightSun.x =   camera.scrollX + (gameWidth *  sunPositionX)
+                 spotlightSun.y =   camera.scrollY + (gameHeight * sunPositionY)
             // Audio
 
                 // Background Music
