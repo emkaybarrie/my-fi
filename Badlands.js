@@ -3159,7 +3159,7 @@ class Badlands extends Phaser.Scene {
        
         this.lights.enable();
         this.lights.setAmbientColor(ambientLightSetting);
-        spotlightSun = this.lights.addLight(gameWidth * sunPositionX , gameHeight * sunPositionY, gameWidth * 2,sunLightSetting, 2);
+        spotlightSun = this.lights.addLight(camera.scrollX + (gameWidth * sunPositionX) , camera.scrollY + (gameHeight * sunPositionY), gameWidth,sunLightSetting, 2);
         //spotlightSun.setScrollFactor(1)
     
 
@@ -4251,7 +4251,8 @@ class Badlands extends Phaser.Scene {
                 spotlightCreep.x = creep.x;
                 spotlightCreep.y = creep.y;
 
-                 spotlightSun.x =   camera.scrollX + (gameWidth *  sunPositionX)
+                
+                 spotlightSun.x =   camera.scrollX + (gameWidth *  sunPositionX) + ((gameWidth - camera.scrollX) * 0.1) // camera.scrollX + 
                  spotlightSun.y =   camera.scrollY + (gameHeight * sunPositionY)
             // Audio
 
@@ -4798,6 +4799,8 @@ class Badlands extends Phaser.Scene {
                     for (var i = 1; i < fgLayers + 1; i++){
                         window['fgL'+i].tilePositionX += 12 * window['fgL'+ i + 'ScrollMod'] * playerSpeed * (scaleMod / (gameWidth / this.textures.get('fgL' + i).getSourceImage().width))
                     }
+
+                    sunPositionX -= 0.00005
 
 
                     moveHighObstacle(highObstacle, 12 * (playerSpeed))
