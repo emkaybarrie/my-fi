@@ -38,6 +38,7 @@ var config = {
         target: 60
     },
     scene: [
+       
         //Initialise, - for load global variables, assets & splash screen
         //Menu, - Links to Story Mode (Login), Free Play (Randomised Region -> Badlands, no financial data), 1 pager on game & controls + option for practice mode
         //Login,
@@ -63,5 +64,5 @@ var config = {
 
 
 var game = new Phaser.Game(config)
-
+window.focus()
 }
