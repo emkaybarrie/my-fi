@@ -1,35 +1,16 @@
-class Region3 extends Phaser.Scene {
+class RegionTemplate extends Phaser.Scene {
 
 
     constructor() {
-        super("Region3")
-        
-    }
-    
-    init(data)
-    {
-        console.log('Region Query Received: ', data)
-        // Import Region Query Data
-        console.log()
-        this.targetZone = data.targetZone
-        this.currentTimePeriod = data.currentTimePeriod
-        this.rarityOverride = data.rarityOverride
-        console.log('Region Query Data Imported: ',
-                    '\nTarget Zone: ' + this.targetZone,
-                    '\nTime Period: ' + this.currentTimePeriod,
-                    '\nRarity Override: ' + this.rarityOverride
-                    )
-    }
+        super("RegionTemplate")
 
-    preload ()
-    {
         // Region Variables
 
         // Region Data
-        this.regionID = 3
-        this.region = 'South'
-        this.regionPatron = 'Amara'
-        this.regionAffinity = 'Risk Band 3'
+        this.regionID = 0
+        this.region = '[Region Name]'
+        this.regionPatron = '[Patron Name]'
+        this.regionAffinity = '[Risk Band]'
 
         // Sector Data 
         // Stores Stages in Sector Arrays
@@ -37,11 +18,54 @@ class Region3 extends Phaser.Scene {
         
         console.log('Refreshing Region Sector Array Lists...')
         // Sector Lists
-        this.zone0 = [this.cliffsOfAmara,this.amaranPlains]
+        this.zone0 = [this.stageFileName()]
         // Sector Root Array
         this.zones = [
-                        this.zone0
+                        z0
                     ]
+
+        // Data Import Module
+        this.targetZone
+        this.currentTimePeriod
+        this.rarityOverride
+
+
+        // Stage Data Dictionary
+        // Last Update: 06/09/2022
+
+            this.zone
+            this.rarity
+
+            // Background (BG) & Foregorund (FG) Layers
+            this.stageAssetName
+            this.stageBackgroundLayers
+            this.stageForegroundLayers
+            this.stageBGScrollSpeedModifierSettings
+            this.stageFGScrollSpeedModifierSettings
+            this.stageNormalMaps
+
+            // Day/Night Settings
+
+            this.dawn
+            this.day
+            this.dusk
+            this.night
+
+            this.timeAvailabilityArray = [dawn,day,dusk,night]
+        
+    }
+
+    preload (data)
+    {
+        // Import Region Query Data
+        this.targetZone = data.targetZone
+        this.currentTimePeriod = data.time
+        this.rarityOverride = data.rarityOverride
+        console.log('Region Query Data Imported: ',
+                    '\nTarget Zone: ' + this.targetZone,
+                    '\nTime Period: ' + this.currentTimePeriod,
+                    '\nRarity Override: ' + this.rarityOverride
+                    )
      
     }
     
@@ -83,20 +107,13 @@ class Region3 extends Phaser.Scene {
                this.zone = 0
                this.rarity = 0
 
-               // Set Stage Details
-
-               this.id = 'R3-Z0-S0-R1'
-               this.stageName = 'Amaran Plains'
-               this.stageAssetPathRoot = 'assets/'
-               this.stageMusicFilePath = 'music/Katana.mp3'
-
                // Set Background (BG) & Foregorund (FG) Layers
-               this.stageAssetName = 'mountains'
-               this.stageBackgroundLayers = 5
-               this.stageForegroundLayers = 0
-               this.stageBGScrollSpeedModifierSettings = [0.35,0.15,0.075,0.05,0.01]
-               this.stageFGScrollSpeedModifierSettings = []
-               this.stageNormalMaps = []
+               this.stageAssetName = 'woods'
+               this.stageBackgroundLayers = 3
+               this.stageForegroundLayers = 1
+               this.stageBGScrollSpeedModifierSettings = [0.75,0.5,0]
+               this.stageFGScrollSpeedModifierSettings = [1]
+               this.stageNormalMaps = [0,0,0]
 
                // Day/Night Settings
                 // Enable/Disable Times
@@ -108,103 +125,17 @@ class Region3 extends Phaser.Scene {
 
                 this.timeAvailabilityArray = [dawn,day,dusk,night]
 
-                // Floor Settings
+                
         
-                this.floorPosYMin = 0.05
-                this.floorPosYMax = 0.025
-
-    }
-
-    cliffsOfAmara(){
-     // Stage Function  
-        // Writes Stage Data to Region Scene Data 
         
-            // Stage Code
-        
-               // Set Stage Sector & Rarity Data
-               this.zone = 0
-               this.rarity = 0
-
-               // Set Stage Details
-
-               this.id = 'R3-Z0-S0-R0'
-               this.stageName = 'Cliffs of Amara'
-               this.stageAssetPathRoot = 'assets/'
-               this.stageMusicFilePath = 'music/Katana.mp3'
-
-               // Set Background (BG) & Foregorund (FG) Layers
-               this.stageAssetName = 'dawn'
-               this.stageBackgroundLayers = 8
-               this.stageForegroundLayers = 0
-               this.stageBGScrollSpeedModifierSettings = [1,1,0.5,0.25,0.1,0.05,0,0]
-               this.stageFGScrollSpeedModifierSettings = []
-               this.stageNormalMaps = []
-
-               // Day/Night Settings
-                // Enable/Disable Times
-        
-                var dawn = true
-                var day = true
-                var dusk = true
-                var night = true
-
-                this.timeAvailabilityArray = [dawn,day,dusk,night]
-
-                // Floor Settings
-        
-                this.floorPosYMin = 0.05
-                this.floorPosYMax = 0.25
-       
-         
-    }
-
-    amaranPlains(){
-        // Stage Function  
-        // Writes Stage Data to Region Scene Data 
-        
-            // Stage Code
-        
-               // Set Stage Sector & Rarity Data
-               this.zone = 0
-               this.rarity = 0
-
-               // Set Stage Details
-
-               this.id = 'R3-Z0-S0-R1'
-               this.stageName = 'Amaran Plains'
-               this.stageAssetPathRoot = 'assets/'
-               this.stageMusicFilePath = 'music/Katana.mp3'
-
-               // Set Background (BG) & Foregorund (FG) Layers
-               this.stageAssetName = 'mountains'
-               this.stageBackgroundLayers = 5
-               this.stageForegroundLayers = 0
-               this.stageBGScrollSpeedModifierSettings = [0.35,0.15,0.075,0.05,0.01]
-               this.stageFGScrollSpeedModifierSettings = []
-               this.stageNormalMaps = []
-
-               // Day/Night Settings
-                // Enable/Disable Times
-        
-                var dawn = true
-                var day = true
-                var dusk = true
-                var night = true
-
-                this.timeAvailabilityArray = [dawn,day,dusk,night]
-
-                // Floor Settings
-        
-                this.floorPosYMin = 0.05
-                this.floorPosYMax = 0.025
-
+            return stage
     }
 
     // Region Functions
 
     findStageData(zone,timePeriod,rarityOverride) {
 
-        
+        console.log('Finding Stage Data')
 
         // DEFAULT settings if selected arrays are unpopulated
             
@@ -215,7 +146,7 @@ class Region3 extends Phaser.Scene {
     
         var selectedZone
         
-        if (this.zones[zone].length > 0){
+        if (zones[zone].length > 0){
             selectedZone = zone
         } else {
             selectedZone = defaultZone
@@ -235,7 +166,7 @@ class Region3 extends Phaser.Scene {
         // }
         //
 
-        var selectedZoneStage = Phaser.Math.Between(0,this.zones[selectedZone].length - 1)
+        var selectedZoneStage = Phaser.Math.Between(0,zones[selectedZone].length - 1)
 
         var selectedRarity
 
@@ -248,14 +179,10 @@ class Region3 extends Phaser.Scene {
 
         var findingMatch = true
         var candidateStage
-        console.log('Finding Stage Data')
+        
         while(findingMatch){
-            console.log('Searching...')
-            
-            
             //candidateStage = 
-            this.zones[selectedZone][selectedZoneStage]
-           
+            zones[selectedZone][selectedZoneStage]
             // Checks if candidate stage matches rarity and is valid for time of day
             //  Checks Rarity
             if (this.rarity == selectedRarity){
@@ -267,7 +194,7 @@ class Region3 extends Phaser.Scene {
                     }
             } else {
                 selectedRarity = defaultRarity
-                selectedZoneStage = Phaser.Math.Between(0,this.zones[selectedZone].length - 1)
+                selectedZoneStage = Phaser.Math.Between(0,zones[selectedZone].length - 1)
             }
         }
 
@@ -313,26 +240,26 @@ class Region3 extends Phaser.Scene {
         console.log('Applying Stage Data')
 
         // Store Sector & Rarity Data
-        this.data.set('zone',this.zone)
-        this.data.set('rarity',this.rarity)
+        this.data.set('sector',sector)
+        this.data.set('rarity',rarity)
  
         // Store Stage Data
  
-        this.data.set('id',this.id)
-        this.data.set('stageName',this.stageName)
-        this.data.set('stageAssetPathRoot',this.stageAssetPathRoot)
-        this.data.set('stageMusicFileName',this.stageMusicFilePath)
+        this.data.set('id','0-0-0-0')
+        this.data.set('stageName','Stage FileName')
+        this.data.set('assetPathRoot','assets/')
+        this.data.set('stageMusicFileName','music/Katana.mp3')
  
         // Create Data Entry for Number of Layers
-         this.data.set('stageAssetName',this.stageAssetName)
-         this.data.set('bgLayers',this.stageBackgroundLayers)
-         this.data.set('fgLayers',this.stageForegroundLayers)
-         this.data.set('bgScroll',this.stageBGScrollSpeedModifierSettings)
-         this.data.set('fgScroll',this.stageFGScrollSpeedModifierSettings)
-         this.data.set('stageNormalMaps',this.stageNormalMaps)
+         this.data.set('stageAssetName',stageAssetName)
+         this.data.set('bgLayers',stageBackgroundLayers)
+         this.data.set('fgLayers',stageForegroundLayers)
+         this.data.set('bgScroll',stageBGScrollSpeedModifierSettings)
+         this.data.set('fgScroll',stageFGScrollSpeedModifierSettings)
+         this.data.set('stageNormalMaps',stageNormalMaps)
          
          // Time Availability
-         this.data.set('timeAvailability',this.timeAvailabilityArray)
+         this.data.set('timeAvailability',timeAvailabilityArray)
  
          // Dawn
          this.data.set('dawnAmbientLightOverride',null)
@@ -354,8 +281,8 @@ class Region3 extends Phaser.Scene {
  
      // Floor Settings
  
-     this.data.set('floorPosYMin',  this.floorPosYMin)
-     this.data.set('floorPosYMax', this.floorPosYMax)
+     this.data.set('floorPosYMin', 0.15)
+     this.data.set('floorPosYMax', 0.2)
  
      // Platform Settings
  
@@ -437,7 +364,6 @@ class Region3 extends Phaser.Scene {
 
         console.log('Region Data Loaded Successfully')
     }
-
 
 }
 

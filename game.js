@@ -1,8 +1,8 @@
-window.onload = function(){
-var ratio = Math.max((window.innerWidth * window.devicePixelRatio)/ (window.innerHeight * window.devicePixelRatio), (window.innerHeight * window.devicePixelRatio) / (window.innerWidth * window.devicePixelRatio)) 
+window.onload = function(){ 
 var DEFAULT_HEIGHT = window.innerHeight * window.devicePixelRatio//window.innerHeight//1080 / 1.5 //window.innerHeight * window.devicePixelRatio
 var DEFAULT_WIDTH = window.innerWidth * window.devicePixelRatio//ratio * window.innerHeight //1920 / 1.5//
-var scaleMod = DEFAULT_HEIGHT / 1080
+var globalGravityMod = DEFAULT_HEIGHT / 1080
+
 
 var config = {
     parent: 'myGame',
@@ -26,7 +26,7 @@ var config = {
     physics:{
         default:'arcade',
         arcade:{
-            gravity:{x: 0, y:3000 * scaleMod},
+            gravity:{x: 0, y:3000 * globalGravityMod},
             debug: 0,
             overlapBias: 20
         }
@@ -37,8 +37,27 @@ var config = {
         smoothStep: false,
         target: 60
     },
-    scene: [Kianova,Badlands,Region1,Region2,Region3,Region4,RegionTemplate]
-    //scene: [Title,Tutorial,Kianova,Badlands]
+    scene: [
+        //Initialise, - for load global variables, assets & splash screen
+        //Menu, - Links to Story Mode (Login), Free Play (Randomised Region -> Badlands, no financial data), 1 pager on game & controls + option for practice mode
+        //Login,
+        //Data Core (Staging Area), - for global data (inc player data),real-world data connection & calcs - stores data to global registry rather than scene itself
+        //Portal Entrance, - for real world summary/breakdown & primer/reminder on real-world to game linkages
+        Kianova,
+        // - holds Kianova data
+        Badlands,
+        // - holds active stage data, outputs persistent game data to Data Core at applicable points
+        Region1,
+        Region2,
+        Region3,
+        Region4,
+        // - repos for stage data, by Region (via functions), exports stage data to badlands when queried (after health checks)
+        //RegionServices,
+        // - Holds region data migration functions and region support funcitons (tbd)
+        RegionTestEnvironment
+        // Test Environment for Latest Region Scene & Test Stage
+    ]
+  
  
 };
 

@@ -2826,6 +2826,7 @@ hide ()
         var activeStage
         var sunPositionX
         var sunPositionY
+        var t
 
 
 
@@ -2840,24 +2841,23 @@ class Badlands extends Phaser.Scene {
     init(data)
     {
         
-
-        console.log('Stage Data Received: ', data.data.getAll())
+        console.log('Data Package Received: ', data)
         activeStage = data;
         console.log('Staging Complete')
-        console.log('Entering ' + activeStage.data.values.stageName)
-        console.log('Time ' + activeStage.data.values.timeText)
+        console.log('Entering ' + activeStage.stageName)
+        console.log('Time ' + activeStage.timeText)
         
        this.stageRefresh()
 
-       var t = this.make.text({
+       t = this.make.text({
         x: gameWidth * 1.85,
         y: gameHeight * 0.175,
-        text:   'Region: ' + activeStage.data.values.region + ' (' + activeStage.data.values.regionID + ')' +  '\n' + 
-                'Region Patron: ' + activeStage.data.values.regionPatron + '\n' + 
-                'Region Affinity : ' + activeStage.data.values.regionAffinity + '\n' + 
-                'Stage: ' + activeStage.data.values.stageName + ' (' + activeStage.data.values.id + ')' + '\n' +
-                'Time of Day: ' + activeStage.data.values.timeText + ' (' + activeStage.data.values.timeCode + ')' + '\n' +
-                'Stage Music: ' + activeStage.data.values.stageMusicFileName + '\n',
+        text:   'Region: ' + activeStage.region + ' (' + activeStage.regionID + ')' +  '\n' + 
+                'Region Patron: ' + activeStage.regionPatron + '\n' + 
+                'Region Affinity : ' + activeStage.regionAffinity + '\n' + 
+                'Stage: ' + activeStage.stageName + ' (' + activeStage.id + ')' + '\n' +
+                'Time of Day: ' + activeStage.timeText + ' (' + activeStage.timeCode + ')' + '\n' +
+                'Stage Music: ' + activeStage.stageMusicFileName + '\n',
         origin: { x: 0.5, y: 0.5 },
         style: {
             font: 'bold 26px Gothic',
@@ -2866,7 +2866,7 @@ class Badlands extends Phaser.Scene {
             align: 'left',
             wordWrap: { width: 750 * (scaleMod)},
         }
-    }).setDepth(1);
+    }).setDepth(4);
 
     t.setFontSize(26 * (scaleMod))
 
@@ -2960,30 +2960,30 @@ class Badlands extends Phaser.Scene {
         this.load.image('playerVitalsBox', 'assets/vFX/playerHUDBox.png');
        
         // Stage Data Docking Bay
-        console.log('Loading Textures for: ' + activeStage.data.values.stageName + '\nAsset Name: ' + activeStage.data.values.stageAssetName)
+        console.log('Loading Textures for: ' + activeStage.stageName + '\nAsset Name: ' + activeStage.stageAssetName)
 
-        bgLayers = activeStage.data.values.bgLayers
-        fgLayers = activeStage.data.values.fgLayers
-        bgScroll = activeStage.data.values.bgScroll
-        fgScroll = activeStage.data.values.fgScroll
+        bgLayers = activeStage.bgLayers
+        fgLayers = activeStage.fgLayers
+        bgScroll = activeStage.bgScroll
+        fgScroll = activeStage.fgScroll
 
 
         for (var i = 1; i < bgLayers + 1; i++){
-            console.log('bgL'+ i, activeStage.data.values.assetPathRoot + 'BG' + activeStage.data.values.stageAssetName + i)
+            console.log('bgL'+ i, activeStage.stageAssetPathRoot + 'BG' + activeStage.stageAssetName + i)
           
-            if (activeStage.data.values.stageNormalMaps[i - 1] && this.sys.game.device.os.desktop ){
+            if (activeStage.stageNormalMaps[i - 1] && this.sys.game.device.os.desktop ){
 
-                this.load.image('bgL'+ i, [activeStage.data.values.assetPathRoot + 'BG' + activeStage.data.values.stageAssetName + i,activeStage.data.values.assetPathRoot + 'BG' + activeStage.data.values.stageAssetName + i + '_n']);
+                this.load.image('bgL'+ i, [activeStage.stageAssetPathRoot + 'BG' + activeStage.stageAssetName + i,activeStage.stageAssetPathRoot + 'BG' + activeStage.stageAssetName + i + '_n']);
             } else {
-                this.load.image('bgL'+ i, activeStage.data.values.assetPathRoot + 'BG' + activeStage.data.values.stageAssetName + i);
+                this.load.image('bgL'+ i, activeStage.stageAssetPathRoot + 'BG' + activeStage.stageAssetName + i);
             }
                 
             
         }
 
         for (var i = 1; i < fgLayers + 1; i++){
-            console.log('fgL'+ i, activeStage.data.values.assetPathRoot + 'FG' + activeStage.data.values.stageAssetName + i)
-            this.load.image('fgL'+ i, activeStage.data.values.assetPathRoot + 'FG' + activeStage.data.values.stageAssetName + i);
+            console.log('fgL'+ i, activeStage.stageAssetPathRoot + 'FG' + activeStage.stageAssetName + i)
+            this.load.image('fgL'+ i, activeStage.stageAssetPathRoot + 'FG' + activeStage.stageAssetName + i);
         }
  
 
@@ -3030,7 +3030,7 @@ class Badlands extends Phaser.Scene {
 
     }
 
-    create (data)
+    create ()
     {
         
         var dawnAmbientLightDefault = 0xE49759
@@ -3058,98 +3058,98 @@ class Badlands extends Phaser.Scene {
         sunPositionX
         sunPositionY
 
-        if (activeStage.data.values.timeCode == 1){
+        if (activeStage.timeCode == 1){
             // Dawn
             // Ambient Light
-            if(activeStage.data.values.dawnAmbientLightOverride != null){
-                ambientLightSetting = activeStage.data.values.dawnAmbientLightOverride
+            if(activeStage.dawnAmbientLightOverride != null){
+                ambientLightSetting = activeStage.dawnAmbientLightOverride
             } else {
                 ambientLightSetting = dawnAmbientLightDefault
             }
             // Dawn
             // Sun Light
-            if(activeStage.data.values.dawnSunLightOverride != null){
-                sunLightSetting = activeStage.data.values.dawnSunLightOverride
+            if(activeStage.dawnSunLightOverride != null){
+                sunLightSetting = activeStage.dawnSunLightOverride
             } else {
                 sunLightSetting = dawnSunLightDefault
             }
 
-            if (activeStage.data.values.sunPositionXOverride != null && activeStage.data.values.sunPositionYOverride != null){
-                sunPositionX = activeStage.data.values.sunPositionXOverride
-                sunPositionY = activeStage.data.values.sunPositionYOverride
+            if (activeStage.sunPositionXOverride != null && activeStage.sunPositionYOverride != null){
+                sunPositionX = activeStage.sunPositionXOverride
+                sunPositionY = activeStage.sunPositionYOverride
             } else {
                 sunPositionX = dawnSunPositionXPerc
                 sunPositionY = 1 - dawnSunPositionYPerc
             }
 
             
-        } else if (activeStage.data.values.timeCode == 2){
+        } else if (activeStage.timeCode == 2){
             // Day
             // Ambient Light
-            if(activeStage.data.values.dayAmbientLightOverride != null){
-                ambientLightSetting = activeStage.data.values.dayAmbientLightOverride
+            if(activeStage.dayAmbientLightOverride != null){
+                ambientLightSetting = activeStage.dayAmbientLightOverride
             } else {
                 ambientLightSetting = dayAmbientLightDefault
             }
             // Day
             // Sun Light
-            if(activeStage.data.values.daySunLightOverride != null){
-                sunLightSetting = activeStage.data.values.daySunLightOverride
+            if(activeStage.daySunLightOverride != null){
+                sunLightSetting = activeStage.daySunLightOverride
             } else {
                 sunLightSetting = daySunLightDefault
             }
             // 
-            if (activeStage.data.values.sunPositionXOverride != null && activeStage.data.values.sunPositionYOverride != null){
-                sunPositionX = activeStage.data.values.sunPositionXOverride
-                sunPositionY = activeStage.data.values.sunPositionYOverride
+            if (activeStage.sunPositionXOverride != null && activeStage.sunPositionYOverride != null){
+                sunPositionX = activeStage.sunPositionXOverride
+                sunPositionY = activeStage.sunPositionYOverride
             } else {
             sunPositionX = daySunPositionXPerc
             sunPositionY = 1- daySunPositionYPerc
             }
 
-        } else if (activeStage.data.values.timeCode == 3){
+        } else if (activeStage.timeCode == 3){
             // Dusk
             // Ambient Light
-            if(activeStage.data.values.duskAmbientLightOverride != null){
-                ambientLightSetting = activeStage.data.values.duskAmbientLightOverride
+            if(activeStage.duskAmbientLightOverride != null){
+                ambientLightSetting = activeStage.duskAmbientLightOverride
             } else {
                 ambientLightSetting = duskAmbientLightDefault
             }
             // Dusk
             // Sun Light
-            if(activeStage.data.values.duskSunLightOverride != null){
-                sunLightSetting = activeStage.data.values.duskSunLightOverride
+            if(activeStage.duskSunLightOverride != null){
+                sunLightSetting = activeStage.duskSunLightOverride
             } else {
                 sunLightSetting = duskSunLightDefault
             }
 
-            if (activeStage.data.values.sunPositionXOverride != null && activeStage.data.values.sunPositionYOverride != null){
-                sunPositionX = activeStage.data.values.sunPositionXOverride
-                sunPositionY = activeStage.data.values.sunPositionYOverride
+            if (activeStage.sunPositionXOverride != null && activeStage.sunPositionYOverride != null){
+                sunPositionX = activeStage.sunPositionXOverride
+                sunPositionY = activeStage.sunPositionYOverride
             } else {
             sunPositionX = duskSunPositionXPerc
             sunPositionY = 1 - duskSunPositionYPerc
             }
 
-        } else if (activeStage.data.values.timeCode == 4){
+        } else if (activeStage.timeCode == 4){
             // Night
             // Ambient Light
-            if(activeStage.data.values.nightAmbientLightOverride != null){
-                ambientLightSetting = activeStage.data.values.nightAmbientLightOverride
+            if(activeStage.nightAmbientLightOverride != null){
+                ambientLightSetting = activeStage.nightAmbientLightOverride
             } else {
                 ambientLightSetting = nightAmbientLightDefault
             }
             // Night
             // Sun Light
-            if(activeStage.data.values.nightSunLightOverride != null){
-                sunLightSetting = activeStage.data.values.nightSunLightOverride
+            if(activeStage.nightSunLightOverride != null){
+                sunLightSetting = activeStage.nightSunLightOverride
             } else {
                 sunLightSetting = nightSunLightDefault
             }
 
-            if (activeStage.data.values.sunPositionXOverride != null && activeStage.data.values.sunPositionYOverride != null){
-                sunPositionX = activeStage.data.values.sunPositionXOverride
-                sunPositionY = activeStage.data.values.sunPositionYOverride
+            if (activeStage.sunPositionXOverride != null && activeStage.sunPositionYOverride != null){
+                sunPositionX = activeStage.sunPositionXOverride
+                sunPositionY = activeStage.sunPositionYOverride
             } else {
             sunPositionX = nightSunPositionXPerc
             sunPositionY = 1 - nightSunPositionYPerc
@@ -3206,13 +3206,13 @@ class Badlands extends Phaser.Scene {
             }
         }
 
-        if(activeStage.data.values.stageAssetName == 'forest'){
+        if(activeStage.stageAssetName == 'forest'){
             fgL1.setAlpha(0.4)
         }
 
         // Load Stage Floor
 
-        var floorHeight = Phaser.Math.FloatBetween(activeStage.data.values.floorPosYMin,activeStage.data.values.floorPosYMax)
+        var floorHeight = Phaser.Math.FloatBetween(activeStage.floorPosYMin,activeStage.floorPosYMax)
         platforms = this.physics.add.staticGroup();
         platforms.create(0, gameHeight * (1 - floorHeight), 'ground').setOrigin(0,0).setScale(gameWidth * 3 /400, 2 * (scaleMod)).refreshBody().setVisible(0);
 
@@ -3455,7 +3455,7 @@ class Badlands extends Phaser.Scene {
         skillBBox = this.add.image(0,0,'playerVitalsBox').setDepth(3).setScale(0.04 * (scaleMod),0.125 * (scaleMod)).setOrigin(0.5,0.5)
         skillBIcon = this.add.image(0,0,'thunderStrikeIcon').setDepth(3).setScale(0.4 * (scaleMod)).setOrigin(0.5,0.5)
 
-        levelProgress = new LevelProgressBar(this,progress, camera.worldView.x + gameWidth * 0.33, camera.worldView.y + (gameHeight - 85));
+        levelProgress = new LevelProgressBar(this,progress, camera.scrollX + gameWidth * 0.33, camera.worldView.y + (gameHeight - 85));
 
         inspirationPlayerIconBox = this.add.image(0,camera.worldView.y + (gameHeight * 0.2),'playerIconBox').setDepth(3).setScale(0.13 * (scaleMod),0.425 * (scaleMod)).setOrigin(0.5,0.5).setVisible(0)
         
@@ -4127,7 +4127,7 @@ class Badlands extends Phaser.Scene {
                 lowObstacleShadow.y = lowObstacle.y
             }
 
-        if(activeStage.data.values.timeCode != 4){
+        if(activeStage.timeCode != 4){
             spotlightPlayerHealth.intensity =  0.5 * (currentLife / maxLife)
             spotlightPlayerPower.intensity =  0.5 * (currentFocus / maxFocus)
         } else {
@@ -4179,9 +4179,10 @@ class Badlands extends Phaser.Scene {
                     showHUD()
                 }
 
+                t.x = camera.worldView.x + (gameWidth * 0.85) 
              
-                playerIconBox.x = camera.worldView.x + (gameWidth * 0.075  )
-                playerIconBox.y = camera.worldView.y +  (gameHeight * 0.15 )
+                playerIconBox.x = camera.scrollX + (gameWidth * 0.075)
+                playerIconBox.y = camera.scrollY +  (gameHeight * 0.15 )
 
                 playerIcon.x = playerIconBox.x
                 playerIcon.y = playerIconBox.y
@@ -4220,7 +4221,7 @@ class Badlands extends Phaser.Scene {
                 goldText.y = goldIcon.y
                 goldText.setText(Math.floor(gold))
 
-                levelProgress.x = camera.worldView.x + (gameWidth * 0.375)
+                levelProgress.x = camera.scrollX + (gameWidth * 0.3)
                 levelProgress.y = (gameHeight * 0.975)
                 levelProgress.draw()
 
@@ -4236,17 +4237,17 @@ class Badlands extends Phaser.Scene {
                 skillBIcon.x = skillBBox.x
                 skillBIcon.y = skillBBox.y
 
-                inspirationPlayerIconBox.x = camera.worldView.x + (gameWidth * 0.125)
+                inspirationPlayerIconBox.x = camera.scrollX + (gameWidth * 0.125)
                 inspirationPlayerIcon.x = inspirationPlayerIconBox.x
 
-                inspirationTextBox.x = camera.worldView.x + (gameWidth * 0.6)
+                inspirationTextBox.x = camera.scrollX + (gameWidth * 0.6)
                 inspirationText.x = inspirationTextBox.x
 
-                inspirationBoxEnergy.x = camera.worldView.x + (gameWidth * 0.35)
+                inspirationBoxEnergy.x = camera.scrollX + (gameWidth * 0.35)
                 inspirationTextEnergy.x = inspirationBoxEnergy.x
-                inspirationBoxFocus.x = camera.worldView.x + (gameWidth * 0.6)
+                inspirationBoxFocus.x = camera.scrollX + (gameWidth * 0.6)
                 inspirationTextFocus.x = inspirationBoxFocus.x
-                inspirationBoxPower.x = camera.worldView.x + (gameWidth * 0.85)
+                inspirationBoxPower.x = camera.scrollX + (gameWidth * 0.85)
                 inspirationTextPower.x = inspirationBoxPower.x
             
                 skillTreeEnergyIcon.x = inspirationBoxEnergy.x
@@ -4565,12 +4566,12 @@ class Badlands extends Phaser.Scene {
                     // Touch Control Screen Tracking
 
                         // Anchor Buttons
-                        left.x = camera.worldView.x + (gameWidth * 0.075)
+                        left.x = camera.scrollX + (gameWidth * 0.075)
                         left.y = camera.worldView.y + (gameHeight * 0.8)
 
-                        actionA.x = camera.worldView.x + (gameWidth * 0.925)
+                        actionA.x = camera.scrollX + (gameWidth * 0.925)
                         actionA.y = camera.worldView.y + (gameHeight * 0.85)
-                        actionB.x = camera.worldView.x + (gameWidth * 0.825)
+                        actionB.x = camera.scrollX + (gameWidth * 0.825)
                         actionB.y = camera.worldView.y + (gameHeight * 0.9)
 
                         

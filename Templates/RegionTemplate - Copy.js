@@ -144,8 +144,8 @@ class RegionTemplate extends Phaser.Scene {
         
             // Floor Settings
         
-            stage.data.set('floorPosYMin', 0.2)
-            stage.data.set('floorPosYMax', 0.25)
+            stage.data.set('floorPosYMin', 0.15)
+            stage.data.set('floorPosYMax', 0.2)
         
             // Platform Settings
         

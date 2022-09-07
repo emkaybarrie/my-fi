@@ -92,7 +92,7 @@ class Kianova extends Phaser.Scene {
     create(){
 
         cursors = this.input.keyboard.createCursorKeys();
-        this.input.addPointer(2);
+       this.input.addPointer(2);
         
 
         camera = this.cameras.main.fadeIn(1500)
@@ -177,7 +177,7 @@ class Kianova extends Phaser.Scene {
 
         sectorNameText.setFontSize(58 * (scaleMod))
 
-        sector0Icon = this.add.image(gameWidth * 0.5, gameHeight * 0.9, 'r0Icon').setScale(0.75 * (scaleMod)).setPipeline('Light2D')
+        sector0Icon = this.add.image(gameWidth * 0.5, gameHeight * 0.9, 'r0Icon').setScale(0.75 * (scaleMod)).setPipeline('Light2D').setInteractive()
 
         sector1Icon = this.add.image(gameWidth * 0.25, gameHeight * 0.9, 'r1Icon').setScale(0.5 * (scaleMod)).setPipeline('Light2D').setInteractive()
         sector2Icon = this.add.image(gameWidth * 0.375, gameHeight * 0.9, 'r2Icon').setScale(0.5 * (scaleMod)).setPipeline('Light2D').setInteractive()
@@ -278,65 +278,7 @@ class Kianova extends Phaser.Scene {
         
         
 
-        if(Phaser.Input.Keyboard.JustDown(cursors.left) && kControlsEnabled){
-
-            textBox.alpha = 0
-            textBox.scaleY = 0
-            text.alpha = 0
-            text.scaleY = 0
-            patronIcon.alpha = 0
-            patronIcon.scaleY = 0
-            loyaltyIcon.alpha = 0
-            loyaltyIcon.scaleY = 0
-            prosperityIcon.alpha = 0
-            prosperityIcon.scaleY = 0
-            gloryIconK.alpha = 0
-            gloryIconK.scaleY = 0
-            loyaltyStars.setAlpha(0)
-            loyaltyStars.children.iterate((child) =>{
-                child.setScale(starsScale,0)
-            })
-            prosperityStars.setAlpha(0)
-            prosperityStars.children.iterate((child) =>{
-                child.setScale(starsScale,0)
-            })
-            
-            if(chosenSectorArrayIcon > 0){
-                chosenSectorArrayIcon -= 1
-            } else {
-                chosenSectorArrayIcon = 4
-            } 
-        } else if (Phaser.Input.Keyboard.JustDown(cursors.right) && kControlsEnabled){
-
-            textBox.alpha = 0
-            textBox.scaleY = 0
-            text.alpha = 0
-            text.scaleY = 0
-            patronIcon.alpha = 0
-            patronIcon.scaleY = 0
-            loyaltyIcon.alpha = 0
-            loyaltyIcon.scaleY = 0
-            prosperityIcon.alpha = 0
-            prosperityIcon.scaleY = 0
-            gloryIconK.alpha = 0
-            gloryIconK.scaleY = 0
-            loyaltyStars.setAlpha(0)
-            loyaltyStars.children.iterate((child) =>{
-                child.setScale(starsScale,0)
-            })
-            prosperityStars.setAlpha(0)
-            prosperityStars.children.iterate((child) =>{
-                child.setScale(starsScale,0)
-            })
-
-            if(chosenSectorArrayIcon < 4){
-                chosenSectorArrayIcon += 1
-            } else {
-                chosenSectorArrayIcon = 0
-            } 
-        }
-
-        selectedSector = sectorIconArray[chosenSectorArrayIcon]
+        
 
         if(selectedSector == 0){
             sectorIconLight.x = sector0Icon.x
@@ -499,6 +441,68 @@ class Kianova extends Phaser.Scene {
 
         if(this.sys.game.device.os.desktop){
 
+            selectedSector = sectorIconArray[chosenSectorArrayIcon]
+
+            if(Phaser.Input.Keyboard.JustDown(cursors.left) && kControlsEnabled){
+
+                textBox.alpha = 0
+                textBox.scaleY = 0
+                text.alpha = 0
+                text.scaleY = 0
+                patronIcon.alpha = 0
+                patronIcon.scaleY = 0
+                loyaltyIcon.alpha = 0
+                loyaltyIcon.scaleY = 0
+                prosperityIcon.alpha = 0
+                prosperityIcon.scaleY = 0
+                gloryIconK.alpha = 0
+                gloryIconK.scaleY = 0
+                loyaltyStars.setAlpha(0)
+                loyaltyStars.children.iterate((child) =>{
+                    child.setScale(starsScale,0)
+                })
+                prosperityStars.setAlpha(0)
+                prosperityStars.children.iterate((child) =>{
+                    child.setScale(starsScale,0)
+                })
+                
+                if(chosenSectorArrayIcon > 0){
+                    chosenSectorArrayIcon -= 1
+                } else {
+                    chosenSectorArrayIcon = 4
+                } 
+            } else if (Phaser.Input.Keyboard.JustDown(cursors.right) && kControlsEnabled){
+    
+                textBox.alpha = 0
+                textBox.scaleY = 0
+                text.alpha = 0
+                text.scaleY = 0
+                patronIcon.alpha = 0
+                patronIcon.scaleY = 0
+                loyaltyIcon.alpha = 0
+                loyaltyIcon.scaleY = 0
+                prosperityIcon.alpha = 0
+                prosperityIcon.scaleY = 0
+                gloryIconK.alpha = 0
+                gloryIconK.scaleY = 0
+                loyaltyStars.setAlpha(0)
+                loyaltyStars.children.iterate((child) =>{
+                    child.setScale(starsScale,0)
+                })
+                prosperityStars.setAlpha(0)
+                prosperityStars.children.iterate((child) =>{
+                    child.setScale(starsScale,0)
+                })
+    
+                if(chosenSectorArrayIcon < 4){
+                    chosenSectorArrayIcon += 1
+                } else {
+                    chosenSectorArrayIcon = 0
+                } 
+            }
+    
+            
+
               
 
         if(Phaser.Input.Keyboard.JustDown(cursors.space) && kControlsEnabled){
@@ -508,7 +512,7 @@ class Kianova extends Phaser.Scene {
             
             camera.once('camerafadeoutcomplete',function(){
                 if(selectedSector == 0){
-                    activeRegion = 'RegionTemplate'
+                    activeRegion = 'RegionTestEnvironment'
                 } else {
                     activeRegion = 'Region'+ String(selectedSector)
                 }
@@ -523,30 +527,30 @@ class Kianova extends Phaser.Scene {
 
         sector0Icon.on('pointerdown', function(){
 
-            activeRegion = 'RegionTemplate'
+            activeRegion = 'Region0'
         
-        console.log('Selected Region: ' + activeRegion)
-        
-        textBox.alpha = 0
-        textBox.scaleY = 0
-        text.alpha = 0
-        text.scaleY = 0
-        patronIcon.alpha = 0
-        patronIcon.scaleY = 0
-        loyaltyIcon.alpha = 0
-        loyaltyIcon.scaleY = 0
-        prosperityIcon.alpha = 0
-        prosperityIcon.scaleY = 0
-        gloryIconK.alpha = 0
-        gloryIconK.scaleY = 0
-        loyaltyStars.setAlpha(0)
-        loyaltyStars.children.iterate((child) =>{
-            child.setScale(starsScale,0)
-        })
-        prosperityStars.setAlpha(0)
-        prosperityStars.children.iterate((child) =>{
-            child.setScale(starsScale,0)
-        })
+            console.log('Selected Region: ' + activeRegion)
+            
+            textBox.alpha = 0
+            textBox.scaleY = 0
+            text.alpha = 0
+            text.scaleY = 0
+            patronIcon.alpha = 0
+            patronIcon.scaleY = 0
+            loyaltyIcon.alpha = 0
+            loyaltyIcon.scaleY = 0
+            prosperityIcon.alpha = 0
+            prosperityIcon.scaleY = 0
+            gloryIconK.alpha = 0
+            gloryIconK.scaleY = 0
+            loyaltyStars.setAlpha(0)
+            loyaltyStars.children.iterate((child) =>{
+                child.setScale(starsScale,0)
+            })
+            prosperityStars.setAlpha(0)
+            prosperityStars.children.iterate((child) =>{
+                child.setScale(starsScale,0)
+            })
         
     
             chosenSectorArrayIcon = 2
@@ -705,57 +709,177 @@ class Kianova extends Phaser.Scene {
             sector0Icon.on('pointerdown', function(){
 
                 activeRegion = 'Region0'
+
+                textBox.alpha = 0
+                textBox.scaleY = 0
+                text.alpha = 0
+                text.scaleY = 0
+                patronIcon.alpha = 0
+                patronIcon.scaleY = 0
+                loyaltyIcon.alpha = 0
+                loyaltyIcon.scaleY = 0
+                prosperityIcon.alpha = 0
+                prosperityIcon.scaleY = 0
+                gloryIconK.alpha = 0
+                gloryIconK.scaleY = 0
+                loyaltyStars.setAlpha(0)
+                loyaltyStars.children.iterate((child) =>{
+                    child.setScale(starsScale,0)
+                })
+                prosperityStars.setAlpha(0)
+                prosperityStars.children.iterate((child) =>{
+                    child.setScale(starsScale,0)
+                })
+                
+                
+                    chosenSectorArrayIcon = 3
             
             console.log('Selected Region: ' + activeRegion)
             
-            nextScene = true
+            
 
         })
 
             sector1Icon.on('pointerdown', function(){
 
                     activeRegion = 'Region1'
+
+                    textBox.alpha = 0
+                    textBox.scaleY = 0
+                    text.alpha = 0
+                    text.scaleY = 0
+                    patronIcon.alpha = 0
+                    patronIcon.scaleY = 0
+                    loyaltyIcon.alpha = 0
+                    loyaltyIcon.scaleY = 0
+                    prosperityIcon.alpha = 0
+                    prosperityIcon.scaleY = 0
+                    gloryIconK.alpha = 0
+                    gloryIconK.scaleY = 0
+                    loyaltyStars.setAlpha(0)
+                    loyaltyStars.children.iterate((child) =>{
+                        child.setScale(starsScale,0)
+                    })
+                    prosperityStars.setAlpha(0)
+                    prosperityStars.children.iterate((child) =>{
+                        child.setScale(starsScale,0)
+                    })
+                    
+                    
+                        chosenSectorArrayIcon = 0
                 
                 console.log('Selected Region: ' + activeRegion)
                 
-                nextScene = true
+                
     
             })
 
             sector2Icon.on('pointerdown', function(){
 
                 activeRegion = 'Region2'
+
+                textBox.alpha = 0
+                textBox.scaleY = 0
+                text.alpha = 0
+                text.scaleY = 0
+                patronIcon.alpha = 0
+                patronIcon.scaleY = 0
+                loyaltyIcon.alpha = 0
+                loyaltyIcon.scaleY = 0
+                prosperityIcon.alpha = 0
+                prosperityIcon.scaleY = 0
+                gloryIconK.alpha = 0
+                gloryIconK.scaleY = 0
+                loyaltyStars.setAlpha(0)
+                loyaltyStars.children.iterate((child) =>{
+                    child.setScale(starsScale,0)
+                })
+                prosperityStars.setAlpha(0)
+                prosperityStars.children.iterate((child) =>{
+                    child.setScale(starsScale,0)
+                })
+                
+                
+                    chosenSectorArrayIcon = 1
             
             console.log('Selected Region: ' + activeRegion)
             
-            nextScene = true
+            
 
         })
 
             sector3Icon.on('pointerdown', function(){
 
                 activeRegion = 'Region3'
+
+                textBox.alpha = 0
+                textBox.scaleY = 0
+                text.alpha = 0
+                text.scaleY = 0
+                patronIcon.alpha = 0
+                patronIcon.scaleY = 0
+                loyaltyIcon.alpha = 0
+                loyaltyIcon.scaleY = 0
+                prosperityIcon.alpha = 0
+                prosperityIcon.scaleY = 0
+                gloryIconK.alpha = 0
+                gloryIconK.scaleY = 0
+                loyaltyStars.setAlpha(0)
+                loyaltyStars.children.iterate((child) =>{
+                    child.setScale(starsScale,0)
+                })
+                prosperityStars.setAlpha(0)
+                prosperityStars.children.iterate((child) =>{
+                    child.setScale(starsScale,0)
+                })
+                
+                
+                    chosenSectorArrayIcon = 3
             
             console.log('Selected Region: ' + activeRegion)
             
-            nextScene = true
+            
 
             })
 
             sector4Icon.on('pointerdown', function(){
 
                 activeRegion = 'Region4'
+
+                textBox.alpha = 0
+                textBox.scaleY = 0
+                text.alpha = 0
+                text.scaleY = 0
+                patronIcon.alpha = 0
+                patronIcon.scaleY = 0
+                loyaltyIcon.alpha = 0
+                loyaltyIcon.scaleY = 0
+                prosperityIcon.alpha = 0
+                prosperityIcon.scaleY = 0
+                gloryIconK.alpha = 0
+                gloryIconK.scaleY = 0
+                loyaltyStars.setAlpha(0)
+                loyaltyStars.children.iterate((child) =>{
+                    child.setScale(starsScale,0)
+                })
+                prosperityStars.setAlpha(0)
+                prosperityStars.children.iterate((child) =>{
+                    child.setScale(starsScale,0)
+                })
+                
+                
+                    chosenSectorArrayIcon = 4
             
             console.log('Selected Region: ' + activeRegion)
             
-            nextScene = true
+            
 
             })
 
             textBox.on('pointerdown', function(){
 
                 if(selectedSector == 0){
-                    activeRegion = 'Region2'//+ String(Phaser.Math.Between(1,4))//'RegionTemplate'
+                    activeRegion = 'Region'+ String(Phaser.Math.Between(1,4))//'RegionTemplate'
                 } else {
                     activeRegion = 'Region'+ String(selectedSector)
                 }
@@ -769,7 +893,7 @@ class Kianova extends Phaser.Scene {
         }
 
         if (nextScene && kControlsEnabled ){
-            this.scene.start(activeRegion, Phaser.Math.Between(1,4))
+            this.scene.start(activeRegion, {targetZone: 0, currentTimePeriod: Phaser.Math.Between(1,4),rarityOverride:null})//{targetZone: 0, currentTimePeriod: Phaser.Math.Between(1,4),rarityOverride:null}
             //this.scene.run('RegionTemplate', Phaser.Math.Between(1,4))
             nextScene = false
             //this.scene.stop('Kianova')
