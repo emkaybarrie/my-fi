@@ -71,7 +71,7 @@ class Region1 extends Phaser.Scene {
         this.scene.run("Badlands", dataExport)
 
         console.log('Exporting Data to Badlands....')
-        //this.scene.stop("RegionTemplate")
+     
 
     }
 
@@ -120,7 +120,7 @@ class Region1 extends Phaser.Scene {
 
     }
 
-    mundusRiverbank(game){
+    mundusRiverbank(){
         // Stage Function  
         // Writes Stage Data to Region Scene Data 
         
@@ -163,7 +163,7 @@ class Region1 extends Phaser.Scene {
             
     }
 
-    gardenGrove(game){
+    gardenGrove(){
         // Stage Function  
         // Writes Stage Data to Region Scene Data 
         
@@ -206,7 +206,7 @@ class Region1 extends Phaser.Scene {
             
     }
 
-    darkmoonGlade(game){
+    darkmoonGlade(){
         // Stage Function  
         // Writes Stage Data to Region Scene Data 
         

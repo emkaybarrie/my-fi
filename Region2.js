@@ -37,7 +37,7 @@ class Region2 extends Phaser.Scene {
         
         console.log('Refreshing Region Sector Array Lists...')
         // Sector Lists
-        this.zone0 = [this.lucarianDesert,this.barrenPlains]
+        this.zone0 = [this.lucarianDesert(),this.barrenPlains()]
         // Sector Root Array
         this.zones = [
                         this.zone0
@@ -67,7 +67,7 @@ class Region2 extends Phaser.Scene {
         this.scene.run("Badlands", dataExport)
 
         console.log('Exporting Data to Badlands....')
-        //this.scene.stop("RegionTemplate")
+    
 
     }
 

@@ -503,25 +503,25 @@ class Kianova extends Phaser.Scene {
                 
         }
 
-        // if((a1IsDown || s1IsDown) && kControlsEnabled){
+        if((a1IsDown || s1IsDown) && kControlsEnabled){
         
 
-        //     camera.fadeOut(250)
+            camera.fadeOut(250)
             
-        //     camera.once('camerafadeoutcomplete',function(){
-        //         if(selectedSector == 0){
-        //             activeRegion = 'RegionTestEnvironment'
-        //         } else {
-        //             activeRegion = 'Region'+ String(selectedSector)
-        //         }
+            camera.once('camerafadeoutcomplete',function(){
+                if(selectedSector == 0){
+                    activeRegion = 'RegionTestEnvironment'
+                } else {
+                    activeRegion = 'Region'+ String(selectedSector)
+                }
                 
-        //         console.log('Selected Region: ' + activeRegion)
+                console.log('Selected Region: ' + activeRegion)
                 
-        //         nextScene = true
+                nextScene = true
             
             
-        //     })
-        // }
+            })
+        }
 
             // Change to pointerdown listener and get gameovject to set region
             sector0Icon.on('pointerdown', function(){
@@ -530,10 +530,11 @@ class Kianova extends Phaser.Scene {
             
                 console.log('Selected Region: ' + activeRegion)
                 
-                this.refreshUI()
+                
             
         
                 chosenSectorArrayIcon = 2
+                this.refreshUI()
 
             },this)
 
@@ -543,11 +544,12 @@ class Kianova extends Phaser.Scene {
                 
                 console.log('Selected Region: ' + activeRegion)
                 
-                this.refreshUI()
+                
                 
                 
             
                     chosenSectorArrayIcon = 0
+                    this.refreshUI()
                 
 
             },this)
@@ -558,10 +560,11 @@ class Kianova extends Phaser.Scene {
             
             console.log('Selected Region: ' + activeRegion)
             
-                this.refreshUI()
+                
             
             
                 chosenSectorArrayIcon = 1
+                this.refreshUI()
             
 
             },this)
@@ -572,10 +575,11 @@ class Kianova extends Phaser.Scene {
             
             console.log('Selected Region: ' + activeRegion)
             
-                this.refreshUI()
+                
                 
                 
                     chosenSectorArrayIcon = 3
+                    this.refreshUI()
                 
         
 
@@ -587,12 +591,12 @@ class Kianova extends Phaser.Scene {
             
             console.log('Selected Region: ' + activeRegion)
             
-            this.refreshUI()
+            
             
             
                 chosenSectorArrayIcon = 4
             
-
+                this.refreshUI()
             },this)
 
             this.textBox.on('pointerdown', function(){
@@ -612,8 +616,7 @@ class Kianova extends Phaser.Scene {
         
 
         if (nextScene && kControlsEnabled ){
-            this.scene.start(activeRegion, {targetZone: 0, currentTimePeriod: Phaser.Math.Between(1,4),rarityOverride:null})//{targetZone: 0, currentTimePeriod: Phaser.Math.Between(1,4),rarityOverride:null}
-            //this.scene.run('RegionTemplate', Phaser.Math.Between(1,4))
+            this.scene.start(activeRegion, {targetZone: 0, currentTimePeriod: Phaser.Math.Between(1,4),rarityOverride:null})
             nextScene = false
             //this.scene.stop('Kianova')
             
