@@ -1,29 +1,13 @@
-var gameWidth
-var gameHeight
-var scaleMod
-var scaleModY
-var map
-var loadScreen
-var camera
-var nextScene
+
+
+
 var kControlsEnabled = false
 var autoPlayActive 
 var activeRegion
 
-var sectors
+var sectorInfo
 var selectedSector = 0
 var spotlightSelectedSector
-var selectedSectorIcon
-var kSectorOuter
-var kSectorInner
-var nSectorOuter
-var nSectorInner
-var wSectorOuter 
-var wSectorInner 
-var sSectorOuter 
-var sSectorInner 
-var eSectorOuter 
-var eSectorInner
 
 var sectorNameBox
 var sectorNameText
@@ -38,10 +22,6 @@ var sector4Icon
 var chosenSectorArrayIcon = 2
 
 
-
-var textBox
-var textBoxScaleY
-var text
 var sectorDescription
 var sectorAffinity
 var loyaltyScore
@@ -63,15 +43,264 @@ class Kianova extends Phaser.Scene {
 
     constructor() {
         super("Kianova")
+        // Sector UI
+        this.sectorUI
+        
+
+        // Sector Variables
+
+        this.sectorIconArray = [1,2,0,3,4]
+
+        // Sector Map Icon Variables
+        this.sectorOuterScale = 20 * (scaleModX) 
+        this.sectorInnerScale = 15 * (scaleModX)
+
+        this.selectedSectorIcon
+
+        this.kSectorOuter
+        this.kSectorInner
+        this.kSectorPosX = 1000 * (scaleModX)
+        this.kSectorPosY = 650 * (scaleModY)
+
+        this.eSectorOuter
+        this.eSectorInner
+        this.eSectorPosX = 1700 * (scaleModX)
+        this.eSectorPosY = 550 * (scaleModY)
+
+        this.nSectorOuter
+        this.nSectorInner
+        this.nSectorPosX = 550 * (scaleModX)
+        this.nSectorPosY = 575 * (scaleModY)
+
+        this.wSectorOuter
+        this.wSectorInner
+        this.wSectorPosX = 200 * (scaleModX)
+        this.wSectorPosY = 800 * (scaleModY)
+
+        this.sSectorOuter
+        this.sSectorInner
+        this.sSectorPosX = 1500 * (scaleModX)
+        this.sSectorPosY = 800 * (scaleModY)
+
+        // Sector Info Variables
+
+        this.textBox
+        this.textBoxScaleX = 0.31 * (scaleModX) 
+        this.textBoxScaleY = 0.175 * (scaleModX)
+
+        this.text
+        this.textScaleX =  1 
+        this.textScaleY =  1 
+        
+        this.iconScale =  0.5 * (scaleModX)
+        this.starsScale =  1.25 * (scaleModX)
     }
 
+    refreshUI(){
+
+        // Hide Textbox and Info
+            sectorInfo.setAlpha(0)
+            loyaltyStars.setAlpha(0)
+            prosperityStars.setAlpha(0)
+            this.textBox.setScale(0)
+            sectorInfo.setVisible()
+            loyaltyStars.setVisible()
+            prosperityStars.setVisible()
+
+        // Identify Selected Sector
+            selectedSector = this.sectorIconArray[chosenSectorArrayIcon]
+
+        // Move UI Cursor, Move Sector Cursor, and Update Data
+
+            if(selectedSector == 0){
+           
+
+                sectorIconLight.x = sector0Icon.x
+
+                this.selectedSectorIcon.x = this.kSectorPosX
+                this.selectedSectorIcon.y = this.kSectorPosY
+
+                this.textBox.setTint()
+
+                sectorName = 'Grand Square [HQ]'
+                sectorDescription = 'Political Hub of Kianova.\nHome to the Great Houses that power the city' 
+                sectorAffinity = '\n\n          Omnia'
+                loyaltyScore = 3
+                prosperityScore = 1
+                gloryScore = '\n\n\n\n\n\n\n          100'
+                sectorOptions = '\n\n- Enter House of the Forerunner\n- Enter House of the Creators\n- Enter House of the Oracles'
+                
+            } else if (selectedSector == 1){
+
+
+                sectorIconLight.x = sector1Icon.x
+
+                this.selectedSectorIcon.x = this.wSectorPosX
+                this.selectedSectorIcon.y = this.wSectorPosY
+
+                this.textBox.setTint(0xBC3823)
+
+                sectorName = 'West Sector [Risk Band 1]'
+
+                sectorDescription = 'Home to the Disciples of Mundo.\nMaster practioners and scholars of the ways of Sustahnus.'  
+                sectorAffinity = '\n\n          Mundo'
+                loyaltyScore = 0
+                prosperityScore = 0
+                gloryScore = '\n\n\n\n\n\n\n          0'
+                sectorOptions = '\n\n- Visit Western Sector\n- Recruit Mundus Priest\n- Explore Eastern Badlands'
+
+                
+    
+            } else if (selectedSector == 2){
+         
+
+                sectorIconLight.x = sector2Icon.x
+
+                this.selectedSectorIcon.x = this.nSectorPosX
+                this.selectedSectorIcon.y = this.nSectorPosY
+
+                this.textBox.setTint(0x0076C)
+
+                sectorName = 'North Sector [Risk Band 2]'
+
+                sectorDescription = 'Home to the Lucarian Guard.\nMasterful warriors known for their fortitude and resilience.' 
+                sectorAffinity = '\n\n          Lucarus'
+                loyaltyScore = 5
+                prosperityScore = 3
+                gloryScore = '\n\n\n\n\n\n\n          224'
+                sectorOptions = '\n\n- Visit Northern Sector\n- Recruit Lucarian Knight\n- Explore Southern Badlands'
+
+                
+                
+            } else if (selectedSector == 3){
+      
+                
+                sectorIconLight.x = sector3Icon.x
+
+                this.selectedSectorIcon.x = this.sSectorPosX
+                this.selectedSectorIcon.y = this.sSectorPosY
+
+                this.textBox.setTint(0x0C5D25)
+
+                sectorName = 'South Sector [Risk Band 3]'
+
+                sectorDescription = 'Home to the Order of Amara.\nPractitioners of the ancient Essence Arts.' 
+                sectorAffinity = '\n\n          Amara'
+                loyaltyScore = 1
+                prosperityScore = 1
+                gloryScore = '\n\n\n\n\n\n\n         25'
+                sectorOptions = '\n\n- Visit Southern Sector\n- Recruit Amaran Magus\n- Explore Western Badlands'
+
+            } else if (selectedSector == 4){
+
+                sectorIconLight.x = sector4Icon.x
+
+                this.selectedSectorIcon.x = this.eSectorPosX
+                this.selectedSectorIcon.y = this.eSectorPosY
+            
+                this.textBox.setTint(0x877254)
+
+                sectorName = 'East Sector [Risk Band 4]'
+
+                sectorDescription = 'Home to the Illuvium Brotherhood.\nA favourite haunt of arcanists and elementalists.' 
+                sectorAffinity = '\n\n         Illuvik'
+                loyaltyScore = 4
+                prosperityScore = 2
+                gloryScore = '\n\n\n\n\n\n\n          400'
+                sectorOptions = '\n\n- Visit Eastern Sector\n- Recruit Illuvium Assassin\n- Explore Northern Badlands'
+
+            }
+            sectorNameText.setText(sectorName)
+            this.text.setText(sectorDescription + sectorAffinity + gloryScore + sectorOptions)
+
+
+
+                // Reposition Elements
+                    this.textBox.setPosition(this.selectedSectorIcon.x, this.selectedSectorIcon.y - (screenHeight * 0.3 * scaleModY))
+                    this.text.setPosition(this.textBox.x,this.textBox.y)
+                
+                    patronIcon.x = this.text.x - (87.5 * (scaleModX))
+                    patronIcon.y = this.text. y - (screenHeight * 0.075 * scaleModY)
+
+                    loyaltyIcon.x = this.text.x - (87.5 * (scaleModX))
+                    loyaltyIcon.y = this.text. y - (screenHeight * 0.025 * scaleModY)
+
+                    loyaltyStars.setX(loyaltyIcon.x + (65 * (scaleModX)) , 30 * (scaleModX))
+                    loyaltyStars.setY(loyaltyIcon.y)
+
+                    for (var i = 0; i < loyaltyScore; i++){
+                        loyaltyStars.getChildren()[i].setTint().play('star',true)
+                    }
+
+                    for (var i = loyaltyScore; i < 5; i++){
+                        loyaltyStars.getChildren()[i].setTint(0x000000).stop() 
+                    }
+                    
+                    prosperityIcon.x = this.text.x - (87.5 * (scaleModX)) 
+                    prosperityIcon.y = this.text. y + (screenHeight * 0.025 * scaleModY)
+
+                    prosperityStars.setX(prosperityIcon.x + (65 * (scaleModX)),30 * (scaleModX))
+                    prosperityStars.setY(prosperityIcon.y)
+
+                    for (var i = 0; i < prosperityScore; i++){
+                        prosperityStars.getChildren()[i].setTint().play('star',true)
+                    }
+
+                    for (var i = prosperityScore; i < 5; i++){
+                        prosperityStars.getChildren()[i].setTint(0x000000).stop() 
+                    }
+
+                    gloryIconK.x = this.text.x - (87.5 * (scaleModX))
+                    gloryIconK.y = this.text. y + (screenHeight * 0.075 * scaleModY)
+
+      
+
+        
+
+        // Show Elements
+
+                sectorInfo.setVisible(1)
+                loyaltyStars.setVisible(1)
+                prosperityStars.setVisible(1)
+
+                this.tweens.add({
+                    targets: this.textBox,
+                    alpha: { value: 0.75, duration: 1000, ease: 'Power1' },
+                    scaleX: {value:this.textBoxScaleX, duration: 500,ease: 'Power1' },
+                    scaleY: {value:this.textBoxScaleY, duration: 500,ease: 'Power1' },
+                });
+
+                this.tweens.add({
+                    targets: this.text,
+                    alpha: { value: 1, duration: 1000, ease: 'Power1' }, 
+                });
+
+                this.tweens.add({
+                    targets: [patronIcon,loyaltyIcon,prosperityIcon,gloryIconK],
+                    alpha: { value: 1, duration: 1000, ease: 'Power1' },
+
+                });
+
+                this.tweens.add({
+                    targets: loyaltyStars.getChildren(),
+                    alpha: { value: 1, duration: 1000, ease: 'Power1' },
+
+                });
+
+                this.tweens.add({
+                    targets: prosperityStars.getChildren(),
+                    alpha: { value: 1, duration: 1000, ease: 'Power1' },
+    
+                });
+
+
+    }
 
     preload(){
 
-        gameWidth = this.sys.game.canvas.width
-        gameHeight = this.sys.game.canvas.height
-        scaleMod = gameWidth/1980
-        scaleModY = gameHeight/1080
+      
+
+        
         
         this.load.image('load', 'assets/KianovaLoadScreen.png');
         this.load.image('map', 'assets/KianovaMap.png');
@@ -91,83 +320,70 @@ class Kianova extends Phaser.Scene {
 
     create(){
 
-        cursors = this.input.keyboard.createCursorKeys();
-       this.input.addPointer(2);
-        
 
         camera = this.cameras.main.fadeIn(1500)
-        var mapScaleX = 1.325 * (scaleMod) 
+        camera.setBounds(0, 0, screenWidth, screenHeight)
+
+        var mapScaleX = 1.325 * (scaleModX) 
         var mapScaleY = 0.645 * (scaleModY)
-        map = this.add.image(0,0,'map').setScale(mapScaleX,mapScaleY).setOrigin(0,0)
-        var loadScreenScaleX = 1.3 * (scaleMod) 
+        var map = this.add.image(0,0,'map').setScale(mapScaleX,mapScaleY).setOrigin(0,0)
+
+        var loadScreenScaleX = 1.3 * (scaleModX) 
         var loadScreenScaleY = 0.705 * (scaleModY) 
-        loadScreen = this.add.image(0,0,'load').setScale(loadScreenScaleX,loadScreenScaleY).setOrigin(0,0)
+        var loadScreen = this.add.image(0,0,'load').setScale(loadScreenScaleX,loadScreenScaleY).setOrigin(0,0)
 
+        // Create Sector Info Elements & Grouping
 
-        sectors = this.add.group({
-             
-        })
+        this.kSectorOuter = this.add.circle(this.kSectorPosX,this.kSectorPosY,this.sectorOuterScale,0x350035)
+        this.kSectorInner = this.add.circle(this.kSectorPosX,this.kSectorPosY,this.sectorInnerScale,0xFFFFFF)
 
-        var sectorOuterScale = 20 * (scaleMod) 
-        var sectorInnerScale = 15 * (scaleMod)
+        this.nSectorOuter = this.add.circle(this.nSectorPosX,this.nSectorPosY,this.sectorOuterScale,0x350035)
+        this.nSectorInner = this.add.circle(this.nSectorPosX,this.nSectorPosY,this.sectorInnerScale,0xFFFFFF)
 
-        var kSectorPosX = 1000 * (scaleMod)
-        var kSectorPosY = 650 * (scaleModY)
-         
-        kSectorOuter = this.add.circle(kSectorPosX,kSectorPosY,sectorOuterScale,0x350035)
-        kSectorInner = this.add.circle(kSectorPosX,kSectorPosY,sectorInnerScale,0xFFFFFF)
+        this.wSectorOuter = this.add.circle(this.wSectorPosX,this.wSectorPosY,this.sectorOuterScale,0x350035)
+        this.wSectorInner = this.add.circle(this.wSectorPosX,this.wSectorPosY,this.sectorInnerScale,0xFFFFFF)
 
-        var nSectorPosX = 550 * (scaleMod)
-        var nSectorPosY = 575 * (scaleModY)
-        nSectorOuter = this.add.circle(nSectorPosX,nSectorPosY,sectorOuterScale,0x350035)
-        nSectorInner = this.add.circle(nSectorPosX,nSectorPosY,sectorInnerScale,0xFFFFFF)
+        this.sSectorOuter = this.add.circle(this.sSectorPosX,this.sSectorPosY,this.sectorOuterScale,0x350035)
+        this.sSectorInner = this.add.circle(this.sSectorPosX,this.sSectorPosY,this.sectorInnerScale,0xFFFFFF)
 
-        var wSectorPosX = 200 * (scaleMod)
-        var wSectorPosY = 800 * (scaleModY)
-        wSectorOuter = this.add.circle(wSectorPosX,wSectorPosY,sectorOuterScale,0x350035)
-        wSectorInner = this.add.circle(wSectorPosX,wSectorPosY,sectorInnerScale,0xFFFFFF)
+        this.eSectorOuter = this.add.circle(this.eSectorPosX,this.eSectorPosY,this.sectorOuterScale,0x350035)
+        this.eSectorInner = this.add.circle(this.eSectorPosX,this.eSectorPosY,this.sectorInnerScale,0xFFFFFF)
 
-        var sSectorPosX = 1500 * (scaleMod)
-        var sSectorPosY = 800 * (scaleModY)
-        sSectorOuter = this.add.circle(sSectorPosX,sSectorPosY,sectorOuterScale,0x350035)
-        sSectorInner = this.add.circle(sSectorPosX,sSectorPosY,sectorInnerScale,0xFFFFFF)
+        this.selectedSectorIcon = this.add.circle(0,0,this.sectorInnerScale,0x350035)
 
-        var eSectorPosX = 1700 * (scaleMod)
-        var eSectorPosY = 550 * (scaleModY)
-        eSectorOuter = this.add.circle(eSectorPosX,eSectorPosY,sectorOuterScale,0x350035)
-        eSectorInner = this.add.circle(eSectorPosX,eSectorPosY,sectorInnerScale,0xFFFFFF)
+        this.textBox = this.add.image(0,0,'textBox').setScale(this.textBoxScaleX,this.textBoxScaleY).setAlpha(0.75).setInteractive()
 
-        selectedSectorIcon = this.add.circle(kSectorPosX,kSectorPosY,sectorInnerScale,0x350035)
-
-        var textBoxScaleX = 0.31 * (scaleMod) 
-        textBoxScaleY = 0.175 * (scaleMod)
-        textBox = this.add.image(textBoxScaleX,textBoxScaleY,'textBox').setScale(textBoxScaleX,textBoxScaleY).setAlpha(0.75).setInteractive()
-
-        text = this.make.text({
-            x: 1000 * (scaleMod) ,
-            y: 350 * (scaleMod),
-            text: sectorName,
+        this.text = this.make.text({
             origin: { x: 0.5, y: 0.5 },
             style: {
-                font: '18px Gothic',
+                font: 'px Gothic',
 
                 fill: 'white',
                 align: 'center',
-                wordWrap: { width: 300 * (scaleMod)},
+                wordWrap: { width: 300 * (scaleModX)},
             }
         });
 
-        text.setFontSize(18 * (scaleMod))
+        this.text.setFontSize(18 * (scaleModX))
 
-        var iconScale =  0.5 * (scaleMod)
-        sectorNameBox = this.add.image(gameWidth * 0.5, gameHeight * 0.075,'sectorNameBox').setScale(0.25,0.1)
+        
+
+        patronIcon = this.add.image(1000 * (scaleModX),350 * (scaleModX),'patronIcon').setScale(this.iconScale)
+        loyaltyIcon = this.add.image(1000 * (scaleModX),350 * (scaleModX),'loyaltyIcon').setScale(this.iconScale)
+        prosperityIcon = this.add.image(1000 * (scaleModX),350 * (scaleModX),'prosperityIcon').setScale(this.iconScale)
+        gloryIconK = this.add.image(1000 * (scaleModX),350 * (scaleModX),'gloryIcon').setScale(this.iconScale)
+
+        
+
+
+        sectorNameBox = this.add.image(screenWidth * 0.5, screenHeight * 0.075,'sectorNameBox').setScale(0.25 * (scaleModX),0.1 * (scaleModY))
         sectorNameText = this.make.text({
             x: sectorNameBox.x,
             y: sectorNameBox.y,
             text: sectorName,
             origin: { x: 0.5, y: 0.5 },
             style: {
-                font: '4px Gothic',
+                font: 'px Gothic',
 
                 fill: 'white',
                 align: 'justify, center',
@@ -175,27 +391,28 @@ class Kianova extends Phaser.Scene {
             }
         });
 
-        sectorNameText.setFontSize(58 * (scaleMod))
+        sectorNameText.setFontSize(58 * (scaleModX))
 
-        sector0Icon = this.add.image(gameWidth * 0.5, gameHeight * 0.9, 'r0Icon').setScale(0.75 * (scaleMod)).setPipeline('Light2D').setInteractive()
+        sector0Icon = this.add.image(screenWidth * 0.5, screenHeight * 0.9, 'r0Icon').setScale(0.75 * (scaleModX)).setPipeline('Light2D').setInteractive()
 
-        sector1Icon = this.add.image(gameWidth * 0.25, gameHeight * 0.9, 'r1Icon').setScale(0.5 * (scaleMod)).setPipeline('Light2D').setInteractive()
-        sector2Icon = this.add.image(gameWidth * 0.375, gameHeight * 0.9, 'r2Icon').setScale(0.5 * (scaleMod)).setPipeline('Light2D').setInteractive()
-        sector3Icon = this.add.image(gameWidth * 0.625, gameHeight * 0.9, 'r3Icon').setScale(0.5 * (scaleMod)).setPipeline('Light2D').setInteractive()
-        sector4Icon = this.add.image(gameWidth * 0.75, gameHeight * 0.9, 'r4Icon').setScale(0.5 * (scaleMod)).setPipeline('Light2D').setInteractive()
+        sector1Icon = this.add.image(screenWidth * 0.25, screenHeight * 0.9, 'r1Icon').setScale(0.5 * (scaleModX)).setPipeline('Light2D').setInteractive()
+        sector2Icon = this.add.image(screenWidth * 0.375, screenHeight * 0.9, 'r2Icon').setScale(0.5 * (scaleModX)).setPipeline('Light2D').setInteractive()
+        sector3Icon = this.add.image(screenWidth * 0.625, screenHeight * 0.9, 'r3Icon').setScale(0.5 * (scaleModX)).setPipeline('Light2D').setInteractive()
+        sector4Icon = this.add.image(screenWidth * 0.75, screenHeight * 0.9, 'r4Icon').setScale(0.5 * (scaleModX)).setPipeline('Light2D').setInteractive()
 
         this.lights.enable();
-        //this.lights.setAmbientColor();
-        sectorIconLight = this.lights.addLight(sector0Icon.x, sector0Icon.y, gameWidth * 0.1,0xFFFFFF, 1);
+        sectorIconLight = this.lights.addLight(sector0Icon.x, sector0Icon.y, screenWidth * 0.1,0xFFFFFF, 1);
 
-        patronIcon = this.add.image(1000 * (scaleMod),350 * (scaleMod),'patronIcon').setScale(iconScale)
-        loyaltyIcon = this.add.image(1000 * (scaleMod),350 * (scaleMod),'loyaltyIcon').setScale(iconScale)
-        prosperityIcon = this.add.image(1000 * (scaleMod),350 * (scaleMod),'prosperityIcon').setScale(iconScale)
-        gloryIconK = this.add.image(1000 * (scaleMod),350 * (scaleMod),'gloryIcon').setScale(iconScale)
+        sectorInfo = this.add.group()
+        sectorInfo.addMultiple([this.textBox,this.text,
+                                patronIcon,loyaltyIcon,prosperityIcon,gloryIconK,
+                            ]) 
+        sectorInfo.setVisible(0)
 
-        sectors.addMultiple([textBox,text,patronIcon,loyaltyIcon,prosperityIcon,gloryIconK,selectedSectorIcon,kSectorOuter,kSectorInner,nSectorOuter,nSectorInner,wSectorOuter,wSectorInner,sSectorOuter,sSectorInner,eSectorOuter,eSectorInner]) 
+        this.sectorUI = this.add.group()
+        this.sectorUI.addMultiple([sectorNameBox,sectorNameText,sector0Icon,sector1Icon,sector2Icon,sector3Icon,sector4Icon])
+        this.sectorUI.setVisible(0)
         
-        sectors.setVisible(0)
 
         this.anims.create({
             key: 'star',
@@ -207,11 +424,11 @@ class Kianova extends Phaser.Scene {
 
 
         loyaltyStars = this.add.group()
-        loyaltyStars.createMultiple({key:'star',frameQuantity: 5, setScale: {x: 1.25 * (scaleMod), y: 1.25 * (scaleMod)}})
+        loyaltyStars.createMultiple({key:'star',frameQuantity: 5, setScale: {x: 1.25 * (scaleModX), y: 1.25 * (scaleModX)}})
         loyaltyStars.setVisible(0)
        
         prosperityStars = this.add.group()
-        prosperityStars.createMultiple({key:'star',frameQuantity: 5, setScale: {x: 1.25 * (scaleMod), y: 1.25 * (scaleMod)}})
+        prosperityStars.createMultiple({key:'star',frameQuantity: 5, setScale: {x: 1.25 * (scaleModX), y: 1.25 * (scaleModX)}})
         prosperityStars.setVisible(0)
 
         camera.on('camerafadeincomplete',function(){
@@ -223,663 +440,165 @@ class Kianova extends Phaser.Scene {
             alphaBottomLeft: { value: 0, duration: 1750, ease: 'Power1'},
             alphaTopRight: { value: 0, duration: 1500, ease: 'Power1' },
             alphaBottomRight: { value: 0, duration: 2000, ease: 'Power1'},
-  
+            callbackScope: this,
             onComplete: function () {
 
                 loadScreen.setVisible(0)
-                
-                    sectors.setVisible(1)
-                    loyaltyStars.setVisible(1)
-                    prosperityStars.setVisible(1)
+
+                    this.sectorUI.setVisible(1)
                     kControlsEnabled = true
                       
             }
         });
 
         this.tweens.add({
-            targets: selectedSectorIcon,
+            targets: this.selectedSectorIcon,
             alpha: { value: 0.25, duration: 1000, ease: 'Power1' },
             yoyo: true,
             repeat: -1,
   
         });
 
+        this.refreshUI()
+        
+
         },this)
         
         
     }
 
-    update(data){
+    update(){
 
-        console.log('Inner Height: ' + window.innerHeight,'\nInner Width: ' + window.innerWidth,'\nPixel Ratio: ' + window.devicePixelRatio)
-
-        var starsScale =  1.25 * (scaleMod)
        
-        var textScaleY =  1 
-        var iconScaleY = 0.5 * (scaleMod)
-
-        var kSectorPosX = 1000 * (scaleMod)
-        var kSectorPosY = 650 * (scaleModY)
-
-        var eSectorPosX = 1700 * (scaleMod)
-        var eSectorPosY = 550 * (scaleModY)
-
-        var nSectorPosX = 550 * (scaleMod)
-        var nSectorPosY = 575 * (scaleModY)
-
-        var wSectorPosX = 200 * (scaleMod)
-        var wSectorPosY = 800 * (scaleModY)
-
-
-        var sSectorPosX = 1500 * (scaleMod)
-        var sSectorPosY = 800 * (scaleModY)
-
-        var sectorIconArray = [1,2,0,3,4]
         
-        
-
-        
-
-        if(selectedSector == 0){
-            sectorIconLight.x = sector0Icon.x
-            textBox.setTint()
-            selectedSectorIcon.x = kSectorPosX
-            selectedSectorIcon.y = kSectorPosY
-            sectorName = 'Grand Square [HQ]'
-            sectorDescription = 'Political Hub of Kianova.\nHome to the Great Houses that power the city' 
-            sectorAffinity = '\n\n          Omnia'
-            loyaltyScore = 3
-            prosperityScore = 1
-            gloryScore = '\n\n\n\n\n\n\n          100'
-            sectorOptions = '\n\n- Enter House of the Forerunner\n- Enter House of the Creators\n- Enter House of the Oracles'
-            
-        } else if (selectedSector == 1){
-            sectorIconLight.x = sector1Icon.x
-            textBox.setTint(0xBC3823)
-            selectedSectorIcon.x = wSectorPosX
-            selectedSectorIcon.y = wSectorPosY
-            sectorName = 'West Sector [Risk Band 1]'
-
-            sectorDescription = 'Home to the Disciples of Mundo.\nMaster practioners and scholars of the ways of Sustahnus.'  
-            sectorAffinity = '\n\n          Mundo'
-            loyaltyScore = 0
-            prosperityScore = 0
-            gloryScore = '\n\n\n\n\n\n\n          0'
-            sectorOptions = '\n\n- Visit Western Sector\n- Recruit Mundus Priest\n- Explore Eastern Badlands'
-
             
   
-        } else if (selectedSector == 2){
-            sectorIconLight.x = sector2Icon.x
-            textBox.setTint(0x0076C)
-            selectedSectorIcon.x = nSectorPosX
-            selectedSectorIcon.y = nSectorPosY
-            sectorName = 'North Sector [Risk Band 2]'
-
-            sectorDescription = 'Home to the Lucarian Guard.\nMasterful warriors known for their fortitude and resilience.' 
-            sectorAffinity = '\n\n          Lucarus'
-            loyaltyScore = 5
-            prosperityScore = 3
-            gloryScore = '\n\n\n\n\n\n\n          224'
-            sectorOptions = '\n\n- Visit Northern Sector\n- Recruit Lucarian Knight\n- Explore Southern Badlands'
-
-            
-            
-        } else if (selectedSector == 3){
-            textBox.setTint(0x0C5D25)
-            sectorIconLight.x = sector3Icon.x
-            selectedSectorIcon.x = sSectorPosX
-            selectedSectorIcon.y = sSectorPosY
-            sectorName = 'South Sector [Risk Band 3]'
-
-            sectorDescription = 'Home to the Order of Amara.\nPractitioners of the ancient Essence Arts.' 
-            sectorAffinity = '\n\n          Amara'
-            loyaltyScore = 1
-            prosperityScore = 1
-            gloryScore = '\n\n\n\n\n\n\n         25'
-            sectorOptions = '\n\n- Visit Southern Sector\n- Recruit Amaran Magus\n- Explore Western Badlands'
-
-        } else if (selectedSector == 4){
-            sectorIconLight.x = sector4Icon.x
-            textBox.setTint(0x877254)
-            selectedSectorIcon.x = eSectorPosX
-            selectedSectorIcon.y = eSectorPosY
-            sectorName = 'East Sector [Risk Band 4]'
-
-            sectorDescription = 'Home to the Illuvium Brotherhood.\nA favourite haunt of arcanists and elementalists.' 
-            sectorAffinity = '\n\n         Illuvik'
-            loyaltyScore = 4
-            prosperityScore = 2
-            gloryScore = '\n\n\n\n\n\n\n          400'
-            sectorOptions = '\n\n- Visit Eastern Sector\n- Recruit Illuvium Assassin\n- Explore Northern Badlands'
-
-        }
-
-
-        textBox.x = selectedSectorIcon.x 
-        textBox.y = selectedSectorIcon.y - (gameHeight * 0.3 * scaleModY)
-        text.x = textBox.x
-        text.y = textBox.y
-        sectorNameText.setText(sectorName)
-        text.setText(sectorDescription + sectorAffinity + gloryScore + sectorOptions)
-
-        patronIcon.x = text.x - (87.5 * (scaleMod))
-        patronIcon.y = text. y - (gameHeight * 0.075 * scaleModY)
-
-        loyaltyIcon.x = text.x - (87.5 * (scaleMod))
-        loyaltyIcon.y = text. y - (gameHeight * 0.025 * scaleModY)
-
-        loyaltyStars.setX(loyaltyIcon.x + (65 * (scaleMod)) , 30 * (scaleMod))
-        loyaltyStars.setY(loyaltyIcon.y)
-
-        for (var i = 0; i < loyaltyScore; i++){
-            loyaltyStars.getChildren()[i].setTint().play('star',true)
-        }
-
-        for (var i = loyaltyScore; i < 5; i++){
-            loyaltyStars.getChildren()[i].setTint(0x000000).stop() 
-        }
         
-        prosperityIcon.x = text.x - (87.5 * (scaleMod)) 
-        prosperityIcon.y = text. y + (gameHeight * 0.025 * scaleModY)
 
-        prosperityStars.setX(prosperityIcon.x + (65 * (scaleMod)),30 * (scaleMod))
-        prosperityStars.setY(prosperityIcon.y)
-
-        for (var i = 0; i < prosperityScore; i++){
-            prosperityStars.getChildren()[i].setTint().play('star',true)
-        }
-
-        for (var i = prosperityScore; i < 5; i++){
-            prosperityStars.getChildren()[i].setTint(0x000000).stop() 
-        }
-
-        gloryIconK.x = text.x - (87.5 * (scaleMod))
-        gloryIconK.y = text. y + (gameHeight * 0.075 * scaleModY)
-        
-        if(textBox.alpha == 0){
-
-        this.tweens.add({
-            targets: textBox,
-            alpha: { value: 0.75, duration: 500, ease: 'Power1' },
-            scaleY: {value:textBoxScaleY, duration: 250,ease: 'Power1' },
+        if(leftIsDown && kControlsEnabled){
             
+            leftIsDown = false
 
-        });
+            if(chosenSectorArrayIcon > 0){
+                chosenSectorArrayIcon -= 1
+            } else {
+                chosenSectorArrayIcon = 4
+            } 
 
-        this.tweens.add({
-            targets: text,
-            alpha: { value: 1, duration: 500, ease: 'Power1' },
-            scaleY: {value:textScaleY, duration: 250,ease: 'Power1' },
+            this.refreshUI()
             
-        });
-
-        this.tweens.add({
-            targets: [patronIcon,loyaltyIcon,prosperityIcon,gloryIconK],
-            alpha: { value: 1, duration: 1000, ease: 'Power1' },
-            scaleY: {value:iconScaleY, duration: 500,ease: 'Power1' },
             
-        });
-
-        this.tweens.add({
-            targets: loyaltyStars.getChildren(),
-            alpha: { value: 1, duration: 1000, ease: 'Power1' },
-            scale: {value:starsScale, duration: 500,ease: 'Power1' },
-            
-        });
-
-        this.tweens.add({
-            targets: prosperityStars.getChildren(),
-            alpha: { value: 1, duration: 1000, ease: 'Power1' },
-            scale: {value:starsScale, duration: 500,ease: 'Power1' },
-            
-        });
-
-
-
-        }
-
-        if(this.sys.game.device.os.desktop){
-
-            selectedSector = sectorIconArray[chosenSectorArrayIcon]
-
-            if(Phaser.Input.Keyboard.JustDown(cursors.left) && kControlsEnabled){
-
-                textBox.alpha = 0
-                textBox.scaleY = 0
-                text.alpha = 0
-                text.scaleY = 0
-                patronIcon.alpha = 0
-                patronIcon.scaleY = 0
-                loyaltyIcon.alpha = 0
-                loyaltyIcon.scaleY = 0
-                prosperityIcon.alpha = 0
-                prosperityIcon.scaleY = 0
-                gloryIconK.alpha = 0
-                gloryIconK.scaleY = 0
-                loyaltyStars.setAlpha(0)
-                loyaltyStars.children.iterate((child) =>{
-                    child.setScale(starsScale,0)
-                })
-                prosperityStars.setAlpha(0)
-                prosperityStars.children.iterate((child) =>{
-                    child.setScale(starsScale,0)
-                })
-                
-                if(chosenSectorArrayIcon > 0){
-                    chosenSectorArrayIcon -= 1
-                } else {
-                    chosenSectorArrayIcon = 4
-                } 
-            } else if (Phaser.Input.Keyboard.JustDown(cursors.right) && kControlsEnabled){
+        } else if (rightIsDown && kControlsEnabled){
     
-                textBox.alpha = 0
-                textBox.scaleY = 0
-                text.alpha = 0
-                text.scaleY = 0
-                patronIcon.alpha = 0
-                patronIcon.scaleY = 0
-                loyaltyIcon.alpha = 0
-                loyaltyIcon.scaleY = 0
-                prosperityIcon.alpha = 0
-                prosperityIcon.scaleY = 0
-                gloryIconK.alpha = 0
-                gloryIconK.scaleY = 0
-                loyaltyStars.setAlpha(0)
-                loyaltyStars.children.iterate((child) =>{
-                    child.setScale(starsScale,0)
-                })
-                prosperityStars.setAlpha(0)
-                prosperityStars.children.iterate((child) =>{
-                    child.setScale(starsScale,0)
-                })
-    
+                rightIsDown = false
+
                 if(chosenSectorArrayIcon < 4){
                     chosenSectorArrayIcon += 1
                 } else {
                     chosenSectorArrayIcon = 0
                 } 
-            }
+
+                this.refreshUI()
     
-            
-
-              
-
-        if(Phaser.Input.Keyboard.JustDown(cursors.space) && kControlsEnabled){
-          
-
-            camera.fadeOut(250)
-            
-            camera.once('camerafadeoutcomplete',function(){
-                if(selectedSector == 0){
-                    activeRegion = 'RegionTestEnvironment'
-                } else {
-                    activeRegion = 'Region'+ String(selectedSector)
-                }
                 
-                console.log('Selected Region: ' + activeRegion)
-                
-                nextScene = true
-               
-               
-            })
         }
 
-        sector0Icon.on('pointerdown', function(){
-
-            activeRegion = 'Region0'
+        // if((a1IsDown || s1IsDown) && kControlsEnabled){
         
-            console.log('Selected Region: ' + activeRegion)
-            
-            textBox.alpha = 0
-            textBox.scaleY = 0
-            text.alpha = 0
-            text.scaleY = 0
-            patronIcon.alpha = 0
-            patronIcon.scaleY = 0
-            loyaltyIcon.alpha = 0
-            loyaltyIcon.scaleY = 0
-            prosperityIcon.alpha = 0
-            prosperityIcon.scaleY = 0
-            gloryIconK.alpha = 0
-            gloryIconK.scaleY = 0
-            loyaltyStars.setAlpha(0)
-            loyaltyStars.children.iterate((child) =>{
-                child.setScale(starsScale,0)
-            })
-            prosperityStars.setAlpha(0)
-            prosperityStars.children.iterate((child) =>{
-                child.setScale(starsScale,0)
-            })
-        
-    
-            chosenSectorArrayIcon = 2
 
-        })
-
-        sector1Icon.on('pointerdown', function(){
-
-                activeRegion = 'Region1'
+        //     camera.fadeOut(250)
             
-            console.log('Selected Region: ' + activeRegion)
-            
-            textBox.alpha = 0
-            textBox.scaleY = 0
-            text.alpha = 0
-            text.scaleY = 0
-            patronIcon.alpha = 0
-            patronIcon.scaleY = 0
-            loyaltyIcon.alpha = 0
-            loyaltyIcon.scaleY = 0
-            prosperityIcon.alpha = 0
-            prosperityIcon.scaleY = 0
-            gloryIconK.alpha = 0
-            gloryIconK.scaleY = 0
-            loyaltyStars.setAlpha(0)
-            loyaltyStars.children.iterate((child) =>{
-                child.setScale(starsScale,0)
-            })
-            prosperityStars.setAlpha(0)
-            prosperityStars.children.iterate((child) =>{
-                child.setScale(starsScale,0)
-            })
+        //     camera.once('camerafadeoutcomplete',function(){
+        //         if(selectedSector == 0){
+        //             activeRegion = 'RegionTestEnvironment'
+        //         } else {
+        //             activeRegion = 'Region'+ String(selectedSector)
+        //         }
+                
+        //         console.log('Selected Region: ' + activeRegion)
+                
+        //         nextScene = true
             
             
-           
-                chosenSectorArrayIcon = 0
-            
+        //     })
+        // }
 
-        })
-
-        sector2Icon.on('pointerdown', function(){
-
-            activeRegion = 'Region2'
-        
-        console.log('Selected Region: ' + activeRegion)
-        
-        textBox.alpha = 0
-        textBox.scaleY = 0
-        text.alpha = 0
-        text.scaleY = 0
-        patronIcon.alpha = 0
-        patronIcon.scaleY = 0
-        loyaltyIcon.alpha = 0
-        loyaltyIcon.scaleY = 0
-        prosperityIcon.alpha = 0
-        prosperityIcon.scaleY = 0
-        gloryIconK.alpha = 0
-        gloryIconK.scaleY = 0
-        loyaltyStars.setAlpha(0)
-        loyaltyStars.children.iterate((child) =>{
-            child.setScale(starsScale,0)
-        })
-        prosperityStars.setAlpha(0)
-        prosperityStars.children.iterate((child) =>{
-            child.setScale(starsScale,0)
-        })
-        
-        
-            chosenSectorArrayIcon = 1
-        
-
-    })
-
-        sector3Icon.on('pointerdown', function(){
-
-            activeRegion = 'Region3'
-        
-        console.log('Selected Region: ' + activeRegion)
-        textBox.alpha = 0
-            textBox.scaleY = 0
-            text.alpha = 0
-            text.scaleY = 0
-            patronIcon.alpha = 0
-            patronIcon.scaleY = 0
-            loyaltyIcon.alpha = 0
-            loyaltyIcon.scaleY = 0
-            prosperityIcon.alpha = 0
-            prosperityIcon.scaleY = 0
-            gloryIconK.alpha = 0
-            gloryIconK.scaleY = 0
-            loyaltyStars.setAlpha(0)
-            loyaltyStars.children.iterate((child) =>{
-                child.setScale(starsScale,0)
-            })
-            prosperityStars.setAlpha(0)
-            prosperityStars.children.iterate((child) =>{
-                child.setScale(starsScale,0)
-            })
-            
-            
-                chosenSectorArrayIcon = 3
-            
-       
-
-        })
-
-        sector4Icon.on('pointerdown', function(){
-
-            activeRegion = 'Region4'
-        
-        console.log('Selected Region: ' + activeRegion)
-        
-        textBox.alpha = 0
-        textBox.scaleY = 0
-        text.alpha = 0
-        text.scaleY = 0
-        patronIcon.alpha = 0
-        patronIcon.scaleY = 0
-        loyaltyIcon.alpha = 0
-        loyaltyIcon.scaleY = 0
-        prosperityIcon.alpha = 0
-        prosperityIcon.scaleY = 0
-        gloryIconK.alpha = 0
-        gloryIconK.scaleY = 0
-        loyaltyStars.setAlpha(0)
-        loyaltyStars.children.iterate((child) =>{
-            child.setScale(starsScale,0)
-        })
-        prosperityStars.setAlpha(0)
-        prosperityStars.children.iterate((child) =>{
-            child.setScale(starsScale,0)
-        })
-        
-        
-            chosenSectorArrayIcon = 4
-        
-
-        })
-
-        textBox.on('pointerdown', function(){
-
-            if(selectedSector == 0){
-                activeRegion = 'Region' + String(Phaser.Math.Between(1,4))//'RegionTemplate'
-            } else {
-                activeRegion = 'Region'+ String(selectedSector)
-            }
-
-            console.log('Selected Region: ' + activeRegion)
-            
-            nextScene = true
-
-        }) 
-
-        } else if (kControlsEnabled){
-
+            // Change to pointerdown listener and get gameovject to set region
             sector0Icon.on('pointerdown', function(){
 
                 activeRegion = 'Region0'
-
-                textBox.alpha = 0
-                textBox.scaleY = 0
-                text.alpha = 0
-                text.scaleY = 0
-                patronIcon.alpha = 0
-                patronIcon.scaleY = 0
-                loyaltyIcon.alpha = 0
-                loyaltyIcon.scaleY = 0
-                prosperityIcon.alpha = 0
-                prosperityIcon.scaleY = 0
-                gloryIconK.alpha = 0
-                gloryIconK.scaleY = 0
-                loyaltyStars.setAlpha(0)
-                loyaltyStars.children.iterate((child) =>{
-                    child.setScale(starsScale,0)
-                })
-                prosperityStars.setAlpha(0)
-                prosperityStars.children.iterate((child) =>{
-                    child.setScale(starsScale,0)
-                })
+            
+                console.log('Selected Region: ' + activeRegion)
                 
-                
-                    chosenSectorArrayIcon = 3
+                this.refreshUI()
             
-            console.log('Selected Region: ' + activeRegion)
-            
-            
+        
+                chosenSectorArrayIcon = 2
 
-        })
+            },this)
 
             sector1Icon.on('pointerdown', function(){
 
                     activeRegion = 'Region1'
-
-                    textBox.alpha = 0
-                    textBox.scaleY = 0
-                    text.alpha = 0
-                    text.scaleY = 0
-                    patronIcon.alpha = 0
-                    patronIcon.scaleY = 0
-                    loyaltyIcon.alpha = 0
-                    loyaltyIcon.scaleY = 0
-                    prosperityIcon.alpha = 0
-                    prosperityIcon.scaleY = 0
-                    gloryIconK.alpha = 0
-                    gloryIconK.scaleY = 0
-                    loyaltyStars.setAlpha(0)
-                    loyaltyStars.children.iterate((child) =>{
-                        child.setScale(starsScale,0)
-                    })
-                    prosperityStars.setAlpha(0)
-                    prosperityStars.children.iterate((child) =>{
-                        child.setScale(starsScale,0)
-                    })
-                    
-                    
-                        chosenSectorArrayIcon = 0
                 
                 console.log('Selected Region: ' + activeRegion)
                 
+                this.refreshUI()
                 
-    
-            })
+                
+            
+                    chosenSectorArrayIcon = 0
+                
+
+            },this)
 
             sector2Icon.on('pointerdown', function(){
 
                 activeRegion = 'Region2'
-
-                textBox.alpha = 0
-                textBox.scaleY = 0
-                text.alpha = 0
-                text.scaleY = 0
-                patronIcon.alpha = 0
-                patronIcon.scaleY = 0
-                loyaltyIcon.alpha = 0
-                loyaltyIcon.scaleY = 0
-                prosperityIcon.alpha = 0
-                prosperityIcon.scaleY = 0
-                gloryIconK.alpha = 0
-                gloryIconK.scaleY = 0
-                loyaltyStars.setAlpha(0)
-                loyaltyStars.children.iterate((child) =>{
-                    child.setScale(starsScale,0)
-                })
-                prosperityStars.setAlpha(0)
-                prosperityStars.children.iterate((child) =>{
-                    child.setScale(starsScale,0)
-                })
-                
-                
-                    chosenSectorArrayIcon = 1
             
             console.log('Selected Region: ' + activeRegion)
             
+                this.refreshUI()
+            
+            
+                chosenSectorArrayIcon = 1
             
 
-        })
+            },this)
 
             sector3Icon.on('pointerdown', function(){
 
                 activeRegion = 'Region3'
-
-                textBox.alpha = 0
-                textBox.scaleY = 0
-                text.alpha = 0
-                text.scaleY = 0
-                patronIcon.alpha = 0
-                patronIcon.scaleY = 0
-                loyaltyIcon.alpha = 0
-                loyaltyIcon.scaleY = 0
-                prosperityIcon.alpha = 0
-                prosperityIcon.scaleY = 0
-                gloryIconK.alpha = 0
-                gloryIconK.scaleY = 0
-                loyaltyStars.setAlpha(0)
-                loyaltyStars.children.iterate((child) =>{
-                    child.setScale(starsScale,0)
-                })
-                prosperityStars.setAlpha(0)
-                prosperityStars.children.iterate((child) =>{
-                    child.setScale(starsScale,0)
-                })
-                
-                
-                    chosenSectorArrayIcon = 3
             
             console.log('Selected Region: ' + activeRegion)
             
-            
+                this.refreshUI()
+                
+                
+                    chosenSectorArrayIcon = 3
+                
+        
 
-            })
+            },this)
 
             sector4Icon.on('pointerdown', function(){
 
                 activeRegion = 'Region4'
-
-                textBox.alpha = 0
-                textBox.scaleY = 0
-                text.alpha = 0
-                text.scaleY = 0
-                patronIcon.alpha = 0
-                patronIcon.scaleY = 0
-                loyaltyIcon.alpha = 0
-                loyaltyIcon.scaleY = 0
-                prosperityIcon.alpha = 0
-                prosperityIcon.scaleY = 0
-                gloryIconK.alpha = 0
-                gloryIconK.scaleY = 0
-                loyaltyStars.setAlpha(0)
-                loyaltyStars.children.iterate((child) =>{
-                    child.setScale(starsScale,0)
-                })
-                prosperityStars.setAlpha(0)
-                prosperityStars.children.iterate((child) =>{
-                    child.setScale(starsScale,0)
-                })
-                
-                
-                    chosenSectorArrayIcon = 4
             
             console.log('Selected Region: ' + activeRegion)
             
+            this.refreshUI()
+            
+            
+                chosenSectorArrayIcon = 4
             
 
-            })
+            },this)
 
-            textBox.on('pointerdown', function(){
+            this.textBox.on('pointerdown', function(){
 
                 if(selectedSector == 0){
-                    activeRegion = 'Region'+ String(Phaser.Math.Between(1,4))//'RegionTemplate'
+                    activeRegion = 'Region' + String(Phaser.Math.Between(1,4))
                 } else {
                     activeRegion = 'Region'+ String(selectedSector)
                 }
@@ -887,10 +606,10 @@ class Kianova extends Phaser.Scene {
                 console.log('Selected Region: ' + activeRegion)
                 
                 nextScene = true
-    
-            })    
 
-        }
+            },this) 
+
+        
 
         if (nextScene && kControlsEnabled ){
             this.scene.start(activeRegion, {targetZone: 0, currentTimePeriod: Phaser.Math.Between(1,4),rarityOverride:null})//{targetZone: 0, currentTimePeriod: Phaser.Math.Between(1,4),rarityOverride:null}
@@ -903,3 +622,4 @@ class Kianova extends Phaser.Scene {
         
     }
 }
+

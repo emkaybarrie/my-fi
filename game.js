@@ -1,12 +1,8 @@
 window.onload = function(){ 
-var DEFAULT_HEIGHT = window.innerHeight * window.devicePixelRatio//window.innerHeight//1080 / 1.5 //window.innerHeight * window.devicePixelRatio
-var DEFAULT_WIDTH = window.innerWidth * window.devicePixelRatio//ratio * window.innerHeight //1920 / 1.5//
-var globalGravityMod = DEFAULT_HEIGHT / 1080
-
 
 var config = {
     parent: 'myGame',
-    type: Phaser.AUTO,
+    type: Phaser.CANVAS,
     autoFocus: true,
 
     pixelArt: 0,
@@ -15,8 +11,8 @@ var config = {
         // parent: 'mygame',
         mode: Phaser.Scale.FIT,
         autoCenter: Phaser.Scale.CENTER_BOTH,
-        width:  DEFAULT_WIDTH, 
-        height: DEFAULT_HEIGHT, 
+        width:  window.innerWidth * window.devicePixelRatio, 
+        height: window.innerHeight * window.devicePixelRatio, 
         resolution: window.devicePixelRatio || 1
     },
     input: {
@@ -38,8 +34,10 @@ var config = {
         target: 60
     },
     scene: [
-       
-        //Initialise, - for load global variables, assets & splash screen
+        
+        Boot,
+        InputModule,
+         // for load global variables, assets & splash screen
         //Menu, - Links to Story Mode (Login), Free Play (Randomised Region -> Badlands, no financial data), 1 pager on game & controls + option for practice mode
         //Login,
         //Data Core (Staging Area), - for global data (inc player data),real-world data connection & calcs - stores data to global registry rather than scene itself

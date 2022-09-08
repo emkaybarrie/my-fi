@@ -21,8 +21,8 @@
     var playerSwordSwing
     var playerHeavySwordSwing
     var enemySwordSwing
-    var gameWidth  //1980
-    var gameHeight  //1080
+    var screenWidth  //1980
+    var screenHeight  //1080
     var spotlightPlayerHealth
     var spotlightPlayerPower
     var spotlightNightBorne
@@ -166,8 +166,7 @@
     var actionKeyBIsDown = false
     var skillKeyAIsDown = false
     var skillKeyBIsDown = false
-    var leftIsDown = false
-    var rightIsDown = false
+   
     var upIsDown = false
     var downIsDown = false
   
@@ -279,7 +278,7 @@
         nightBorne.y = 0
         nightBorneMaxLife = Phaser.Math.Between(income * 0.8, (income * 0.8) * chaosFactor) 
         nightBorneLife = nightBorneMaxLife
-        nightBorneVitals.p = (38 * scaleMod) / nightBorneMaxLife
+        nightBorneVitals.p = (38 * scaleModX) / nightBorneMaxLife
                                     
                             
 
@@ -417,6 +416,474 @@
      kianovaBuffTier = 0
     }
 
+    function abstractedControls(){
+        if(controlsEnabled){
+        if(skillKeyAIsDown){
+                    if(!playerIsHit){
+
+                            regenActive = false
+
+                            if(inBattle){
+
+                                attackModeActive = true
+                                playerBlocking = false
+                                playerDodging = false
+
+                                if (currentFocus > 0){
+                                    playerAttacking = true
+
+                                    playerVitals.decreaseFocus(maxFocus * 0.003)
+
+                                    if(attackModeActive){
+                                        playerSkill() 
+                                    }
+
+                                } else {
+                                    
+                                    sword.body.checkCollision.none = true
+                                    attackModeActive = false
+                                    usingPower = false
+    
+                                }
+                            
+                               
+                            } else {
+
+                                focusModeActive = true
+                                scanningForDanger = true
+
+                                playerVitals.decreaseFocus((income) / 100)
+
+                                if (currentFocus  > 0){
+                                    playerFocusing = true
+                                    
+                                    highObstacle.body.checkCollision.none = true
+                                    lowObstacle.body.checkCollision.none = true
+                            
+                                    if(focusModeActive){
+                                        runFocusMode()
+                                    }
+
+                                } else {
+                                    playerFocusing = false
+                                    focusModeActive = false
+                                    scanningForDanger = false
+                                    camera.zoomTo(1,500)
+                                      
+                                }
+                            }
+                    }
+                } else 
+                //
+                if(skillKeyBIsDown){
+                    if(!playerIsHit){
+
+                            regenActive = false
+
+                            if(inBattle){
+
+                                attackModeActive = true
+                                playerBlocking = false
+                                playerDodging = false
+
+                                if (currentFocus > 0){
+                                    playerAttacking = true
+
+                                    playerVitals.decreaseFocus(maxFocus * 0.003)
+
+                                    if(attackModeActive){
+                                        playerSkill() 
+                                    }
+
+                                } else {
+                                    
+                                    sword.body.checkCollision.none = true
+                                    attackModeActive = false
+                                    usingPower = false
+    
+                                }
+                            
+                               
+                            } else {
+
+                                focusModeActive = true
+                                scanningForDanger = true
+
+                                playerVitals.decreaseFocus((income) / 100)
+
+                                if (currentFocus  > 0){
+                                    playerFocusing = true
+                                    
+                                    highObstacle.body.checkCollision.none = true
+                                    lowObstacle.body.checkCollision.none = true
+                            
+                                    if(focusModeActive){
+                                        runFocusMode()
+                                    }
+
+                                } else {
+                                    playerFocusing = false
+                                    focusModeActive = false
+                                    scanningForDanger = false 
+                                    camera.zoomTo(1,500)   
+                                      
+                                }
+                            }
+                    }
+                } else
+                //
+                if(actionKeyAIsDown){
+                    if(!playerIsHit){
+
+                            regenActive = false
+
+                            if(inBattle){
+
+                                attackModeActive = true
+                                playerBlocking = false
+                                playerDodging = false
+
+                                if (currentEnergy > 1){
+                                    playerAttacking = true
+
+                                    playerVitals.decreaseEnergy(maxEnergy * 0.004)
+
+                                    if(attackModeActive){
+                                        playerAction()  
+                                    }
+
+                                } else {
+                                    
+                                    sword.body.checkCollision.none = true
+                                    attackModeActive = false
+                                    usingPower = false
+    
+                                }
+                               
+                            } else {
+
+                                
+
+                                attackModeActive = true
+                                playerBlocking = false
+                                playerDodging = false
+
+                                if (currentEnergy > 1){
+                                    playerAttacking = true
+
+                                    playerVitals.decreaseEnergy(maxEnergy * 0.005)
+
+                                    if(attackModeActive){
+                                        playerAction()  
+                                    }
+
+                                } else {
+                                    
+                                    sword.body.checkCollision.none = true
+                                    attackModeActive = false
+                                    usingPower = false
+    
+                                }
+
+                               
+                            }
+                    }
+                } else
+                
+                if (actionKeyBIsDown){
+                    if(!playerIsHit){
+                        regenActive = false
+
+                        if(inBattle){
+                            if(!playerBlocking && !playerIsHit && !playerAttacking){
+
+                                player.play({key:'pBlock'},true)
+                                    
+                                playerBlocking = true
+                                playerDodging = false
+
+                            }
+                        }
+                    }
+                } else
+                //
+                if(downIsDown){
+                    if(inBattle){ 
+                        if(!playerCrouching){
+                            if(player.body.speed > 250){
+                            player.play({key:'pSlide',frameRate:14},true)
+                            player.setDragX(1000)
+                            } else {
+                                player.play({key:'pCrouch',frameRate:14},true)
+                            }
+                            playerCrouching = true
+                        }
+                    } else {
+                        if (currentEnergy > 1){
+                        highObstacle.body.checkCollision.none = true
+                        playerVitals.decreaseEnergy((income * 0.25) / 25)
+                        player.anims.play({key:'pSlide',frameRate: 6},true);
+                        playerCrouching = true
+                       
+                        } else {
+                           
+                            highObstacle.body.checkCollision.none = false
+                            player.anims.play({key:'pRun',frameRate: 6},true);
+                            playerVitals.decreaseEnergy((income * 0.25) / 25)
+                            
+
+                        }
+                        
+                    }   
+                } else
+                //
+                if(upIsDown){
+                    
+                    if(inBattle){
+                        if (player.body.onFloor()){
+                            player.setDragY(0)
+                            playerJumping = true
+                            
+
+                            if(player.body.speed > 250){
+
+                                player.setDragX(1000)
+
+                                if (player.flipX){
+                                    player.setVelocityX(player.body.velocity.x - 50)
+                                } else {
+                                    player.setVelocityX(player.body.velocity.x + 50)
+                                }
+
+                                upIsDown = false
+                                player.play({key:'pJump',frameRate:18},true)
+                                
+                                player.setVelocityY(-1500 * scaleModX)
+                                playerLanded = false
+
+                            } else {
+                                player.play({key:'pCrouch',frameRate:24},true)
+                            player.once('animationcomplete',function(){
+                                upIsDown = false
+                                player.play({key:'pJump',frameRate:18},true)
+                                
+                                player.setVelocityY(-1500 * scaleModX)
+                                playerLanded = false
+                            },player)
+                            }
+  
+                        } 
+                    } else {
+                        if (currentEnergy > maxEnergy * 0.1){
+                            player.setDragX(1000)
+                        if (player.body.onFloor()){
+                            playerJumping = true
+                            
+                            playerVitals.decreaseEnergy(maxEnergy * 0.2)
+                            
+                            player.play('pJump',true)
+                            player.setVelocityY(-1200 * scaleModX)
+                            player.setVelocityX(100)
+
+                            player.once('animationcomplete',function(){
+                                player.play('pUptoFall',true)
+                                
+                                
+                                playerJumping = false
+                                upIsDown = false
+
+                            },player)
+                        }
+                          
+                            
+                            
+
+                        }     
+                    }
+                } else
+                //
+                if(this.leftIsDown || this.rightIsDown){
+                    if(!playerDodging && !playerIsHit && !playerAttacking && !playerBlocking){
+
+                        if(inBattle){
+                            player.body.maxVelocity.x = 750 * scaleModX
+                            if (playerLockedOn){
+                                //If Left
+                                if(this.leftIsDown){
+                                    if(player.flipX == false){
+                                        playerDodging = true
+                                        player.setVelocityX(-1000)
+                                        if(player.body.onFloor()){
+                                            player.setVelocityY(Phaser.Math.Between(-250,0))
+                                        }
+                                        
+                                        player.play({key:'pBackDash',frameRate:6},true)
+                                        player.once('animationcomplete', function (){
+                                            
+                                                playerDodging = false
+                                            
+                                                },player)
+                                    } else if (player.body.onFloor() && playerLanded) {
+                                        player.play('pRun',true)
+                                        player.setVelocityX(player.body.velocity.x - 100)
+                                    }
+                                } else 
+                                // If Right
+                                if(this.rightIsDown){
+                                    if(player.flipX == true){
+                                        playerDodging = true
+                            
+                                        player.setVelocityX(1000)
+                                        if(player.body.onFloor()){
+                                            player.setVelocityY(Phaser.Math.Between(-250,0))
+                                        }
+                                        player.play({key:'pBackDash',frameRate:6},true)
+                                        player.once('animationcomplete', function (){
+                                            
+                                                playerDodging = false
+                                            
+                                            },player)
+                                        
+                                    } else if (player.body.onFloor() && playerLanded) {
+                                        player.play('pRun',true)
+                                        player.setVelocityX(player.body.velocity.x + 100)
+                                     
+                                    }
+                                }
+
+                            } else if (player.body.onFloor() && playerLanded) {
+
+                                player.play('pRun',true)
+                                // If Left
+                                if(this.leftIsDown){
+                                    player.flipX = true
+                                    player.setVelocityX(player.body.velocity.x - 125)
+                                   
+                                } else
+                                // If Right 
+                                if(this.rightIsDown){
+                                    player.flipX = false
+                                    player.setVelocityX(player.body.velocity.x + 125)
+                                    
+                                }
+                            }
+                        } else {
+                            player.flipX = false
+                            player.body.maxVelocity.x = 750 * scaleModX
+                            // If Left
+                            if(currentEnergy > 1){
+                            if(this.leftIsDown){
+                                playerVitals.decreaseEnergy((maxEnergy * 0.25) / 50 )
+                                playerVitals.decreaseLife(-(maxEnergy * 0.25)  / 100 )
+                                if(playerSpeed >= 0.9){
+
+                                player.x -= 6
+                                }
+                                player.anims.play({key:'pRun',frameRate: 8},true);
+                            } else 
+                            // If Right
+                            if(this.rightIsDown){
+                                playerVitals.decreaseEnergy((income * 0.25) / 50)
+                                if(playerSpeed <= 1.5){
+                                player.x += 4
+                                }
+                                player.anims.play({key:'pRun',frameRate: 16},true);
+                                glory += (2.5 / 60)
+                            }
+                        } else {
+
+                            if(player.x < screenWidth * 1.25){
+                                player.x += 8
+                                highObstacle.body.checkCollision.none = true
+                                lowObstacle.body.checkCollision.none = true
+                            } else if(player.x > screenWidth * 1.75){
+                                player.x -= 8
+                                highObstacle.body.checkCollision.none = true
+                                lowObstacle.body.checkCollision.none = true
+                            } else if(!nightBorneCamActive){
+                                highObstacle.body.checkCollision.none = false
+                                lowObstacle.body.checkCollision.none = false
+                                if(player.x > screenWidth * 1.35){
+                                    player.x -= 2
+                                }
+                            }
+
+                            player.play({key:'pRun',frameRate: 12},true);
+
+                            if(this.leftIsDown){
+                                playerVitals.decreaseEnergy((income * 0.25) / 100 ) 
+                            } else 
+                            // If Right
+                            if(this.rightIsDown){
+                                playerVitals.decreaseEnergy((income * 0.25) / 50) 
+                            }
+                        }
+                        }
+
+                    }
+                } 
+                else 
+                //
+                if (player.body.onFloor() && controlsEnabled && !playerIsHit){
+
+                    regenActive = true
+                    sword.body.checkCollision.none = true
+                    player.setDragY(0)
+                    
+
+                    if(inBattle){
+                        if(player.body.speed > 500){
+                            player.setDragX(2000) 
+                        } else {
+                            player.setDragX(3000)       
+                        }
+
+                        
+                        if(moveCancelActive){
+                            
+                            player.play('pIdle',true)
+                            
+                        
+                            playerDodging = false 
+                            playerCrouching = false
+                            attackModeActive = false
+                            usingPower = false
+                        }
+                        
+                        
+                        
+                    } else {
+                        player.play({key:'pRun',frameRate: 12},true);
+                        player.flipX = false
+                        playerCrouching = false
+                        camera.zoomTo(1,500)
+                        camera.once('camerazoomcomplete', function(){
+
+                        },this)
+                        
+
+                        if(player.x < screenWidth * 1.25){
+                            player.x += 4
+                            highObstacle.body.checkCollision.none = true
+                            lowObstacle.body.checkCollision.none = true
+                        } else if(player.x > screenWidth * 1.75){
+                            player.x -= 4
+                            highObstacle.body.checkCollision.none = true
+                            lowObstacle.body.checkCollision.none = true
+                        } else if(!nightBorneCamActive){
+                            highObstacle.body.checkCollision.none = false
+                            lowObstacle.body.checkCollision.none = false
+                            if(player.x > screenWidth * 1.35){
+                                player.x -= 6
+                            }
+                        }
+                        
+                    }
+                    
+                }
+            }
+    }
+
     class HealthBar {
 
                 constructor (scene,startLife, x, y)
@@ -432,9 +899,9 @@
                     this.x = x;
                     this.y = y;
                     
-                    this.pL =  (574  * (scaleMod)) / maxLife
-                    this.pF =  (574  * (scaleMod))  / maxFocus 
-                    this.pE =  (574  * (scaleMod)) / maxEnergy
+                    this.pL =  (574  * (scaleModX)) / maxLife
+                    this.pF =  (574  * (scaleModX))  / maxFocus 
+                    this.pE =  (574  * (scaleModX)) / maxEnergy
 
                     this.draw();
         
@@ -528,39 +995,39 @@
         
                     //  BG
                     this.bg.fillStyle(0x000000);
-                    this.bg.fillRect(this.x, this.y, 575 * (scaleMod), 85 * (scaleMod));
+                    this.bg.fillRect(this.x, this.y, 575 * (scaleModX), 85 * (scaleModX));
         
                     //  Health
         
                     this.lifeBar.fillStyle(0xffffff);
-                    this.lifeBar.fillRect(this.x + (1 * (scaleMod)) , this.y + (2 * (scaleMod)), 574 * (scaleMod), 30 * (scaleMod));
+                    this.lifeBar.fillRect(this.x + (1 * (scaleModX)) , this.y + (2 * (scaleModX)), 574 * (scaleModX), 30 * (scaleModX));
                     this.lifeBar.fillStyle(0xcc0000);
                     
                     var d = Math.floor(this.pL * currentLife);
         
-                    this.lifeBar.fillRect(this.x + (1 * (scaleMod)) , this.y + (2  * (scaleMod)), d , 30 * (scaleMod));
+                    this.lifeBar.fillRect(this.x + (1 * (scaleModX)) , this.y + (2  * (scaleModX)), d , 30 * (scaleModX));
         
                     //  Focus
         
                     this.focusBar.fillStyle(0xffffff);
-                    this.focusBar.fillRect(this.x + (1 * (scaleMod)) , this.y + ((5 + 30)  * (scaleMod)), 574 * (scaleMod), 30 * (scaleMod));
+                    this.focusBar.fillRect(this.x + (1 * (scaleModX)) , this.y + ((5 + 30)  * (scaleModX)), 574 * (scaleModX), 30 * (scaleModX));
                     this.focusBar.fillStyle(0xf1c232);
                     
         
                     var d = Math.floor(this.pF * currentFocus);
         
-                    this.focusBar.fillRect(this.x + (1 * (scaleMod)) , this.y + ((5 + 30) * (scaleMod)), d, 30 * (scaleMod));
+                    this.focusBar.fillRect(this.x + (1 * (scaleModX)) , this.y + ((5 + 30) * (scaleModX)), d, 30 * (scaleModX));
         
                     //  Energy
         
                     this.energyBar.fillStyle(0xffffff);
-                    this.energyBar.fillRect(this.x + (1 * (scaleMod)) , this.y + ((8 + 60) * (scaleMod)) , 574 * (scaleMod), 15 * (scaleMod));
+                    this.energyBar.fillRect(this.x + (1 * (scaleModX)) , this.y + ((8 + 60) * (scaleModX)) , 574 * (scaleModX), 15 * (scaleModX));
                     this.energyBar.fillStyle(0x00a86b);
                 
         
                     var d = Math.floor(this.pE * currentEnergy);
         
-                    this.energyBar.fillRect(this.x + (1 * (scaleMod)) ,this.y + ((8 + 60) * (scaleMod)) , d , 15 * (scaleMod));
+                    this.energyBar.fillRect(this.x + (1 * (scaleModX)) ,this.y + ((8 + 60) * (scaleModX)) , d , 15 * (scaleModX));
         
                     
                 }
@@ -581,7 +1048,7 @@ constructor (scene,progress, x, y)
     this.x = x;
     this.y = y;
     
-    this.p =  (((gameWidth * 0.5)-2) * (scaleMod)) / progressToNextLevel
+    this.p =  (((screenWidth * 0.5)-2) * (scaleModX)) / progressToNextLevel
 
     this.draw();
 
@@ -640,48 +1107,48 @@ hide ()
 
         //  BG
         this.bg.fillStyle(0x000000);
-        this.bg.fillRect(this.x, this.y, gameWidth * 0.5 * (scaleMod), 10 * (scaleMod));
+        this.bg.fillRect(this.x, this.y, screenWidth * 0.5 * (scaleModX), 10 * (scaleModX));
 
         //  Progress
 
         this.levelProgressBar.fillStyle(0xffffff);
-        this.levelProgressBar.fillRect(this.x + (1 * (scaleMod)) , this.y + (1 * (scaleMod)), gameWidth * 0.5 * (scaleMod) - (2 * (scaleMod)) , 8 * (scaleMod));
+        this.levelProgressBar.fillRect(this.x + (1 * (scaleModX)) , this.y + (1 * (scaleModX)), screenWidth * 0.5 * (scaleModX) - (2 * (scaleModX)) , 8 * (scaleModX));
         this.levelProgressBar.fillStyle(0x674EA7);
 
         var d = Math.floor(this.p * progress);
 
-        this.levelProgressBar.fillRect(this.x + (1 * (scaleMod)) , this.y + (1 * (scaleMod)), d, 8 * (scaleMod));
+        this.levelProgressBar.fillRect(this.x + (1 * (scaleModX)) , this.y + (1 * (scaleModX)), d, 8 * (scaleModX));
 
         // Checkpoints
         // 1
         this.checkPoint1.fillStyle(0x000000);
-        this.checkPoint1.fillCircle(this.x + (gameWidth * 0.125 * 1 * (scaleMod)), this.y + (5 * (scaleMod)), 14 * (scaleMod));
+        this.checkPoint1.fillCircle(this.x + (screenWidth * 0.125 * 1 * (scaleModX)), this.y + (5 * (scaleModX)), 14 * (scaleModX));
         if(progress >= (progressToNextLevel * 0.25 * 1)){
             this.checkPoint1.fillStyle(0x674EA7);
         } else {
             this.checkPoint1.fillStyle(0xffffff);
         }
-        this.checkPoint1.fillCircle(this.x + (gameWidth * 0.125 * 1 * (scaleMod)), this.y + (5 * (scaleMod)), 12.5 * (scaleMod));
+        this.checkPoint1.fillCircle(this.x + (screenWidth * 0.125 * 1 * (scaleModX)), this.y + (5 * (scaleModX)), 12.5 * (scaleModX));
 
         // 2
         this.checkPoint2.fillStyle(0x000000);
-        this.checkPoint2.fillCircle(this.x + (gameWidth * 0.125 * 2 * (scaleMod)), this.y + (5 * (scaleMod)), 14 * (scaleMod));
+        this.checkPoint2.fillCircle(this.x + (screenWidth * 0.125 * 2 * (scaleModX)), this.y + (5 * (scaleModX)), 14 * (scaleModX));
         if(progress >= (progressToNextLevel * 0.25 * 2)){
             this.checkPoint2.fillStyle(0x674EA7);
         } else {
             this.checkPoint2.fillStyle(0xffffff);
         }
-        this.checkPoint2.fillCircle(this.x + (gameWidth * 0.125 * 2 * (scaleMod)), this.y + (5 * (scaleMod)), 12.5 * (scaleMod));
+        this.checkPoint2.fillCircle(this.x + (screenWidth * 0.125 * 2 * (scaleModX)), this.y + (5 * (scaleModX)), 12.5 * (scaleModX));
 
         // 3
         this.checkPoint3.fillStyle(0x000000);
-        this.checkPoint3.fillCircle(this.x + (gameWidth * 0.125 * 3 * (scaleMod)), this.y + (5 * (scaleMod)), 14 * (scaleMod));
+        this.checkPoint3.fillCircle(this.x + (screenWidth * 0.125 * 3 * (scaleModX)), this.y + (5 * (scaleModX)), 14 * (scaleModX));
         if(progress >= (progressToNextLevel * 0.25 * 3)){
             this.checkPoint3.fillStyle(0x674EA7);
         } else {
             this.checkPoint3.fillStyle(0xffffff);
         }
-        this.checkPoint3.fillCircle(this.x + (gameWidth * 0.125 * 3 * (scaleMod)), this.y + (5 * (scaleMod)), 12.5 * (scaleMod));
+        this.checkPoint3.fillCircle(this.x + (screenWidth * 0.125 * 3 * (scaleModX)), this.y + (5 * (scaleModX)), 12.5 * (scaleModX));
 
         // 4
         // this.checkPoint4.fillStyle(0x000000);
@@ -710,7 +1177,7 @@ hide ()
         this.x = x;
         this.y = y;
         
-        this.p =  (38 * (scaleMod)) / nightBorneMaxLife
+        this.p =  (38 * (scaleModX)) / nightBorneMaxLife
 
         this.draw();
 
@@ -739,19 +1206,19 @@ hide ()
 
         //  BG
         this.bg.fillStyle(0x000000);
-        this.bg.fillRect(this.x, this.y, 40 * (scaleMod), 5 * (scaleMod));
+        this.bg.fillRect(this.x, this.y, 40 * (scaleModX), 5 * (scaleModX));
 
         //  Health
 
         this.nightBorneLifeBar.fillStyle(0xffffff);
-        this.nightBorneLifeBar.fillRect(this.x + (1 * (scaleMod)), this.y + (1 * (scaleMod)), 38 * (scaleMod), 3 * (scaleMod));
+        this.nightBorneLifeBar.fillRect(this.x + (1 * (scaleModX)), this.y + (1 * (scaleModX)), 38 * (scaleModX), 3 * (scaleModX));
         this.nightBorneLifeBar.fillStyle(0xcc0000);
 
 
         var d = Math.floor(this.p * nightBorneLife);
    
 
-        this.nightBorneLifeBar.fillRect(this.x + (1 * (scaleMod)), this.y + (1 * (scaleMod)), d, 3 * (scaleMod));
+        this.nightBorneLifeBar.fillRect(this.x + (1 * (scaleModX)), this.y + (1 * (scaleModX)), d, 3 * (scaleModX));
 
     }
 
@@ -829,7 +1296,7 @@ hide ()
 
     function moveHighObstacle (highObstacle,speed){
     
-        highObstacle.x -= speed * scaleMod;
+        highObstacle.x -= speed * scaleModX;
         if (highObstacle.x < Phaser.Math.Between(0,0)){
             resetHighObstacle(highObstacle)
         }
@@ -839,7 +1306,7 @@ hide ()
 
     function moveLowObstacle (lowObstacle,speed){
     
-        lowObstacle.x -= speed * scaleMod;
+        lowObstacle.x -= speed * scaleModX;
     if (lowObstacle.x < Phaser.Math.Between(-1000,-200)){
         resetLowObstacle(lowObstacle)
     }
@@ -850,7 +1317,7 @@ hide ()
     function moveCreep (creep,speed){
     
         if (creep.anims.getName() != 'nightBorneMinion_Hurt'){
-            creep.x -= speed * scaleMod;
+            creep.x -= speed * scaleModX;
         }
         
         if (creep.x < Phaser.Math.Between(0,0)){
@@ -861,23 +1328,23 @@ hide ()
     }
 
     function resetHighObstacle (highObstacle){
-        highObstacle.x = gameWidth * 3
+        highObstacle.x = screenWidth * 3
         var scaleXRandom = Phaser.Math.FloatBetween(4,4)
         var scaleYRandom = Phaser.Math.FloatBetween(4,4)
-        highObstacle.setScale(scaleXRandom * scaleMod,scaleYRandom * scaleMod)
+        highObstacle.setScale(scaleXRandom * scaleModX,scaleYRandom * scaleModX)
     }
 
     function resetLowObstacle (lowObstacle){
-        lowObstacle.x = gameWidth * 3
+        lowObstacle.x = screenWidth * 3
         var scaleXRandom = Phaser.Math.FloatBetween(1.5,1.5)
         var scaleYRandom = Phaser.Math.FloatBetween(1.5,1.5)
-        lowObstacle.setScale(scaleXRandom * scaleMod,scaleYRandom * scaleMod)
+        lowObstacle.setScale(scaleXRandom * scaleModX,scaleYRandom * scaleModX)
     }
 
     function resetCreep (creep){
         creepChase = false
-        creep.x = Phaser.Math.Between(gameWidth * 2.5,gameWidth * 3)
-        creep.y = gameHeight - (250 * scaleMod)
+        creep.x = Phaser.Math.Between(screenWidth * 2.5,screenWidth * 3)
+        creep.y = screenHeight - (250 * scaleModX)
         var creepAnimationRandomiser = Phaser.Math.Between(1,3)
         if (creepAnimationRandomiser == 1){
             creep.flipX = false
@@ -892,7 +1359,7 @@ hide ()
         
         var scaleXRandom = Phaser.Math.FloatBetween(3.75,4.25)
         var scaleYRandom = Phaser.Math.FloatBetween(1.75,2.25)
-        creep.setScale(scaleXRandom  * scaleMod,scaleYRandom  * scaleMod)
+        creep.setScale(scaleXRandom  * scaleModX,scaleYRandom  * scaleModX)
     }
 
     function finish(game){
@@ -920,7 +1387,7 @@ hide ()
             
         chaosMultiplierMin *= 1.1
         progressToNextLevel *= 1.08
-        levelProgress.p = (gameWidth * 0.5) / progressToNextLevel
+        levelProgress.p = (screenWidth * 0.5) / progressToNextLevel
         progressToNextCheckPoint = progressToNextLevel * 0.25
         
         
@@ -1103,7 +1570,7 @@ hide ()
             income *= 1 - (0.04 / 12)
             nightBorne.setDragX(500)
             
-            fireTowardsTarget(nightBorne,Phaser.Math.FloatBetween(gameWidth * 1.15, gameWidth * 1.45),4)
+            fireTowardsTarget(nightBorne,Phaser.Math.FloatBetween(screenWidth * 1.15, screenWidth * 1.45),4)
             
             regenActive = false
             
@@ -1247,7 +1714,7 @@ hide ()
         
         if(scanningForDanger){
             
-        if (Math.abs(lowObstacle.x - player.x) < Math.abs((highObstacle.x - player.x)) && lowObstacle.x > gameWidth && lowObstacle.x - player.x > -300 && lowObstacle.x - player.x < 150 && lowObstacle.x < gameWidth * 2){
+        if (Math.abs(lowObstacle.x - player.x) < Math.abs((highObstacle.x - player.x)) && lowObstacle.x > screenWidth && lowObstacle.x - player.x > -300 && lowObstacle.x - player.x < 150 && lowObstacle.x < screenWidth * 2){
             scanningForDanger = false
 
             camera.zoomTo(1.5,1000)
@@ -1276,7 +1743,7 @@ hide ()
               
             
             
-        } else if (Math.abs(highObstacle.x - player.x) < Math.abs((lowObstacle.x - player.x)) && highObstacle.x > gameWidth && highObstacle.x - player.x > -300 && highObstacle.x - player.x < 150 && highObstacle.x < gameWidth * 2){
+        } else if (Math.abs(highObstacle.x - player.x) < Math.abs((lowObstacle.x - player.x)) && highObstacle.x > screenWidth && highObstacle.x - player.x > -300 && highObstacle.x - player.x < 150 && highObstacle.x < screenWidth * 2){
             scanningForDanger = false
             camera.zoomTo(1.5,1000)
             camera.pan(player.x,player.y,1000)
@@ -1296,7 +1763,7 @@ hide ()
                 scanningForDanger = true
             },this)
         
-        } else if (Math.abs(creep.x - player.x) < Math.abs((lowObstacle.x - player.x)) && Math.abs(creep.x - player.x) < Math.abs((highObstacle.x - player.x)) && creep.x - player.x > -75 && creep.x - player.x < 150 && creep.x > gameWidth && creep.x < gameWidth * 2){
+        } else if (Math.abs(creep.x - player.x) < Math.abs((lowObstacle.x - player.x)) && Math.abs(creep.x - player.x) < Math.abs((highObstacle.x - player.x)) && creep.x - player.x > -75 && creep.x - player.x < 150 && creep.x > screenWidth && creep.x < screenWidth * 2){
             scanningForDanger = false
             
             
@@ -1365,10 +1832,10 @@ hide ()
                
         } else {
             
-            camera.pan(gameWidth * 1.5,player.y,1000)
+            camera.pan(screenWidth * 1.5,player.y,1000)
             player.setDragY(0)
             player.play({key:'pRun',frameRate:6},true)
-            if(player.x > gameWidth * 1.5){
+            if(player.x > screenWidth * 1.5){
                 player.x -= 0.5
             } else {
                 player.x += 1
@@ -1697,12 +2164,12 @@ hide ()
                         player.setVelocityX(500)
                     }
 
-                    player.body.maxVelocity.y = 500 * scaleMod
+                    player.body.maxVelocity.y = 500 * scaleModX
 
 
                     player.once('animationcomplete', function (anim,frame) {
                         player.emit('animationcomplete_' + anim.key, frame)
-                        player.body.maxVelocity.y = 250 * scaleMod
+                        player.body.maxVelocity.y = 250 * scaleModX
                        
                     }, player)
             
@@ -1809,7 +2276,7 @@ hide ()
 
 
         player.play({key:'pDash',frameRate: 12},true);
-        player.body.maxVelocity.x = 1500 * scaleMod
+        player.body.maxVelocity.x = 1500 * scaleModX
         if(player.flipX){
             player.setVelocityX(-1500)
         } else {
@@ -1818,7 +2285,7 @@ hide ()
 
         player.once('animationcomplete', function (anim,frame) {
             player.emit('animationcomplete_' + anim.key, frame)
-            player.body.maxVelocity.x = 750 * scaleMod
+            player.body.maxVelocity.x = 750 * scaleModX
             
         }, player)
 
@@ -2188,473 +2655,7 @@ hide ()
         }  
     } 
     
-        function abstractedControls(){
-        if(controlsEnabled){
-        if(skillKeyAIsDown){
-                    if(!playerIsHit){
-
-                            regenActive = false
-
-                            if(inBattle){
-
-                                attackModeActive = true
-                                playerBlocking = false
-                                playerDodging = false
-
-                                if (currentFocus > 0){
-                                    playerAttacking = true
-
-                                    playerVitals.decreaseFocus(maxFocus * 0.003)
-
-                                    if(attackModeActive){
-                                        playerSkill() 
-                                    }
-
-                                } else {
-                                    
-                                    sword.body.checkCollision.none = true
-                                    attackModeActive = false
-                                    usingPower = false
-    
-                                }
-                            
-                               
-                            } else {
-
-                                focusModeActive = true
-                                scanningForDanger = true
-
-                                playerVitals.decreaseFocus((income) / 100)
-
-                                if (currentFocus  > 0){
-                                    playerFocusing = true
-                                    
-                                    highObstacle.body.checkCollision.none = true
-                                    lowObstacle.body.checkCollision.none = true
-                            
-                                    if(focusModeActive){
-                                        runFocusMode()
-                                    }
-
-                                } else {
-                                    playerFocusing = false
-                                    focusModeActive = false
-                                    scanningForDanger = false
-                                    camera.zoomTo(1,500)
-                                      
-                                }
-                            }
-                    }
-                } else 
-                //
-                if(skillKeyBIsDown){
-                    if(!playerIsHit){
-
-                            regenActive = false
-
-                            if(inBattle){
-
-                                attackModeActive = true
-                                playerBlocking = false
-                                playerDodging = false
-
-                                if (currentFocus > 0){
-                                    playerAttacking = true
-
-                                    playerVitals.decreaseFocus(maxFocus * 0.003)
-
-                                    if(attackModeActive){
-                                        playerSkill() 
-                                    }
-
-                                } else {
-                                    
-                                    sword.body.checkCollision.none = true
-                                    attackModeActive = false
-                                    usingPower = false
-    
-                                }
-                            
-                               
-                            } else {
-
-                                focusModeActive = true
-                                scanningForDanger = true
-
-                                playerVitals.decreaseFocus((income) / 100)
-
-                                if (currentFocus  > 0){
-                                    playerFocusing = true
-                                    
-                                    highObstacle.body.checkCollision.none = true
-                                    lowObstacle.body.checkCollision.none = true
-                            
-                                    if(focusModeActive){
-                                        runFocusMode()
-                                    }
-
-                                } else {
-                                    playerFocusing = false
-                                    focusModeActive = false
-                                    scanningForDanger = false 
-                                    camera.zoomTo(1,500)   
-                                      
-                                }
-                            }
-                    }
-                } else
-                //
-                if(actionKeyAIsDown){
-                    if(!playerIsHit){
-
-                            regenActive = false
-
-                            if(inBattle){
-
-                                attackModeActive = true
-                                playerBlocking = false
-                                playerDodging = false
-
-                                if (currentEnergy > 1){
-                                    playerAttacking = true
-
-                                    playerVitals.decreaseEnergy(maxEnergy * 0.004)
-
-                                    if(attackModeActive){
-                                        playerAction()  
-                                    }
-
-                                } else {
-                                    
-                                    sword.body.checkCollision.none = true
-                                    attackModeActive = false
-                                    usingPower = false
-    
-                                }
-                               
-                            } else {
-
-                                
-
-                                attackModeActive = true
-                                playerBlocking = false
-                                playerDodging = false
-
-                                if (currentEnergy > 1){
-                                    playerAttacking = true
-
-                                    playerVitals.decreaseEnergy(maxEnergy * 0.005)
-
-                                    if(attackModeActive){
-                                        playerAction()  
-                                    }
-
-                                } else {
-                                    
-                                    sword.body.checkCollision.none = true
-                                    attackModeActive = false
-                                    usingPower = false
-    
-                                }
-
-                               
-                            }
-                    }
-                } else
-                
-                if (actionKeyBIsDown){
-                    if(!playerIsHit){
-                        regenActive = false
-
-                        if(inBattle){
-                            if(!playerBlocking && !playerIsHit && !playerAttacking){
-
-                                player.play({key:'pBlock'},true)
-                                    
-                                playerBlocking = true
-                                playerDodging = false
-
-                            }
-                        }
-                    }
-                } else
-                //
-                if(downIsDown){
-                    if(inBattle){ 
-                        if(!playerCrouching){
-                            if(player.body.speed > 250){
-                            player.play({key:'pSlide',frameRate:14},true)
-                            player.setDragX(1000)
-                            } else {
-                                player.play({key:'pCrouch',frameRate:14},true)
-                            }
-                            playerCrouching = true
-                        }
-                    } else {
-                        if (currentEnergy > 1){
-                        highObstacle.body.checkCollision.none = true
-                        playerVitals.decreaseEnergy((income * 0.25) / 25)
-                        player.anims.play({key:'pSlide',frameRate: 6},true);
-                        playerCrouching = true
-                       
-                        } else {
-                           
-                            highObstacle.body.checkCollision.none = false
-                            player.anims.play({key:'pRun',frameRate: 6},true);
-                            playerVitals.decreaseEnergy((income * 0.25) / 25)
-                            
-
-                        }
-                        
-                    }   
-                } else
-                //
-                if(upIsDown){
-                    
-                    if(inBattle){
-                        if (player.body.onFloor()){
-                            player.setDragY(0)
-                            playerJumping = true
-                            
-
-                            if(player.body.speed > 250){
-
-                                player.setDragX(1000)
-
-                                if (player.flipX){
-                                    player.setVelocityX(player.body.velocity.x - 50)
-                                } else {
-                                    player.setVelocityX(player.body.velocity.x + 50)
-                                }
-
-                                upIsDown = false
-                                player.play({key:'pJump',frameRate:18},true)
-                                
-                                player.setVelocityY(-1500 * scaleMod)
-                                playerLanded = false
-
-                            } else {
-                                player.play({key:'pCrouch',frameRate:24},true)
-                            player.once('animationcomplete',function(){
-                                upIsDown = false
-                                player.play({key:'pJump',frameRate:18},true)
-                                
-                                player.setVelocityY(-1500 * scaleMod)
-                                playerLanded = false
-                            },player)
-                            }
-  
-                        } 
-                    } else {
-                        if (currentEnergy > maxEnergy * 0.1){
-                            player.setDragX(1000)
-                        if (player.body.onFloor()){
-                            playerJumping = true
-                            
-                            playerVitals.decreaseEnergy(maxEnergy * 0.2)
-                            
-                            player.play('pJump',true)
-                            player.setVelocityY(-1200 * scaleMod)
-                            player.setVelocityX(100)
-
-                            player.once('animationcomplete',function(){
-                                player.play('pUptoFall',true)
-                                
-                                
-                                playerJumping = false
-                                upIsDown = false
-
-                            },player)
-                        }
-                          
-                            
-                            
-
-                        }     
-                    }
-                } else
-                //
-                if(leftIsDown || rightIsDown){
-                    if(!playerDodging && !playerIsHit && !playerAttacking && !playerBlocking){
-
-                        if(inBattle){
-                            player.body.maxVelocity.x = 750 * scaleMod
-                            if (playerLockedOn){
-                                //If Left
-                                if(leftIsDown){
-                                    if(player.flipX == false){
-                                        playerDodging = true
-                                        player.setVelocityX(-1000)
-                                        if(player.body.onFloor()){
-                                            player.setVelocityY(Phaser.Math.Between(-250,0))
-                                        }
-                                        
-                                        player.play({key:'pBackDash',frameRate:6},true)
-                                        player.once('animationcomplete', function (){
-                                            
-                                                playerDodging = false
-                                            
-                                                },player)
-                                    } else if (player.body.onFloor() && playerLanded) {
-                                        player.play('pRun',true)
-                                        player.setVelocityX(player.body.velocity.x - 100)
-                                    }
-                                } else 
-                                // If Right
-                                if(rightIsDown){
-                                    if(player.flipX == true){
-                                        playerDodging = true
-                            
-                                        player.setVelocityX(1000)
-                                        if(player.body.onFloor()){
-                                            player.setVelocityY(Phaser.Math.Between(-250,0))
-                                        }
-                                        player.play({key:'pBackDash',frameRate:6},true)
-                                        player.once('animationcomplete', function (){
-                                            
-                                                playerDodging = false
-                                            
-                                            },player)
-                                        
-                                    } else if (player.body.onFloor() && playerLanded) {
-                                        player.play('pRun',true)
-                                        player.setVelocityX(player.body.velocity.x + 100)
-                                     
-                                    }
-                                }
-
-                            } else if (player.body.onFloor() && playerLanded) {
-
-                                player.play('pRun',true)
-                                // If Left
-                                if(leftIsDown){
-                                    player.flipX = true
-                                    player.setVelocityX(player.body.velocity.x - 125)
-                                   
-                                } else
-                                // If Right 
-                                if(rightIsDown){
-                                    player.flipX = false
-                                    player.setVelocityX(player.body.velocity.x + 125)
-                                    
-                                }
-                            }
-                        } else {
-                            player.flipX = false
-                            player.body.maxVelocity.x = 750 * scaleMod
-                            // If Left
-                            if(currentEnergy > 1){
-                            if(leftIsDown){
-                                playerVitals.decreaseEnergy((maxEnergy * 0.25) / 50 )
-                                playerVitals.decreaseLife(-(maxEnergy * 0.25)  / 100 )
-                                if(playerSpeed >= 0.9){
-
-                                player.x -= 6
-                                }
-                                player.anims.play({key:'pRun',frameRate: 8},true);
-                            } else 
-                            // If Right
-                            if(rightIsDown){
-                                playerVitals.decreaseEnergy((income * 0.25) / 50)
-                                if(playerSpeed <= 1.5){
-                                player.x += 4
-                                }
-                                player.anims.play({key:'pRun',frameRate: 16},true);
-                                glory += (2.5 / 60)
-                            }
-                        } else {
-
-                            if(player.x < gameWidth * 1.25){
-                                player.x += 8
-                                highObstacle.body.checkCollision.none = true
-                                lowObstacle.body.checkCollision.none = true
-                            } else if(player.x > gameWidth * 1.75){
-                                player.x -= 8
-                                highObstacle.body.checkCollision.none = true
-                                lowObstacle.body.checkCollision.none = true
-                            } else if(!nightBorneCamActive){
-                                highObstacle.body.checkCollision.none = false
-                                lowObstacle.body.checkCollision.none = false
-                                if(player.x > gameWidth * 1.35){
-                                    player.x -= 2
-                                }
-                            }
-
-                            player.play({key:'pRun',frameRate: 12},true);
-
-                            if(leftIsDown){
-                                playerVitals.decreaseEnergy((income * 0.25) / 100 ) 
-                            } else 
-                            // If Right
-                            if(rightIsDown){
-                                playerVitals.decreaseEnergy((income * 0.25) / 50) 
-                            }
-                        }
-                        }
-
-                    }
-                } 
-                else 
-                //
-                if (player.body.onFloor() && controlsEnabled && !playerIsHit){
-
-                    regenActive = true
-                    sword.body.checkCollision.none = true
-                    player.setDragY(0)
-                    
-
-                    if(inBattle){
-                        if(player.body.speed > 500){
-                            player.setDragX(2000) 
-                        } else {
-                            player.setDragX(3000)       
-                        }
-
-                        
-                        if(moveCancelActive){
-                            
-                            player.play('pIdle',true)
-                            
-                        
-                            playerDodging = false 
-                            playerCrouching = false
-                            attackModeActive = false
-                            usingPower = false
-                        }
-                        
-                        
-                        
-                    } else {
-                        player.play({key:'pRun',frameRate: 12},true);
-                        player.flipX = false
-                        playerCrouching = false
-                        camera.zoomTo(1,500)
-                        camera.once('camerazoomcomplete', function(){
-
-                        },this)
-                        
-
-                        if(player.x < gameWidth * 1.25){
-                            player.x += 4
-                            highObstacle.body.checkCollision.none = true
-                            lowObstacle.body.checkCollision.none = true
-                        } else if(player.x > gameWidth * 1.75){
-                            player.x -= 4
-                            highObstacle.body.checkCollision.none = true
-                            lowObstacle.body.checkCollision.none = true
-                        } else if(!nightBorneCamActive){
-                            highObstacle.body.checkCollision.none = false
-                            lowObstacle.body.checkCollision.none = false
-                            if(player.x > gameWidth * 1.35){
-                                player.x -= 6
-                            }
-                        }
-                        
-                    }
-                    
-                }
-            }
-    }
+        
 
     function hitImpactAnimation(game,sprite,power){
 
@@ -2850,8 +2851,8 @@ class Badlands extends Phaser.Scene {
        this.stageRefresh()
 
        t = this.make.text({
-        x: gameWidth * 1.85,
-        y: gameHeight * 0.175,
+        x: screenWidth * 1.85,
+        y: screenHeight * 0.175,
         text:   'Region: ' + activeStage.region + ' (' + activeStage.regionID + ')' +  '\n' + 
                 'Region Patron: ' + activeStage.regionPatron + '\n' + 
                 'Region Affinity : ' + activeStage.regionAffinity + '\n' + 
@@ -2864,11 +2865,11 @@ class Badlands extends Phaser.Scene {
 
             fill: 'white',
             align: 'left',
-            wordWrap: { width: 750 * (scaleMod)},
+            wordWrap: { width: 750 * (scaleModX)},
         }
-    }).setDepth(4);
+        }).setDepth(4);
 
-    t.setFontSize(26 * (scaleMod))
+    t.setFontSize(26 * (scaleModX)) 
 
     
 
@@ -3160,7 +3161,7 @@ class Badlands extends Phaser.Scene {
        
         this.lights.enable();
         this.lights.setAmbientColor(ambientLightSetting);
-        spotlightSun = this.lights.addLight(camera.scrollX + (gameWidth * sunPositionX) , camera.scrollY + (gameHeight * sunPositionY), gameWidth,sunLightSetting, 2);
+        spotlightSun = this.lights.addLight(camera.scrollX + (screenWidth * sunPositionX) , camera.scrollY + (screenHeight * sunPositionY), screenWidth,sunLightSetting, 2);
         //spotlightSun.setScrollFactor(1)
     
 
@@ -3172,17 +3173,17 @@ class Badlands extends Phaser.Scene {
             var textureToApply = this.textures.get('bgL' + i).getSourceImage()
             console.log('Texture Width: ' + textureToApply.width,'\nTexture Height: ' + textureToApply.height)
         
-            var textureWidthScaleMod = gameWidth / textureToApply.width
-            var textureHeightScaleMod = gameHeight / textureToApply.height
-            console.log('Texture Width Scale Mod: ' + gameWidth / textureToApply.width,'\nTexture Width New Size: ' + textureWidthScaleMod * textureToApply.width )
-            console.log('Texture Height Scale Mod: ' + gameHeight / textureToApply.height,'\nTexture Height New Size: ' + textureHeightScaleMod * textureToApply.height)            
+            var textureWidthscaleMod = screenWidth / textureToApply.width
+            var textureHeightscaleMod = screenHeight / textureToApply.height
+            console.log('Texture Width Scale Mod: ' + screenWidth / textureToApply.width,'\nTexture Width New Size: ' + textureWidthscaleMod * textureToApply.width )
+            console.log('Texture Height Scale Mod: ' + screenHeight / textureToApply.height,'\nTexture Height New Size: ' + textureHeightscaleMod * textureToApply.height)            
 
             if(this.sys.game.device.os.desktop){
-            window['bgL'+i] =  this.add.tileSprite(0,0,gameWidth,gameHeight).setScrollFactor(0).setOrigin(0,0).setPipeline('Light2D').setDepth(0)
-            window['bgL'+i].setTexture('bgL'+i).setTileScale(textureWidthScaleMod,textureHeightScaleMod)
+            window['bgL'+i] =  this.add.tileSprite(0,0,screenWidth,screenHeight).setScrollFactor(0).setOrigin(0,0).setPipeline('Light2D').setDepth(0)
+            window['bgL'+i].setTexture('bgL'+i).setTileScale(textureWidthscaleMod,textureHeightscaleMod)
             window['bgL'+i+'ScrollMod'] = + bgScroll[i - 1]
             } else {
-                window['bgL'+i] =  this.add.image(0,0,'bgL'+i).setScrollFactor(0).setOrigin(0,0).setPipeline('Light2D').setDepth(0).setScale(textureWidthScaleMod,textureHeightScaleMod)
+                window['bgL'+i] =  this.add.image(0,0,'bgL'+i).setScrollFactor(0).setOrigin(0,0).setPipeline('Light2D').setDepth(0).setScale(textureWidthscaleModX,textureHeightscaleModX)
             }
            
         }
@@ -3192,17 +3193,17 @@ class Badlands extends Phaser.Scene {
             var textureToApply = this.textures.get('fgL' + i).getSourceImage()
             console.log('Texture Width: ' + textureToApply.width,'\nTexture Height: ' + textureToApply.height)
         
-            var textureWidthScaleMod = gameWidth / textureToApply.width
-            var textureHeightScaleMod = gameHeight / textureToApply.height
-            console.log('Texture Width Scale Mod: ' + gameWidth / textureToApply.width,'\nTexture Width New Size: ' + textureWidthScaleMod * textureToApply.width )
-            console.log('Texture Height Scale Mod: ' + gameHeight / textureToApply.height,'\nTexture Height New Size: ' + textureHeightScaleMod * textureToApply.height)            
+            var textureWidthscaleMod = screenWidth / textureToApply.width
+            var textureHeightscaleMod = screenHeight / textureToApply.height
+            console.log('Texture Width Scale Mod: ' + screenWidth / textureToApply.width,'\nTexture Width New Size: ' + textureWidthscaleMod * textureToApply.width )
+            console.log('Texture Height Scale Mod: ' + screenHeight / textureToApply.height,'\nTexture Height New Size: ' + textureHeightscaleMod * textureToApply.height)            
 
             if(this.sys.game.device.os.desktop){
-            window['fgL'+i] =  this.add.tileSprite(0,0,gameWidth,gameHeight).setScrollFactor(0).setOrigin(0,0).setPipeline('Light2D').setDepth(1)
-            window['fgL'+i].setTexture('fgL'+i).setTileScale(textureWidthScaleMod,textureHeightScaleMod)
+            window['fgL'+i] =  this.add.tileSprite(0,0,screenWidth,screenHeight).setScrollFactor(0).setOrigin(0,0).setPipeline('Light2D').setDepth(1)
+            window['fgL'+i].setTexture('fgL'+i).setTileScale(textureWidthscaleMod,textureHeightscaleMod)
             window['fgL'+i+'ScrollMod'] = + fgScroll[i - 1]
             } else {
-                window['fgL'+i] =  this.add.image(0,0,'fgL'+i).setScrollFactor(0).setOrigin(0,0).setPipeline('Light2D').setDepth(0).setScale(textureWidthScaleMod,textureHeightScaleMod)
+                window['fgL'+i] =  this.add.image(0,0,'fgL'+i).setScrollFactor(0).setOrigin(0,0).setPipeline('Light2D').setDepth(0).setScale(textureWidthscaleModX,textureHeightscaleModX)
             }
         }
 
@@ -3214,7 +3215,7 @@ class Badlands extends Phaser.Scene {
 
         var floorHeight = Phaser.Math.FloatBetween(activeStage.floorPosYMin,activeStage.floorPosYMax)
         platforms = this.physics.add.staticGroup();
-        platforms.create(0, gameHeight * (1 - floorHeight), 'ground').setOrigin(0,0).setScale(gameWidth * 3 /400, 2 * (scaleMod)).refreshBody().setVisible(0);
+        platforms.create(0, screenHeight * (1 - floorHeight), 'ground').setOrigin(0,0).setScale(screenWidth * 3 /400, 2 * (scaleModX)).refreshBody().setVisible(0);
 
         
 
@@ -3226,18 +3227,18 @@ class Badlands extends Phaser.Scene {
 
                 // Touch Screen Support
 
-                this.input.addPointer(8);
+                
                 //Anchor buttons
-                left = this.add.image(0,0, 'left').setInteractive().setDepth(4).setScale(2.5 * (scaleMod)).setAlpha(0.5);
-                actionA = this.add.image(0, 0, 'defaultAction').setInteractive().setDepth(4 * (scaleMod)).setScale(2).setAlpha(0.5).setTint(0x00a86b);
-                actionB = this.add.image(0, 0, 'defaultAction').setInteractive().setDepth(4 * (scaleMod)).setScale(2).setAlpha(0.5).setTint(0x90ee90);
-                skillA = this.add.image(0, 0, 'charge').setInteractive().setDepth(4).setScale(2 * (scaleMod)).setAlpha(0.5).setTint(0xf1c232);//Focus - 0xf1c232
-                skillB = this.add.image(0, 0, 'charge').setInteractive().setDepth(4).setScale(2 * (scaleMod)).setAlpha(0.5).setTint(0xffffe0);//Focus - 0xf1c232
+                left = this.add.image(0,0, 'left').setInteractive().setDepth(4).setScale(2.5 * (scaleModX)).setAlpha(0.5);
+                actionA = this.add.image(0, 0, 'defaultAction').setInteractive().setDepth(4 * (scaleModX)).setScale(2).setAlpha(0.5).setTint(0x00a86b);
+                actionB = this.add.image(0, 0, 'defaultAction').setInteractive().setDepth(4 * (scaleModX)).setScale(2).setAlpha(0.5).setTint(0x90ee90);
+                skillA = this.add.image(0, 0, 'charge').setInteractive().setDepth(4).setScale(2 * (scaleModX)).setAlpha(0.5).setTint(0xf1c232);//Focus - 0xf1c232
+                skillB = this.add.image(0, 0, 'charge').setInteractive().setDepth(4).setScale(2 * (scaleModX)).setAlpha(0.5).setTint(0xffffe0);//Focus - 0xf1c232
                 // Remaining buttons
-                deadSpace = this.add.image(left.x + 35.5, left.y, 'deadSpace').setDepth(4).setScale(2.5 * (scaleMod)).setVisible(0);
-                right = this.add.image(deadSpace.x + 35.5, deadSpace.y, 'right').setInteractive().setDepth(4).setScale(2.5 * (scaleMod)).setAlpha(0.5);
-                up = this.add.image(deadSpace.x, deadSpace.y - 40.5, 'up').setInteractive().setDepth(4).setScale(2.5 * (scaleMod)).setAlpha(0.5);
-                down = this.add.image(deadSpace.x, left.y + 40.5 , 'down').setInteractive().setDepth(4).setScale(2.5 * (scaleMod)).setAlpha(0.5);
+                deadSpace = this.add.image(left.x + 35.5, left.y, 'deadSpace').setDepth(4).setScale(2.5 * (scaleModX)).setVisible(0);
+                right = this.add.image(deadSpace.x + 35.5, deadSpace.y, 'right').setInteractive().setDepth(4).setScale(2.5 * (scaleModX)).setAlpha(0.5);
+                up = this.add.image(deadSpace.x, deadSpace.y - 40.5, 'up').setInteractive().setDepth(4).setScale(2.5 * (scaleModX)).setAlpha(0.5);
+                down = this.add.image(deadSpace.x, left.y + 40.5 , 'down').setInteractive().setDepth(4).setScale(2.5 * (scaleModX)).setAlpha(0.5);
 
                 // Checks if player is on Desktop.  If YES, touch controls disabled on initialisation
 
@@ -3284,21 +3285,21 @@ class Badlands extends Phaser.Scene {
         // playerHeavySwordSwing = this.sound.add("playerHeavySwordSwing", {volume: 0.5})
         // enemySwordSwing = this.sound.add("enemySwordSwing", {volume: 0.5})
         
-        this.physics.world.setBounds(0, 0, gameWidth * 3,  gameHeight);
+        this.physics.world.setBounds(0, 0, screenWidth * 3,  screenHeight);
         
         
         
-        var playerShadowScale = 3.5 * (scaleMod) 
-        playerShadow = this.add.sprite(gameWidth * 1.5, gameHeight /2 ,'heroF').setScale(playerShadowScale)
+        var playerShadowScale = 3.5 * (scaleModX) 
+        playerShadow = this.add.sprite(screenWidth * 1.5, screenHeight /2 ,'heroF').setScale(playerShadowScale)
         
         playerShadow.flipY = 1
         
         playerShadow.tint = 0x100c08//0x000000
         //playerShadow.setTintFill(0x100c08)//.setAlpha(0.5)
        
-        var playerScale = 4 * (scaleMod) 
+        var playerScale = 4 * (scaleModX) 
         
-        player = this.physics.add.sprite(gameWidth * 1.5, gameHeight /2 ,'heroF').setScale(playerScale).setPipeline('Light2D');
+        player = this.physics.add.sprite(screenWidth * 1.5, screenHeight /2 ,'heroF').setScale(playerScale).setPipeline('Light2D');
         
         player.body.setSize(10, 30).setOffset(25,15).setAllowDrag(true)
         
@@ -3309,36 +3310,36 @@ class Badlands extends Phaser.Scene {
         spotlightPlayerHealth = this.lights.addLight(0, 0, player.displayWidth * 10,0xd4b9e2);
         spotlightPlayerPower = this.lights.addLight(0, 0, player.displayWidth * 10 ,0x6d54a9);
 
-        spotlightNightBorne = this.lights.addLight(0, 0, 300 * (scaleMod),0x6d54a9,0);
-        spotlightCreep = this.lights.addLight(0, 0, 300 * (scaleMod),0xd4b9e2,0);
+        spotlightNightBorne = this.lights.addLight(0, 0, 300 * (scaleModX),0x6d54a9,0);
+        spotlightCreep = this.lights.addLight(0, 0, 300 * (scaleModX),0xd4b9e2,0);
 
         
 
         sword = this.add.sprite(player.x, player.y)
         this.physics.add.existing(sword, false)
-        sword.body.setAllowGravity(false).setOffset(0,5).setSize(100 * (scaleMod), 55 * (scaleMod))
+        sword.body.setAllowGravity(false).setOffset(0,5).setSize(100 * (scaleModX), 55 * (scaleModX))
         sword.body.checkCollision.none = true
 
-        var playerHitVFXScale = 0.5 * (scaleMod) 
+        var playerHitVFXScale = 0.5 * (scaleModX) 
         playerHitVFX = this.add.sprite(sword.x, sword.y,'whiteHitSmear').setScale(playerHitVFXScale) 
         
-        var highObstacleShadowScale = 4 * (scaleMod) 
-        highObstacleShadow = this.add.image(player.x,gameHeight - 35, 'lamp').setScale(highObstacleShadowScale)
+        var highObstacleShadowScale = 4 * (scaleModX) 
+        highObstacleShadow = this.add.image(player.x,screenHeight - 35, 'lamp').setScale(highObstacleShadowScale)
         highObstacleShadow.flipY = 1
         highObstacleShadow.tint = 0x100c08
 
-        highObstacle = this.add.image(0,gameHeight - (320 * scaleMod), 'lamp').setPipeline('Light2D');
+        highObstacle = this.add.image(0,screenHeight - (320 * scaleModX), 'lamp').setPipeline('Light2D');
         this.physics.add.existing(highObstacle,false)
         highObstacle.body.setAllowGravity(false)
 
-        var lowObstacleShadowScale = 1.5 * (scaleMod) 
+        var lowObstacleShadowScale = 1.5 * (scaleModX) 
         lowObstacleShadow = this.add.image(0,0, 'treeTrunk').setScale(lowObstacleShadowScale)
         lowObstacleShadow.flipY = 1
         lowObstacleShadow.tint = 0x100c08
 
-        lowObstacle = this.add.image(0,gameHeight - (150 * scaleMod), 'treeTrunk').setPipeline('Light2D');  
+        lowObstacle = this.add.image(0,screenHeight - (150 * scaleModX), 'treeTrunk').setPipeline('Light2D');  
         this.physics.add.existing(lowObstacle,false)
-        lowObstacle.body.setSize(150 * (scaleMod),57 * (scaleMod)).setOffset(5 * (scaleMod),10 * (scaleMod))
+        lowObstacle.body.setSize(150 * (scaleModX),57 * (scaleModX)).setOffset(5 * (scaleModX),10 * (scaleModX))
 
         obstacles = this.physics.add.group({  
             allowGravity: 0,
@@ -3354,7 +3355,7 @@ class Badlands extends Phaser.Scene {
         
 
             // NightBorne
-            var nightBorneOutlineScale = 8 * (scaleMod) 
+            var nightBorneOutlineScale = 8 * (scaleModX) 
             nightBorneOutline = this.physics.add.sprite(0,0, 'nightBorne').setScale(nightBorneOutlineScale).setTintFill(0x7851a9).setAlpha(0.75)
            
             nightBorneOutline.body.setAllowGravity(0)
@@ -3363,7 +3364,7 @@ class Badlands extends Phaser.Scene {
             this.tweens.add({
                                     targets     : nightBorneOutline,
                                     alpha       : 0, 
-                                    scale      : 8.35 * (scaleMod),
+                                    scale      : 8.35 * (scaleModX),
                                    
                                     ease        : 'Power2',
                                     duration    : 2000,
@@ -3371,18 +3372,18 @@ class Badlands extends Phaser.Scene {
                                     //loop        : -1,
                                     repeat      : -1
             });
-            var nightBorneShadowScale = 6 * (scaleMod) 
-            nightBorneShadow = this.add.sprite(gameWidth * 1.5, gameHeight /2 ,'nightBorne').setScale(nightBorneShadowScale)
+            var nightBorneShadowScale = 6 * (scaleModX) 
+            nightBorneShadow = this.add.sprite(screenWidth * 1.5, screenHeight /2 ,'nightBorne').setScale(nightBorneShadowScale)
             nightBorneShadow
             nightBorneShadow.flipY = 1
             nightBorneShadow.tint = 0x100c08
-            var nightBorneScale = 8 * (scaleMod) 
+            var nightBorneScale = 8 * (scaleModX) 
             nightBorne = this.physics.add.sprite(0, 0, 'nightBorne').setScale(nightBorneScale).setOrigin(0.5,1).setPipeline('Light2D')
-            nightBorneVitals = new EnemyHealthBar(this,nightBorne.x, nightBorne.y - (150 * scaleMod));
+            nightBorneVitals = new EnemyHealthBar(this,nightBorne.x, nightBorne.y - (150 * scaleModX));
             nightBorneLife = (income * 0.3) * Phaser.Math.Between(0.8,1.7) 
             nightBorneMaxLife = nightBorneLife
          
-            nightBorne.body.maxVelocity.x = 500 * scaleMod
+            nightBorne.body.maxVelocity.x = 500 * scaleModX
             nightBorne.body.setSize(50, 50)
 
             nightBorne.body.setAllowDrag(true)
@@ -3402,12 +3403,12 @@ class Badlands extends Phaser.Scene {
             //nightBorneVFX.setScale(3).setTint(0x00CED1).setVisible(1)
 
             // Creep
-            var creepShadowScale = 3 * (scaleMod) 
-            creepShadow = this.add.sprite(gameWidth * 1.5, gameHeight /2 ,'doomsayer').setScale(creepShadowScale)
+            var creepShadowScale = 3 * (scaleModX) 
+            creepShadow = this.add.sprite(screenWidth * 1.5, screenHeight /2 ,'doomsayer').setScale(creepShadowScale)
             creepShadow
             creepShadow.flipY = 1
             creepShadow.tint = 0x100c08
-            var creepScale = 3 * (scaleMod) 
+            var creepScale = 3 * (scaleModX) 
             creep = this.physics.add.sprite(0, 0, 'doomsayer').setScale(creepScale).setPipeline('Light2D')
             creep.setCollideWorldBounds(true)
             creep.body.setAllowGravity(1)
@@ -3423,60 +3424,60 @@ class Badlands extends Phaser.Scene {
             this.physics.add.overlap(sword,enemies,enemyHit,null,this)
             
             
-        camera = this.cameras.main.centerOn(gameWidth * 1.5,0)
+        camera = this.cameras.main.centerOn(screenWidth * 1.5,0)
 
-        camera.setBounds(0, 0, gameWidth * 3, gameHeight)
+        camera.setBounds(0, 0, screenWidth * 3, screenHeight)
  
         camera.fadeIn(12000)
         
-        var playerIconBoxScaleX = 0.0775 * (scaleMod) 
-        var playerIconBoxScaleY = 0.25 * (scaleMod) 
+        var playerIconBoxScaleX = 0.0775 * (scaleModX) 
+        var playerIconBoxScaleY = 0.25 * (scaleModX) 
         playerIconBox = this.add.image(0,0,'playerIconBox').setDepth(3).setScale(playerIconBoxScaleX,playerIconBoxScaleY).setOrigin(0.5,0.5)
-        var playerIconScale = 0.125 * (scaleMod)   
+        var playerIconScale = 0.125 * (scaleModX)   
         playerIcon = this.add.image(0,0,'playerIcon').setDepth(3).setScale(playerIconScale).setOrigin(0.5,0.5)
     
-        levelIcon = this.add.image(0,0,'levelIcon').setDepth(4).setScale(0.65 * (scaleMod)).setOrigin(0.5,0.5)
-        levelText = this.add.text(levelIcon + 5, levelIcon.y, Math.floor(level)).setFontFamily('Arial').setFontSize(28 * (scaleMod)).setColor('#674EA7').setDepth(4).setOrigin(0.5,0.5)
+        levelIcon = this.add.image(0,0,'levelIcon').setDepth(4).setScale(0.65 * (scaleModX)).setOrigin(0.5,0.5)
+        levelText = this.add.text(levelIcon + 5, levelIcon.y, Math.floor(level)).setFontFamily('Arial').setFontSize(28 * (scaleModX)).setColor('#674EA7').setDepth(4).setOrigin(0.5,0.5)
         
-        gloryIcon = this.add.image(levelIcon.x + 100,camera.worldView.y + 20,'gloryIcon').setDepth(4).setScale(0.65 * (scaleMod)).setOrigin(0.5,0.5)
-        gloryText = this.add.text(gloryIcon + 20, gloryIcon.y, Math.floor(glory)).setFontFamily('Arial').setFontSize(28 * (scaleMod)).setColor('#BC3823').setDepth(4).setOrigin(0.5,0.5);
-        goldIcon = this.add.image(gloryIcon.x + 130,camera.worldView.y + 60,'goldIcon').setDepth(4).setScale(0.65 * (scaleMod)).setOrigin(0.5,0.5)
-        goldText = this.add.text(goldIcon, goldIcon.y, Math.floor(gold)).setFontFamily('Arial').setFontSize(28 * (scaleMod)).setColor('#ffd700').setDepth(4).setOrigin(0.5,0.5);
+        gloryIcon = this.add.image(levelIcon.x + 100,camera.worldView.y + 20,'gloryIcon').setDepth(4).setScale(0.65 * (scaleModX)).setOrigin(0.5,0.5)
+        gloryText = this.add.text(gloryIcon + 20, gloryIcon.y, Math.floor(glory)).setFontFamily('Arial').setFontSize(28 * (scaleModX)).setColor('#BC3823').setDepth(4).setOrigin(0.5,0.5);
+        goldIcon = this.add.image(gloryIcon.x + 130,camera.worldView.y + 60,'goldIcon').setDepth(4).setScale(0.65 * (scaleModX)).setOrigin(0.5,0.5)
+        goldText = this.add.text(goldIcon, goldIcon.y, Math.floor(gold)).setFontFamily('Arial').setFontSize(28 * (scaleModX)).setColor('#ffd700').setDepth(4).setOrigin(0.5,0.5);
 
-        playerVitalsBox = this.add.image(0,0,'playerVitalsBox').setDepth(3).setScale(0.25  * (scaleMod),0.2  * (scaleMod)).setOrigin(0,0.5)
-        playerVitals = new HealthBar(this,startLife, levelIcon.x + (30 * (scaleMod)), playerIcon.y + (20 * (scaleMod)))
+        playerVitalsBox = this.add.image(0,0,'playerVitalsBox').setDepth(3).setScale(0.25  * (scaleModX),0.2  * (scaleModX)).setOrigin(0,0.5)
+        playerVitals = new HealthBar(this,startLife, levelIcon.x + (30 * (scaleModX)), playerIcon.y + (20 * (scaleModX)))
        
-        playerVitalsTextL = this.add.text(0, 0, 'Life').setFontFamily('Arial').setFontSize(18 * (scaleMod)).setColor('#cc0000').setDepth(4).setOrigin(0.5,0.5);
-        playerVitalsTextF = this.add.text(0, 0, 'Focus').setFontFamily('Arial').setFontSize(18 * (scaleMod)).setColor('#f1c232').setDepth(4).setOrigin(0.5,0.5);
-        playerVitalsTextE = this.add.text(0, 0, 'Energy').setFontFamily('Arial').setFontSize(18 * (scaleMod)).setColor('#00a86b').setDepth(4).setOrigin(0.5,0.5);       
+        playerVitalsTextL = this.add.text(0, 0, 'Life').setFontFamily('Arial').setFontSize(18 * (scaleModX)).setColor('#cc0000').setDepth(4).setOrigin(0.5,0.5);
+        playerVitalsTextF = this.add.text(0, 0, 'Focus').setFontFamily('Arial').setFontSize(18 * (scaleModX)).setColor('#f1c232').setDepth(4).setOrigin(0.5,0.5);
+        playerVitalsTextE = this.add.text(0, 0, 'Energy').setFontFamily('Arial').setFontSize(18 * (scaleModX)).setColor('#00a86b').setDepth(4).setOrigin(0.5,0.5);       
 
-        skillABox = this.add.image(0,0,'playerVitalsBox').setDepth(3).setScale(0.04 * (scaleMod),0.125 * (scaleMod)).setOrigin(0.5,0.5)
-        skillAIcon = this.add.image(0,0,'deadlyCombatAssaultIcon').setDepth(3).setScale(0.4 * (scaleMod)).setOrigin(0.5,0.5)
-        skillBBox = this.add.image(0,0,'playerVitalsBox').setDepth(3).setScale(0.04 * (scaleMod),0.125 * (scaleMod)).setOrigin(0.5,0.5)
-        skillBIcon = this.add.image(0,0,'thunderStrikeIcon').setDepth(3).setScale(0.4 * (scaleMod)).setOrigin(0.5,0.5)
+        skillABox = this.add.image(0,0,'playerVitalsBox').setDepth(3).setScale(0.04 * (scaleModX),0.125 * (scaleModX)).setOrigin(0.5,0.5)
+        skillAIcon = this.add.image(0,0,'deadlyCombatAssaultIcon').setDepth(3).setScale(0.4 * (scaleModX)).setOrigin(0.5,0.5)
+        skillBBox = this.add.image(0,0,'playerVitalsBox').setDepth(3).setScale(0.04 * (scaleModX),0.125 * (scaleModX)).setOrigin(0.5,0.5)
+        skillBIcon = this.add.image(0,0,'thunderStrikeIcon').setDepth(3).setScale(0.4 * (scaleModX)).setOrigin(0.5,0.5)
 
-        levelProgress = new LevelProgressBar(this,progress, camera.scrollX + gameWidth * 0.33, camera.worldView.y + (gameHeight - 85));
+        levelProgress = new LevelProgressBar(this,progress, camera.scrollX + screenWidth * 0.33, camera.worldView.y + (screenHeight - 85));
 
-        inspirationPlayerIconBox = this.add.image(0,camera.worldView.y + (gameHeight * 0.2),'playerIconBox').setDepth(3).setScale(0.13 * (scaleMod),0.425 * (scaleMod)).setOrigin(0.5,0.5).setVisible(0)
+        inspirationPlayerIconBox = this.add.image(0,camera.worldView.y + (screenHeight * 0.2),'playerIconBox').setDepth(3).setScale(0.13 * (scaleModX),0.425 * (scaleModX)).setOrigin(0.5,0.5).setVisible(0)
         
-        inspirationPlayerIcon = this.add.image(0,inspirationPlayerIconBox.y,'playerInspirationIcon' + inspirationPic).setDepth(3).setScale(.35 * (scaleMod)).setOrigin(0.5,0.5).setVisible(0)
+        inspirationPlayerIcon = this.add.image(0,inspirationPlayerIconBox.y,'playerInspirationIcon' + inspirationPic).setDepth(3).setScale(.35 * (scaleModX)).setOrigin(0.5,0.5).setVisible(0)
 
-        inspirationTextBox = this.add.image(gameWidth * 0.5,camera.worldView.y + (gameHeight * 0.125),'playerIconBox').setDepth(3).setScale(0.25 * (scaleMod),0.1 * (scaleMod)).setOrigin(0.5,0.5).setVisible(1).setAlpha(0.75).setVisible(0)
-        inspirationText = this.add.text(inspirationTextBox.x, inspirationTextBox.y, 'Choose an Inspiration').setFontFamily('Arial').setFontSize(32 * (scaleMod)).setDepth(4).setOrigin(0.5,0.5).setVisible(0);
+        inspirationTextBox = this.add.image(screenWidth * 0.5,camera.worldView.y + (screenHeight * 0.125),'playerIconBox').setDepth(3).setScale(0.25 * (scaleModX),0.1 * (scaleModX)).setOrigin(0.5,0.5).setVisible(1).setAlpha(0.75).setVisible(0)
+        inspirationText = this.add.text(inspirationTextBox.x, inspirationTextBox.y, 'Choose an Inspiration').setFontFamily('Arial').setFontSize(32 * (scaleModX)).setDepth(4).setOrigin(0.5,0.5).setVisible(0);
           
-        inspirationBoxEnergy = this.add.image(0,camera.worldView.y + (gameHeight * 0.5),'inspirationBox').setDepth(3).setScale(0.4 * (scaleMod),0.25 * (scaleMod)).setOrigin(0.5,0.5).setVisible(0).setAlpha(0.75)
-        inspirationTextEnergy = this.add.text(inspirationBoxEnergy.x, inspirationBoxEnergy.y,null,{align: 'center'}).setFontFamily('Arial').setFontSize(32 * (scaleMod)).setDepth(3).setOrigin(0.5,0.5).setVisible(0);
+        inspirationBoxEnergy = this.add.image(0,camera.worldView.y + (screenHeight * 0.5),'inspirationBox').setDepth(3).setScale(0.4 * (scaleModX),0.25 * (scaleModX)).setOrigin(0.5,0.5).setVisible(0).setAlpha(0.75)
+        inspirationTextEnergy = this.add.text(inspirationBoxEnergy.x, inspirationBoxEnergy.y,null,{align: 'center'}).setFontFamily('Arial').setFontSize(32 * (scaleModX)).setDepth(3).setOrigin(0.5,0.5).setVisible(0);
         inspirationTextEnergy.setText("Improve Energy\nRegeneration Rate\n& Maximum Energy\n\nAffected by 'Spending\nRating'")
-        inspirationBoxFocus = this.add.image(0,inspirationBoxEnergy.y,'inspirationBox').setDepth(3).setScale(0.4 * (scaleMod),0.25 * (scaleMod)).setOrigin(0.5,0.5).setVisible(0).setAlpha(0.75)
-        inspirationTextFocus = this.add.text(inspirationBoxFocus.x, inspirationBoxFocus.y,null,{align: 'center'}).setFontFamily('Arial').setFontSize(32 * (scaleMod)).setDepth(3).setOrigin(0.5,0.5).setVisible(0);
+        inspirationBoxFocus = this.add.image(0,inspirationBoxEnergy.y,'inspirationBox').setDepth(3).setScale(0.4 * (scaleModX),0.25 * (scaleModX)).setOrigin(0.5,0.5).setVisible(0).setAlpha(0.75)
+        inspirationTextFocus = this.add.text(inspirationBoxFocus.x, inspirationBoxFocus.y,null,{align: 'center'}).setFontFamily('Arial').setFontSize(32 * (scaleModX)).setDepth(3).setOrigin(0.5,0.5).setVisible(0);
         inspirationTextFocus.setText("Improve Focus\nRegeneration Rate\n& Maximum Focus\n\nAffected by 'Saving\nRating'")
-        inspirationBoxPower = this.add.image(0,inspirationBoxEnergy.y,'inspirationBox').setDepth(3).setScale(0.4 * (scaleMod),0.25 * (scaleMod)).setOrigin(0.5,0.5).setVisible(0).setAlpha(0.75)
-        inspirationTextPower = this.add.text(inspirationBoxPower.x, inspirationBoxPower.y,null,{align: 'center'}).setFontFamily('Arial').setFontSize(32 * (scaleMod)).setDepth(3).setOrigin(0.5,0.5).setVisible(0);
+        inspirationBoxPower = this.add.image(0,inspirationBoxEnergy.y,'inspirationBox').setDepth(3).setScale(0.4 * (scaleModX),0.25 * (scaleModX)).setOrigin(0.5,0.5).setVisible(0).setAlpha(0.75)
+        inspirationTextPower = this.add.text(inspirationBoxPower.x, inspirationBoxPower.y,null,{align: 'center'}).setFontFamily('Arial').setFontSize(32 * (scaleModX)).setDepth(3).setOrigin(0.5,0.5).setVisible(0);
         inspirationTextPower.setText("Improve Life\nRegeneration Rate\n& Maximum Life\n\nAffected by 'Storing\nRating'")
         
-        skillTreeEnergyIcon = this.add.image(gameWidth * 0.25, camera.worldView.y + (gameHeight * 0.25),'spendingBuffIcon').setDepth(4).setScale(1.5 * (scaleMod)).setVisible(0).setAlpha(0.95)
-        skillTreeFocusIcon = this.add.image(gameWidth * 0.5 , camera.worldView.y + (gameHeight * 0.25),'growingBuffIcon').setDepth(4).setScale(1.5 * (scaleMod)).setVisible(0).setAlpha(0.95)
-        skillTreeLifeIcon = this.add.image(gameWidth * 0.75, camera.worldView.y + (gameHeight * 0.25),'storingBuffIcon').setDepth(4).setScale(1.5 * (scaleMod)).setVisible(0).setAlpha(0.95)
+        skillTreeEnergyIcon = this.add.image(screenWidth * 0.25, camera.worldView.y + (screenHeight * 0.25),'spendingBuffIcon').setDepth(4).setScale(1.5 * (scaleModX)).setVisible(0).setAlpha(0.95)
+        skillTreeFocusIcon = this.add.image(screenWidth * 0.5 , camera.worldView.y + (screenHeight * 0.25),'growingBuffIcon').setDepth(4).setScale(1.5 * (scaleModX)).setVisible(0).setAlpha(0.95)
+        skillTreeLifeIcon = this.add.image(screenWidth * 0.75, camera.worldView.y + (screenHeight * 0.25),'storingBuffIcon').setDepth(4).setScale(1.5 * (scaleModX)).setVisible(0).setAlpha(0.95)
  
         yearlyFunctionsTimer = this.time.addEvent({delay: 60000, callback: runYearlyFunctions, args: [], callbackScope: this, loop: true});
     
@@ -3562,7 +3563,7 @@ class Badlands extends Phaser.Scene {
         this.physics.add.overlap(thunderStrikeVFX,enemies,enemyHit,null,this)
         this.physics.add.collider(platforms,thunderStrikeVFX);
         thunderStrikeVFX.setCollideWorldBounds(true)
-        thunderStrikeVFX.setDepth(2).setScale(3.5 * (scaleMod),15 * (scaleMod)).setOrigin(0.5,1)
+        thunderStrikeVFX.setDepth(2).setScale(3.5 * (scaleModX),15 * (scaleModX)).setOrigin(0.5,1)
         thunderStrikeLighting = this.lights.addLight(0, 0, 0).setIntensity(5)
         thunderStrikeLighting.setColor(0xFFBF1F)
         
@@ -3855,13 +3856,12 @@ class Badlands extends Phaser.Scene {
         },this)
 
         // Keyboard Keys
-        cursors = this.input.keyboard.createCursorKeys();
-        keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
-        keyD = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
-        keyF = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.F);
-
-        keyZ = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Z);
-        keyC = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.C);
+        // cursors = this.input.keyboard.createCursorKeys();
+        // keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
+        // keyD = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
+        // keyF = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.F);
+        // keyZ = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Z);
+        // keyC = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.C);
 
         this.input.on('gameobjectdown', function (pointer, gameObject) {
         
@@ -3885,7 +3885,7 @@ class Badlands extends Phaser.Scene {
                     var alpha = 1
                 }
 
-                playerVitals.pL = (574 * (scaleMod)) / maxLife
+                playerVitals.pL = (574 * (scaleModX)) / maxLife
                 playerVitals.draw()
 
                 toggleSkillTree()
@@ -3913,7 +3913,7 @@ class Badlands extends Phaser.Scene {
                 }
 
                 
-                playerVitals.pF = (574 * (scaleMod)) / maxFocus
+                playerVitals.pF = (574 * (scaleModX)) / maxFocus
                 playerVitals.draw()
              
 
@@ -3939,7 +3939,7 @@ class Badlands extends Phaser.Scene {
                 }
 
                 //spendingBuffTierIcon.setTexture('t'+ tier +'BuffIcon').setAlpha(alpha)
-                playerVitals.pE = (574 * (scaleMod)) / maxEnergy
+                playerVitals.pE = (574 * (scaleModX)) / maxEnergy
                 playerVitals.draw()
               
 
@@ -3975,41 +3975,41 @@ class Badlands extends Phaser.Scene {
             // Creep AI Proto
             if(gameMode == 0){
                
-            if(!creepIsHit && creep.x < player.x + (750 * scaleMod) && creep.x > player.x - (300 * scaleMod) && !creep.flipX){
+            if(!creepIsHit && creep.x < player.x + (750 * scaleModX) && creep.x > player.x - (300 * scaleModX) && !creep.flipX){
                 if(creep.body.onFloor()){
-                    creep.setVelocityY(-(600 * scaleMod))
+                    creep.setVelocityY(-(600 * scaleModX))
                     
                 } else if(!creep.body.onFloor()) {
-                    creep.x -= (17.5 * scaleMod)
+                    creep.x -= (17.5 * scaleModX)
                 }
                 
 
             creep.play('nightBorneMinion_Attack',true)
                 
                 
-            } else if (!creepIsHit && creep.x < player.x && creep.x > gameWidth && creep.flipX) {
+            } else if (!creepIsHit && creep.x < player.x && creep.x > screenWidth && creep.flipX) {
                 
-                if (creep.x < player.x - Phaser.Math.Between(450 * scaleMod,300 * scaleMod)){
+                if (creep.x < player.x - Phaser.Math.Between(450 * scaleModX,300 * scaleModX)){
                     creepChase = true
                 }
 
-                if (creepChase && creep.x < player.x - Phaser.Math.Between(100 * scaleMod,150 * scaleMod)){
+                if (creepChase && creep.x < player.x - Phaser.Math.Between(100 * scaleModX,150 * scaleModX)){
                     if (playerSpeed <= 1 ) {
                         creep.play({key:'nightBorneMinion_Move',frameRate: 18},true)
-                        creep.x += Phaser.Math.Between(18,24) * playerSpeed * scaleMod
+                        creep.x += Phaser.Math.Between(18,24) * playerSpeed * scaleModX
                     } else if (playerSpeed > 1 && playerSpeed < 1.25 ) {
                         creep.play({key:'nightBorneMinion_Move',frameRate: 16},true)
-                        creep.x += Phaser.Math.Between(16,22) * playerSpeed  * scaleMod
+                        creep.x += Phaser.Math.Between(16,22) * playerSpeed  * scaleModX
                     } else if (playerSpeed >= 1.15) {
                         creep.play({key:'nightBorneMinion_Move',frameRate: 12},true)
-                        creep.x += Phaser.Math.Between(12,16) * scaleMod
+                        creep.x += Phaser.Math.Between(12,16) * scaleModX
                     }
                 }
                 
                 
                 
                 
-            } else if(!creepIsHit && creep.x < gameWidth * 2) {
+            } else if(!creepIsHit && creep.x < screenWidth * 2) {
                 creep.play('nightBorneMinion_Idle',true)
                 creep.setVelocityX(0)
                 
@@ -4019,28 +4019,28 @@ class Badlands extends Phaser.Scene {
             //
 
 
-            if (creep.y > gameHeight + (100 * scaleMod)){
-                creep.y = gameHeight
-                creep.x = 5 * scaleMod
+            if (creep.y > screenHeight + (100 * scaleModX)){
+                creep.y = screenHeight
+                creep.x = 5 * scaleModX
             }
 
-            if (nightBorne.y > gameHeight + (100 * scaleMod)){
-                nightBorne.y = gameHeight
-                nightBorne.x = 5 * scaleMod
+            if (nightBorne.y > screenHeight + (100 * scaleModX)){
+                nightBorne.y = screenHeight
+                nightBorne.x = 5 * scaleModX
             }
 
 
             playerShadow.flipX = player.flipX
             if(playerShadow.flipX){
-                playerShadow.x = player.x + (10 * scaleMod)
+                playerShadow.x = player.x + (10 * scaleModX)
             } else {
-                playerShadow.x = player.x - (10 * scaleMod)
+                playerShadow.x = player.x - (10 * scaleModX)
             }
 
             if(playerShadow.flipY){
-                playerShadow.y = player.y + (150 * scaleMod)
+                playerShadow.y = player.y + (150 * scaleModX)
             } else {
-                playerShadow.y = player.y + (35 * scaleMod)
+                playerShadow.y = player.y + (35 * scaleModX)
             }
 
             playerShadow.play(player.anims.getName(),true)
@@ -4055,13 +4055,13 @@ class Badlands extends Phaser.Scene {
 
             nightBorneShadow.flipX = nightBorne.flipX
             if(nightBorneShadow.flipX){
-                nightBorneShadow.x = nightBorne.x + (10 * scaleMod)
+                nightBorneShadow.x = nightBorne.x + (10 * scaleModX)
             } else {
-                nightBorneShadow.x = nightBorne.x - (10 * scaleMod)
+                nightBorneShadow.x = nightBorne.x - (10 * scaleModX)
             }
 
             if(nightBorneShadow.flipY){
-                nightBorneShadow.y = nightBorne.y - (5 * scaleMod)
+                nightBorneShadow.y = nightBorne.y - (5 * scaleModX)
             } else {
                 nightBorneShadow.y = nightBorne.y
             }
@@ -4079,9 +4079,9 @@ class Badlands extends Phaser.Scene {
 
             creepShadow.flipX = creep.flipX
             if(creepShadow.flipX){
-                creepShadow.x = creep.x + (10 * scaleMod)
+                creepShadow.x = creep.x + (10 * scaleModX)
             } else {
-                creepShadow.x = creep.x - (10 * scaleMod)
+                creepShadow.x = creep.x - (10 * scaleModX)
             }
 
             if(creepShadow.flipY){
@@ -4103,13 +4103,13 @@ class Badlands extends Phaser.Scene {
 
             highObstacleShadow.flipX = highObstacle.flipX
             if(highObstacleShadow.flipX){
-                highObstacleShadow.x = highObstacle.x - (25 * scaleMod)
+                highObstacleShadow.x = highObstacle.x - (25 * scaleModX)
             } else {
-                highObstacleShadow.x = highObstacle.x + (25 * scaleMod)
+                highObstacleShadow.x = highObstacle.x + (25 * scaleModX)
             }
 
             if(highObstacleShadow.flipY){
-                highObstacleShadow.y = highObstacle.y + (340 * scaleMod)
+                highObstacleShadow.y = highObstacle.y + (340 * scaleModX)
             } else {
                 highObstacleShadow.y = highObstacle.y
             }
@@ -4118,11 +4118,11 @@ class Badlands extends Phaser.Scene {
             if(lowObstacleShadow.flipX){
                 lowObstacleShadow.x = lowObstacle.x
             } else {
-                lowObstacleShadow.x = lowObstacle.x + (110 * scaleMod)
+                lowObstacleShadow.x = lowObstacle.x + (110 * scaleModX)
             }
 
             if(lowObstacleShadow.flipY){
-                lowObstacleShadow.y = lowObstacle.y + (125 * scaleMod)
+                lowObstacleShadow.y = lowObstacle.y + (125 * scaleModX)
             } else {
                 lowObstacleShadow.y = lowObstacle.y
             }
@@ -4179,86 +4179,86 @@ class Badlands extends Phaser.Scene {
                     showHUD()
                 }
 
-                t.x = camera.worldView.x + (gameWidth * 0.85) 
+                t.x = camera.worldView.x + (screenWidth * 0.85) 
              
-                playerIconBox.x = camera.scrollX + (gameWidth * 0.075)
-                playerIconBox.y = camera.scrollY +  (gameHeight * 0.15 )
+                playerIconBox.x = camera.scrollX + (screenWidth * 0.075)
+                playerIconBox.y = camera.scrollY +  (screenHeight * 0.15 )
 
                 playerIcon.x = playerIconBox.x
                 playerIcon.y = playerIconBox.y
 
-                playerVitalsBox.x = playerIconBox.x + (125 * (scaleMod))
+                playerVitalsBox.x = playerIconBox.x + (125 * (scaleModX))
                 playerVitalsBox.y = playerIcon.y
 
-                playerVitals.x = playerIconBox.x + (242.5 * (scaleMod))
-                playerVitals.y = playerIconBox.y - (75 * (scaleMod))
+                playerVitals.x = playerIconBox.x + (242.5 * (scaleModX))
+                playerVitals.y = playerIconBox.y - (75 * (scaleModX))
                 playerVitals.draw()
 
-                playerVitalsTextL.x = playerVitals.x - (50 * (scaleMod))
-                playerVitalsTextL.y = playerVitals.y + (17.5 * (scaleMod))
+                playerVitalsTextL.x = playerVitals.x - (50 * (scaleModX))
+                playerVitalsTextL.y = playerVitals.y + (17.5 * (scaleModX))
 
-                playerVitalsTextF.x = playerVitals.x - (50 * (scaleMod))
-                playerVitalsTextF.y = playerVitals.y + (47.5 * (scaleMod))
+                playerVitalsTextF.x = playerVitals.x - (50 * (scaleModX))
+                playerVitalsTextF.y = playerVitals.y + (47.5 * (scaleModX))
 
-                playerVitalsTextE.x = playerVitals.x - (50 * (scaleMod))
-                playerVitalsTextE.y = playerVitals.y + (72.5 * (scaleMod))
+                playerVitalsTextE.x = playerVitals.x - (50 * (scaleModX))
+                playerVitalsTextE.y = playerVitals.y + (72.5 * (scaleModX))
 
-                levelIcon.x = playerIconBox.x + (185 * (scaleMod))
-                levelIcon.y = playerIcon.y + (50 * (scaleMod))
-                levelText.x = levelIcon.x + (55 * (scaleMod))
+                levelIcon.x = playerIconBox.x + (185 * (scaleModX))
+                levelIcon.y = playerIcon.y + (50 * (scaleModX))
+                levelText.x = levelIcon.x + (55 * (scaleModX))
                 levelText.y = levelIcon.y
                 levelText.setText(Math.floor(level))
 
-                gloryIcon.x = levelIcon.x + (120 * (scaleMod))
+                gloryIcon.x = levelIcon.x + (120 * (scaleModX))
                 gloryIcon.y = levelIcon.y
-                gloryText.x = gloryIcon.x + (75 * (scaleMod))
+                gloryText.x = gloryIcon.x + (75 * (scaleModX))
                 gloryText.y = gloryIcon.y
                 gloryText.setText(Math.floor(glory))
 
-                goldIcon.x = gloryIcon.x + (150 * (scaleMod))
+                goldIcon.x = gloryIcon.x + (150 * (scaleModX))
                 goldIcon.y = gloryIcon.y
-                goldText.x = goldIcon.x + (75 * (scaleMod))
+                goldText.x = goldIcon.x + (75 * (scaleModX))
                 goldText.y = goldIcon.y
                 goldText.setText(Math.floor(gold))
 
-                levelProgress.x = camera.scrollX + (gameWidth * 0.3)
-                levelProgress.y = (gameHeight * 0.975)
+                levelProgress.x = camera.scrollX + (screenWidth * 0.3)
+                levelProgress.y = (screenHeight * 0.975)
                 levelProgress.draw()
 
-                skillABox.x = playerVitalsBox.x + (515 * (scaleMod))
-                skillABox.y = playerVitalsBox.y + (75 * (scaleMod))
+                skillABox.x = playerVitalsBox.x + (515 * (scaleModX))
+                skillABox.y = playerVitalsBox.y + (75 * (scaleModX))
 
                 skillAIcon.x = skillABox.x
                 skillAIcon.y = skillABox.y
 
-                skillBBox.x = skillABox.x + (125 * (scaleMod))
+                skillBBox.x = skillABox.x + (125 * (scaleModX))
                 skillBBox.y = skillABox.y
 
                 skillBIcon.x = skillBBox.x
                 skillBIcon.y = skillBBox.y
 
-                inspirationPlayerIconBox.x = camera.scrollX + (gameWidth * 0.125)
+                inspirationPlayerIconBox.x = camera.scrollX + (screenWidth * 0.125)
                 inspirationPlayerIcon.x = inspirationPlayerIconBox.x
 
-                inspirationTextBox.x = camera.scrollX + (gameWidth * 0.6)
+                inspirationTextBox.x = camera.scrollX + (screenWidth * 0.6)
                 inspirationText.x = inspirationTextBox.x
 
-                inspirationBoxEnergy.x = camera.scrollX + (gameWidth * 0.35)
+                inspirationBoxEnergy.x = camera.scrollX + (screenWidth * 0.35)
                 inspirationTextEnergy.x = inspirationBoxEnergy.x
-                inspirationBoxFocus.x = camera.scrollX + (gameWidth * 0.6)
+                inspirationBoxFocus.x = camera.scrollX + (screenWidth * 0.6)
                 inspirationTextFocus.x = inspirationBoxFocus.x
-                inspirationBoxPower.x = camera.scrollX + (gameWidth * 0.85)
+                inspirationBoxPower.x = camera.scrollX + (screenWidth * 0.85)
                 inspirationTextPower.x = inspirationBoxPower.x
             
                 skillTreeEnergyIcon.x = inspirationBoxEnergy.x
                 skillTreeFocusIcon.x = inspirationBoxFocus.x
                 skillTreeLifeIcon.x = inspirationBoxPower.x
 
-                spotlightPlayerHealth.x = player.x + (0 * (scaleMod));
-                spotlightPlayerHealth.y = player.y - (10 * (scaleMod));
+                spotlightPlayerHealth.x = player.x + (0 * (scaleModX));
+                spotlightPlayerHealth.y = player.y - (10 * (scaleModX));
 
-                spotlightPlayerPower.x = player.x + (0 * (scaleMod));
-                spotlightPlayerPower.y = player.y - (10 * (scaleMod));
+                spotlightPlayerPower.x = player.x + (0 * (scaleModX));
+                spotlightPlayerPower.y = player.y - (10 * (scaleModX));
 
                 spotlightNightBorne.x = nightBorne.x;
                 spotlightNightBorne.y = nightBorne.y;
@@ -4267,8 +4267,8 @@ class Badlands extends Phaser.Scene {
                 spotlightCreep.y = creep.y;
 
                 
-                 spotlightSun.x =   camera.scrollX + (gameWidth *  sunPositionX) + ((gameWidth - camera.scrollX) * 0.1) // camera.scrollX + 
-                 spotlightSun.y =   camera.scrollY + (gameHeight * sunPositionY)
+                 spotlightSun.x =   camera.scrollX + (screenWidth *  sunPositionX) + ((screenWidth - camera.scrollX) * 0.1) // camera.scrollX + 
+                 spotlightSun.y =   camera.scrollY + (screenHeight * sunPositionY)
             // Audio
 
                 // Background Music
@@ -4286,88 +4286,6 @@ class Badlands extends Phaser.Scene {
 
                 // Keyboard Control Mapping
 
-                if(cursors.left.isDown){
-                    leftIsDown = true 
-                } else if (Phaser.Input.Keyboard.JustUp(cursors.left)){
-                    leftIsDown = false     
-                } 
-
-                if(cursors.right.isDown){
-                    rightIsDown = true 
-                    
-                } else if (Phaser.Input.Keyboard.JustUp(cursors.right)){
-                    rightIsDown = false 
-                }
-
-                if (Phaser.Input.Keyboard.JustDown(cursors.up)){
-                    upIsDown = true
-                } else if (Phaser.Input.Keyboard.JustUp(cursors.up)) {
-                    //upIsDown = false
-                }
-
-                if (cursors.down.isDown){
-                    downIsDown = true
-                } else if (Phaser.Input.Keyboard.JustUp(cursors.down)){
-                    downIsDown = false
-                }
-
-                if (keyA.isDown){
-
-                    actionKeyAIsDown = true
-
-                    if (Phaser.Input.Keyboard.JustDown(keyA)){
-                        usingPower = true
-                    }
-                    
-                } else if (keyA.isUp){
-
-                    if (Phaser.Input.Keyboard.JustUp(keyA)){
-                        actionKeyAIsDown = false
-                    }
-                    
-                }
-
-                if (keyD.isDown){
-
-                    actionKeyBIsDown = true
-
-                } else if (keyD.isUp){
-                    if (Phaser.Input.Keyboard.JustUp(keyD)){
-                        actionKeyBIsDown = false
-                    }  
-                }
-
-                if (cursors.space.isDown){
-
-                    skillKeyAIsDown = true
-
-                    if (Phaser.Input.Keyboard.JustDown(cursors.space)){
-                        usingPower = true
-                    }
-
-                } else if (cursors.space.isUp){
-
-                    if (Phaser.Input.Keyboard.JustUp(cursors.space)){
-                        skillKeyAIsDown = false
-                    }
-
-                }
-
-                if (keyF.isDown){
-
-                skillKeyBIsDown = true
-
-                if (Phaser.Input.Keyboard.JustDown(keyF)){
-                    usingPower = true
-                }
-
-                } else if (cursors.space.isUp){
-
-                if (Phaser.Input.Keyboard.JustUp(keyF)){
-                    skillKeyBIsDown = false
-                }
-
-                }
       
                 // Gamepad Control Mapping
                 
@@ -4566,29 +4484,29 @@ class Badlands extends Phaser.Scene {
                     // Touch Control Screen Tracking
 
                         // Anchor Buttons
-                        left.x = camera.scrollX + (gameWidth * 0.075)
-                        left.y = camera.worldView.y + (gameHeight * 0.8)
+                        left.x = camera.scrollX + (screenWidth * 0.075)
+                        left.y = camera.worldView.y + (screenHeight * 0.8)
 
-                        actionA.x = camera.scrollX + (gameWidth * 0.925)
-                        actionA.y = camera.worldView.y + (gameHeight * 0.85)
-                        actionB.x = camera.scrollX + (gameWidth * 0.825)
-                        actionB.y = camera.worldView.y + (gameHeight * 0.9)
+                        actionA.x = camera.scrollX + (screenWidth * 0.925)
+                        actionA.y = camera.worldView.y + (screenHeight * 0.85)
+                        actionB.x = camera.scrollX + (screenWidth * 0.825)
+                        actionB.y = camera.worldView.y + (screenHeight * 0.9)
 
                         
                         // Remaining Buttons                        
-                        deadSpace.x = left.x + (gameWidth * 0.05)
+                        deadSpace.x = left.x + (screenWidth * 0.05)
                         deadSpace.y = left.y
-                        right.x = deadSpace.x + (gameWidth * 0.05)
+                        right.x = deadSpace.x + (screenWidth * 0.05)
                         right.y = deadSpace.y
                         up.x = deadSpace.x
-                        up.y = deadSpace.y - (gameHeight * 0.1)
+                        up.y = deadSpace.y - (screenHeight * 0.1)
                         down.x = deadSpace.x
-                        down.y = left.y + (gameHeight * 0.1) 
+                        down.y = left.y + (screenHeight * 0.1) 
 
                         skillA.x = actionA.x 
-                        skillA.y = actionA.y - (gameHeight * 0.2)
+                        skillA.y = actionA.y - (screenHeight * 0.2)
                         skillB.x = actionB.x 
-                        skillB.y = actionB.y - (gameHeight * 0.2)
+                        skillB.y = actionB.y - (screenHeight * 0.2)
                     
                     
                     left.on('pointerdown', function(){
@@ -4749,8 +4667,8 @@ class Badlands extends Phaser.Scene {
                // NightBorne Elite
 
                     // NightBorne outline follows NightBorne
-                        nightBorneOutline.x = nightBorne.x - (15 * scaleMod)
-                        nightBorneOutline.y = nightBorne.y - (325 * scaleMod)
+                        nightBorneOutline.x = nightBorne.x - (15 * scaleModX)
+                        nightBorneOutline.y = nightBorne.y - (325 * scaleModX)
                         nightBorneOutline.flipX = nightBorne.flipX
 
                     // NightBorne outline copies current playing animation of  sprite, with optional delay
@@ -4762,7 +4680,7 @@ class Badlands extends Phaser.Scene {
             // Game Variables
 
             if(!focusModeActive && !nightBorneCamActive){
-                playerSpeed = player.x / (gameWidth * 1.25)
+                playerSpeed = player.x / (screenWidth * 1.25)
             } else if (nightBorneCamActive && !nightBorneCamLocked) {
                 playerSpeed = 1.75
             } else if (nightBorneCamLocked){
@@ -4807,12 +4725,12 @@ class Badlands extends Phaser.Scene {
                                  
                     if(this.sys.game.device.os.desktop){
                         for (var i = 1; i < bgLayers + 1 ; i++){
-                            window['bgL'+i].tilePositionX += 12  * window['bgL'+ i + 'ScrollMod']  * playerSpeed * (scaleMod / (gameWidth / this.textures.get('bgL' + i).getSourceImage().width))
+                            window['bgL'+i].tilePositionX += 12  * window['bgL'+ i + 'ScrollMod']  * playerSpeed * (scaleModX / (screenWidth / this.textures.get('bgL' + i).getSourceImage().width))
 
                         }
 
                         for (var i = 1; i < fgLayers + 1; i++){
-                            window['fgL'+i].tilePositionX += 12 * window['fgL'+ i + 'ScrollMod'] * playerSpeed * (scaleMod / (gameWidth / this.textures.get('fgL' + i).getSourceImage().width))
+                            window['fgL'+i].tilePositionX += 12 * window['fgL'+ i + 'ScrollMod'] * playerSpeed * (scaleModX / (screenWidth / this.textures.get('fgL' + i).getSourceImage().width))
                         }
                     }
 
@@ -4836,7 +4754,7 @@ class Badlands extends Phaser.Scene {
 
                 // Dynamic Panning based on nightBorne distance to player
                 if (!nightBorneCamActive && !focusModeActive){
-                        camera.pan(gameWidth * 1.5,player.y,2000)
+                        camera.pan(screenWidth * 1.5,player.y,2000)
 
                 } 
 
@@ -4846,38 +4764,38 @@ class Badlands extends Phaser.Scene {
         } else if (gameMode == 1){
 
             for (var i = 1; i < bgLayers + 1 ; i++){
-                window['bgL'+i].tilePositionX = camera.scrollX * window['bgL'+ i + 'ScrollMod'] * (scaleMod / (gameWidth / this.textures.get('bgL' + i).getSourceImage().width)) 
+                window['bgL'+i].tilePositionX = camera.scrollX * window['bgL'+ i + 'ScrollMod'] * (scaleModX / (screenWidth / this.textures.get('bgL' + i).getSourceImage().width)) 
             }
 
             for (var i = 1; i < fgLayers + 1 ; i++){
-                window['fgL'+i].tilePositionX = camera.scrollX * window['fgL'+ i + 'ScrollMod'] * (scaleMod / (gameWidth / this.textures.get('fgL' + i).getSourceImage().width)) 
+                window['fgL'+i].tilePositionX = camera.scrollX * window['fgL'+ i + 'ScrollMod'] * (scaleModX / (screenWidth / this.textures.get('fgL' + i).getSourceImage().width)) 
             }
 
                 // Camera
-                if (player.x > closest.x - (300 * scaleMod) && playerLockedOn){
+                if (player.x > closest.x - (300 * scaleModX) && playerLockedOn){
                     
-                    camera.pan(player.x - (100 * scaleMod),0,100,'Sine.easeInOut',true,
+                    camera.pan(player.x - (100 * scaleModX),0,100,'Sine.easeInOut',true,
                     (camera, progress) => { 
-                        camera.panEffect.destination.x = player.x - (100 * scaleMod);
+                        camera.panEffect.destination.x = player.x - (100 * scaleModX);
                         if(progress == 1){
-                           camera.startFollow(player,true,0.5,0.5,100 * scaleMod,0)
+                           camera.startFollow(player,true,0.5,0.5,100 * scaleModX,0)
                        }
                     })
                     
                 } else 
 
-                if (player.x < closest.x + (300 * scaleMod) && playerLockedOn){
+                if (player.x < closest.x + (300 * scaleModX) && playerLockedOn){
                     
-                    camera.pan(player.x + (100 * scaleMod),0,100,'Sine.easeInOut', true,
+                    camera.pan(player.x + (100 * scaleModX),0,100,'Sine.easeInOut', true,
                     (camera, progress) => { 
-                        camera.panEffect.destination.x = player.x + (100 * scaleMod);
+                        camera.panEffect.destination.x = player.x + (100 * scaleModX);
                         if(progress == 1){
-                           camera.startFollow(player,true,0.5,0.5,-(100 * scaleMod),0)
+                           camera.startFollow(player,true,0.5,0.5,-(100 * scaleModX),0)
                        }
                     })
                     
                 } else if (!playerLockedOn) {
-                    camera.pan(player.x + (100 * scaleMod),0,100,'Sine.easeInOut',true,
+                    camera.pan(player.x + (100 * scaleModX),0,100,'Sine.easeInOut',true,
                     (camera, progress) => { 
                          camera.panEffect.destination.x = player.x;
                          if(progress == 1){
@@ -4890,7 +4808,7 @@ class Badlands extends Phaser.Scene {
 
 
                 // Auto lock - Enables Player to automatically face closest enemy
-                if(Math.abs(player.x - closest.x) <= 350 * scaleMod){
+                if(Math.abs(player.x - closest.x) <= 350 * scaleModX){
                     playerLockedOn = true
                     if(player.x < closest.x){
                         player.flipX = false
@@ -4904,7 +4822,7 @@ class Badlands extends Phaser.Scene {
                 }
 
                 // Enables closest enemy to automatically face and move towards player
-                if(Math.abs(closest.x - player.x) <= 250 * scaleMod){
+                if(Math.abs(closest.x - player.x) <= 250 * scaleModX){
                     enemyLockedOn = true
                     if(closest.x < player.x){
                         closest.flipX = false
