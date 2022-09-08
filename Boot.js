@@ -61,7 +61,8 @@ class Boot extends Phaser.Scene {
     update(){
 
         if (nextScene){
-            proceedToScene(this,'Kianova')
+            nextScene = false
+            this.scene.start('MainMenu')
   
         }
 

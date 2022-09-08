@@ -2,7 +2,7 @@ window.onload = function(){
 
 var config = {
     parent: 'myGame',
-    type: Phaser.CANVAS,
+    type: Phaser.AUTO,
     autoFocus: true,
 
     pixelArt: 0,
@@ -37,6 +37,7 @@ var config = {
         
         Boot,
         InputModule,
+        MainMenu,
          // for load global variables, assets & splash screen
         //Menu, - Links to Story Mode (Login), Free Play (Randomised Region -> Badlands, no financial data), 1 pager on game & controls + option for practice mode
         //Login,

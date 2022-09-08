@@ -162,10 +162,10 @@
 
     var moveCancelActive = true
 
-    var actionKeyAIsDown = false
-    var actionKeyBIsDown = false
-    var skillKeyAIsDown = false
-    var skillKeyBIsDown = false
+    var a1IsDown = false
+    var a2IsDown = false
+    var s1IsDown = false
+    var s2IsDown = false
    
     var upIsDown = false
     var downIsDown = false
@@ -308,10 +308,10 @@
 
      moveCancelActive = true
 
-     actionKeyAIsDown = false
-     actionKeyBIsDown = false
-    skillKeyAIsDown = false
-     skillKeyBIsDown = false
+     a1IsDown = false
+     a2IsDown = false
+    s1IsDown = false
+     s2IsDown = false
      leftIsDown = false
      rightIsDown = false
      upIsDown = false
@@ -418,7 +418,7 @@
 
     function abstractedControls(){
         if(controlsEnabled){
-        if(skillKeyAIsDown){
+        if(s1IsDown){
                     if(!playerIsHit){
 
                             regenActive = false
@@ -475,7 +475,7 @@
                     }
                 } else 
                 //
-                if(skillKeyBIsDown){
+                if(s2IsDown){
                     if(!playerIsHit){
 
                             regenActive = false
@@ -532,7 +532,7 @@
                     }
                 } else
                 //
-                if(actionKeyAIsDown){
+                if(a1IsDown){
                     if(!playerIsHit){
 
                             regenActive = false
@@ -590,7 +590,7 @@
                     }
                 } else
                 
-                if (actionKeyBIsDown){
+                if (a2IsDown){
                     if(!playerIsHit){
                         regenActive = false
 
@@ -702,14 +702,14 @@
                     }
                 } else
                 //
-                if(this.leftIsDown || this.rightIsDown){
+                if(leftIsDown || rightIsDown){
                     if(!playerDodging && !playerIsHit && !playerAttacking && !playerBlocking){
 
                         if(inBattle){
                             player.body.maxVelocity.x = 750 * scaleModX
                             if (playerLockedOn){
                                 //If Left
-                                if(this.leftIsDown){
+                                if(leftIsDown){
                                     if(player.flipX == false){
                                         playerDodging = true
                                         player.setVelocityX(-1000)
@@ -729,7 +729,7 @@
                                     }
                                 } else 
                                 // If Right
-                                if(this.rightIsDown){
+                                if(rightIsDown){
                                     if(player.flipX == true){
                                         playerDodging = true
                             
@@ -755,13 +755,13 @@
 
                                 player.play('pRun',true)
                                 // If Left
-                                if(this.leftIsDown){
+                                if(leftIsDown){
                                     player.flipX = true
                                     player.setVelocityX(player.body.velocity.x - 125)
                                    
                                 } else
                                 // If Right 
-                                if(this.rightIsDown){
+                                if(rightIsDown){
                                     player.flipX = false
                                     player.setVelocityX(player.body.velocity.x + 125)
                                     
@@ -772,7 +772,7 @@
                             player.body.maxVelocity.x = 750 * scaleModX
                             // If Left
                             if(currentEnergy > 1){
-                            if(this.leftIsDown){
+                            if(leftIsDown){
                                 playerVitals.decreaseEnergy((maxEnergy * 0.25) / 50 )
                                 playerVitals.decreaseLife(-(maxEnergy * 0.25)  / 100 )
                                 if(playerSpeed >= 0.9){
@@ -782,7 +782,7 @@
                                 player.anims.play({key:'pRun',frameRate: 8},true);
                             } else 
                             // If Right
-                            if(this.rightIsDown){
+                            if(rightIsDown){
                                 playerVitals.decreaseEnergy((income * 0.25) / 50)
                                 if(playerSpeed <= 1.5){
                                 player.x += 4
@@ -810,11 +810,11 @@
 
                             player.play({key:'pRun',frameRate: 12},true);
 
-                            if(this.leftIsDown){
+                            if(leftIsDown){
                                 playerVitals.decreaseEnergy((income * 0.25) / 100 ) 
                             } else 
                             // If Right
-                            if(this.rightIsDown){
+                            if(rightIsDown){
                                 playerVitals.decreaseEnergy((income * 0.25) / 50) 
                             }
                         }
@@ -1876,9 +1876,9 @@ hide ()
         if(usingPower){
 
             usingPower = false
-             if(skillKeyAIsDown){
+             if(s1IsDown){
                 deadlyCombatAssault()
-             } else if (skillKeyBIsDown){
+             } else if (s2IsDown){
                 thunderStrike()
              }                    
              
@@ -3970,7 +3970,7 @@ class Badlands extends Phaser.Scene {
 
         
 
-
+        console.log(a1IsDown)
 
             // Creep AI Proto
             if(gameMode == 0){
@@ -4421,23 +4421,23 @@ class Badlands extends Phaser.Scene {
 
                         } else if (button == 7){
 
-                            actionKeyAIsDown = true
+                            a1IsDown = true
                             usingPower = true
 
                             
                         } else if (button == 5){
                             
-                            skillKeyAIsDown = true
+                            s1IsDown = true
                             usingPower = true
 
                             
                         } else if (button == 6){
 
-                            actionKeyBIsDown = true
+                            a2IsDown = true
     
                         } else if (button == 4){
                             
-                            skillKeyBIsDown = true
+                            s2IsDown = true
                             usingPower = true
  
                         }
@@ -4459,17 +4459,17 @@ class Badlands extends Phaser.Scene {
                         // LS = 10 ; RS = 11 
                         if (button == 7){
                              
-                            actionKeyAIsDown = false
+                            a1IsDown = false
                     
                         } else if (button == 5){
-                            skillKeyAIsDown = false
+                            s1IsDown = false
    
                         } else if (button == 6){
                             
-                            actionKeyBIsDown = false
+                            a2IsDown = false
                                
                         } else if (button == 4){
-                            skillKeyBIsDown = false
+                            s2IsDown = false
 
                             
 
@@ -4557,7 +4557,7 @@ class Badlands extends Phaser.Scene {
 
                     actionA.on('pointerdown', function (button) {
 
-                            actionKeyAIsDown = true
+                            a1IsDown = true
                             usingPower = true
 
                             
@@ -4566,7 +4566,7 @@ class Badlands extends Phaser.Scene {
 
                     actionB.on('pointerup', function (button) {
 
-                        actionKeyAIsDown = false
+                        a1IsDown = false
                         
 
 
@@ -4575,14 +4575,14 @@ class Badlands extends Phaser.Scene {
 
                     actionB.on('pointerdown', function (button) {
                         
-                        actionKeyBIsDown = true
+                        a2IsDown = true
 
 
                     }, this);
 
                     actionB.on('pointerup', function (button) {
 
-                        actionKeyBIsDown = false
+                        a2IsDown = false
 
                     }, this);
 
@@ -4590,7 +4590,7 @@ class Badlands extends Phaser.Scene {
 
 
                     
-                        skillKeyAIsDown = true
+                        s1IsDown = true
                         usingPower = true
                     
 
@@ -4599,7 +4599,7 @@ class Badlands extends Phaser.Scene {
                     skillA.on('pointerup', function (button) {
               
                     
-                        skillKeyAIsDown = false
+                        s1IsDown = false
 
                     }, this);
 
@@ -4607,7 +4607,7 @@ class Badlands extends Phaser.Scene {
 
 
                     
-                    skillKeyBIsDown = true
+                    s2IsDown = true
                     usingPower = true
 
 
@@ -4616,7 +4616,7 @@ class Badlands extends Phaser.Scene {
                     skillB.on('pointerup', function (button) {
 
 
-                    skillKeyBIsDown = false
+                    s2IsDown = false
 
                     }, this);
 
@@ -4647,15 +4647,15 @@ class Badlands extends Phaser.Scene {
                 abstractedControls()
                 }
                 
-                if(!actionKeyAIsDown && !skillKeyAIsDown && !skillKeyBIsDown){
+                if(!a1IsDown && !s1IsDown && !s2IsDown){
                     playerAttacking = false
                 }
 
-                if (!actionKeyBIsDown){
+                if (!a2IsDown){
                     playerBlocking = false
                 }
 
-                if(!skillKeyAIsDown && !skillKeyBIsDown){
+                if(!s1IsDown && !s2IsDown){
                     playerFocusing = false
                     focusModeActive = false
                     scanningForDanger = false
@@ -4998,6 +4998,6 @@ class Badlands extends Phaser.Scene {
 
         }
 
-
+ 
 
 }

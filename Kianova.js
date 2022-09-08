@@ -360,7 +360,7 @@ class Kianova extends Phaser.Scene {
 
                 fill: 'white',
                 align: 'center',
-                wordWrap: { width: 300 * (scaleModX)},
+                wordWrap: { width: 300 * (scaleModX), useAdvancedWrap: false},
             }
         });
 
@@ -376,7 +376,7 @@ class Kianova extends Phaser.Scene {
         
 
 
-        sectorNameBox = this.add.image(screenWidth * 0.5, screenHeight * 0.075,'sectorNameBox').setScale(0.25 * (scaleModX),0.1 * (scaleModY))
+        sectorNameBox = this.add.image(screenWidth * 0.55, screenHeight * 0.075,'sectorNameBox').setScale(0.25 * (scaleModX),0.1 * (scaleModY))
         sectorNameText = this.make.text({
             x: sectorNameBox.x,
             y: sectorNameBox.y,
@@ -387,11 +387,11 @@ class Kianova extends Phaser.Scene {
 
                 fill: 'white',
                 align: 'justify, center',
-                wordWrap: { width: sectorNameBox.displayWidth * 0.85},
+                wordWrap: { width: sectorNameBox.displayWidth * 0.85, useAdvancedWrap: false},
             }
         });
 
-        sectorNameText.setFontSize(58 * (scaleModX))
+        sectorNameText.setFontSize(56 * (scaleModX))
 
         sector0Icon = this.add.image(screenWidth * 0.5, screenHeight * 0.9, 'r0Icon').setScale(0.75 * (scaleModX)).setPipeline('Light2D').setInteractive()
 
@@ -410,7 +410,10 @@ class Kianova extends Phaser.Scene {
         sectorInfo.setVisible(0)
 
         this.sectorUI = this.add.group()
-        this.sectorUI.addMultiple([sectorNameBox,sectorNameText,sector0Icon,sector1Icon,sector2Icon,sector3Icon,sector4Icon])
+        this.sectorUI.addMultiple([sectorNameBox,sectorNameText,sector0Icon,sector1Icon,sector2Icon,sector3Icon,sector4Icon,
+                                    this.kSectorInner,this.kSectorOuter,this.nSectorInner,this.nSectorOuter,this.eSectorInner,this.eSectorOuter,
+                                    this.sSectorInner,this.sSectorOuter,this.wSectorInner,this.wSectorOuter
+                                ])
         this.sectorUI.setVisible(0)
         
 
@@ -447,6 +450,7 @@ class Kianova extends Phaser.Scene {
 
                     this.sectorUI.setVisible(1)
                     kControlsEnabled = true
+                    this.refreshUI()
                       
             }
         });
@@ -459,7 +463,7 @@ class Kianova extends Phaser.Scene {
   
         });
 
-        this.refreshUI()
+        
         
 
         },this)
@@ -468,12 +472,6 @@ class Kianova extends Phaser.Scene {
     }
 
     update(){
-
-       
-        
-            
-  
-        
 
         if(leftIsDown && kControlsEnabled){
             
@@ -521,6 +519,9 @@ class Kianova extends Phaser.Scene {
             
             
             })
+        } if ((s2IsDown || a2IsDown) && kControlsEnabled){
+            this.scene.start('MainMenu')
+            this.scene.stop('Kianova')
         }
 
             // Change to pointerdown listener and get gameovject to set region
@@ -615,12 +616,14 @@ class Kianova extends Phaser.Scene {
 
         
 
-        if (nextScene && kControlsEnabled ){
+        if (nextScene && kControlsEnabled){
             this.scene.start(activeRegion, {targetZone: 0, currentTimePeriod: Phaser.Math.Between(1,4),rarityOverride:null})
             nextScene = false
             //this.scene.stop('Kianova')
             
         }
+
+        
 
         
     }

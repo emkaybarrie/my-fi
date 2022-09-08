@@ -27,8 +27,8 @@ class RegionTestEnvironment extends Phaser.Scene {
 
         // Region Data
         this.regionID = 0
-        this.region = '[Region Name]'
-        this.regionPatron = '[Patron Name]'
+        this.region = 'Region Test Environment'
+        this.regionPatron = 'Azakai'
         this.regionAffinity = '[Risk Band]'
 
         // Sector Data 
