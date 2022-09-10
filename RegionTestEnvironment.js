@@ -3,7 +3,7 @@ class RegionTestEnvironment extends Phaser.Scene {
 
     constructor() {
         super("RegionTestEnvironment")
- 
+        this.zones 
     }
 
     init(data)
@@ -37,7 +37,7 @@ class RegionTestEnvironment extends Phaser.Scene {
         
         console.log('Refreshing Region Sector Array Lists...')
         // Sector Lists
-        this.zone0 = [this.stageFileName()]
+        this.zone0 = [this.stageFileName]
         // Sector Root Array
         this.zones = [
                         this.zone0
@@ -73,30 +73,30 @@ class RegionTestEnvironment extends Phaser.Scene {
 
     // Stage Repository
 
-    stageFileName(){
+    stageFileName(game){
         // Stage Function  
         // Writes Stage Data to Region Scene Data 
         
             // Stage Code
         
                // Set Stage Sector & Rarity Data
-               this.zone = 0
-               this.rarity = 0
+               game.zone = 0
+               game.rarity = 0
 
                // Set Stage Details
 
-               this.id = 'R[Region ID]-Z[Zone ID]-S[Stage ID]-R[Rarity Code]'
-               this.stageName = 'Stage Name'
-               this.stageAssetPathRoot = 'assets/'
-               this.stageMusicFilePath = 'music/Katana.mp3'
+               game.id = 'R[Region ID]-Z[Zone ID]-S[Stage ID]-R[Rarity Code]'
+               game.stageName = 'Stage Name'
+               game.stageAssetPathRoot = 'assets/'
+               game.stageMusicFilePath = 'music/Katana.mp3'
 
                // Set Background (BG) & Foregorund (FG) Layers
-               this.stageAssetName = 'woods'
-               this.stageBackgroundLayers = 3
-               this.stageForegroundLayers = 1
-               this.stageBGScrollSpeedModifierSettings = [0.75,0.5,0]
-               this.stageFGScrollSpeedModifierSettings = [1]
-               this.stageNormalMaps = [0,0,0]
+               game.stageAssetName = 'woods'
+               game.stageBackgroundLayers = 3
+               game.stageForegroundLayers = 1
+               game.stageBGScrollSpeedModifierSettings = [0.75,0.5,0]
+               game.stageFGScrollSpeedModifierSettings = [1]
+               game.stageNormalMaps = [0,0,0]
 
                // Day/Night Settings
                 // Enable/Disable Times
@@ -106,12 +106,12 @@ class RegionTestEnvironment extends Phaser.Scene {
                 var dusk = true
                 var night = true
 
-                this.timeAvailabilityArray = [dawn,day,dusk,night]
+                game.timeAvailabilityArray = [dawn,day,dusk,night]
 
                 // Floor Settings
         
-                this.floorPosYMin = 0.1
-                this.floorPosYMax = 0.2
+                game.floorPosYMin = 0.1
+                game.floorPosYMax = 0.2
             
     }
 
@@ -167,9 +167,8 @@ class RegionTestEnvironment extends Phaser.Scene {
         while(findingMatch){
             console.log('Searching...')
             
-            
-            //candidateStage = 
-            this.zones[selectedZone][selectedZoneStage]
+            candidateStage = this.zones[selectedZone][selectedZoneStage]
+            candidateStage(this)
            
             // Checks if candidate stage matches rarity and is valid for time of day
             //  Checks Rarity
@@ -186,7 +185,7 @@ class RegionTestEnvironment extends Phaser.Scene {
             }
         }
 
-        // var stageDataImport = candidateStageObject
+
       
        
         // Selects Stage to load

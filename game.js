@@ -38,10 +38,9 @@ var config = {
         Boot,
         InputModule,
         MainMenu,
-         // for load global variables, assets & splash screen
-        //Menu, - Links to Story Mode (Login), Free Play (Randomised Region -> Badlands, no financial data), 1 pager on game & controls + option for practice mode
-        //Login,
-        //Data Core (Staging Area), - for global data (inc player data),real-world data connection & calcs - stores data to global registry rather than scene itself
+        FreePlaySetup,
+        //Login - scene for credential entry &
+        ///Player Core (Player Datawarehouse), - for global data (inc player data),real-world data connection & calcs - stores data to global registry rather than scene itself
         //Portal Entrance, - for real world summary/breakdown & primer/reminder on real-world to game linkages
         Kianova,
         // - holds Kianova data

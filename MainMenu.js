@@ -5,7 +5,7 @@ class MainMenu extends Phaser.Scene {
     constructor() {
         
         super("MainMenu")
-        this.menu1
+        
         this.activeMenuBox
         this.menuTextGroup
         this.menuOption1
@@ -29,25 +29,24 @@ class MainMenu extends Phaser.Scene {
     
     create(){
         
-        var menuImage = this.add.image(0,0,'menuBG').setScale(1.94,1.1).setOrigin(0,0)
+        var menuBG = this.add.image(0,0,'menuBG').setScale(1.94,1.1).setOrigin(0,0)
         var gameTitle = this.add.image(screenWidth * 0.30,screenHeight * 0.175,'gameTitle').setScale(1.25 * scaleModX)
 
-        this.menuOption1 = this.add.text(screenWidth * 0.175, screenHeight * 0.285, 'Prologue', { fontFamily: 'Gothic',align: 'center', fixedWidth:screenWidth * 0.25,fixedHeight:screenHeight * 0.075});
+        this.menuOption1 = this.add.text(gameTitle.x, screenHeight * 0.285, 'Prologue', { fontFamily: 'Gothic',align: 'center', fixedWidth:screenWidth * 0.25,fixedHeight:screenHeight * 0.075});
         this.menuOption2 = this.add.text(this.menuOption1.x,this.menuOption1.y + (screenHeight * 0.07) , 'Login', { fontFamily: 'Gothic',align: 'center', fixedWidth:screenWidth * 0.25,fixedHeight:screenHeight * 0.075});
         this.menuOption3 = this.add.text(this.menuOption2.x,this.menuOption2.y + (screenHeight * 0.07) , 'Free Play', { fontFamily: 'Gothic',align: 'center', fixedWidth:screenWidth * 0.25,fixedHeight:screenHeight * 0.075});
         this.menuOption4 = this.add.text(this.menuOption3.x,this.menuOption3.y + (screenHeight * 0.07) , 'The Crucible', { fontFamily: 'Gothic',align: 'center', fixedWidth:screenWidth * 0.25,fixedHeight:screenHeight * 0.075});
         
         
 
-        this.menuOption1.setFontSize(32 * scaleModX)
-        this.menuOption2.setFontSize(32 * scaleModX)
-        this.menuOption2.addColor()
-        this.menuOption3.setFontSize(32 * scaleModX)
-        this.menuOption4.setFontSize(32 * scaleModX)
+        this.menuOption1.setFontSize(32 * scaleModX).setOrigin(0.5,0)
+        this.menuOption2.setFontSize(32 * scaleModX).setOrigin(0.5,0)
+        this.menuOption3.setFontSize(32 * scaleModX).setOrigin(0.5,0)
+        this.menuOption4.setFontSize(32 * scaleModX).setOrigin(0.5,0)
         this.menuTextGroup = this.add.group([this.menuOption1,this.menuOption2,this.menuOption3,this.menuOption4])
 
 
-        this.activeMenuBox = this.add.tileSprite(screenWidth * 0.3,this.menuOption1.y + screenHeight * 0.015,screenWidth * 0.15,screenHeight * 0.075,'menuSelectionTexture');
+        this.activeMenuBox = this.add.tileSprite(this.menuOption1.x,this.menuOption1.y + (screenHeight * 0.015),screenWidth * 0.1,screenHeight * 0.075,'menuSelectionTexture');
         this.activeMenuBox.setTexture('menuSelectionTexture').setAlpha(0.35)
 
         this.selectedOption = 1
@@ -58,7 +57,7 @@ class MainMenu extends Phaser.Scene {
     
     update(){
 
-        this.activeMenuBox.tilePositionX += 2.5
+        this.activeMenuBox.tilePositionX += 2.5 * scaleModX
 
         
 
@@ -104,7 +103,7 @@ class MainMenu extends Phaser.Scene {
         } else if (this.selectedOption == 2){
             this.selectedMode = 'Login'
         } else if (this.selectedOption == 3){
-            this.selectedMode = 'Kianova'//'Free Play'
+            this.selectedMode = 'FreePlaySetup'//'Free Play'
         } else if (this.selectedOption == 4){
             this.selectedMode = 'The Crucible'
         }

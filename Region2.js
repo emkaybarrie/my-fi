@@ -1,9 +1,13 @@
+
+
 class Region2 extends Phaser.Scene {
 
 
     constructor() {
         super("Region2")
-        
+        //this.zone0
+        //this.zones; 
+
     }
     
     init(data)
@@ -31,22 +35,27 @@ class Region2 extends Phaser.Scene {
         this.regionPatron = 'Lucarius'
         this.regionAffinity = 'Risk Band 2'
 
-        // Sector Data 
-        // Stores Stages in Sector Arrays
-        // Last Update: 06/09/2022 
+        //Sector Data 
+        //Stores Stages in Sector Arrays
+        //Last Update: 06/09/2022 
         
         console.log('Refreshing Region Sector Array Lists...')
         // Sector Lists
-        this.zone0 = [this.lucarianDesert(),this.barrenPlains()]
+        this.zone0 = [this.lucarianDesert,this.barrenPlains]
         // Sector Root Array
         this.zones = [
                         this.zone0
-                    ]
+                    ]  
+
      
     }
     
     create ()
     {
+
+        
+
+        
 
     // Create Stage Instance Data Object
 
@@ -71,32 +80,36 @@ class Region2 extends Phaser.Scene {
 
     }
 
+    update() {
+      
+    }
+
     // Stage Repository
 
-    stageFileName(){
+    stageFileName(game){
         // Stage Function  
         // Writes Stage Data to Region Scene Data 
         
             // Stage Code
         
                // Set Stage Sector & Rarity Data
-               this.zone = 0
-               this.rarity = 0
+               game.zone = 0
+               game.rarity = 0
 
                // Set Stage Details
 
-               this.id = 'R2-Z0-S0-R1'
-               this.stageName = 'The Barren Plains'
-               this.stageAssetPathRoot = 'assets/'
-               this.stageMusicFilePath = 'music/Katana.mp3'
+               game.id = 'R[Region ID]-Z[Zone ID]-S[Stage ID]-R[Rarity Code]'
+               game.stageName = 'Stage Name'
+               game.stageAssetPathRoot = 'assets/'
+               game.stageMusicFilePath = 'music/Katana.mp3'
 
                // Set Background (BG) & Foregorund (FG) Layers
-               this.stageAssetName = 'wasteland'
-               this.stageBackgroundLayers = 5
-               this.stageForegroundLayers = 0
-               this.stageBGScrollSpeedModifierSettings = [1,0.75,0.5,0.1,0]
-               this.stageFGScrollSpeedModifierSettings = []
-               this.stageNormalMaps = []
+               game.stageAssetName = 'woods'
+               game.stageBackgroundLayers = 3
+               game.stageForegroundLayers = 1
+               game.stageBGScrollSpeedModifierSettings = [0.75,0.5,0]
+               game.stageFGScrollSpeedModifierSettings = [1]
+               game.stageNormalMaps = [0,0,0]
 
                // Day/Night Settings
                 // Enable/Disable Times
@@ -106,42 +119,40 @@ class Region2 extends Phaser.Scene {
                 var dusk = true
                 var night = true
 
-                this.timeAvailabilityArray = [dawn,day,dusk,night]
+                game.timeAvailabilityArray = [dawn,day,dusk,night]
 
                 // Floor Settings
         
-                this.floorPosYMin = 0.025
-                this.floorPosYMax = 0.075
-
-
+                game.floorPosYMin = 0.1
+                game.floorPosYMax = 0.2
             
     }
 
-    lucarianDesert(){
-       
+    lucarianDesert(game){
+        console.log('Scanning: Lucarian Desert')
         // Stage Function  
         // Writes Stage Data to Region Scene Data 
         
             // Stage Code
         
                // Set Stage Sector & Rarity Data
-               this.zone = 0
-               this.rarity = 0
+               game.zone = 0
+               game.rarity = 0
 
                // Set Stage Details
 
-               this.id = 'R2-Z0-S0-R0'
-               this.stageName = 'Lucarian Desert'
-               this.stageAssetPathRoot = 'assets/'
-               this.stageMusicFilePath = 'music/Katana.mp3'
+               game.id = 'R2-Z0-S0-R0'
+               game.stageName = 'Lucarian Desert'
+               game.stageAssetPathRoot = 'assets/'
+               game.stageMusicFilePath = 'music/Katana.mp3'
 
                // Set Background (BG) & Foregorund (FG) Layers
-               this.stageAssetName = 'desert'
-               this.stageBackgroundLayers = 4
-               this.stageForegroundLayers = 0
-               this.stageBGScrollSpeedModifierSettings = [1,0.85,0.5,0]
-               this.stageFGScrollSpeedModifierSettings = []
-               this.stageNormalMaps = [0,0,0,0]
+               game.stageAssetName = 'desert'
+               game.stageBackgroundLayers = 4
+               game.stageForegroundLayers = 0
+               game.stageBGScrollSpeedModifierSettings = [1,0.85,0.5,0]
+               game.stageFGScrollSpeedModifierSettings = []
+               game.stageNormalMaps = [0,0,0,0]
 
                // Day/Night Settings
                 // Enable/Disable Times
@@ -151,39 +162,40 @@ class Region2 extends Phaser.Scene {
                 var dusk = true
                 var night = true
 
-                this.timeAvailabilityArray = [dawn,day,dusk,night]
+                game.timeAvailabilityArray = [dawn,day,dusk,night]
 
                 // Floor Settings
         
-                this.floorPosYMin = 0.05
-                this.floorPosYMax = 0.15
+                game.floorPosYMin = 0.05
+                game.floorPosYMax = 0.15
 
     }
 
-    barrenPlains(){
+    barrenPlains(game){
+            console.log('Scanning: The Barren Plains')
           // Stage Function  
         // Writes Stage Data to Region Scene Data 
         
             // Stage Code
         
                // Set Stage Sector & Rarity Data
-               this.zone = 0
-               this.rarity = 0
+               game.zone = 0
+               game.rarity = 0
 
                // Set Stage Details
 
-               this.id = 'R2-Z0-S0-R1'
-               this.stageName = 'The Barren Plains'
-               this.stageAssetPathRoot = 'assets/'
-               this.stageMusicFilePath = 'music/Katana.mp3'
+               game.id = 'R2-Z0-S0-R1'
+               game.stageName = 'The Barren Plains'
+               game.stageAssetPathRoot = 'assets/'
+               game.stageMusicFilePath = 'music/Katana.mp3'
 
                // Set Background (BG) & Foregorund (FG) Layers
-               this.stageAssetName = 'wasteland'
-               this.stageBackgroundLayers = 5
-               this.stageForegroundLayers = 0
-               this.stageBGScrollSpeedModifierSettings = [1,0.75,0.5,0.1,0]
-               this.stageFGScrollSpeedModifierSettings = []
-               this.stageNormalMaps = []
+               game.stageAssetName = 'wasteland'
+               game.stageBackgroundLayers = 5
+               game.stageForegroundLayers = 0
+               game.stageBGScrollSpeedModifierSettings = [1,0.75,0.5,0.1,0]
+               game.stageFGScrollSpeedModifierSettings = []
+               game.stageNormalMaps = []
 
                // Day/Night Settings
                 // Enable/Disable Times
@@ -193,12 +205,12 @@ class Region2 extends Phaser.Scene {
                 var dusk = true
                 var night = true
 
-                this.timeAvailabilityArray = [dawn,day,dusk,night]
+                game.timeAvailabilityArray = [dawn,day,dusk,night]
 
                 // Floor Settings
         
-                this.floorPosYMin = 0.025
-                this.floorPosYMax = 0.075 
+                game.floorPosYMin = 0.025
+                game.floorPosYMax = 0.075 
 
     }
 
@@ -220,6 +232,7 @@ class Region2 extends Phaser.Scene {
         if (this.zones[zone].length > 0){
             selectedZone = zone
         } else {
+            console.log('Revertig to Default Zone: ' + defaultZone)
             selectedZone = defaultZone
         }
         
@@ -236,9 +249,9 @@ class Region2 extends Phaser.Scene {
             //rarityOverrideEnabled = false
         // }
         //
-
+        
         var selectedZoneStage = Phaser.Math.Between(0,this.zones[selectedZone].length - 1)
-
+        
         var selectedRarity
 
         if (rarityOverrideEnabled){
@@ -254,9 +267,8 @@ class Region2 extends Phaser.Scene {
         while(findingMatch){
             console.log('Searching...')
             
-            
-            //candidateStage = 
-            this.zones[selectedZone][selectedZoneStage]
+            candidateStage = this.zones[selectedZone][selectedZoneStage]
+            candidateStage(this)
            
             // Checks if candidate stage matches rarity and is valid for time of day
             //  Checks Rarity
@@ -265,6 +277,7 @@ class Region2 extends Phaser.Scene {
                     if (this.timeAvailabilityArray[timePeriod-1]){
                     // End while loop
                     console.log('Valid Stage Source Data Found....')
+                    
                     findingMatch = false
                     }
             } else {
@@ -273,11 +286,9 @@ class Region2 extends Phaser.Scene {
             }
         }
 
-        // var stageDataImport = candidateStageObject
-      
-       
+     
         // Selects Stage to load
-    
+
         console.log('Stage Source Data Extracted Successfully')
         // console.log('Source Data Imported\n', stageDataImport.data.getAll())
         // var stageDataObject = stageDataImport

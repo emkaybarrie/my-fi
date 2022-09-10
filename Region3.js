@@ -3,7 +3,7 @@ class Region3 extends Phaser.Scene {
 
     constructor() {
         super("Region3")
-        
+        this.zones 
     }
     
     init(data)
@@ -37,7 +37,7 @@ class Region3 extends Phaser.Scene {
         
         console.log('Refreshing Region Sector Array Lists...')
         // Sector Lists
-        this.zone0 = [this.cliffsOfAmara(),this.amaranPlains()]
+        this.zone0 = [this.cliffsOfAmara,this.amaranPlains]
         // Sector Root Array
         this.zones = [
                         this.zone0
@@ -73,30 +73,30 @@ class Region3 extends Phaser.Scene {
 
     // Stage Repository
 
-    stageFileName(){
+    stageFileName(game){
         // Stage Function  
         // Writes Stage Data to Region Scene Data 
         
             // Stage Code
         
                // Set Stage Sector & Rarity Data
-               this.zone = 0
-               this.rarity = 0
+               game.zone = 0
+               game.rarity = 0
 
                // Set Stage Details
 
-               this.id = 'R3-Z0-S0-R1'
-               this.stageName = 'Amaran Plains'
-               this.stageAssetPathRoot = 'assets/'
-               this.stageMusicFilePath = 'music/Katana.mp3'
+               game.id = 'R[Region ID]-Z[Zone ID]-S[Stage ID]-R[Rarity Code]'
+               game.stageName = 'Stage Name'
+               game.stageAssetPathRoot = 'assets/'
+               game.stageMusicFilePath = 'music/Katana.mp3'
 
                // Set Background (BG) & Foregorund (FG) Layers
-               this.stageAssetName = 'mountains'
-               this.stageBackgroundLayers = 5
-               this.stageForegroundLayers = 0
-               this.stageBGScrollSpeedModifierSettings = [0.35,0.15,0.075,0.05,0.01]
-               this.stageFGScrollSpeedModifierSettings = []
-               this.stageNormalMaps = []
+               game.stageAssetName = 'woods'
+               game.stageBackgroundLayers = 3
+               game.stageForegroundLayers = 1
+               game.stageBGScrollSpeedModifierSettings = [0.75,0.5,0]
+               game.stageFGScrollSpeedModifierSettings = [1]
+               game.stageNormalMaps = [0,0,0]
 
                // Day/Night Settings
                 // Enable/Disable Times
@@ -106,39 +106,39 @@ class Region3 extends Phaser.Scene {
                 var dusk = true
                 var night = true
 
-                this.timeAvailabilityArray = [dawn,day,dusk,night]
+                game.timeAvailabilityArray = [dawn,day,dusk,night]
 
                 // Floor Settings
         
-                this.floorPosYMin = 0.05
-                this.floorPosYMax = 0.025
-
+                game.floorPosYMin = 0.1
+                game.floorPosYMax = 0.2
+            
     }
 
-    cliffsOfAmara(){
+    cliffsOfAmara(game){
      // Stage Function  
         // Writes Stage Data to Region Scene Data 
         
             // Stage Code
         
                // Set Stage Sector & Rarity Data
-               this.zone = 0
-               this.rarity = 0
+               game.zone = 0
+               game.rarity = 0
 
                // Set Stage Details
 
-               this.id = 'R3-Z0-S0-R0'
-               this.stageName = 'Cliffs of Amara'
-               this.stageAssetPathRoot = 'assets/'
-               this.stageMusicFilePath = 'music/Katana.mp3'
+               game.id = 'R3-Z0-S0-R0'
+               game.stageName = 'Cliffs of Amara'
+               game.stageAssetPathRoot = 'assets/'
+               game.stageMusicFilePath = 'music/Katana.mp3'
 
                // Set Background (BG) & Foregorund (FG) Layers
-               this.stageAssetName = 'dawn'
-               this.stageBackgroundLayers = 8
-               this.stageForegroundLayers = 0
-               this.stageBGScrollSpeedModifierSettings = [1,1,0.5,0.25,0.1,0.05,0,0]
-               this.stageFGScrollSpeedModifierSettings = []
-               this.stageNormalMaps = []
+               game.stageAssetName = 'dawn'
+               game.stageBackgroundLayers = 8
+               game.stageForegroundLayers = 0
+               game.stageBGScrollSpeedModifierSettings = [1,1,0.5,0.25,0.1,0.05,0,0]
+               game.stageFGScrollSpeedModifierSettings = []
+               game.stageNormalMaps = []
 
                // Day/Night Settings
                 // Enable/Disable Times
@@ -148,40 +148,40 @@ class Region3 extends Phaser.Scene {
                 var dusk = true
                 var night = true
 
-                this.timeAvailabilityArray = [dawn,day,dusk,night]
+                game.timeAvailabilityArray = [dawn,day,dusk,night]
 
                 // Floor Settings
         
-                this.floorPosYMin = 0.05
-                this.floorPosYMax = 0.25
+                game.floorPosYMin = 0.05
+                game.floorPosYMax = 0.25
        
          
     }
 
-    amaranPlains(){
+    amaranPlains(game){
         // Stage Function  
         // Writes Stage Data to Region Scene Data 
         
             // Stage Code
         
                // Set Stage Sector & Rarity Data
-               this.zone = 0
-               this.rarity = 0
+               game.zone = 0
+               game.rarity = 0
 
                // Set Stage Details
 
-               this.id = 'R3-Z0-S0-R1'
-               this.stageName = 'Amaran Plains'
-               this.stageAssetPathRoot = 'assets/'
-               this.stageMusicFilePath = 'music/Katana.mp3'
+               game.id = 'R3-Z0-S0-R1'
+               game.stageName = 'Amaran Plains'
+               game.stageAssetPathRoot = 'assets/'
+               game.stageMusicFilePath = 'music/Katana.mp3'
 
                // Set Background (BG) & Foregorund (FG) Layers
-               this.stageAssetName = 'mountains'
-               this.stageBackgroundLayers = 5
-               this.stageForegroundLayers = 0
-               this.stageBGScrollSpeedModifierSettings = [0.35,0.15,0.075,0.05,0.01]
-               this.stageFGScrollSpeedModifierSettings = []
-               this.stageNormalMaps = []
+               game.stageAssetName = 'mountains'
+               game.stageBackgroundLayers = 5
+               game.stageForegroundLayers = 0
+               game.stageBGScrollSpeedModifierSettings = [0.35,0.15,0.075,0.05,0.01]
+               game.stageFGScrollSpeedModifierSettings = []
+               game.stageNormalMaps = []
 
                // Day/Night Settings
                 // Enable/Disable Times
@@ -191,12 +191,12 @@ class Region3 extends Phaser.Scene {
                 var dusk = true
                 var night = true
 
-                this.timeAvailabilityArray = [dawn,day,dusk,night]
+                game.timeAvailabilityArray = [dawn,day,dusk,night]
 
                 // Floor Settings
         
-                this.floorPosYMin = 0.05
-                this.floorPosYMax = 0.025
+                game.floorPosYMin = 0.05
+                game.floorPosYMax = 0.025
 
     }
 
@@ -253,8 +253,8 @@ class Region3 extends Phaser.Scene {
             console.log('Searching...')
             
             
-            //candidateStage = 
-            this.zones[selectedZone][selectedZoneStage]
+            candidateStage = this.zones[selectedZone][selectedZoneStage]
+            candidateStage(this)
            
             // Checks if candidate stage matches rarity and is valid for time of day
             //  Checks Rarity
@@ -271,7 +271,6 @@ class Region3 extends Phaser.Scene {
             }
         }
 
-        // var stageDataImport = candidateStageObject
       
        
         // Selects Stage to load

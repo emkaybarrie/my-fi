@@ -1,6 +1,6 @@
 
 
-// System Controller
+// System Variables
     var screenHeight = window.innerHeight * window.devicePixelRatio
     var screenWidth =  window.innerWidth * window.devicePixelRatio
     var globalGravityMod = screenHeight / 1080
@@ -9,31 +9,32 @@
     var scaleModY = screenHeight / 1080
 
     /**
-    * Get's Game Screen Size for Current Game Instance
-    * @return Array {width, height}
+    * Add function desc here
+    * @param {type} INPUT Desc of input
+    * @return {type} Desc of outputs
     */
-    function getScreenSize(){
+    function exampleFunction(){
 
         console.log([screenWidth,screenHeight])
         return [screenWidth,screenHeight]
 
     } 
 
-// Scene Controller
+// Scene Variables
 
     var nextScene
  
+// Player Variables
+var playerIconBox
+var playerIconBoxScaleX = 0.0775 * (scaleModX) 
+var playerIconBoxScaleY = 0.25 * (scaleModX) 
+var playerIcon
+var playerIconScale = 0.125 * (scaleModX)   
 
-    function proceedToScene (game,targetSceneName,stopCurrentScene){
-    
+var playerVitalsBox
 
-        if (stopCurrentScene == 1){
-            game.scene.start(targetSceneName)
-        } else {
-            game.scene.run(targetSceneName)
-        }
-        nextScene = false 
-    }
+// Game Data Variables
+
 
 
 class Boot extends Phaser.Scene {

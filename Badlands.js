@@ -76,13 +76,13 @@
     var camera
 
         
-        var playerIconBox 
-        var playerIcon
+        // var playerIconBox 
+        // var playerIcon
         
 
         var levelIcon 
         var levelText 
-        var playerVitalsBox
+        //var playerVitalsBox
         var playerVitals
         var playerVitalsTextL
         var playerVitalsTextF
@@ -2836,6 +2836,8 @@ class Badlands extends Phaser.Scene {
 
     constructor() {
         super("Badlands")
+
+
         
     }
 
@@ -2931,8 +2933,8 @@ class Badlands extends Phaser.Scene {
         // this.load.audio("playerHeavySwordSwing", ["assets/sFX/SFX_Whoosh_Sword_03.mp3"]);        
         // this.load.audio("enemySwordSwing", ["assets/sFX/SFX_Sword_Whoosh_01.mp3"]);
         
-        this.load.image('playerIconBox', 'assets/vFX/playerHUDBox.png');
-        this.load.image('playerIcon', 'assets/icons/playerIcon1.png');
+        // this.load.image('playerIconBox', 'assets/vFX/playerHUDBox.png');
+        this.load.image('playerIcon2', 'assets/icons/playerIcon1.png');
         this.load.image('playerInspirationIcon1', 'assets/icons/playerInspirationIcon1.png');
         this.load.image('playerInspirationIcon2', 'assets/icons/playerInspirationIcon2.png');
         this.load.image('playerInspirationIcon3', 'assets/icons/playerInspirationIcon3.png');
@@ -3430,11 +3432,11 @@ class Badlands extends Phaser.Scene {
  
         camera.fadeIn(12000)
         
-        var playerIconBoxScaleX = 0.0775 * (scaleModX) 
-        var playerIconBoxScaleY = 0.25 * (scaleModX) 
+        playerIconBoxScaleX = 0.0775 * (scaleModX) 
+        playerIconBoxScaleY = 0.25 * (scaleModX) 
         playerIconBox = this.add.image(0,0,'playerIconBox').setDepth(3).setScale(playerIconBoxScaleX,playerIconBoxScaleY).setOrigin(0.5,0.5)
-        var playerIconScale = 0.125 * (scaleModX)   
-        playerIcon = this.add.image(0,0,'playerIcon').setDepth(3).setScale(playerIconScale).setOrigin(0.5,0.5)
+        playerIconScale = 0.125 * (scaleModX)   
+        playerIcon = this.add.image(0,0,'playerIcon2').setDepth(3).setScale(playerIconScale).setOrigin(0.5,0.5)
     
         levelIcon = this.add.image(0,0,'levelIcon').setDepth(4).setScale(0.65 * (scaleModX)).setOrigin(0.5,0.5)
         levelText = this.add.text(levelIcon + 5, levelIcon.y, Math.floor(level)).setFontFamily('Arial').setFontSize(28 * (scaleModX)).setColor('#674EA7').setDepth(4).setOrigin(0.5,0.5)
@@ -3444,7 +3446,9 @@ class Badlands extends Phaser.Scene {
         goldIcon = this.add.image(gloryIcon.x + 130,camera.worldView.y + 60,'goldIcon').setDepth(4).setScale(0.65 * (scaleModX)).setOrigin(0.5,0.5)
         goldText = this.add.text(goldIcon, goldIcon.y, Math.floor(gold)).setFontFamily('Arial').setFontSize(28 * (scaleModX)).setColor('#ffd700').setDepth(4).setOrigin(0.5,0.5);
 
-        playerVitalsBox = this.add.image(0,0,'playerVitalsBox').setDepth(3).setScale(0.25  * (scaleModX),0.2  * (scaleModX)).setOrigin(0,0.5)
+        playerVitalsBox = this.add.image(0,0,'playerVitalsBox').setDepth(3).setScale(0.25 * (scaleModX),0.2  * (scaleModX)).setOrigin(0,0.5)
+       
+       
         playerVitals = new HealthBar(this,startLife, levelIcon.x + (30 * (scaleModX)), playerIcon.y + (20 * (scaleModX)))
        
         playerVitalsTextL = this.add.text(0, 0, 'Life').setFontFamily('Arial').setFontSize(18 * (scaleModX)).setColor('#cc0000').setDepth(4).setOrigin(0.5,0.5);
@@ -3970,7 +3974,7 @@ class Badlands extends Phaser.Scene {
 
         
 
-        console.log(a1IsDown)
+        
 
             // Creep AI Proto
             if(gameMode == 0){
@@ -4144,9 +4148,9 @@ class Badlands extends Phaser.Scene {
 
                 if (Phaser.Input.Keyboard.JustDown(keyZ)){
                     
+                    this.scene.start('Kianova',{regionID:activeStage.regionID,glory:Math.round(glory)})
                     reset()
                     this.scene.stop('Badlands')
-                    this.scene.start('Kianova')
 
                     // Decommissioned
 
@@ -4997,6 +5001,8 @@ class Badlands extends Phaser.Scene {
 
 
         }
+
+        
 
  
 

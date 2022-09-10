@@ -6,7 +6,7 @@ class Region1 extends Phaser.Scene {
     constructor() {
         super("Region1")
         
-        
+        this.zones 
         
     }
 
@@ -41,7 +41,7 @@ class Region1 extends Phaser.Scene {
         
         console.log('Refreshing Region Sector Array Lists...')
         // Sector Lists
-        this.zone0 = [this.mundusRiverbank(),this.gardenGrove(),this.darkmoonGlade(),this.etherielForest()]
+        this.zone0 = [this.mundusRiverbank,this.gardenGrove,this.darkmoonGlade,this.etherielForest]
         // Sector Root Array
         this.zones = [
                         this.zone0
@@ -77,15 +77,15 @@ class Region1 extends Phaser.Scene {
 
     // Stage Repository
 
-    stageFileName(){
+    stageFileName(game){
         // Stage Function  
         // Writes Stage Data to Region Scene Data 
         
             // Stage Code
         
                // Set Stage Sector & Rarity Data
-               this.zone = 0
-               this.rarity = 0
+               game.zone = 0
+               game.rarity = 0
 
                // Set Stage Details
 
@@ -120,30 +120,30 @@ class Region1 extends Phaser.Scene {
 
     }
 
-    mundusRiverbank(){
+    mundusRiverbank(game){
         // Stage Function  
         // Writes Stage Data to Region Scene Data 
         
             // Stage Code
         
                // Set Stage Sector & Rarity Data
-               this.zone = 0
-               this.rarity = 0
+               game.zone = 0
+               game.rarity = 0
 
                // Set Stage Details
 
-               this.id = 'R[1]-Z[0]-S[0]-R[0]'
-               this.stageName = 'Mundus Riverbank'
-               this.stageAssetPathRoot = 'assets/'
-               this.stageMusicFilePath = 'music/Katana.mp3'
+               game.id = 'R[1]-Z[0]-S[0]-R[0]'
+               game.stageName = 'Mundus Riverbank'
+               game.stageAssetPathRoot = 'assets/'
+               game.stageMusicFilePath = 'music/Katana.mp3'
 
                // Set Background (BG) & Foregorund (FG) Layers
-               this.stageAssetName = 'river'
-               this.stageBackgroundLayers = 9
-               this.stageForegroundLayers = 0
-               this.stageBGScrollSpeedModifierSettings = [1,0.5,0.95,0.9,0.85,0.5,0.35,0.1,0]
-               this.stageFGScrollSpeedModifierSettings = []
-               this.stageNormalMaps = [0,0,0,0,0,0,0,0,0]
+               game.stageAssetName = 'river'
+               game.stageBackgroundLayers = 9
+               game.stageForegroundLayers = 0
+               game.stageBGScrollSpeedModifierSettings = [1,0.5,0.95,0.9,0.85,0.5,0.35,0.1,0]
+               game.stageFGScrollSpeedModifierSettings = []
+               game.stageNormalMaps = [0,0,0,0,0,0,0,0,0]
 
                // Day/Night Settings
                 // Enable/Disable Times
@@ -153,40 +153,40 @@ class Region1 extends Phaser.Scene {
                 var dusk = true
                 var night = true
 
-                this.timeAvailabilityArray = [dawn,day,dusk,night]
+                game.timeAvailabilityArray = [dawn,day,dusk,night]
 
                 // Floor Settings
         
-                this.floorPosYMin = 0.05
-                this.floorPosYMax = 0.2
+                game.floorPosYMin = 0.05
+                game.floorPosYMax = 0.2
         
             
     }
 
-    gardenGrove(){
+    gardenGrove(game){
         // Stage Function  
         // Writes Stage Data to Region Scene Data 
         
             // Stage Code
         
                // Set Stage Sector & Rarity Data
-               this.zone = 0
-               this.rarity = 0
+               game.zone = 0
+               game.rarity = 0
 
                // Set Stage Details
 
-               this.id = 'R[1]-Z[0]-S[1]-R[0]'
-               this.stageName = 'Garden Grove'
-               this.stageAssetPathRoot = 'assets/'
-               this.stageMusicFilePath = 'music/Katana.mp3'
+               game.id = 'R[1]-Z[0]-S[1]-R[0]'
+               game.stageName = 'Garden Grove'
+               game.stageAssetPathRoot = 'assets/'
+               game.stageMusicFilePath = 'music/Katana.mp3'
 
                // Set Background (BG) & Foregorund (FG) Layers
-               this.stageAssetName = 'gForest'
-               this.stageBackgroundLayers = 4
-               this.stageForegroundLayers = 3
-               this.stageBGScrollSpeedModifierSettings = [1,0.5,0.95,0.9]
-               this.stageFGScrollSpeedModifierSettings = [1.1,1.1,1.05]
-               this.stageNormalMaps = [0,0,0,0]
+               game.stageAssetName = 'gForest'
+               game.stageBackgroundLayers = 4
+               game.stageForegroundLayers = 3
+               game.stageBGScrollSpeedModifierSettings = [1,0.5,0.95,0.9]
+               game.stageFGScrollSpeedModifierSettings = [1.1,1.1,1.05]
+               game.stageNormalMaps = [0,0,0,0]
 
                // Day/Night Settings
                 // Enable/Disable Times
@@ -196,40 +196,40 @@ class Region1 extends Phaser.Scene {
                 var dusk = true
                 var night = true
 
-                this.timeAvailabilityArray = [dawn,day,dusk,night]
+                game.timeAvailabilityArray = [dawn,day,dusk,night]
 
                 // Floor Settings
         
-                this.floorPosYMin = 0.2
-                this.floorPosYMax = 0.3
+                game.floorPosYMin = 0.2
+                game.floorPosYMax = 0.3
         
             
     }
 
-    darkmoonGlade(){
+    darkmoonGlade(game){
         // Stage Function  
         // Writes Stage Data to Region Scene Data 
         
             // Stage Code
         
                // Set Stage Sector & Rarity Data
-               this.zone = 0
-               this.rarity = 0
+               game.zone = 0
+               game.rarity = 0
 
                // Set Stage Details
 
-               this.id = 'R[1]-Z[0]-S[2]-R[0]'
-               this.stageName = 'Darkmoon Glade'
-               this.stageAssetPathRoot = 'assets/'
-               this.stageMusicFilePath = 'music/Katana.mp3'
+               game.id = 'R[1]-Z[0]-S[2]-R[0]'
+               game.stageName = 'Darkmoon Glade'
+               game.stageAssetPathRoot = 'assets/'
+               game.stageMusicFilePath = 'music/Katana.mp3'
 
                // Set Background (BG) & Foregorund (FG) Layers
-               this.stageAssetName = 'pForest'
-               this.stageBackgroundLayers = 10
-               this.stageForegroundLayers = 2
-               this.stageBGScrollSpeedModifierSettings = [1,0.75,0.6,0.6,0.35,0.25,0.15,0.1,0,0]
-               this.stageFGScrollSpeedModifierSettings = [1.1,1.1]
-               this.stageNormalMaps = []
+               game.stageAssetName = 'pForest'
+               game.stageBackgroundLayers = 10
+               game.stageForegroundLayers = 2
+               game.stageBGScrollSpeedModifierSettings = [1,0.75,0.6,0.6,0.35,0.25,0.15,0.1,0,0]
+               game.stageFGScrollSpeedModifierSettings = [1.1,1.1]
+               game.stageNormalMaps = []
 
                // Day/Night Settings
                 // Enable/Disable Times
@@ -239,18 +239,18 @@ class Region1 extends Phaser.Scene {
                 var dusk = true
                 var night = true
 
-                this.timeAvailabilityArray = [dawn,day,dusk,night]
+                game.timeAvailabilityArray = [dawn,day,dusk,night]
 
                 // Floor Settings
         
-                this.floorPosYMin = 0.025
-                this.floorPosYMax = 0.05
+                game.floorPosYMin = 0.025
+                game.floorPosYMax = 0.05
                
         
           
     }
 
-    etherielForest(){
+    etherielForest(game){
         
            // Stage Function  
         // Writes Stage Data to Region Scene Data 
@@ -258,23 +258,23 @@ class Region1 extends Phaser.Scene {
             // Stage Code
         
                // Set Stage Sector & Rarity Data
-               this.zone = 0
-               this.rarity = 0
+               game.zone = 0
+               game.rarity = 0
 
                // Set Stage Details
 
-               this.id = 'R[1]-Z[0]-S[3]-R[0]'
-               this.stageName = 'Etheriel Forest'
-               this.stageAssetPathRoot = 'assets/'
-               this.stageMusicFilePath = 'music/Katana.mp3'
+               game.id = 'R[1]-Z[0]-S[3]-R[0]'
+               game.stageName = 'Etheriel Forest'
+               game.stageAssetPathRoot = 'assets/'
+               game.stageMusicFilePath = 'music/Katana.mp3'
 
                // Set Background (BG) & Foregorund (FG) Layers
-               this.stageAssetName = 'nForest'
-               this.stageBackgroundLayers = 4
-               this.stageForegroundLayers = 2
-               this.stageBGScrollSpeedModifierSettings = [1,0.5,0.15,0.001]
-               this.stageFGScrollSpeedModifierSettings = [1.2,0]
-               this.stageNormalMaps = []
+               game.stageAssetName = 'nForest'
+               game.stageBackgroundLayers = 4
+               game.stageForegroundLayers = 2
+               game.stageBGScrollSpeedModifierSettings = [1,0.5,0.15,0.001]
+               game.stageFGScrollSpeedModifierSettings = [1.2,0]
+               game.stageNormalMaps = []
 
                // Day/Night Settings
                 // Enable/Disable Times
@@ -284,12 +284,12 @@ class Region1 extends Phaser.Scene {
                 var dusk = true
                 var night = true
 
-                this.timeAvailabilityArray = [dawn,day,dusk,night]
+                game.timeAvailabilityArray = [dawn,day,dusk,night]
 
                 // Floor Settings
         
-                this.floorPosYMin = 0.05
-                this.floorPosYMax = 0.15
+                game.floorPosYMin = 0.05
+                game.floorPosYMax = 0.15
         
             
     }
@@ -347,8 +347,8 @@ class Region1 extends Phaser.Scene {
             console.log('Searching...')
             
             
-            //candidateStage = 
-            this.zones[selectedZone][selectedZoneStage]
+            candidateStage = this.zones[selectedZone][selectedZoneStage]
+            candidateStage(this)
            
             // Checks if candidate stage matches rarity and is valid for time of day
             //  Checks Rarity
@@ -365,7 +365,7 @@ class Region1 extends Phaser.Scene {
             }
         }
 
-        // var stageDataImport = candidateStageObject
+
       
        
         // Selects Stage to load
