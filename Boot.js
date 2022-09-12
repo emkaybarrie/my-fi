@@ -143,6 +143,8 @@ class Boot extends Phaser.Scene {
 
         button.on('pointerup', function (){
             vid = this.add.video(screenWidth * 0.5, screenHeight * 0.5, 'techDemo');
+            vid.displayWidth = screenWidth
+            vid.displayHeight = screenHeight
             vid.play();
             // Prevents video freeze when game is out of focus (i.e. user changes tab on the browser)
             vid.setPaused(false);
