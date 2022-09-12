@@ -22,7 +22,7 @@ class MainMenu extends Phaser.Scene {
         this.load.image('menuSelectionTexture', 'assets/menuTexture.png');
         this.load.image('menuBG', 'assets/TitleScreenD.png');
         this.load.image('gameTitle', 'assets/tempLogo.png');
-        this.load.audio("menuMusic", ["assets/music/T=0.mp3"]);
+        this.load.audio("menuMusic", ["assets/music/Landslide.mp3"]);
 
     }
     
