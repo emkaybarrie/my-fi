@@ -32,7 +32,7 @@ class Region2 extends Phaser.Scene {
         // Region Data
         this.regionID = 2
         this.region = 'North'
-        this.regionPatron = 'Lucarius'
+        this.regionPatron = 'Lucarus'
         this.regionAffinity = 'Risk Band 2'
 
         //Sector Data 

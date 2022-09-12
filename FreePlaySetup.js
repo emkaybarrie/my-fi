@@ -1,7 +1,5 @@
 
 
-
-
 class FreePlaySetup extends Phaser.Scene {
 
 
@@ -21,11 +19,13 @@ class FreePlaySetup extends Phaser.Scene {
 
         this.patronIconLight
 
-
-        this.omniaFavour
+        this.receivedFavourBase
+        this.receivedFavourBTC
+        this.receivedFavourETH
+        this.receivedFavourADA
     }
 
-
+  
     preload(){
         this.load.image('freePlayBG', 'assets/KianovaLoadScreen.png');
         this.load.image('freePlaySelectionTexture', 'assets/menuTexture.png');
@@ -36,11 +36,30 @@ class FreePlaySetup extends Phaser.Scene {
 
          this.load.spritesheet('star', 'assets/starSprite.png', { frameWidth: 32, frameHeight: 32});
 
-        
+         
+
+         //this.load.json('patronData', 'https://opensheet.elk.sh/1Tdh0tV-EapNYWqOS9GzKarnt_b4ZVy1YXPN4dq85H5o/FreePlay_Data_EndPoint');
 
     }
     
+
     create(){
+
+
+        //setTimeout(() => {
+    
+        this.receivedFavourBase = parseInt(freePlayUser.BASE)
+        this.receivedFavourBTC  = parseInt(freePlayUser.BTC)
+        this.receivedFavourETH  = parseInt(freePlayUser.ETH)
+        this.receivedFavourADA  = parseInt(freePlayUser.ADA)
+   
+        console.log(this.receivedFavourBase);
+        console.log(this.receivedFavourBTC);
+        console.log( this.receivedFavourETH);
+        console.log(this.receivedFavourADA)
+
+        //},500)
+           
 
         camera = this.cameras.main
         
@@ -50,7 +69,7 @@ class FreePlaySetup extends Phaser.Scene {
 
         this.menuOption1 = this.add.text(screenWidth * 0.5, screenHeight * 0.285, 'Omnia', { fontFamily: 'Gothic', fontStyle: 'bold' ,align: 'center', fixedWidth:screenWidth * 0.25,fixedHeight:screenHeight * 0.075});
         this.menuOption2 = this.add.text(this.menuOption1.x,this.menuOption1.y + (screenHeight * 0.07) , 'Mundo', { fontFamily: 'Gothic', fontStyle: 'italic' ,align: 'center', fixedWidth:screenWidth * 0.25,fixedHeight:screenHeight * 0.075});
-        this.menuOption3 = this.add.text(this.menuOption2.x,this.menuOption2.y + (screenHeight * 0.07) , 'Lucarius', { fontFamily: 'Gothic', fontStyle: 'italic' ,align: 'center', fixedWidth:screenWidth * 0.25,fixedHeight:screenHeight * 0.075});
+        this.menuOption3 = this.add.text(this.menuOption2.x,this.menuOption2.y + (screenHeight * 0.07) , 'lucarus', { fontFamily: 'Gothic', fontStyle: 'italic' ,align: 'center', fixedWidth:screenWidth * 0.25,fixedHeight:screenHeight * 0.075});
         this.menuOption4 = this.add.text(this.menuOption3.x,this.menuOption3.y + (screenHeight * 0.07) , 'Amara', { fontFamily: 'Gothic', fontStyle: 'italic' ,align: 'center', fixedWidth:screenWidth * 0.25,fixedHeight:screenHeight * 0.075});
         this.menuOption5 = this.add.text(this.menuOption4.x,this.menuOption4.y + (screenHeight * 0.07) , 'Illuvik', { fontFamily: 'Gothic', fontStyle: 'italic' ,align: 'center', fixedWidth:screenWidth * 0.25,fixedHeight:screenHeight * 0.075});
         
@@ -74,7 +93,7 @@ class FreePlaySetup extends Phaser.Scene {
 
         this.omniaIcon = this.add.image(this.menuOption1.x + (screenWidth * 0.075),this.menuOption1.y + (screenHeight * 0.0175), 'r0Icon').setScale(0.25 * (scaleModX)).setPipeline('Light2D')//.setInteractive()
         this.mundoIcon = this.add.image(this.menuOption2.x + (screenWidth * 0.075),this.menuOption2.y + (screenHeight * 0.0175), 'r1Icon').setScale(0.25 * (scaleModX)).setPipeline('Light2D')//.setInteractive()
-        this.lucariusIcon = this.add.image(this.menuOption3.x + (screenWidth * 0.075),this.menuOption3.y + (screenHeight * 0.0175), 'r2Icon').setScale(0.25 * (scaleModX)).setPipeline('Light2D')//.setInteractive()
+        this.lucarusIcon = this.add.image(this.menuOption3.x + (screenWidth * 0.075),this.menuOption3.y + (screenHeight * 0.0175), 'r2Icon').setScale(0.25 * (scaleModX)).setPipeline('Light2D')//.setInteractive()
         this.amaraIcon = this.add.image(this.menuOption4.x + (screenWidth * 0.075),this.menuOption4.y + (screenHeight * 0.0175), 'r3Icon').setScale(0.25 * (scaleModX)).setPipeline('Light2D')//.setInteractive() 
         this.illuvikIcon = this.add.image(this.menuOption5.x + (screenWidth * 0.075),this.menuOption5.y + (screenHeight * 0.0175), 'r4Icon').setScale(0.25 * (scaleModX)).setTint(0x333333)//.setPipeline('Light2D')
 
@@ -90,14 +109,18 @@ class FreePlaySetup extends Phaser.Scene {
             yoyo: 0
         });
 
-        this.favourToAllocate = 8
+        //setTimeout(() => {
+        this.favourToAllocate = this.receivedFavourBase + this.receivedFavourBTC + this.receivedFavourETH + this.receivedFavourADA
+        //},550)
+
+
         this.favourToAllocateIcon = this.add.image(this.omniaIcon.x + (screenWidth * 0.085),this.menuOption1.y - (screenHeight * 0.1), 'star').setScale(2)
         this.favourToAllocateAmountText = this.add.text(this.favourToAllocateIcon.x + (screenWidth * 0.03),this.favourToAllocateIcon.y - (screenHeight * 0.015) , this.favourToAllocate, { fontFamily: 'Gothic', fontStyle: 'bold' ,align: 'center', fixedWidth:screenWidth * 0.25,fixedHeight:screenHeight * 0.075});
         this.favourToAllocateAmountText.setFontSize(32).setOrigin(0.5,0)
         // Omnia
         this.omniaFavour = 0
         this.mundoFavour = 0
-        this.lucariusFavour = 0
+        this.lucarusFavour = 0
         this.amaraFavour = 0
         this.illuvikFavour = 0
 
@@ -128,18 +151,18 @@ class FreePlaySetup extends Phaser.Scene {
             this.mundoStars.getChildren()[i].setTint(0x000000).stop() 
         }
 
-        // Lucarius
-        this.lucariusStars = this.add.group()
-        this.lucariusStars.createMultiple({key:'star',frameQuantity: 5, setScale: {x: 2 * (scaleModX), y: 2 * (scaleModX)}})
-        this.lucariusStars.setX(this.lucariusIcon.x + (screenWidth * 0.05) , screenWidth * 0.025)
-        this.lucariusStars.setY(this.lucariusIcon.y - screenHeight * 0.002)
+        // lucarus
+        this.lucarusStars = this.add.group()
+        this.lucarusStars.createMultiple({key:'star',frameQuantity: 5, setScale: {x: 2 * (scaleModX), y: 2 * (scaleModX)}})
+        this.lucarusStars.setX(this.lucarusIcon.x + (screenWidth * 0.05) , screenWidth * 0.025)
+        this.lucarusStars.setY(this.lucarusIcon.y - screenHeight * 0.002)
 
-        for (var i = 0; i < this.lucariusFavour; i++){
-            this.lucariusStars.getChildren()[i].setTint().play('star',true)
+        for (var i = 0; i < this.lucarusFavour; i++){
+            this.lucarusStars.getChildren()[i].setTint().play('star',true)
         }
 
-        for (var i = this.lucariusFavour; i < 5; i++){
-            this.lucariusStars.getChildren()[i].setTint(0x000000).stop() 
+        for (var i = this.lucarusFavour; i < 5; i++){
+            this.lucarusStars.getChildren()[i].setTint(0x000000).stop() 
         }
 
         // Amara
@@ -250,6 +273,8 @@ class FreePlaySetup extends Phaser.Scene {
             a1IsDown = false
             s1IsDown = false
             nextScene = true
+        } else if (a2IsDown || s2IsDown){
+            this.scene.start('MainMenu')
         }
 
 
@@ -297,22 +322,22 @@ class FreePlaySetup extends Phaser.Scene {
         } else if (this.selectedOption == 3){
             this.menuOption3.setAlpha(1)
 
-            if (rightIsDown && this.lucariusFavour < 5 && this.favourToAllocate > 0){
+            if (rightIsDown && this.lucarusFavour < 5 && this.favourToAllocate > 0){
                 rightIsDown = false
-                this.lucariusFavour += 1
+                this.lucarusFavour += 1
                 this.favourToAllocate -= 1
-                } else if (leftIsDown && this.lucariusFavour > 0){
+                } else if (leftIsDown && this.lucarusFavour > 0){
                     leftIsDown = false
                     this.favourToAllocate += 1
-                    this.lucariusFavour -= 1
+                    this.lucarusFavour -= 1
                 } 
 
-            for (var i = 0; i < this.lucariusFavour; i++){
-                this.lucariusStars.getChildren()[i].setTint().play('star',true)
+            for (var i = 0; i < this.lucarusFavour; i++){
+                this.lucarusStars.getChildren()[i].setTint().play('star',true)
             }
     
-            for (var i = this.lucariusFavour; i < 5; i++){
-                this.lucariusStars.getChildren()[i].setTint(0x000000).stop() 
+            for (var i = this.lucarusFavour; i < 5; i++){
+                this.lucarusStars.getChildren()[i].setTint(0x000000).stop() 
             }
         } else if (this.selectedOption == 4){
             this.menuOption4.setAlpha(1)
@@ -376,7 +401,7 @@ class FreePlaySetup extends Phaser.Scene {
                             mode: 'Free Play',
                             omniaFavour: this.omniaFavour,
                             mundoFavour:this.mundoFavour,
-                            lucariusFavour:this.lucariusFavour,
+                            lucarusFavour:this.lucarusFavour,
                             amaraFavour:this.amaraFavour,
                             illuvikFavour:this.illuvikFavour
                             })

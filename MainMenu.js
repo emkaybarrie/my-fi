@@ -1,4 +1,4 @@
-var menu = 2
+var firstRun = true
 class MainMenu extends Phaser.Scene {
 
     
@@ -24,7 +24,11 @@ class MainMenu extends Phaser.Scene {
         this.load.image('menuSelectionTexture', 'assets/menuTexture.png');
         this.load.image('menuBG', 'assets/TitleScreenD.png');
         this.load.image('gameTitle', 'assets/tempLogo.png');
-        this.load.audio("menuMusic", ["assets/music/Landslide.mp3"]);
+        this.load.audio("menuMusic", ["assets/music/T=0.mp3"]);
+
+        
+        
+       
     }
     
     create(){
@@ -51,7 +55,13 @@ class MainMenu extends Phaser.Scene {
 
         this.selectedOption = 1
 
-        this.sound.play('menuMusic')
+        if (firstRun){
+            firstRun = false
+            this.sound.play('menuMusic')
+        }
+        
+
+        importUserData()
         
     }
     
@@ -90,13 +100,13 @@ class MainMenu extends Phaser.Scene {
         } else if (a1IsDown  || s1IsDown){
             a1IsDown = false
             s1IsDown = false
-           if(this.selectedOption == 3){
+           
                 nextScene = true
-           }
+           
             
         }
         
-      
+      console.log(this.selectedMode)
       
         if (this.selectedOption == 1){
             this.selectedMode = 'Prologue'

@@ -97,7 +97,7 @@ class Kianova extends Phaser.Scene {
 
         this.omniaFavour
         this.mundoFavour
-        this.lucariusFavour
+        this.lucarusFavour
         this.amaraFavour
         this.illuvikFavour
 
@@ -107,8 +107,8 @@ class Kianova extends Phaser.Scene {
         this.mundoLoyalty
         this.mundoProsperity
 
-        this.lucariusLoyalty
-        this.lucariusProsperity
+        this.lucarusLoyalty
+        this.lucarusProsperity
 
         this.amaraLoyalty
         this.amaraProsperity
@@ -118,12 +118,12 @@ class Kianova extends Phaser.Scene {
 
         // Scoring
         // Free Play
-        this.freePlayGloryTotal
-        this.freePlayGloryOmnia
-        this.freePlayGloryMundo
-        this.freePlayGloryLucarius
-        this.freePlayGloryAmara
-        this.freePlayGloryIlluvik
+        this.freePlayGloryTotal = 0
+        this.freePlayGloryOmnia = 0
+        this.freePlayGloryMundo = 0
+        this.freePlayGlorylucarus = 0
+        this.freePlayGloryAmara = 0
+        this.freePlayGloryIlluvik = 0
 
         
     }
@@ -163,9 +163,9 @@ class Kianova extends Phaser.Scene {
         this.freePlayGloryMundo = 0
         
 
-        this.lucariusLoyalty = 0
-        this.lucariusProsperity = 0
-        this.freePlayGloryLucarius = 0
+        this.lucarusLoyalty = 0
+        this.lucarusProsperity = 0
+        this.freePlayGlorylucarus = 0
         
         this.amaraLoyalty = 0
         this.amaraProsperity = 0
@@ -215,21 +215,21 @@ class Kianova extends Phaser.Scene {
             }
             
         }
-        //Lucarius
-        for (var i = freePlayData.lucariusFavour * 2; i > 0;i--){
+        //Lucarus
+        for (var i = freePlayData.lucarusFavour * 2; i > 0;i--){
             var allocChoice = Phaser.Math.Between(1,2)
 
             if(allocChoice == 1){
-                if(this.lucariusLoyalty < 5){
-                    this.lucariusLoyalty += 1
+                if(this.lucarusLoyalty < 5){
+                    this.lucarusLoyalty += 1
                 } else {
-                    this.lucariusProsperity += 1
+                    this.lucarusProsperity += 1
                 }
             } else {
-                if(this.lucariusProsperity < 5){
-                    this.lucariusProsperity += 1
+                if(this.lucarusProsperity < 5){
+                    this.lucarusProsperity += 1
                 } else {
-                    this.lucariusLoyalty += 1
+                    this.lucarusLoyalty += 1
                 }
             }
             
@@ -274,6 +274,10 @@ class Kianova extends Phaser.Scene {
         }
     }
 
+    importPlayerData(){
+        this.importFreePlayAllocation(activeUser)
+    }
+
     updateGlory(badlandsData){
 
         if (badlandsData.regionID == 0){
@@ -285,8 +289,8 @@ class Kianova extends Phaser.Scene {
                 this.freePlayGloryMundo = badlandsData.glory
             }
         } else if (badlandsData.regionID == 2){
-            if(this.freePlayGloryLucarius < badlandsData.glory){
-                this.freePlayGloryLucarius = badlandsData.glory
+            if(this.freePlayGlorylucarus < badlandsData.glory){
+                this.freePlayGlorylucarus = badlandsData.glory
             }
         } else if (badlandsData.regionID == 3){
             if(this.freePlayGloryAmara < badlandsData.glory){
@@ -303,9 +307,13 @@ class Kianova extends Phaser.Scene {
     create(data){
 
         console.log(data)
+        console.log(activeUser)
 
+        //  Potentially move to load sooner - bug where switching from free play to login holds free play stats until Kianova scene refresh
         if (data.mode == 'Free Play'){
         this.importFreePlayAllocation(data)
+        } else {
+            this.importPlayerData()
         }
 
         if (data.glory > 0){
@@ -732,9 +740,9 @@ class Kianova extends Phaser.Scene {
 
                 sectorDescription = 'Home to the Lucarian Guard.\nMasterful warriors known for their fortitude and resilience.' 
                 sectorAffinity = '\n\n          Lucarus'
-                loyaltyScore = this.lucariusLoyalty
-                prosperityScore = this.lucariusProsperity
-                gloryScore = '\n\n\n\n\n\n\n          '+this.freePlayGloryLucarius
+                loyaltyScore = this.lucarusLoyalty
+                prosperityScore = this.lucarusProsperity
+                gloryScore = '\n\n\n\n\n\n\n          '+this.freePlayGlorylucarus
                 sectorOptions = '\n\n- Visit Northern Sector\n- Recruit Lucarian Knight\n- Explore Southern Badlands'
 
                 

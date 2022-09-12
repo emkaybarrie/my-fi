@@ -39,7 +39,7 @@ var config = {
         InputModule,
         MainMenu,
         FreePlaySetup,
-        //Login - scene for credential entry &
+        Login,// - scene for credential entry &
         ///Player Core (Player Datawarehouse), - for global data (inc player data),real-world data connection & calcs - stores data to global registry rather than scene itself
         //Portal Entrance, - for real world summary/breakdown & primer/reminder on real-world to game linkages
         Kianova,
