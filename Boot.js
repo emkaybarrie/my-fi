@@ -1,3 +1,8 @@
+// Test Room
+
+    //button.on('pointerup', openExternalLink, this);
+    // vid = this.add.video(screenWidth * 0.5, screenHeight * 0.5, 'techDemo');
+
 // User Data Retrieval
 
 var activeUser
@@ -81,7 +86,25 @@ var playerVitalsBox
 
 // Game Data Variables
 
+var vid
 
+function openExternalLink ()
+{
+    var customText = '';
+
+    var url = 'https://veed.io/view/992d5eff-cdcd-4d1e-80e0-ecb256de7d1b' + encodeURIComponent(customText);
+
+    var s = window.open(url, '_blank');
+
+    if (s && s.focus)
+    {
+        s.focus();
+    }
+    else if (!s)
+    {
+        window.location.href = url;
+    }
+}
 
 class Boot extends Phaser.Scene {
 
@@ -95,27 +118,49 @@ class Boot extends Phaser.Scene {
 
 
     preload(){
+
+        for(var i = 0; i < 5; i++){
+            this.load.image('r' + i + 'Icon', ['assets/region' + i +'Icon.png','assets/region' + i +'Icon_n.png']);
+
+        }
+
+        this.load.video('techDemo', 'assets/video/techDemo.mp4', 'loadeddata', false, false);
         
     }
     
     create(){
         
-        this.scene.launch('InputModule')
-        importUserData()
+        if(this.sys.game.device.os.desktop){
+            this.scene.launch('InputModule')
+            importUserData()
   
-        nextScene = true
+            nextScene = true
+        } else {
+            this.lights.enable();
+            this.buttonLight = this.lights.addLight(screenWidth * 0.5, screenHeight * 0.5, screenWidth,0xFFFFFF, 1.25);
+            
+            var button = this.add.image(screenWidth * 0.5, screenHeight * 0.5, 'r0Icon').setInteractive().setScale(1.5).setPipeline('Light2D');
+
+        button.on('pointerup', function (){
+            vid = this.add.video(screenWidth * 0.5, screenHeight * 0.5, 'techDemo');
+            vid.play();
+            // Prevents video freeze when game is out of focus (i.e. user changes tab on the browser)
+            vid.setPaused(false);
+        }, this);
+        }
+        
+        
     }
     
     update(){
 
+  
         if (nextScene){
             nextScene = false
             this.scene.start('MainMenu')
   
         }
-
-        
-        
+    
         
     }
 
