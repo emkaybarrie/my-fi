@@ -35,15 +35,15 @@ class Login extends Phaser.Scene {
 
     var loginBG = this.add.image(0,0,'loginBG').setScale(1.94,1.1).setOrigin(0,0)
         
-    userNamePrompt = this.add.text(screenWidth * 0.45, screenHeight * 0.45, 'Enter Username', { font: '32px Courier', fill: '#ffffff' }).setOrigin(1,0.5);
-    passWordPrompt =  this.add.text(screenWidth * 0.45, screenHeight * 0.55, 'Enter Password', { font: '32px Courier', fill: '#ffffff' }).setOrigin(1,0.5);
-    confirmationPrompt =  this.add.text(screenWidth * 0.5, screenHeight * 0.65, 'Login', { font: '32px bold Courier', fill: '#ffffff' }).setOrigin(0.5,0.5);
+    userNamePrompt = this.add.text(screenWidth * 0.45, screenHeight * 0.45, 'Enter Username', { font: '32px Gothic', fill: '#ffffff' }).setOrigin(1,0.5);
+    passWordPrompt =  this.add.text(screenWidth * 0.45, screenHeight * 0.55, 'Enter Password', { font: '32px Gothic', fill: '#ffffff' }).setOrigin(1,0.5);
+    confirmationPrompt =  this.add.text(screenWidth * 0.5, screenHeight * 0.65, 'Login', { font: '32px bold Gothic', fill: '#ffffff' }).setOrigin(0.5,0.5);
 
-    userNameEntry = this.add.text(userNamePrompt.x + (screenWidth * 0.05), userNamePrompt.y, '', { font: '32px bold Courier', fill: '#ffff00' }).setOrigin(0,0.5);
-    passWordEntry = this.add.text(passWordPrompt.x + (screenWidth * 0.05), passWordPrompt.y, '', { font: '32px bold Courier', fill: '#ffff00' }).setOrigin(0,0.5);
+    userNameEntry = this.add.text(userNamePrompt.x + (screenWidth * 0.05), userNamePrompt.y, '', { font: '32px bold Gothic', fill: '#ffff00' }).setOrigin(0,0.5);
+    passWordEntry = this.add.text(passWordPrompt.x + (screenWidth * 0.05), passWordPrompt.y, '', { font: '32px bold Gothic', fill: '#ffff00' }).setOrigin(0,0.5);
     passWordEntryActual = ''
 
-    loginResponse =  this.add.text(screenWidth * 0.5, screenHeight * 0.75,"", { font: '32px Courier', fill: '#ffffff' }).setOrigin(0.5,0.5);
+    loginResponse =  this.add.text(screenWidth * 0.5, screenHeight * 0.75,"", { font: '32px Gothic', fill: '#ffffff' }).setOrigin(0.5,0.5);
     
     activeFieldBox = this.add.tileSprite(userNamePrompt.x - (userNamePrompt.displayWidth/2),userNamePrompt.y,screenWidth * 0.15,screenHeight * 0.075,'menuSelectionTexture');
     activeFieldBox.setTexture('menuSelectionTexture').setAlpha(0.35)    
@@ -225,7 +225,7 @@ class Login extends Phaser.Scene {
 
         if (nextScene){
             nextScene = false
-            this.scene.start('Kianova')
+            this.scene.start('SelectAvatar')
   
         }
   

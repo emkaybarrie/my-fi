@@ -82,12 +82,12 @@ class InputModule extends Phaser.Scene {
             // Down
             cursors.down.on('down', function (){
                 downIsDown = true
-                console.log('Down Pressed: ' +  downIsDown)
+                //console.log('Down Pressed: ' +  downIsDown)
             })
 
             cursors.down.on('up', function (){
                 downIsDown = false 
-                console.log('Down Pressed: ' +  downIsDown)
+                //console.log('Down Pressed: ' +  downIsDown)
             })
 
             // Key A - Action 1

@@ -10,7 +10,7 @@
 			"scale": 1,
 			"frames": [
 				{
-					"filename": "Warrior-Ladder-Grab_1.png",
+					"filename": "Ladder-Grab_1.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -31,7 +31,7 @@
 					}
 				},
 				{
-					"filename": "Warrior-Ladder-Grab_2.png",
+					"filename": "Ladder-Grab_2.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -52,7 +52,7 @@
 					}
 				},
 				{
-					"filename": "Warrior-Ladder-Grab_3.png",
+					"filename": "Ladder-Grab_3.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -73,7 +73,7 @@
 					}
 				},
 				{
-					"filename": "Warrior-Ladder-Grab_4.png",
+					"filename": "Ladder-Grab_4.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -94,7 +94,7 @@
 					}
 				},
 				{
-					"filename": "Warrior-Ladder-Grab_5.png",
+					"filename": "Ladder-Grab_5.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -115,7 +115,7 @@
 					}
 				},
 				{
-					"filename": "Warrior-Ladder-Grab_6.png",
+					"filename": "Ladder-Grab_6.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -136,7 +136,7 @@
 					}
 				},
 				{
-					"filename": "Warrior-Ladder-Grab_7.png",
+					"filename": "Ladder-Grab_7.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -157,7 +157,7 @@
 					}
 				},
 				{
-					"filename": "Warrior-Ladder-Grab_8.png",
+					"filename": "Ladder-Grab_8.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -178,7 +178,7 @@
 					}
 				},
 				{
-					"filename": "Warrior-Slide_2.png",
+					"filename": "Slide_2.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -199,7 +199,7 @@
 					}
 				},
 				{
-					"filename": "Warrior-Slide_3.png",
+					"filename": "Slide_3.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -220,7 +220,7 @@
 					}
 				},
 				{
-					"filename": "Warrior-Slide_4.png",
+					"filename": "Slide_4.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -241,7 +241,7 @@
 					}
 				},
 				{
-					"filename": "Warrior-SlideNoEffect_1.png",
+					"filename": "SlideNoEffect_1.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -262,7 +262,7 @@
 					}
 				},
 				{
-					"filename": "Warrior-Slide_1.png",
+					"filename": "Slide_1.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -283,7 +283,7 @@
 					}
 				},
 				{
-					"filename": "Warrior-SlideNoEffect_2.png",
+					"filename": "SlideNoEffect_2.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -304,7 +304,7 @@
 					}
 				},
 				{
-					"filename": "Warrior-SlideNoEffect_3.png",
+					"filename": "SlideNoEffect_3.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -325,7 +325,7 @@
 					}
 				},
 				{
-					"filename": "Warrior-SlideNoEffect_4.png",
+					"filename": "SlideNoEffect_4.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -346,7 +346,7 @@
 					}
 				},
 				{
-					"filename": "Warrior-SlideNoEffect_5.png",
+					"filename": "SlideNoEffect_5.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -367,7 +367,7 @@
 					}
 				},
 				{
-					"filename": "Warrior-Slide_5.png",
+					"filename": "Slide_5.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -388,7 +388,7 @@
 					}
 				},
 				{
-					"filename": "Warrior_Attack_1.png",
+					"filename": "ACTION_1_1.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -409,7 +409,7 @@
 					}
 				},
 				{
-					"filename": "Warrior_Attack_2.png",
+					"filename": "ACTION_1_2.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -430,7 +430,7 @@
 					}
 				},
 				{
-					"filename": "Warrior_Attack_3.png",
+					"filename": "ACTION_1_3.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -451,7 +451,7 @@
 					}
 				},
 				{
-					"filename": "Warrior_Attack_4.png",
+					"filename": "ACTION_1_4.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -472,7 +472,7 @@
 					}
 				},
 				{
-					"filename": "Warrior_Attack_5.png",
+					"filename": "ACTION_1_5.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -493,7 +493,7 @@
 					}
 				},
 				{
-					"filename": "Warrior_Attack_6.png",
+					"filename": "ACTION_1_6.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -514,7 +514,7 @@
 					}
 				},
 				{
-					"filename": "Warrior_Attack_7.png",
+					"filename": "ACTION_1_7.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -535,7 +535,7 @@
 					}
 				},
 				{
-					"filename": "Warrior_Attack_8.png",
+					"filename": "ACTION_1_8.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -556,7 +556,7 @@
 					}
 				},
 				{
-					"filename": "Warrior_Attack_9.png",
+					"filename": "ACTION_1_9.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -577,7 +577,7 @@
 					}
 				},
 				{
-					"filename": "Warrior_Attack_10.png",
+					"filename": "ACTION_1_10.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -598,7 +598,7 @@
 					}
 				},
 				{
-					"filename": "Warrior_Attack_11.png",
+					"filename": "ACTION_1_11.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -619,7 +619,7 @@
 					}
 				},
 				{
-					"filename": "Warrior_Attack_12.png",
+					"filename": "ACTION_1_12.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -640,7 +640,7 @@
 					}
 				},
 				{
-					"filename": "Warrior_Crouch_1.png",
+					"filename": "Crouch_1.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -661,7 +661,7 @@
 					}
 				},
 				{
-					"filename": "Warrior_Crouch_6.png",
+					"filename": "Crouch_6.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -682,7 +682,7 @@
 					}
 				},
 				{
-					"filename": "Warrior_Crouch_2.png",
+					"filename": "Crouch_2.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -703,7 +703,7 @@
 					}
 				},
 				{
-					"filename": "Warrior_Crouch_3.png",
+					"filename": "Crouch_3.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -724,7 +724,7 @@
 					}
 				},
 				{
-					"filename": "Warrior_Crouch_4.png",
+					"filename": "Crouch_4.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -745,7 +745,7 @@
 					}
 				},
 				{
-					"filename": "Warrior_Crouch_5.png",
+					"filename": "Crouch_5.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -766,7 +766,7 @@
 					}
 				},
 				{
-					"filename": "Warrior_Dash-Attack_1.png",
+					"filename": "Dash-ACTION_1_1.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -787,7 +787,7 @@
 					}
 				},
 				{
-					"filename": "Warrior_Dash_5.png",
+					"filename": "Dash_5.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -808,7 +808,7 @@
 					}
 				},
 				{
-					"filename": "Warrior_Dash-Attack_2.png",
+					"filename": "Dash-ACTION_1_2.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -829,7 +829,7 @@
 					}
 				},
 				{
-					"filename": "Warrior_Dash-Attack_3.png",
+					"filename": "Dash-ACTION_1_3.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -850,7 +850,7 @@
 					}
 				},
 				{
-					"filename": "Warrior_Dash-Attack_4.png",
+					"filename": "Dash-ACTION_1_4.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -871,7 +871,7 @@
 					}
 				},
 				{
-					"filename": "Warrior_Dash-Attack_5.png",
+					"filename": "Dash-ACTION_1_5.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -892,7 +892,7 @@
 					}
 				},
 				{
-					"filename": "Warrior_Dash-Attack_6.png",
+					"filename": "Dash-ACTION_1_6.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -913,7 +913,7 @@
 					}
 				},
 				{
-					"filename": "Warrior_Dash-Attack_7.png",
+					"filename": "Dash-ACTION_1_7.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -934,7 +934,7 @@
 					}
 				},
 				{
-					"filename": "Warrior_Dash-Attack_8.png",
+					"filename": "Dash-ACTION_1_8.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -955,7 +955,7 @@
 					}
 				},
 				{
-					"filename": "Warrior_Dash-Attack_9.png",
+					"filename": "Dash-ACTION_1_9.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -976,7 +976,7 @@
 					}
 				},
 				{
-					"filename": "Warrior_Dash-Attack_10.png",
+					"filename": "Dash-ACTION_1_10.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -997,7 +997,7 @@
 					}
 				},
 				{
-					"filename": "Warrior_Dash_1.png",
+					"filename": "Dash_1.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -1018,7 +1018,7 @@
 					}
 				},
 				{
-					"filename": "Warrior_Dash_2.png",
+					"filename": "Dash_2.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -1039,7 +1039,7 @@
 					}
 				},
 				{
-					"filename": "Warrior_Dash_3.png",
+					"filename": "Dash_3.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -1060,7 +1060,7 @@
 					}
 				},
 				{
-					"filename": "Warrior_Dash_4.png",
+					"filename": "Dash_4.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -1081,7 +1081,7 @@
 					}
 				},
 				{
-					"filename": "Warrior_Dash_6.png",
+					"filename": "Dash_6.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -1102,7 +1102,7 @@
 					}
 				},
 				{
-					"filename": "Warrior_Dash_7.png",
+					"filename": "Dash_7.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -1123,7 +1123,7 @@
 					}
 				},
 				{
-					"filename": "Warrior_Death_1.png",
+					"filename": "DOWNED_1.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -1144,7 +1144,7 @@
 					}
 				},
 				{
-					"filename": "Warrior_Death_2.png",
+					"filename": "DOWNED_2.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -1165,7 +1165,7 @@
 					}
 				},
 				{
-					"filename": "Warrior_Death_3.png",
+					"filename": "DOWNED_3.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -1186,7 +1186,7 @@
 					}
 				},
 				{
-					"filename": "Warrior_Death_4.png",
+					"filename": "DOWNED_4.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -1207,7 +1207,7 @@
 					}
 				},
 				{
-					"filename": "Warrior_Death_5.png",
+					"filename": "DOWNED_5.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -1228,7 +1228,7 @@
 					}
 				},
 				{
-					"filename": "Warrior_Death_6.png",
+					"filename": "DOWNED_6.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -1249,7 +1249,7 @@
 					}
 				},
 				{
-					"filename": "Warrior_Death_7.png",
+					"filename": "DOWNED_7.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -1270,7 +1270,7 @@
 					}
 				},
 				{
-					"filename": "Warrior_Death_8.png",
+					"filename": "DOWNED_8.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -1291,7 +1291,7 @@
 					}
 				},
 				{
-					"filename": "Warrior_Death_9.png",
+					"filename": "DOWNED_9.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -1312,7 +1312,7 @@
 					}
 				},
 				{
-					"filename": "Warrior_Death_10.png",
+					"filename": "DOWNED_10.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -1333,7 +1333,7 @@
 					}
 				},
 				{
-					"filename": "Warrior_Death_11.png",
+					"filename": "DOWNED_11.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -1354,7 +1354,7 @@
 					}
 				},
 				{
-					"filename": "Warrior_Edge-Grab_1.png",
+					"filename": "EDGE_Grab_1.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -1375,7 +1375,7 @@
 					}
 				},
 				{
-					"filename": "Warrior_Edge-Grab_2.png",
+					"filename": "EDGE_Grab_2.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -1396,7 +1396,7 @@
 					}
 				},
 				{
-					"filename": "Warrior_Edge-Grab_3.png",
+					"filename": "EDGE_Grab_3.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -1417,7 +1417,7 @@
 					}
 				},
 				{
-					"filename": "Warrior_Edge-Grab_4.png",
+					"filename": "EDGE_Grab_4.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -1438,7 +1438,7 @@
 					}
 				},
 				{
-					"filename": "Warrior_Edge-Grab_5.png",
+					"filename": "EDGE_Grab_5.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -1459,7 +1459,7 @@
 					}
 				},
 				{
-					"filename": "Warrior_Edge-Idle_6.png",
+					"filename": "EDGE_IDLE_6.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -1480,7 +1480,7 @@
 					}
 				},
 				{
-					"filename": "Warrior_Edge-Idle_1.png",
+					"filename": "EDGE_IDLE_1.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -1501,7 +1501,7 @@
 					}
 				},
 				{
-					"filename": "Warrior_Edge-Idle_2.png",
+					"filename": "EDGE_IDLE_2.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -1522,7 +1522,7 @@
 					}
 				},
 				{
-					"filename": "Warrior_Edge-Idle_3.png",
+					"filename": "EDGE_IDLE_3.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -1543,7 +1543,7 @@
 					}
 				},
 				{
-					"filename": "Warrior_Edge-Idle_4.png",
+					"filename": "EDGE_IDLE_4.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -1564,7 +1564,7 @@
 					}
 				},
 				{
-					"filename": "Warrior_Edge-Idle_5.png",
+					"filename": "EDGE_IDLE_5.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -1585,7 +1585,7 @@
 					}
 				},
 				{
-					"filename": "Warrior_Fall_1.png",
+					"filename": "FALL_3.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -1606,7 +1606,7 @@
 					}
 				},
 				{
-					"filename": "Warrior_Fall_2.png",
+					"filename": "FALL_4.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -1627,7 +1627,7 @@
 					}
 				},
 				{
-					"filename": "Warrior_Fall_3.png",
+					"filename": "FALL_5.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -1648,7 +1648,7 @@
 					}
 				},
 				{
-					"filename": "Warrior_hurt_1.png",
+					"filename": "TAKE_HIT_1.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -1669,7 +1669,7 @@
 					}
 				},
 				{
-					"filename": "Warrior_hurt_2.png",
+					"filename": "TAKE_HIT_2.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -1690,7 +1690,7 @@
 					}
 				},
 				{
-					"filename": "Warrior_hurt_3.png",
+					"filename": "TAKE_HIT_3.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -1711,7 +1711,7 @@
 					}
 				},
 				{
-					"filename": "Warrior_hurt_4.png",
+					"filename": "TAKE_HIT_4.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -1732,7 +1732,7 @@
 					}
 				},
 				{
-					"filename": "Warrior_Idle_1.png",
+					"filename": "IDLE_1.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -1753,7 +1753,7 @@
 					}
 				},
 				{
-					"filename": "Warrior_Idle_2.png",
+					"filename": "IDLE_2.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -1774,7 +1774,7 @@
 					}
 				},
 				{
-					"filename": "Warrior_Idle_3.png",
+					"filename": "IDLE_3.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -1795,7 +1795,7 @@
 					}
 				},
 				{
-					"filename": "Warrior_Idle_4.png",
+					"filename": "IDLE_4.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -1816,7 +1816,7 @@
 					}
 				},
 				{
-					"filename": "Warrior_Idle_5.png",
+					"filename": "IDLE_5.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -1837,7 +1837,7 @@
 					}
 				},
 				{
-					"filename": "Warrior_Idle_6.png",
+					"filename": "IDLE_6.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -1858,7 +1858,7 @@
 					}
 				},
 				{
-					"filename": "Warrior_Jump_1.png",
+					"filename": "Jump_1.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -1879,7 +1879,7 @@
 					}
 				},
 				{
-					"filename": "Warrior_Jump_2.png",
+					"filename": "Jump_2.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -1900,7 +1900,7 @@
 					}
 				},
 				{
-					"filename": "Warrior_Jump_3.png",
+					"filename": "Jump_3.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -1921,7 +1921,7 @@
 					}
 				},
 				{
-					"filename": "Warrior_Run_1.png",
+					"filename": "RUN_1.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -1942,7 +1942,7 @@
 					}
 				},
 				{
-					"filename": "Warrior_Run_2.png",
+					"filename": "RUN_2.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -1963,7 +1963,7 @@
 					}
 				},
 				{
-					"filename": "Warrior_Run_3.png",
+					"filename": "RUN_3.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -1984,7 +1984,7 @@
 					}
 				},
 				{
-					"filename": "Warrior_Run_4.png",
+					"filename": "RUN_4.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -2005,7 +2005,7 @@
 					}
 				},
 				{
-					"filename": "Warrior_Run_5.png",
+					"filename": "RUN_5.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -2026,7 +2026,7 @@
 					}
 				},
 				{
-					"filename": "Warrior_Run_6.png",
+					"filename": "RUN_6.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -2047,7 +2047,7 @@
 					}
 				},
 				{
-					"filename": "Warrior_Run_7.png",
+					"filename": "RUN_7.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -2068,7 +2068,7 @@
 					}
 				},
 				{
-					"filename": "Warrior_Run_8.png",
+					"filename": "RUN_8.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -2089,7 +2089,7 @@
 					}
 				},
 				{
-					"filename": "Warrior_UptoFall_1.png",
+					"filename": "FALL_1.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -2110,7 +2110,7 @@
 					}
 				},
 				{
-					"filename": "Warrior_UptoFall_2.png",
+					"filename": "FALL_2.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -2131,7 +2131,7 @@
 					}
 				},
 				{
-					"filename": "Warrior_WallSlide_1.png",
+					"filename": "WallSlide_1.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -2152,7 +2152,7 @@
 					}
 				},
 				{
-					"filename": "Warrior_WallSlide_2.png",
+					"filename": "WallSlide_2.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -2173,7 +2173,7 @@
 					}
 				},
 				{
-					"filename": "Warrior_WallSlide_3.png",
+					"filename": "WallSlide_3.png",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -2199,6 +2199,6 @@
 	"meta": {
 		"app": "https://www.codeandweb.com/texturepacker",
 		"version": "3.0",
-		"smartupdate": "$TexturePacker:SmartUpdate:98fb887223ded5c39003375334b1c32e:961b3abbc22e7e23b0dd74b886fb321f:5366bcad8601f8b4701ea960c24d5b5a$"
+		"smartupdate": "$TexturePacker:SmartUpdate:ef72b0d4285252ff9498e366f2142987:961b3abbc22e7e23b0dd74b886fb321f:5366bcad8601f8b4701ea960c24d5b5a$"
 	}
 }

@@ -32,7 +32,7 @@ class Region2 extends Phaser.Scene {
         // Region Data
         this.regionID = 2
         this.region = 'North'
-        this.regionPatron = 'Lucarus'
+        this.regionPatron = 'Mundo'
         this.regionAffinity = 'Risk Band 2'
 
         //Sector Data 
@@ -41,7 +41,7 @@ class Region2 extends Phaser.Scene {
         
         console.log('Refreshing Region Sector Array Lists...')
         // Sector Lists
-        this.zone0 = [this.lucarianDesert,this.barrenPlains]
+        this.zone0 = [this.mundoDesert,this.barrenPlains]
         // Sector Root Array
         this.zones = [
                         this.zone0
@@ -128,8 +128,8 @@ class Region2 extends Phaser.Scene {
             
     }
 
-    lucarianDesert(game){
-        console.log('Scanning: Lucarian Desert')
+    mundoDesert(game){
+        console.log('Scanning: Mundo Desert')
         // Stage Function  
         // Writes Stage Data to Region Scene Data 
         
@@ -142,7 +142,7 @@ class Region2 extends Phaser.Scene {
                // Set Stage Details
 
                game.id = 'R2-Z0-S0-R0'
-               game.stageName = 'Lucarian Desert'
+               game.stageName = 'Mundo Desert'
                game.stageAssetPathRoot = 'assets/'
                game.stageMusicFilePath = 'music/Katana.mp3'
 

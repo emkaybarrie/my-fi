@@ -31,8 +31,8 @@ class Region1 extends Phaser.Scene {
 
         // Region Data
         this.regionID = 1
-        this.region = 'East'
-        this.regionPatron = 'Mundo'
+        this.region = 'West'
+        this.regionPatron = 'Amara'
         this.regionAffinity = 'Risk Band 1'
 
         // Sector Data 
@@ -41,7 +41,7 @@ class Region1 extends Phaser.Scene {
         
         console.log('Refreshing Region Sector Array Lists...')
         // Sector Lists
-        this.zone0 = [this.mundusRiverbank,this.gardenGrove,this.darkmoonGlade,this.etherielForest]
+        this.zone0 = [this.amaranRiverbank,this.gardenGrove,this.darkmoonGlade,this.etherielForest]
         // Sector Root Array
         this.zones = [
                         this.zone0
@@ -120,7 +120,7 @@ class Region1 extends Phaser.Scene {
 
     }
 
-    mundusRiverbank(game){
+    amaranRiverbank(game){
         // Stage Function  
         // Writes Stage Data to Region Scene Data 
         
@@ -133,7 +133,7 @@ class Region1 extends Phaser.Scene {
                // Set Stage Details
 
                game.id = 'R[1]-Z[0]-S[0]-R[0]'
-               game.stageName = 'Mundus Riverbank'
+               game.stageName = 'Amaran Riverbank'
                game.stageAssetPathRoot = 'assets/'
                game.stageMusicFilePath = 'music/Katana.mp3'
 

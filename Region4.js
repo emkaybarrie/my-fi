@@ -27,8 +27,8 @@ class Region4 extends Phaser.Scene {
 
         // Region Data
         this.regionID = 4
-        this.region = 'East'
-        this.regionPatron = 'Illuvik'
+        this.region = 'South'
+        this.regionPatron = 'Lucarus'
         this.regionAffinity = 'Risk Band 4'
 
         // Sector Data 
@@ -37,7 +37,7 @@ class Region4 extends Phaser.Scene {
         
         console.log('Refreshing Region Sector Array Lists...')
         // Sector Lists
-        this.zone0 = [this.illuviumForest,this.silkwoodForest,this.oakmourne]
+        this.zone0 = [this.cliffsOfLucarus,this.lucarianPlains]
         // Sector Root Array
         this.zones = [
                         this.zone0
@@ -115,8 +115,8 @@ class Region4 extends Phaser.Scene {
             
     }
 
-    illuviumForest(game){
-        // Stage Function  
+    cliffsOfLucarus(game){
+     // Stage Function  
         // Writes Stage Data to Region Scene Data 
         
             // Stage Code
@@ -128,57 +128,15 @@ class Region4 extends Phaser.Scene {
                // Set Stage Details
 
                game.id = 'R4-Z0-S0-R0'
-               game.stageName = 'Illuvium Forest'
+               game.stageName = 'Cliffs of Lucarus'
                game.stageAssetPathRoot = 'assets/'
                game.stageMusicFilePath = 'music/Katana.mp3'
 
                // Set Background (BG) & Foregorund (FG) Layers
-               game.stageAssetName = 'forest'
-               game.stageBackgroundLayers = 7
-               game.stageForegroundLayers = 3
-               game.stageBGScrollSpeedModifierSettings = [1,0.95,0.75,0.65,0.45,0.2,0,0]
-               game.stageFGScrollSpeedModifierSettings = [0.25,1,1.05]
-               game.stageNormalMaps = []
-
-               // Day/Night Settings
-                // Enable/Disable Times
-        
-                var dawn = true
-                var day = true
-                var dusk = true
-                var night = true
-
-                game.timeAvailabilityArray = [dawn,day,dusk,night]
-
-                // Floor Settings
-        
-                game.floorPosYMin = 0.05
-                game.floorPosYMax = 0.15    
-
-    }
-
-    silkwoodForest(game){
-        // Stage Function  
-        // Writes Stage Data to Region Scene Data 
-        
-            // Stage Code
-        
-               // Set Stage Sector & Rarity Data
-               game.zone = 0
-               game.rarity = 0
-
-               // Set Stage Details
-
-               game.id = 'R4-Z0-S1-R0'
-               game.stageName = 'Silkwood Forest'
-               game.stageAssetPathRoot = 'assets/'
-               game.stageMusicFilePath = 'music/Katana.mp3'
-
-               // Set Background (BG) & Foregorund (FG) Layers
-               game.stageAssetName = 'bForest'
-               game.stageBackgroundLayers = 4
+               game.stageAssetName = 'dawn'
+               game.stageBackgroundLayers = 8
                game.stageForegroundLayers = 0
-               game.stageBGScrollSpeedModifierSettings = [0.75,0.25,0.05,0.05]
+               game.stageBGScrollSpeedModifierSettings = [1,1,0.5,0.25,0.1,0.05,0,0]
                game.stageFGScrollSpeedModifierSettings = []
                game.stageNormalMaps = []
 
@@ -195,11 +153,12 @@ class Region4 extends Phaser.Scene {
                 // Floor Settings
         
                 game.floorPosYMin = 0.05
-                game.floorPosYMax = 0.1 
-
+                game.floorPosYMax = 0.25
+       
+         
     }
 
-    oakmourne(game){
+    lucarianPlains(game){
         // Stage Function  
         // Writes Stage Data to Region Scene Data 
         
@@ -211,17 +170,17 @@ class Region4 extends Phaser.Scene {
 
                // Set Stage Details
 
-               game.id = 'R4-Z0-S2-R0'
-               game.stageName = 'Oakmourne'
+               game.id = 'R4-Z0-S0-R1'
+               game.stageName = 'Lucarian Plains'
                game.stageAssetPathRoot = 'assets/'
                game.stageMusicFilePath = 'music/Katana.mp3'
 
                // Set Background (BG) & Foregorund (FG) Layers
-               game.stageAssetName = 'oForest'
-               game.stageBackgroundLayers = 2
-               game.stageForegroundLayers = 1
-               game.stageBGScrollSpeedModifierSettings = [0.85,0.25]
-               game.stageFGScrollSpeedModifierSettings = [1.1]
+               game.stageAssetName = 'mountains'
+               game.stageBackgroundLayers = 5
+               game.stageForegroundLayers = 0
+               game.stageBGScrollSpeedModifierSettings = [0.35,0.15,0.075,0.05,0.01]
+               game.stageFGScrollSpeedModifierSettings = []
                game.stageNormalMaps = []
 
                // Day/Night Settings
@@ -236,9 +195,9 @@ class Region4 extends Phaser.Scene {
 
                 // Floor Settings
         
-                game.floorPosYMin = 0.075
-                game.floorPosYMax = 0.1
-    
+                game.floorPosYMin = 0.05
+                game.floorPosYMax = 0.025
+
     }
 
     // Region Functions
@@ -312,7 +271,6 @@ class Region4 extends Phaser.Scene {
             }
         }
 
- 
       
        
         // Selects Stage to load

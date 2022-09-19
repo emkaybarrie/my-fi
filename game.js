@@ -34,27 +34,36 @@ var config = {
         target: 60
     },
     scene: [
-        
-        Boot,
-        InputModule,
-        MainMenu,
-        FreePlaySetup,
-        Login,// - scene for credential entry &
-        ///Player Core (Player Datawarehouse), - for global data (inc player data),real-world data connection & calcs - stores data to global registry rather than scene itself
-        //Portal Entrance, - for real world summary/breakdown & primer/reminder on real-world to game linkages
+        // Load core game assets, global variables, and initialise Core Game Modules
+        Boot, 
+            // Core Modules
+            InputModule,
+        // Main Menu Screen - access Prologue, Play (Immersive/Free Play), The Crucible (TBD - boss rush mode or multiplayer spin), The Simulacrum (TBD - Training Area / KNowledge Centre possible rename if latter)
+        // If Immersive option chosen - go to Login.  If Free Play, straight to Select Avatar screen
+        MainMenu, 
+            // Login screen for credential entry & player data retreival and display
+            Login,
+            // Screen to select Avatar for Badlands session, shows avatar base stats, info and preview
+            SelectAvatar,
+        // Hub Screen depicting the city of Kianova.  Return here after every run.  Acts as player base/game main menu.  Displays sector/district and avatar stats, in game info, etc
         Kianova,
-        // - holds Kianova data
+        // Main game scene where action occurs.  Holds active stage data, outputs/updates game data during/after runs to relevant scenes.
         Badlands,
-        // - holds active stage data, outputs persistent game data to Data Core at applicable points
+        // Region Scenes act as repositories for stage data, by Region (via functions), exports stage data to Badlands when queried (after health checks)
         Region1,
         Region2,
-        Region3,
+        //Region3,
         Region4,
-        // - repos for stage data, by Region (via functions), exports stage data to badlands when queried (after health checks)
+        Region5,
+        // Test Environment for Latest Region Scene & Test Stage
+        RegionTestEnvironment
+        
+
+        // TBD
+        ///Player Core (Player Datawarehouse), - for global data (inc player data),real-world data connection & calcs - stores data to global registry rather than scene itself
+        //Portal Entrance, - for real world summary/breakdown & primer/reminder on real-world to game linkages
         //RegionServices,
         // - Holds region data migration functions and region support funcitons (tbd)
-        RegionTestEnvironment
-        // Test Environment for Latest Region Scene & Test Stage
     ]
   
  

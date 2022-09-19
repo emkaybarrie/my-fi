@@ -611,10 +611,10 @@
                     if(inBattle){ 
                         if(!playerCrouching){
                             if(player.body.speed > 250){
-                            player.play({key:'pSlide',frameRate:14},true)
+                            player.play({key:'player_Avatar_3_SLIDE',frameRate:14},true)
                             player.setDragX(1000)
                             } else {
-                                player.play({key:'pCrouch',frameRate:14},true)
+                                player.play({key:'player_Avatar_3_CROUCH',frameRate:14},true)
                             }
                             playerCrouching = true
                         }
@@ -622,13 +622,13 @@
                         if (currentEnergy > 1){
                         highObstacle.body.checkCollision.none = true
                         playerVitals.decreaseEnergy((income * 0.25) / 25)
-                        player.anims.play({key:'pSlide',frameRate: 6},true);
+                        player.anims.play({key:'player_Avatar_3_SLIDE',frameRate: 6},true);
                         playerCrouching = true
                        
                         } else {
                            
                             highObstacle.body.checkCollision.none = false
-                            player.anims.play({key:'pRun',frameRate: 6},true);
+                            player.anims.play({key:'player_Avatar_3_RUN',frameRate: 6},true);
                             playerVitals.decreaseEnergy((income * 0.25) / 25)
                             
 
@@ -656,16 +656,16 @@
                                 }
 
                                 upIsDown = false
-                                player.play({key:'pJump',frameRate:18},true)
+                                player.play({key:'player_Avatar_3_JUMP',frameRate:18},true)
                                 
                                 player.setVelocityY(-1500 * scaleModX)
                                 playerLanded = false
 
                             } else {
-                                player.play({key:'pCrouch',frameRate:24},true)
+                                player.play({key:'player_Avatar_3_CROUCH',frameRate:24},true)
                             player.once('animationcomplete',function(){
                                 upIsDown = false
-                                player.play({key:'pJump',frameRate:18},true)
+                                player.play({key:'player_Avatar_3_JUMP',frameRate:18},true)
                                 
                                 player.setVelocityY(-1500 * scaleModX)
                                 playerLanded = false
@@ -681,12 +681,12 @@
                             
                             playerVitals.decreaseEnergy(maxEnergy * 0.2)
                             
-                            player.play('pJump',true)
+                            player.play('player_Avatar_3_JUMP',true)
                             player.setVelocityY(-1200 * scaleModX)
                             player.setVelocityX(100)
 
                             player.once('animationcomplete',function(){
-                                player.play('pUptoFall',true)
+                                player.play('player_Avatar_3_FALL',true)
                                 
                                 
                                 playerJumping = false
@@ -724,7 +724,7 @@
                                             
                                                 },player)
                                     } else if (player.body.onFloor() && playerLanded) {
-                                        player.play('pRun',true)
+                                        player.play('player_Avatar_3_RUN',true)
                                         player.setVelocityX(player.body.velocity.x - 100)
                                     }
                                 } else 
@@ -745,7 +745,7 @@
                                             },player)
                                         
                                     } else if (player.body.onFloor() && playerLanded) {
-                                        player.play('pRun',true)
+                                        player.play('player_Avatar_3_RUN',true)
                                         player.setVelocityX(player.body.velocity.x + 100)
                                      
                                     }
@@ -753,7 +753,7 @@
 
                             } else if (player.body.onFloor() && playerLanded) {
 
-                                player.play('pRun',true)
+                                player.play('player_Avatar_3_RUN',true)
                                 // If Left
                                 if(leftIsDown){
                                     player.flipX = true
@@ -779,7 +779,7 @@
 
                                 player.x -= 6
                                 }
-                                player.anims.play({key:'pRun',frameRate: 8},true);
+                                player.anims.play({key:'player_Avatar_3_RUN',frameRate: 8},true);
                             } else 
                             // If Right
                             if(rightIsDown){
@@ -787,7 +787,7 @@
                                 if(playerSpeed <= 1.5){
                                 player.x += 4
                                 }
-                                player.anims.play({key:'pRun',frameRate: 16},true);
+                                player.anims.play({key:'player_Avatar_3_RUN',frameRate: 16},true);
                                 glory += (2.5 / 60)
                             }
                         } else {
@@ -808,7 +808,7 @@
                                 }
                             }
 
-                            player.play({key:'pRun',frameRate: 12},true);
+                            player.play({key:'player_Avatar_3_RUN',frameRate: 12},true);
 
                             if(leftIsDown){
                                 playerVitals.decreaseEnergy((income * 0.25) / 100 ) 
@@ -841,7 +841,7 @@
                         
                         if(moveCancelActive){
                             
-                            player.play('pIdle',true)
+                            player.play('player_Avatar_3_IDLE',true)
                             
                         
                             playerDodging = false 
@@ -853,7 +853,7 @@
                         
                         
                     } else {
-                        player.play({key:'pRun',frameRate: 12},true);
+                        player.play({key:'player_Avatar_3_RUN',frameRate: 12},true);
                         player.flipX = false
                         playerCrouching = false
                         camera.zoomTo(1,500)
@@ -1451,7 +1451,7 @@ hide ()
     }
 
     function nightBorneCam(){
-        player.play({key:'pRun',frameRate: 12},true);
+        player.play({key:'player_Avatar_3_RUN',frameRate: 12},true);
         nightBorne.play({key:'nightBorne_Move',frameRate: 8 * playerSpeed},true)
     if(!nightBorneCamActive){
         camera.resetFX()
@@ -1586,9 +1586,9 @@ hide ()
 
         
         // Player crouches to jump away
-            player.play({key:'pSlide',frameRate: 12},true);
+            player.play({key:'player_Avatar_3_SLIDE',frameRate: 12},true);
 
-                if(player.anims.getName() == 'pSlide'){
+                if(player.anims.getName() == 'player_Avatar_3_SLIDE'){
 
                         fireTowardsTarget(player,Phaser.Math.FloatBetween(nightBorne.x + 200,nightBorne.x + 300),4)
 
@@ -1599,15 +1599,15 @@ hide ()
                 }, player)
 
         // Player jumps away towards battle position
-            player.once('animationcomplete_pSlide', function (anim,frame) {
+            player.once('animationcomplete_player_Avatar_3_SLIDE', function (anim,frame) {
 
                 
                 
                 
                 
-                player.play({key:'pJump',frameRate: 12},true);
+                player.play({key:'player_Avatar_3_JUMP',frameRate: 12},true);
 
-                if(player.anims.getName() == 'pJump'){
+                if(player.anims.getName() == 'player_Avatar_3_JUMP'){
                     
                         
                         player.setVelocityY(-200)
@@ -1625,13 +1625,13 @@ hide ()
             }, player)  
 
         // Player turns round after jump to face enemy
-            player.once('animationcomplete_pJump', function (anim,frame) {
+            player.once('animationcomplete_player_Avatar_3_JUMP', function (anim,frame) {
                 
                 player.flipX = true
             
-                player.play({key:'pUptoFall'},true);
+                player.play({key:'player_Avatar_3_FALL'},true);
 
-                if(player.anims.getName() == 'pUptoFall'){
+                if(player.anims.getName() == 'player_Avatar_3_FALL'){
                     
                     player.setVelocityX(150)
                       
@@ -1722,16 +1722,16 @@ hide ()
            
             
             if(player.x < lowObstacle.x + 100 && player.y > 75){
-                player.play({key:'pJump',frameRate:6},true)
+                player.play({key:'player_Avatar_3_JUMP',frameRate:6},true)
                 player.y -= 8
                 player.x += 5
                 player.setDragY(1000)
             } else if (!player.body.onFloor()) {
-                player.play({key:'pUptoFall',frameRate:2},true)
+                player.play({key:'player_Avatar_3_FALL',frameRate:2},true)
                 player.x += 3
                 player.setDragY(250)
             } else {
-                player.play({key:'pRun',repeat:-1,frameRate:6},true)
+                player.play({key:'player_Avatar_3_RUN',repeat:-1,frameRate:6},true)
             }
             
 
@@ -1750,10 +1750,10 @@ hide ()
             
             
             if(player.body.onFloor()) {
-            player.play({key:'pSlide',frameRate:4},true)
+            player.play({key:'player_Avatar_3_SLIDE',frameRate:4},true)
             player.x += 0.5
             } else {
-                player.play({key:'pUptoFall',frameRate:4},true)
+                player.play({key:'player_Avatar_3_FALL',frameRate:4},true)
                 player.x += 2
                 player.setDragY(250) 
             }
@@ -1781,9 +1781,9 @@ hide ()
 
                 
               
-                        player.play({key:'pDoubleAttack',frameRate:10},true)
+                        player.play({key:'player_Avatar_3_ACTION_1',frameRate:10},true)
                         player.once('animationcomplete',function(){
-                                player.play({key:'pRun',repeat:-1,frameRate:6},true)
+                                player.play({key:'player_Avatar_3_RUN',repeat:-1,frameRate:6},true)
                                 scanningForDanger = true
                                 
                         },this)
@@ -1802,11 +1802,11 @@ hide ()
                 
                
                     
-                            player.play({key:'pHeavyAttack',frameRate:12},true)
+                            player.play({key:'player_Avatar_3_SKILL_1',frameRate:12},true)
                             player.setDragY(0)
                             player.y += 2
                             player.once('animationcomplete',function(){
-                              player.play({key:'pRun',repeat:-1,frameRate:6},true)
+                              player.play({key:'player_Avatar_3_RUN',repeat:-1,frameRate:6},true)
                               scanningForDanger = true
                             },this)
                     
@@ -1815,10 +1815,10 @@ hide ()
                 camera.zoomTo(1.5,1000)
                 camera.pan(player.x,player.y,1000)
                 if(player.body.onFloor()) {
-                    player.play({key:'pSlide',frameRate:4},true)
+                    player.play({key:'player_Avatar_3_SLIDE',frameRate:4},true)
                     player.x += 0.5
                     } else {
-                        player.play({key:'pUptoFall',frameRate:4},true)
+                        player.play({key:'player_Avatar_3_FALL',frameRate:4},true)
                         player.x += 2
                         player.setDragY(250)
                         
@@ -1834,7 +1834,7 @@ hide ()
             
             camera.pan(screenWidth * 1.5,player.y,1000)
             player.setDragY(0)
-            player.play({key:'pRun',frameRate:6},true)
+            player.play({key:'player_Avatar_3_RUN',frameRate:6},true)
             if(player.x > screenWidth * 1.5){
                 player.x -= 0.5
             } else {
@@ -1904,12 +1904,12 @@ hide ()
     // Attack 1
        
         if(playerJumping){
-            player.play({key:'pHeavyAttack',frameRate:8},true);
+            player.play({key:'player_Avatar_3_SKILL_1',frameRate:8},true);
         } else if (playerCrouching) {
             player.play({key:'pAttack2',frameRate:10},true);
             playerCrouching = false
         } else {
-            player.play({key:'pDoubleAttack'},true);
+            player.play({key:'player_Avatar_3_ACTION_1'},true);
         }
 
 
@@ -1920,12 +1920,12 @@ hide ()
 
 
     // Attack 2 - Neutral
-        player.once('animationcomplete_pDoubleAttack', function (anim,frame) {
+        player.once('animationcomplete_player_Avatar_3_ACTION_1', function (anim,frame) {
         
         
-            player.play({key:'pHeavyAttack'},true);
+            player.play({key:'player_Avatar_3_SKILL_1'},true);
 
-            if(player.anims.getName() == 'pHeavyAttack'){
+            if(player.anims.getName() == 'player_Avatar_3_SKILL_1'){
                 
                 if(player.flipX){
                     player.setVelocityX(50)
@@ -1940,7 +1940,7 @@ hide ()
                 player.emit('animationcomplete_' + anim.key, frame)
 
                 // Return to Idle - Neutral
-                    player.once('animationcomplete_pHeavyAttack', function (anim,frame) {
+                    player.once('animationcomplete_player_Avatar_3_SKILL_1', function (anim,frame) {
 
 
                   
@@ -2007,7 +2007,7 @@ hide ()
 
     // Animation
         if(!playerCrouching){
-            player.play({key:'pDash',frameRate:18},true)
+            player.play({key:'player_Avatar_3_EVADE',frameRate:18},true)
             
                 fireTowardsTarget(player,player.x + 50,1)
                 if(player.body.onFloor()){
@@ -2015,18 +2015,18 @@ hide ()
             }
 
             player.once('animationcomplete',function(){
-                player.play({key:'pHeavyAttack',frameRate:16},true)
+                player.play({key:'player_Avatar_3_SKILL_1',frameRate:16},true)
                 player.setVelocityY(Phaser.Math.Between(100,150))
 
                 player.once('animationcomplete',function(){
                     usingPower = true
-                    player.play({key:'pRun',repeat:-1},true)
+                    player.play({key:'player_Avatar_3_RUN',repeat:-1},true)
                 },this)
 
             },this)
             
         } else if (playerCrouching) {
-                player.play('pDash',true)
+                player.play('player_Avatar_3_EVADE',true)
                 
                 fireTowardsTarget(player,player.x + 50,1)
 
@@ -2042,7 +2042,7 @@ hide ()
 
                     player.once('animationcomplete',function(){
                         usingPower = true
-                        player.play({key:'pRun',repeat:-1},true)
+                        player.play({key:'player_Avatar_3_RUN',repeat:-1},true)
                     },this)
 
                 },this)
@@ -2069,7 +2069,7 @@ hide ()
        
         moveCancelActive = false
         
-            player.play({key:'pDoubleAttack',frameRate: 20},true);
+            player.play({key:'player_Avatar_3_ACTION_1',frameRate: 20},true);
 
 
             player.once('animationcomplete', function (anim,frame) {
@@ -2083,7 +2083,7 @@ hide ()
     
     
     // Attack 2
-        player.once('animationcomplete_pDoubleAttack', function (anim,frame) {
+        player.once('animationcomplete_player_Avatar_3_ACTION_1', function (anim,frame) {
         
         
             player.play({key:'pAttack1',frameRate: 16},true);
@@ -2127,7 +2127,7 @@ hide ()
             player.once('animationcomplete_pAttack2', function (anim,frame) {
             
             
-                player.play({key:'pJump',frameRate: 14},true);
+                player.play({key:'player_Avatar_3_JUMP',frameRate: 14},true);
                 moveCancelActive = false
 
                 
@@ -2152,10 +2152,10 @@ hide ()
             }, player) 
 
         // Attack 5
-            player.once('animationcomplete_pJump', function (anim,frame) {
+            player.once('animationcomplete_player_Avatar_3_JUMP', function (anim,frame) {
     
                     
-                    player.play({key:'pHeavyAttack'},true);
+                    player.play({key:'player_Avatar_3_SKILL_1'},true);
                     
 
                     if (player.flipX){
@@ -2179,7 +2179,7 @@ hide ()
             
 
             // Return to Idle
-            player.once('animationcomplete_pHeavyAttack', function (anim,frame) {
+            player.once('animationcomplete_player_Avatar_3_SKILL_1', function (anim,frame) {
     
                 
            
@@ -2209,7 +2209,7 @@ hide ()
 
     // Attack 1
 
-    player.play({key:'pHeavyAttack',frameRate: 6, repeat: 0},true);
+    player.play({key:'player_Avatar_3_SKILL_1',frameRate: 6, repeat: 0},true);
     
                 explosiveStrikeVFX.x = closest.x
                 explosiveStrikeVFX.y = closest.y - 100
@@ -2223,7 +2223,7 @@ hide ()
 
 
             // Dash back to position
-            player.once('animationcomplete_pHeavyAttack', function (anim,frame) {
+            player.once('animationcomplete_player_Avatar_3_SKILL_1', function (anim,frame) {
                  camera.shake(500,0.075)
                 // explosiveStrikeVFX.x = nightBorne.x
                 // explosiveStrikeVFX.y = nightBorne.y - 100
@@ -2275,7 +2275,7 @@ hide ()
         baseDamageMultiplier = Phaser.Math.Between(0.25,1.5)
 
 
-        player.play({key:'pDash',frameRate: 12},true);
+        player.play({key:'player_Avatar_3_EVADE',frameRate: 12},true);
         player.body.maxVelocity.x = 1500 * scaleModX
         if(player.flipX){
             player.setVelocityX(-1500)
@@ -2290,11 +2290,11 @@ hide ()
         }, player)
 
 
-        player.once('animationcomplete_pDash', function (anim,frame) {
+        player.once('animationcomplete_player_Avatar_3_EVADE', function (anim,frame) {
             
             moveCancelActive = false
 
-            player.play({key:'pHeavyAttack',frameRate: 16},true);
+            player.play({key:'player_Avatar_3_SKILL_1',frameRate: 16},true);
             if(player.flipX){
                 player.setVelocityX(-500)
             } else {
@@ -2306,7 +2306,7 @@ hide ()
                 
             }, player)
                 
-            player.once('animationcomplete_pHeavyAttack', function (anim,frame) {
+            player.once('animationcomplete_player_Avatar_3_SKILL_1', function (anim,frame) {
 
                 thunderStrikeVFX.x = player.x
                 thunderStrikeVFX.y = player.y
@@ -2390,9 +2390,11 @@ hide ()
 
 
     function playerHitAnimation(){
-        player.play('pHurt',true)
+        console.log(playerIsHit)
+        player.play('player_Avatar_3_TAKE_HIT',true)
         player.once('animationcomplete',function(){
             playerIsHit = false
+            console.log(playerIsHit)
             regenActive = true
         })
     }
@@ -2429,7 +2431,7 @@ hide ()
                     } else {
                         glory -= (25 / 60)
                     }
-                    player.anims.play({key:'pHurt',frameRate: 12},true); 
+                    player.anims.play({key:'player_Avatar_3_TAKE_HIT',frameRate: 12},true); 
 
                     camera.shake(150, 0.004);
                     
@@ -2450,7 +2452,7 @@ hide ()
 
                     
                     playerVitals.decreaseLife((nightBorneMaxLife * 0.2) / 50)
-                    player.anims.play({key:'pHurt',frameRate: 12},true); 
+                    player.anims.play({key:'player_Avatar_3_TAKE_HIT',frameRate: 12},true); 
 
                     camera.shake(150, 0.0025);
                     
@@ -2998,7 +3000,7 @@ class Badlands extends Phaser.Scene {
         this.load.image('rock3', 'assets/rock_3.png')
         this.load.image('ground', 'assets/woodground.png');
 
-        this.load.atlas('heroF', ['assets/heroF.png','assets/heroF_n.png'],'assets/heroF.json');
+        //this.load.atlas('avatar3', ['assets/avatar3.png','assets/avatar3.png'],'assets/avatar3.json');
 
 
         // General 
@@ -3163,7 +3165,7 @@ class Badlands extends Phaser.Scene {
        
         this.lights.enable();
         this.lights.setAmbientColor(ambientLightSetting);
-        spotlightSun = this.lights.addLight(camera.scrollX + (screenWidth * sunPositionX) , camera.scrollY + (screenHeight * sunPositionY), screenWidth,sunLightSetting, 2);
+        spotlightSun = this.lights.addLight(camera.scrollX + (screenWidth * sunPositionX) , camera.scrollY + (screenHeight * sunPositionY), screenWidth,sunLightSetting, 1);
         //spotlightSun.setScrollFactor(1)
     
 
@@ -3292,7 +3294,7 @@ class Badlands extends Phaser.Scene {
         
         
         var playerShadowScale = 3.5 * (scaleModX) 
-        playerShadow = this.add.sprite(screenWidth * 1.5, screenHeight /2 ,'heroF').setScale(playerShadowScale)
+        playerShadow = this.add.sprite(screenWidth * 1.5, screenHeight /2 ,'avatar3').setScale(playerShadowScale)
         
         playerShadow.flipY = 1
         
@@ -3301,7 +3303,7 @@ class Badlands extends Phaser.Scene {
        
         var playerScale = 4 * (scaleModX) 
         
-        player = this.physics.add.sprite(screenWidth * 1.5, screenHeight /2 ,'heroF').setScale(playerScale).setPipeline('Light2D');
+        player = this.physics.add.sprite(screenWidth * 1.5, screenHeight /2 ,'avatar3').setScale(playerScale).setPipeline('Light2D');
         
         player.body.setSize(10, 30).setOffset(25,15).setAllowDrag(true)
         
@@ -3551,14 +3553,7 @@ class Badlands extends Phaser.Scene {
             hideOnComplete: 1
         });
 
-        this.anims.create({
-            key: 'thunderStrikeStance',
-            frames: this.anims.generateFrameNames('heroF',{prefix: 'Warrior_Attack_', start: 3, end: 1, suffix: '.png'}),
-            frameRate: 6,
-            repeat: 0,
-            //yoyo: true,
-            //delay: 1
-        });
+       
 
         thunderStrikeVFX = this.physics.add.sprite(player.x,0).setOffset(0,30)
         //this.physics.add.existing(thunderStrikeVFX, false)
@@ -3590,98 +3585,64 @@ class Badlands extends Phaser.Scene {
         explosiveStrikeVFX.setDepth(2).setScale(3)
 
         // Player Animations
-        this.anims.create({
-            key: 'pIdle',
-            frames: this.anims.generateFrameNames('heroF',{prefix: 'Warrior_Idle_', start: 1, end: 6, suffix: '.png'}),
-            frameRate: 8,
-            repeat: -1
-        });
+        // this.anims.create({
+        //     key: 'pIdle',
+        //     frames: this.anims.generateFrameNames('heroF',{prefix: 'Warrior_Idle_', start: 1, end: 6, suffix: '.png'}),
+        //     frameRate: 8,
+        //     repeat: -1
+        // });
 
-        this.anims.create({
-            key: 'pDeath',
-            frames: this.anims.generateFrameNames('heroF',{prefix: 'Warrior_Death_', start: 1, end: 11, suffix: '.png'}),
-            frameRate: 12,
-            repeat: 0
-        });
+        // this.anims.create({
+        //     key: 'pDeath',
+        //     frames: this.anims.generateFrameNames('heroF',{prefix: 'Warrior_Death_', start: 1, end: 11, suffix: '.png'}),
+        //     frameRate: 12,
+        //     repeat: 0
+        // });
 
-        this.anims.create({
-            key: 'pHurt',
-            frames: this.anims.generateFrameNames('heroF',{prefix: 'Warrior_hurt_', start: 1, end: 4, suffix: '.png'}),
-            frameRate: 8,
-            repeat: 0
-        });
+        // this.anims.create({
+        //     key: 'pHurt',
+        //     frames: this.anims.generateFrameNames('heroF',{prefix: 'Warrior_hurt_', start: 1, end: 4, suffix: '.png'}),
+        //     frameRate: 8,
+        //     repeat: 0
+        // });
 
-        this.anims.create({
-            key: 'pSlide',
-            frames: this.anims.generateFrameNames('heroF',{prefix: 'Warrior-Slide_', start: 1, end: 4, suffix: '.png'}),
-            frameRate: 14,
-            repeat: 0
-        });
+        
 
-        this.anims.create({
-            key: 'pCrouch',
-            frames: this.anims.generateFrameNames('heroF',{prefix: 'Warrior_Crouch_', start: 1, end: 5, suffix: '.png'}),
-            frameRate: 12,
-            repeat: 0
-        });
+        // this.anims.create({
+        //     key: 'pCrouch',
+        //     frames: this.anims.generateFrameNames('heroF',{prefix: 'Warrior_Crouch_', start: 1, end: 5, suffix: '.png'}),
+        //     frameRate: 12,
+        //     repeat: 0
+        // });
 
-        this.anims.create({
-            key: 'pJump',
-            frames: this.anims.generateFrameNames('heroF',{prefix: 'Warrior_Jump_', start: 1, end: 3, suffix: '.png'}),
-            frameRate: 12,
-            repeat: 0
-        });
-
-        this.anims.create({
-            key: 'pUptoFall',
-            frames: this.anims.generateFrameNames('heroF',{prefix: 'Warrior_UptoFall_', start: 1, end: 2, suffix: '.png'}),
-            frameRate: 10,
-            repeat: 0
-        });
-
-        this.anims.create({
-            key: 'pRun',
-            frames: this.anims.generateFrameNames('heroF',{prefix: 'Warrior_Run_', start: 1, end: 8, suffix: '.png'}),
-            frameRate: 14,
-            repeat: 0,
-            //delay: 1
-        });
-
-        this.anims.create({
-            key: 'pDash',
-            frames: this.anims.generateFrameNames('heroF',{prefix: 'Warrior_Dash_', start: 1, end: 7, suffix: '.png'}),
-            frameRate: 14,
-            repeat: 0,
-            //delay: 1
-        });
 
         this.anims.create({
             key: 'pBackDash',
-            frames: this.anims.generateFrameNames('heroF',{prefix: 'Warrior_Dash_', start: 5, end: 7, suffix: '.png'}),
+            frames: this.anims.generateFrameNames('avatar3',{prefix: 'EVADE_', start: 5, end: 7}),
             frameRate: 12,
-            repeat: 0,
-            //delay: 1
+           
         });
+
 
         this.anims.create({
             key: 'pParry',
-            frames: this.anims.generateFrameNames('heroF',{prefix: 'Warrior_Attack_', start: 9, end: 12, suffix: '.png'}),
+            frames: this.anims.generateFrameNames('avatar3',{prefix: 'ACTION_1_', start: 9, end: 12}),
             frameRate: 14,
             repeat: 0,
             //delay: 1
         });
 
-        this.anims.create({
-            key: 'pDoubleAttack',
-            frames: this.anims.generateFrameNames('heroF',{prefix: 'Warrior_Attack_', start: 1, end: 12, suffix: '.png'}),
-            frameRate: 16,
-            repeat: 0,
-            //delay: 1
-        });
+        // this.anims.create({
+        //     key: 'pDoubleAttack',
+        //     frames: this.anims.generateFrameNames('heroF',{prefix: 'Warrior_Attack_', start: 1, end: 12, suffix: '.png'}),
+        //     frameRate: 16,
+        //     repeat: 0,
+        //     //delay: 1
+        // });
 
         this.anims.create({
             key: 'pAttack1',
-            frames: this.anims.generateFrameNames('heroF',{prefix: 'Warrior_Attack_', start: 1, end: 8, suffix: '.png'}),
+            frames: this.anims.generateFrameNames('avatar3',{prefix: 'ACTION_1_', start: 1, end: 8}),
             frameRate: 14,
             repeat: 0,
             //delay: 1
@@ -3689,7 +3650,7 @@ class Badlands extends Phaser.Scene {
 
         this.anims.create({
             key: 'pAttack2',
-            frames: this.anims.generateFrameNames('heroF',{prefix: 'Warrior_Attack_', start: 9, end: 12, suffix: '.png'}),
+            frames: this.anims.generateFrameNames('avatar3',{prefix: 'ACTION_1_', start: 9, end: 12}),
             frameRate: 10,
             repeat: 0,
             //delay: 1
@@ -3697,19 +3658,12 @@ class Badlands extends Phaser.Scene {
 
         this.anims.create({
             key: 'pBlock',
-            frames: this.anims.generateFrameNames('heroF',{prefix: 'Warrior_Attack_', start: 8, end: 9, suffix: '.png'}),
+            frames: this.anims.generateFrameNames('avatar3',{prefix: 'ACTION_1_', start: 8, end: 9}),
             frameRate: 8,
             repeat: 0,
             //delay: 1
         });
 
-        this.anims.create({
-            key: 'pHeavyAttack',
-            frames: this.anims.generateFrameNames('heroF',{prefix: 'Warrior_Dash-Attack_', start: 1, end: 10, suffix: '.png'}),
-            frameRate: 10,
-            repeat: 0,
-            //delay: 1
-        });
 
         // NightBorne Animation
 
@@ -4634,7 +4588,7 @@ class Badlands extends Phaser.Scene {
                 // Players crouch animation when player lands back on ground
                 if (!playerLanded){
                     if(playerJumping && player.body.deltaY() > 0 && player.body.onFloor()){
-                            player.play({key:'pCrouch',frameRate:18},true);
+                            player.play({key:'player_Avatar_3_CROUCH',frameRate:18},true);
 
                             player.once('animationcomplete', function () {
 
@@ -4890,7 +4844,7 @@ class Badlands extends Phaser.Scene {
         // // REPLACE WITH CASE: FORMAT FOR CLEANER CODE, ADD ALL TO BATTLE MODE SECTION ONLY AND PLAYER ONLY VERSION TO RUNNING MODE
 
         // Enable player sword collision detection
-        if (player.anims.getName() == 'pDoubleAttack'){
+        if (player.anims.getName() == 'player_Avatar_3_ACTION_1'){
                     // playerSwordSwing.play()
                     
                     
@@ -4927,7 +4881,7 @@ class Badlands extends Phaser.Scene {
                     } else {
                         sword.body.checkCollision.none = true
                     }
-        } else if (player.anims.getName() == 'pHeavyAttack'){
+        } else if (player.anims.getName() == 'player_Avatar_3_SKILL_1'){
                     // playerHeavySwordSwing.play()
 
                       
@@ -4990,7 +4944,7 @@ class Badlands extends Phaser.Scene {
 
         if (currentLife <= 0 && gameOver == false){
                 
-                player.anims.play({key:'pDeath',frameRate: 12},true); 
+                player.anims.play({key:'player_Avatar_3_DOWNED',frameRate: 12},true); 
                 gameOver = true
                 controlsEnabled = false
                 player.once('animationcomplete', function () {
