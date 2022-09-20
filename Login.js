@@ -19,8 +19,6 @@ class Login extends Phaser.Scene {
         
         super("Login")
 
-   
-       
 
     }
 
@@ -80,17 +78,12 @@ class Login extends Phaser.Scene {
                 passWordEntryActual += event.key;
             }
 
-  
             
         }
 
     });
     
-
     
-        
-        
-        
     }
     
     update(){

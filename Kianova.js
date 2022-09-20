@@ -24,18 +24,17 @@ var chosenSectorArrayIcon = 2
 
 var sectorDescription
 var sectorAffinity
-var loyaltyScore = 0
 var influenceScore = 0
 var prosperityScore = 0
 var gloryScore
 var sectorOptions
 
 var patronIcon
-var loyaltyIcon
+var influenceIcon
 var prosperityIcon
 var gloryIconK
 
-var loyaltyStars 
+var influenceStars 
 var prosperityStars
 
 
@@ -111,7 +110,7 @@ class Kianova extends Phaser.Scene {
         this.load.image('textBox_P', 'assets/vFX/inspirationBox.png');
         this.load.image('sectorNameBox', 'assets/vFX/playerHUDBox.png');
         this.load.image('patronIcon', 'assets/ach_00033.png');
-        this.load.image('loyaltyIcon', 'assets/ach_00024.png');
+        this.load.image('influenceIcon', 'assets/ach_00024.png');
         this.load.image('prosperityIcon', 'assets/ach_00028.png');
         this.load.image('gloryIcon', 'assets/ach_00035.png');
 
@@ -220,7 +219,7 @@ class Kianova extends Phaser.Scene {
         
 
         patronIcon = this.add.image(1000 * (scaleModX),350 * (scaleModX),'patronIcon').setScale(this.iconScale)
-        loyaltyIcon = this.add.image(1000 * (scaleModX),350 * (scaleModX),'loyaltyIcon').setScale(this.iconScale)
+        influenceIcon = this.add.image(1000 * (scaleModX),350 * (scaleModX),'influenceIcon').setScale(this.iconScale)
         prosperityIcon = this.add.image(1000 * (scaleModX),350 * (scaleModX),'prosperityIcon').setScale(this.iconScale)
         gloryIconK = this.add.image(1000 * (scaleModX),350 * (scaleModX),'gloryIcon').setScale(this.iconScale)
 
@@ -281,7 +280,7 @@ class Kianova extends Phaser.Scene {
 
         sectorInfo = this.add.group()
         sectorInfo.addMultiple([this.textBox,this.text,
-                                patronIcon,loyaltyIcon,prosperityIcon,gloryIconK,
+                                patronIcon,influenceIcon,prosperityIcon,gloryIconK,
                             ]) 
         sectorInfo.setVisible(0)
 
@@ -301,9 +300,9 @@ class Kianova extends Phaser.Scene {
         });
 
 
-        loyaltyStars = this.add.group()
-        loyaltyStars.createMultiple({key:'star',frameQuantity: 5, setScale: {x: 1.25 * (scaleModX), y: 1.25 * (scaleModX)}})
-        loyaltyStars.setVisible(0)
+        influenceStars = this.add.group()
+        influenceStars.createMultiple({key:'star',frameQuantity: 5, setScale: {x: 1.25 * (scaleModX), y: 1.25 * (scaleModX)}})
+        influenceStars.setVisible(0)
        
         prosperityStars = this.add.group()
         prosperityStars.createMultiple({key:'star',frameQuantity: 5, setScale: {x: 1.25 * (scaleModX), y: 1.25 * (scaleModX)}})
@@ -503,7 +502,7 @@ class Kianova extends Phaser.Scene {
         // Hide Textbox and Info
             playerVitalsBox.setAlpha(0)
             sectorInfo.setAlpha(0)
-            loyaltyStars.setAlpha(0)
+            influenceStars.setAlpha(0)
             prosperityStars.setAlpha(0)
 
             playerVitalsBox.setScale(0)
@@ -511,13 +510,14 @@ class Kianova extends Phaser.Scene {
 
             playerVitalsBox.setVisible()
             sectorInfo.setVisible()
-            loyaltyStars.setVisible()
+            influenceStars.setVisible()
             prosperityStars.setVisible()
 
         // Identify Selected Sector
             selectedSector = this.sectorIconArray[chosenSectorArrayIcon]
 
         // Move UI Cursor, Move Sector Cursor, and Update Data
+        
 
 
             if(selectedSector == 1){
@@ -536,9 +536,8 @@ class Kianova extends Phaser.Scene {
                 sectorName = 'West Sector [Risk Band 1]'
                 sectorDescription = 'Home to the Order of Amara.\nPractitioners of the ancient Essence Arts.'
                 sectorAffinity = '\n\n          Amara'
-                loyaltyScore = getLoyaltyRating(this.patronData.PATRON_1_STAT_2_WCHANGE,this.patronData.PATRON_1_STAT_3_WCHANGE)
-                influenceScore = getRating(this.patronData.PATRON_1_STAT_2_WCHANGE)
-                prosperityScore = getRating(this.patronData.PATRON_1_STAT_3_WCHANGE)
+                influenceScore = patron1Rating_Influence
+                prosperityScore = patron1Rating_Prosperity
                 gloryScore = '\n\n\n\n\n\n\n         '+this.freePlayGloryAmara
                 sectorOptions = '\n\n- Visit Western Sector\n- Recruit Amaran Magus\n- Explore Western Badlands'
                 
@@ -561,9 +560,8 @@ class Kianova extends Phaser.Scene {
 
                 sectorDescription = 'Home to the Disciples of Mundo.\nMaster practioners and scholars of the ways of Sustahnus.'  
                 sectorAffinity = '\n\n          Mundo'
-                loyaltyScore = getLoyaltyRating(this.patronData.PATRON_2_STAT_2_WCHANGE,this.patronData.PATRON_2_STAT_3_WCHANGE)
-                influenceScore = getRating(this.patronData.PATRON_2_STAT_2_WCHANGE)
-                prosperityScore = getRating(this.patronData.PATRON_2_STAT_3_WCHANGE)
+                influenceScore = patron2Rating_Influence
+                prosperityScore = patron2Rating_Prosperity
                 gloryScore = '\n\n\n\n\n\n\n          '+this.freePlayGloryMundo
                 sectorOptions = '\n\n- Visit Northern Sector\n- Recruit Mundus Priest\n- Explore Northern Badlands'
 
@@ -587,9 +585,8 @@ class Kianova extends Phaser.Scene {
 
                 sectorDescription = 'Political Hub of Kianova.\nHome to the Great Houses that power the city'  
                 sectorAffinity = '\n\n          Omnia'
-                loyaltyScore = getLoyaltyRating(this.patronData.PATRON_3_STAT_2_WCHANGE,this.patronData.PATRON_3_STAT_3_WCHANGE)
-                influenceScore = getRating(this.patronData.PATRON_3_STAT_2_WCHANGE)
-                prosperityScore = getRating(this.patronData.PATRON_3_STAT_3_WCHANGE)
+                influenceScore = patron3Rating_Influence
+                prosperityScore = patron3Rating_Prosperity
                 gloryScore = '\n\n\n\n\n\n\n          Coming Soon'
                 sectorOptions = '\n\n- Enter House of the Forerunner\n- Enter House of the Creators\n- Enter House of the Oracles'
 
@@ -613,9 +610,8 @@ class Kianova extends Phaser.Scene {
 
                 sectorDescription = 'Home to the Lucarian Guard.\nMasterful warriors known for their fortitude and resilience.'
                 sectorAffinity = '\n\n          Lucarus'
-                loyaltyScore = getLoyaltyRating(this.patronData.PATRON_4_STAT_2_WCHANGE,this.patronData.PATRON_4_STAT_3_WCHANGE)
-                influenceScore = getRating(this.patronData.PATRON_4_STAT_2_WCHANGE)
-                prosperityScore = getRating(this.patronData.PATRON_4_STAT_3_WCHANGE)
+                influenceScore = patron4Rating_Influence
+                prosperityScore = patron4Rating_Prosperity
                 gloryScore = '\n\n\n\n\n\n\n          '+this.freePlayGlorylucarus
                 sectorOptions = '\n\n- Visit Southern Sector\n- Recruit Lucarian Knight\n- Explore Southern Badlands'
 
@@ -636,9 +632,8 @@ class Kianova extends Phaser.Scene {
 
                 sectorDescription = 'Home to the Illuvium Brotherhood.\nA favourite haunt of arcanists and elementalists.' 
                 sectorAffinity = '\n\n         Illuvik'
-                loyaltyScore = getLoyaltyRating(getRating(this.patronData.PATRON_5_STAT_2_WCHANGE),getRating(this.patronData.PATRON_5_STAT_3_WCHANGE))
-                influenceScore = getRating(this.patronData.PATRON_5_STAT_2_WCHANGE)
-                prosperityScore = getRating(this.patronData.PATRON_5_STAT_3_WCHANGE)
+                influenceScore = patron5Rating_Influence
+                prosperityScore = patron5Rating_Prosperity
                 gloryScore = '\n\n\n\n\n\n\n          '+this.freePlayGloryIlluvik
                 sectorOptions = '\n\n- Visit Eastern Sector\n- Recruit Illuvium Assassin\n- Explore Eastern Badlands'
 
@@ -655,19 +650,19 @@ class Kianova extends Phaser.Scene {
                     patronIcon.x = this.text.x - (87.5 * (scaleModX))
                     patronIcon.y = this.text. y - (screenHeight * 0.075 * scaleModY)
 
-                    loyaltyIcon.x = this.text.x - (87.5 * (scaleModX))
-                    loyaltyIcon.y = this.text. y - (screenHeight * 0.025 * scaleModY)
+                    influenceIcon.x = this.text.x - (87.5 * (scaleModX))
+                    influenceIcon.y = this.text. y - (screenHeight * 0.025 * scaleModY)
 
-                    loyaltyStars.setX(loyaltyIcon.x + (65 * (scaleModX)) , 30 * (scaleModX))
-                    loyaltyStars.setY(loyaltyIcon.y)
+                    influenceStars.setX(influenceIcon.x + (65 * (scaleModX)) , 30 * (scaleModX))
+                    influenceStars.setY(influenceIcon.y)
 
                     setTimeout(() => {
-                    for (var i = 0; i < loyaltyScore; i++){
-                        loyaltyStars.getChildren()[i].setTint().play('star',true)
+                    for (var i = 0; i < influenceScore; i++){
+                        influenceStars.getChildren()[i].setTint().play('star',true)
                     }
 
-                    for (var i = loyaltyScore; i < 5; i++){
-                        loyaltyStars.getChildren()[i].setTint(0x000000).stop() 
+                    for (var i = influenceScore; i < 5; i++){
+                        influenceStars.getChildren()[i].setTint(0x000000).stop() 
                     }
                     }, 10)
                     
@@ -698,7 +693,7 @@ class Kianova extends Phaser.Scene {
         // Show Elements
                 playerVitalsBox.setVisible(1)
                 sectorInfo.setVisible(1)
-                loyaltyStars.setVisible(1)
+                influenceStars.setVisible(1)
                 prosperityStars.setVisible(1)
 
                 if(selectedSector == 3){
@@ -727,13 +722,13 @@ class Kianova extends Phaser.Scene {
                 });
 
                 this.tweens.add({
-                    targets: [patronIcon,loyaltyIcon,prosperityIcon,gloryIconK],
+                    targets: [patronIcon,influenceIcon,prosperityIcon,gloryIconK],
                     alpha: { value: 1, duration: 1000, ease: 'Power1' },
 
                 });
 
                 this.tweens.add({
-                    targets: loyaltyStars.getChildren(),
+                    targets: influenceStars.getChildren(),
                     alpha: { value: 1, duration: 1000, ease: 'Power1' },
 
                 });

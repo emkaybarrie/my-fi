@@ -73,6 +73,7 @@ class MainMenu extends Phaser.Scene {
     update(){
       
         
+        
         this.activeMenuBox.tilePositionX += 2.5 * scaleModX
 
         

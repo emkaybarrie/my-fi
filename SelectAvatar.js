@@ -64,7 +64,7 @@ class SelectAvatar extends Phaser.Scene {
 
          this.load.atlas('defaultAvatar', ['assets/Avatars/3/avatar3.png','assets/Avatars/3/avatar3_n.png'],'assets/Avatars/3/avatar3.json');
 
-      
+         getRating()
     }
     
     
@@ -130,20 +130,12 @@ class SelectAvatar extends Phaser.Scene {
 
         this.patronRatingScale = 2
   
-        if(activeUser == null||undefined||''){
-            this.patronData = freePlayUser
-        } else {
-            this.patronData = activeUser
-        }
-
-        console.log(this.patronData)
 
         // Patron 1
-        this.patron1Stat2Rating = getRating(this.patronData.PATRON_1_STAT_2_WCHANGE)
-        this.patron1Stat3Rating = getRating(this.patronData.PATRON_1_STAT_3_WCHANGE)
-        this.patron1Stat1Rating = getLoyaltyRating(this.patronData.PATRON_1_STAT_2_WCHANGE,this.patronData.PATRON_1_STAT_3_WCHANGE)
-        this.patron1Rating = Phaser.Math.Average([this.patron1Stat1Rating,this.patron1Stat2Rating,this.patron1Stat3Rating])
-        console.log('Overall: ' + this.patron1Rating,'\nLoyalty: ' + this.patron1Stat1Rating,'\nInfluence: ' + this.patron1Stat2Rating,'\nProsperity: ' + this.patron1Stat3Rating)
+        this.patron1Stat1Rating = patron1Rating_Influence
+        this.patron1Stat2Rating = patron1Rating_Prosperity
+        this.patron1Rating = Phaser.Math.Average([this.patron1Stat1Rating,this.patron1Stat2Rating])
+  
         
         this.patron1RatingIcons = this.add.group()
         this.patron1RatingIcons.createMultiple({key:'star',frameQuantity: 5, setScale: {x: this.patronRatingScale * (scaleModX), y: this.patronRatingScale * (scaleModX)}})
@@ -159,12 +151,10 @@ class SelectAvatar extends Phaser.Scene {
         }
 
         // Patron 2
-        this.patron2Stat2Rating = getRating(this.patronData.PATRON_2_STAT_2_WCHANGE)
-        this.patron2Stat3Rating = getRating(this.patronData.PATRON_2_STAT_3_WCHANGE)
-        this.patron2Stat1Rating = getLoyaltyRating(this.patronData.PATRON_2_STAT_2_WCHANGE,this.patronData.PATRON_2_STAT_3_WCHANGE)
-        this.patron2Rating = Phaser.Math.Average([this.patron2Stat1Rating,this.patron2Stat2Rating,this.patron2Stat3Rating])
-        console.log('Overall: ' + this.patron2Rating,'\nLoyalty: ' + this.patron2Stat1Rating,'\nInfluence: ' + this.patron2Stat2Rating,'\nProsperity: ' + this.patron2Stat3Rating)
-
+        this.patron2Stat1Rating = patron2Rating_Influence
+        this.patron2Stat2Rating = patron2Rating_Prosperity
+        this.patron2Rating = Phaser.Math.Average([this.patron2Stat1Rating,this.patron2Stat2Rating])
+       
         this.patron2RatingIcons = this.add.group()
         this.patron2RatingIcons.createMultiple({key:'star',frameQuantity: 5, setScale: {x: this.patronRatingScale * (scaleModX), y: this.patronRatingScale * (scaleModX)}})
         this.patron2RatingIcons.setX(this.menuIcon2.x + this.menuIcon2.displayWidth * 1.75   , this.patron1RatingIcons.getChildren()[0].displayWidth * 0.75)
@@ -179,11 +169,10 @@ class SelectAvatar extends Phaser.Scene {
         }
 
         // Patron 3
-        this.patron3Stat2Rating = getRating(this.patronData.PATRON_3_STAT_2_WCHANGE)
-        this.patron3Stat3Rating = getRating(this.patronData.PATRON_3_STAT_3_WCHANGE)
-        this.patron3Stat1Rating = getLoyaltyRating(this.patronData.PATRON_3_STAT_2_WCHANGE,this.patronData.PATRON_3_STAT_3_WCHANGE)
-        this.patron3Rating = Phaser.Math.Average([this.patron3Stat1Rating,this.patron3Stat2Rating,this.patron3Stat3Rating])
-        console.log('Overall: ' + this.patron3Rating,'\nLoyalty: ' + this.patron3Stat1Rating,'\nInfluence: ' + this.patron3Stat2Rating,'\nProsperity: ' + this.patron3Stat3Rating)
+        this.patron3Stat1Rating = patron3Rating_Influence
+        console.log(patron3Rating_Influence, this.patron3Stat1Rating)
+        this.patron3Stat2Rating = patron3Rating_Prosperity
+        this.patron3Rating = Phaser.Math.Average([this.patron3Stat1Rating,this.patron3Stat2Rating])
 
         this.patron3RatingIcons = this.add.group()
         this.patron3RatingIcons.createMultiple({key:'star',frameQuantity: 5, setScale: {x: this.patronRatingScale * (scaleModX), y: this.patronRatingScale * (scaleModX)}})
@@ -199,11 +188,9 @@ class SelectAvatar extends Phaser.Scene {
         }
 
         // Patron 4
-        this.patron4Stat2Rating = getRating(this.patronData.PATRON_4_STAT_2_WCHANGE)
-        this.patron4Stat3Rating = getRating(this.patronData.PATRON_4_STAT_3_WCHANGE)
-        this.patron4Stat1Rating = getLoyaltyRating(this.patronData.PATRON_4_STAT_2_WCHANGE,this.patronData.PATRON_4_STAT_3_WCHANGE)
-        this.patron4Rating = Phaser.Math.Average([this.patron4Stat1Rating,this.patron4Stat2Rating,this.patron4Stat3Rating])
-        console.log('Overall: ' + this.patron4Rating,'\nLoyalty: ' + this.patron4Stat1Rating,'\nInfluence: ' + this.patron4Stat2Rating,'\nProsperity: ' + this.patron4Stat3Rating)
+        this.patron4Stat1Rating = patron4Rating_Influence
+        this.patron4Stat2Rating = patron4Rating_Prosperity
+        this.patron4Rating = Phaser.Math.Average([this.patron4Stat1Rating,this.patron4Stat2Rating])
 
         this.patron4RatingIcons = this.add.group()
         this.patron4RatingIcons.createMultiple({key:'star',frameQuantity: 5, setScale: {x: this.patronRatingScale * (scaleModX), y: this.patronRatingScale * (scaleModX)}})
@@ -219,11 +206,9 @@ class SelectAvatar extends Phaser.Scene {
         }
 
         // Patron 5
-        this.patron5Stat2Rating = getRating(this.patronData.PATRON_5_STAT_2_WCHANGE)
-        this.patron5Stat3Rating = getRating(this.patronData.PATRON_5_STAT_3_WCHANGE)
-        this.patron5Stat1Rating = getLoyaltyRating(this.patronData.PATRON_5_STAT_2_WCHANGE,this.patronData.PATRON_5_STAT_3_WCHANGE)
-        this.patron5Rating = Phaser.Math.Average([this.patron5Stat1Rating,this.patron5Stat2Rating,this.patron5Stat3Rating])
-        console.log('Overall: ' + this.patron5Rating,'\nLoyalty: ' + this.patron5Stat1Rating,'\nInfluence: ' + this.patron5Stat2Rating,'\nProsperity: ' + this.patron5Stat3Rating)
+        this.patron5Stat1Rating = patron5Rating_Influence
+        this.patron5Stat2Rating = patron5Rating_Prosperity
+        this.patron5Rating = Phaser.Math.Average([this.patron5Stat1Rating,this.patron5Stat2Rating])
 
         this.patron5RatingIcons = this.add.group()
         this.patron5RatingIcons.createMultiple({key:'star',frameQuantity: 5, setScale: {x: this.patronRatingScale * (scaleModX), y: this.patronRatingScale * (scaleModX)}})
