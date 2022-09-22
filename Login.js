@@ -4,21 +4,18 @@ var selectedField
 var userNamePrompt 
 var passWordPrompt
 var confirmationPrompt
+var backPrompt
 
 var userNameEntry
 var passWordEntry
 var passWordEntryActual
 var loginResponse
 
-
 class Login extends Phaser.Scene {
 
-   
-    
     constructor() {
         
         super("Login")
-
 
     }
 
@@ -35,20 +32,19 @@ class Login extends Phaser.Scene {
         
     userNamePrompt = this.add.text(screenWidth * 0.45, screenHeight * 0.45, 'Enter Username', { font: '32px Gothic', fill: '#ffffff' }).setOrigin(1,0.5);
     passWordPrompt =  this.add.text(screenWidth * 0.45, screenHeight * 0.55, 'Enter Password', { font: '32px Gothic', fill: '#ffffff' }).setOrigin(1,0.5);
-    confirmationPrompt =  this.add.text(screenWidth * 0.5, screenHeight * 0.65, 'Login', { font: '32px bold Gothic', fill: '#ffffff' }).setOrigin(0.5,0.5);
+    confirmationPrompt =  this.add.text(screenWidth * 0.5, screenHeight * 0.7, 'Login', { font: '32px bold Gothic', fill: '#ffffff' }).setOrigin(0.5,0.5);
+    backPrompt =  this.add.text(screenWidth * 0.5, screenHeight * 0.85, 'Back', { font: '24px bold Gothic', fill: '#ffffff' }).setOrigin(0.5,0.5);
 
     userNameEntry = this.add.text(userNamePrompt.x + (screenWidth * 0.05), userNamePrompt.y, '', { font: '32px bold Gothic', fill: '#ffff00' }).setOrigin(0,0.5);
     passWordEntry = this.add.text(passWordPrompt.x + (screenWidth * 0.05), passWordPrompt.y, '', { font: '32px bold Gothic', fill: '#ffff00' }).setOrigin(0,0.5);
     passWordEntryActual = ''
 
-    loginResponse =  this.add.text(screenWidth * 0.5, screenHeight * 0.75,"", { font: '32px Gothic', fill: '#ffffff' }).setOrigin(0.5,0.5);
+    loginResponse =  this.add.text(screenWidth * 0.5, screenHeight * 0.775,"", { font: '32px Gothic', fill: '#ffffff' }).setOrigin(0.5,0.5);
     
     activeFieldBox = this.add.tileSprite(userNamePrompt.x - (userNamePrompt.displayWidth/2),userNamePrompt.y,screenWidth * 0.15,screenHeight * 0.075,'menuSelectionTexture');
     activeFieldBox.setTexture('menuSelectionTexture').setAlpha(0.35)    
 
     this.input.keyboard.on('keydown', function (event) {
-
-       
 
         if (event.keyCode === 8 )
         {
@@ -91,7 +87,7 @@ class Login extends Phaser.Scene {
         activeFieldBox.tilePositionX += 2.5 * scaleModX
 
         
-        if(downIsDown && selectedField < 3){
+        if(downIsDown && selectedField < 4){
             downIsDown = false
             selectedField += 1
 
@@ -122,11 +118,7 @@ class Login extends Phaser.Scene {
            
             importUserData(userNameEntry.text,passWordEntryActual)
         
-        
-            
             loginResponse.setVisible(1)
-           
-
             loginResponse.setText('Logging on.')
             setTimeout(() => {
             loginResponse.setText('Logging on..')
@@ -170,11 +162,11 @@ class Login extends Phaser.Scene {
                },500)
 
             },500)
-            
 
-            
-           
-            
+        } else if ((a1IsDown || s1IsDown) && selectedField == 4) {
+            a1IsDown = false
+            s1IsDown = false
+            this.scene.start('MainMenu')
         }
 
         if(selectedField == 1){
@@ -207,14 +199,20 @@ class Login extends Phaser.Scene {
             }
             
             activeFieldBox.y = passWordEntry.y
-        } else {
+        } else if (selectedField == 3){
+            
             activeFieldBox.setOrigin(0.5,0.5)
             activeFieldBox.y = confirmationPrompt.y
             activeFieldBox.x = confirmationPrompt.x
             activeFieldBox.displayWidth = confirmationPrompt.displayWidth * 1.25
+            
+        } else {
+            activeFieldBox.setOrigin(0.5,0.5)
+           
+            activeFieldBox.y = backPrompt.y
+            activeFieldBox.x = backPrompt.x
+            activeFieldBox.displayWidth = backPrompt.displayWidth * 1.25
         }
-
-       
 
         if (nextScene){
             nextScene = false

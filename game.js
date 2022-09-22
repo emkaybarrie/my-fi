@@ -36,8 +36,11 @@ var config = {
     scene: [
         // Load core game assets, global variables, and initialise Core Game Modules
         Boot, 
-            // Core Modules
-            InputModule,
+            // Core Modules 
+                // Global Data Module
+                DataModule, 
+                // Player Input Module
+                InputModule,
         // Main Menu Screen - access Prologue, Play (Immersive/Free Play), The Crucible (TBD - boss rush mode or multiplayer spin), The Simulacrum (TBD - Training Area / KNowledge Centre possible rename if latter)
         // If Immersive option chosen - go to Login.  If Free Play, straight to Select Avatar screen
         MainMenu, 
@@ -56,7 +59,7 @@ var config = {
         Region4,
         Region5,
         // Test Environment for Latest Region Scene & Test Stage
-        RegionTestEnvironment
+        RegionTestEnvironment,
         
 
         // TBD

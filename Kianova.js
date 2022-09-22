@@ -5,6 +5,15 @@ var kControlsEnabled = false
 var autoPlayActive 
 var activeRegion
 
+var playerLoginName
+var resilienceIcon
+var focusIcon
+var staminaIcon
+
+var resilienceStars 
+var focusStars
+var staminaStars
+
 var sectorInfo
 var selectedSector = 2
 var spotlightSelectedSector
@@ -101,6 +110,10 @@ class Kianova extends Phaser.Scene {
         this.load.image('playerIconBox', 'assets/vFX/playerHUDBox.png');
         this.load.image('playerIcon1', 'assets/icons/playerInspirationIcon3.png');
 
+        this.load.image('resilienceIcon', 'assets/ach_00059.png');
+        this.load.image('focusIcon', 'assets/ach_00057.png');
+        this.load.image('staminaIcon', 'assets/ach_00046.png');
+
         this.load.image('load', 'assets/KianovaLoadScreen.png');
         this.load.image('map', 'assets/KianovaMap.png');
         for(var i = 1; i < 6; i++){
@@ -192,15 +205,70 @@ class Kianova extends Phaser.Scene {
         playerIconBox = this.add.image(screenWidth * 0.075,screenHeight * 0.11,'playerIconBox').setScale(playerIconBoxScaleX,playerIconBoxScaleY).setOrigin(0.5,0.5)
         playerIcon = this.add.image(playerIconBox.x,playerIconBox.y,'playerIcon1').setScale(playerIconScale).setOrigin(0.5,0.5)
        
-        playerVitalsBox = this.add.image(playerIconBox.x + (playerIconBox.displayWidth / 2) + screenWidth * 0.01,playerIconBox.y,'textBox_P').setDepth(3).setScale(0.31  * (scaleModX),0.09  * (scaleModY)).setOrigin(0,0.5).setAlpha(0.75)
-     
         if(activeUser == null||undefined||''){
             this.patronData = freePlayUser
         } else {
             this.patronData = activeUser
         }
 
+        var avatarName
+        avatarName = this.add.text(playerIconBox.x, playerIconBox.y + screenHeight * 0.125, activeAvatar.NAME, { fontFamily: 'Gothic', fontStyle: 'italic bold' ,align: 'center', fixedWidth:screenWidth * 0.1,fixedHeight:screenHeight * 0.075});
+        avatarName.setFontSize(28 * scaleModX).setOrigin(0.5,0.5)
 
+        playerVitalsBox = this.add.image(playerIconBox.x + (playerIconBox.displayWidth / 2) + screenWidth * 0.01,playerIconBox.y,'textBox_P').setScale(0.31  * (scaleModX),0.09  * (scaleModY)).setOrigin(0,0.5).setAlpha(0.75)
+        
+        playerLoginName
+        playerLoginName = this.add.text(playerVitalsBox.x + playerVitalsBox.displayWidth * 0.5,playerIconBox.y - (playerIconBox.displayHeight * 0.25), this.patronData.USERNAME, { fontFamily: 'Gothic', fontStyle: 'italic bold' ,align: 'center', fixedWidth:screenWidth * 0.1,fixedHeight:screenHeight * 0.075});
+        playerLoginName.setFontSize(24 * scaleModX).setOrigin(0.5,0.5)
+
+        resilienceIcon = this.add.image(playerVitalsBox.x + playerVitalsBox.displayWidth * 0.2,playerIconBox.y - (playerIconBox.displayHeight * 0.15),'resilienceIcon').setScale(this.iconScale)
+        focusIcon = this.add.image(resilienceIcon.x,resilienceIcon.y + resilienceIcon.displayHeight * 0.85 ,'focusIcon').setScale(this.iconScale)
+        staminaIcon = this.add.image(resilienceIcon.x,focusIcon.y + resilienceIcon.displayHeight * 0.85,'staminaIcon').setScale(this.iconScale)
+
+        resilienceStars = this.add.group()
+        resilienceStars.createMultiple({key:'star',frameQuantity: 5, setScale: {x: 1.25 * (scaleModX), y: 1.25 * (scaleModX)}})
+        resilienceStars.setVisible(0)
+        resilienceStars.setX(resilienceIcon.x + (65 * (scaleModX)) , 30 * (scaleModX))
+        resilienceStars.setY(resilienceIcon.y)
+
+        
+        for (var i = 0; i < resilienceRating; i++){
+            resilienceStars.getChildren()[i].setTint().play('star',true)
+        }
+
+        for (var i = resilienceRating; i < 5; i++){
+            resilienceStars.getChildren()[i].setTint(0x000000).stop() 
+        }
+        
+
+        focusStars = this.add.group()
+        focusStars.createMultiple({key:'star',frameQuantity: 5, setScale: {x: 1.25 * (scaleModX), y: 1.25 * (scaleModX)}})
+        focusStars.setVisible(0)
+        focusStars.setX(focusIcon.x + (65 * (scaleModX)) , 30 * (scaleModX))
+        focusStars.setY(focusIcon.y)
+
+        for (var i = 0; i < focusRating; i++){
+            focusStars.getChildren()[i].setTint().play('star',true)
+        }
+
+        for (var i = focusRating; i < 5; i++){
+            focusStars.getChildren()[i].setTint(0x000000).stop() 
+        }
+       
+        staminaStars = this.add.group()
+        staminaStars.createMultiple({key:'star',frameQuantity: 5, setScale: {x: 1.25 * (scaleModX), y: 1.25 * (scaleModX)}})
+        staminaStars.setVisible(0)
+        staminaStars.setX(staminaIcon.x + (65 * (scaleModX)) , 30 * (scaleModX))
+        staminaStars.setY(staminaIcon.y)
+
+        for (var i = 0; i < staminaRating; i++){
+            staminaStars.getChildren()[i].setTint().play('star',true)
+        }
+
+        for (var i = staminaRating; i < 5; i++){
+            staminaStars.getChildren()[i].setTint(0x000000).stop() 
+        }
+        
         this.textBox = this.add.image(0,0,'textBox').setScale(this.textBoxScaleX,this.textBoxScaleY).setAlpha(0.75).setInteractive()
 
         this.text = this.make.text({
@@ -217,7 +285,6 @@ class Kianova extends Phaser.Scene {
         this.text.setFontSize(18 * (scaleModX))
 
         
-
         patronIcon = this.add.image(1000 * (scaleModX),350 * (scaleModX),'patronIcon').setScale(this.iconScale)
         influenceIcon = this.add.image(1000 * (scaleModX),350 * (scaleModX),'influenceIcon').setScale(this.iconScale)
         prosperityIcon = this.add.image(1000 * (scaleModX),350 * (scaleModX),'prosperityIcon').setScale(this.iconScale)
@@ -285,7 +352,8 @@ class Kianova extends Phaser.Scene {
         sectorInfo.setVisible(0)
 
         this.sectorUI = this.add.group()
-        this.sectorUI.addMultiple([playerIconBox,playerIcon,playerVitalsBox,sectorNameBox,sectorNameText,sector1Icon,sector2Icon,sector3Icon,sector4Icon,sector5Icon,
+        this.sectorUI.addMultiple([playerIconBox,playerIcon,playerLoginName,avatarName,resilienceIcon,resilienceStars,focusIcon,focusStars,staminaIcon,staminaStars,playerVitalsBox,
+                                    sectorNameBox,sectorNameText,sector1Icon,sector2Icon,sector3Icon,sector4Icon,sector5Icon,
                                     this.sector1MapIcon,this.sector2MapIcon,this.sector3MapIcon,this.sector4MapIcon,this.sector5MapIcon,this.selectedSectorIcon
                                 ])
         this.sectorUI.setVisible(0)
@@ -386,7 +454,7 @@ class Kianova extends Phaser.Scene {
             
             })
         } if ((s2IsDown || a2IsDown) && kControlsEnabled){
-            
+            activeUser = null
             this.scene.stop('Kianova')
             this.scene.start('MainMenu')
         }
@@ -501,6 +569,14 @@ class Kianova extends Phaser.Scene {
 
         // Hide Textbox and Info
             playerVitalsBox.setAlpha(0)
+            playerLoginName.setAlpha(0)
+            resilienceIcon.setAlpha(0)
+            focusIcon.setAlpha(0)
+            staminaIcon.setAlpha(0)
+            resilienceStars.setAlpha(0)
+            focusStars.setAlpha(0)
+            staminaStars.setAlpha(0)
+
             sectorInfo.setAlpha(0)
             influenceStars.setAlpha(0)
             prosperityStars.setAlpha(0)
@@ -509,6 +585,14 @@ class Kianova extends Phaser.Scene {
             this.textBox.setScale(0)
 
             playerVitalsBox.setVisible()
+            playerLoginName.setVisible()
+            resilienceIcon.setVisible()
+            focusIcon.setVisible()
+            staminaIcon.setVisible()
+            resilienceStars.setVisible()
+            focusStars.setVisible()
+            staminaStars.setVisible()
+
             sectorInfo.setVisible()
             influenceStars.setVisible()
             prosperityStars.setVisible()
@@ -692,6 +776,14 @@ class Kianova extends Phaser.Scene {
 
         // Show Elements
                 playerVitalsBox.setVisible(1)
+                playerLoginName.setVisible(1)
+                resilienceIcon.setVisible(1)
+                focusIcon.setVisible(1)
+                staminaIcon.setVisible(1)
+                resilienceStars.setVisible(1)
+                focusStars.setVisible(1)
+                staminaStars.setVisible(1)
+
                 sectorInfo.setVisible(1)
                 influenceStars.setVisible(1)
                 prosperityStars.setVisible(1)
@@ -705,6 +797,34 @@ class Kianova extends Phaser.Scene {
                         scaleY: {value:0.09  * (scaleModY), duration: 450,ease: 'Power1' },
                         
 
+                    });
+
+                    this.tweens.add({
+                        delay: 300,
+                        targets: [playerLoginName,resilienceIcon,focusIcon,staminaIcon],
+                        alpha: { value: 1, duration: 1000, ease: 'Power1' },
+    
+                    });
+
+                    this.tweens.add({
+                        delay: 300,
+                        targets: resilienceStars.getChildren(),
+                        alpha: { value: 1, duration: 1000, ease: 'Power1' },
+    
+                    });
+    
+                    this.tweens.add({
+                        delay: 300,
+                        targets: focusStars.getChildren(),
+                        alpha: { value: 1, duration: 1000, ease: 'Power1' },
+    
+                    });
+    
+                    this.tweens.add({
+                        delay: 300,
+                        targets: staminaStars.getChildren(),
+                        alpha: { value: 1, duration: 1000, ease: 'Power1' },
+        
                     });
                 }
 

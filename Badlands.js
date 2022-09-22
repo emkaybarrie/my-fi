@@ -2390,11 +2390,11 @@ hide ()
 
 
     function playerHitAnimation(){
-        console.log(playerIsHit)
+        
         player.play('player_Avatar_3_TAKE_HIT',true)
         player.once('animationcomplete',function(){
             playerIsHit = false
-            console.log(playerIsHit)
+            
             regenActive = true
         })
     }
@@ -2839,8 +2839,6 @@ class Badlands extends Phaser.Scene {
     constructor() {
         super("Badlands")
 
-
-        
     }
 
     init(data)
@@ -2972,24 +2970,26 @@ class Badlands extends Phaser.Scene {
         bgScroll = activeStage.bgScroll
         fgScroll = activeStage.fgScroll
 
-
-        for (var i = 1; i < bgLayers + 1; i++){
-            console.log('bgL'+ i, activeStage.stageAssetPathRoot + 'BG' + activeStage.stageAssetName + i)
-          
-            if (activeStage.stageNormalMaps[i - 1] && this.sys.game.device.os.desktop ){
-
-                this.load.image('bgL'+ i, [activeStage.stageAssetPathRoot + 'BG' + activeStage.stageAssetName + i,activeStage.stageAssetPathRoot + 'BG' + activeStage.stageAssetName + i + '_n']);
-            } else {
-                this.load.image('bgL'+ i, activeStage.stageAssetPathRoot + 'BG' + activeStage.stageAssetName + i);
-            }
+        setTimeout(()=>{
+            for (var i = 1; i < bgLayers + 1; i++){
+                console.log('bgL'+ i, activeStage.stageAssetPathRoot + 'BG' + activeStage.stageAssetName + i)
+              
+                if (activeStage.stageNormalMaps[i - 1] && this.sys.game.device.os.desktop ){
+    
+                    this.load.image('bgL'+ i, [activeStage.stageAssetPathRoot + 'BG' + activeStage.stageAssetName + i,activeStage.stageAssetPathRoot + 'BG' + activeStage.stageAssetName + i + '_n']);
+                } else {
+                    this.load.image('bgL'+ i, activeStage.stageAssetPathRoot + 'BG' + activeStage.stageAssetName + i);
+                }
+                    
                 
-            
-        }
-
-        for (var i = 1; i < fgLayers + 1; i++){
-            console.log('fgL'+ i, activeStage.stageAssetPathRoot + 'FG' + activeStage.stageAssetName + i)
-            this.load.image('fgL'+ i, activeStage.stageAssetPathRoot + 'FG' + activeStage.stageAssetName + i);
-        }
+            }
+    
+            for (var i = 1; i < fgLayers + 1; i++){
+                console.log('fgL'+ i, activeStage.stageAssetPathRoot + 'FG' + activeStage.stageAssetName + i)
+                this.load.image('fgL'+ i, activeStage.stageAssetPathRoot + 'FG' + activeStage.stageAssetName + i);
+            }
+        },500)
+        
  
 
         this.load.image('vines', 'assets/vines.png');

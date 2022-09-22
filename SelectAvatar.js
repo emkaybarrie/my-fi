@@ -82,6 +82,8 @@ class SelectAvatar extends Phaser.Scene {
         this.activeUserNameText.setFontSize(54 * scaleModX).setOrigin(0.5,0)
         if(activeUser != null || undefined || ''){
             this.activeUserNameText.setText(activeUser.USERNAME)
+        } else {
+            this.activeUserNameText.setText(freePlayUser.USERNAME)
         }
 
         this.patronTitle = this.add.text(screenWidth * 0.25, screenHeight * 0.2, 'Patron', { fontFamily: 'Gothic', fontStyle: 'italic' ,align: 'center', fixedWidth:screenWidth * 0.25,fixedHeight:screenHeight * 0.075});
@@ -229,7 +231,6 @@ class SelectAvatar extends Phaser.Scene {
 
         this.avatarProfilePic = this.add.image(this.leftSelectionArrow.x + (screenWidth * 0.0725),this.menuIcon1.y - this.menuIcon1.displayHeight * 0.45,'ashaIcon').setScale(0.125 * scaleModX, 0.125 * scaleModY).setOrigin(0)
         
-
         var statXPos = this.avatarProfilePic.x - this.avatarProfilePic.displayWidth * 0.15
 
         this.avatarStat1 = this.add.text(statXPos  , this.avatarProfilePic.y + this.avatarProfilePic.displayHeight * 1.35, 'Damage', { fontFamily: 'Gothic', fontStyle: 'bold' ,fill: 'white',align: 'right', fixedWidth:screenWidth * 0.05,fixedHeight:screenHeight * 0.075});
@@ -242,8 +243,6 @@ class SelectAvatar extends Phaser.Scene {
         this.avatarStat3.setOrigin(0,0.5)
         this.avatarStat4.setOrigin(0,0.5)
       
-
-
         this.starsScale = 1
   
         // Avatar Arrays
@@ -271,23 +270,17 @@ class SelectAvatar extends Phaser.Scene {
         this.baseDamageRating.setX(this.avatarStat1.x + this.avatarStat1.displayWidth * 1.25 , this.baseDamageRating.getChildren()[0].displayWidth * 0.75)
         this.baseDamageRating.setY(this.avatarStat1.y - this.avatarStat1.displayHeight * 0.4)
 
-        
-
         // Armour
         this.baseArmourRating = this.add.group()
         this.baseArmourRating.createMultiple({key:'star',frameQuantity: 5, setScale: {x: this.starsScale * (scaleModX), y: this.starsScale * (scaleModX)}})
         this.baseArmourRating.setX(this.avatarStat1.x + this.avatarStat1.displayWidth * 1.25  , this.baseArmourRating.getChildren()[0].displayWidth * 0.75)
         this.baseArmourRating.setY(this.avatarStat2.y - this.avatarStat1.displayHeight * 0.4)
 
-       
-
         // Agility
         this.baseAgilityRating = this.add.group()
         this.baseAgilityRating.createMultiple({key:'star',frameQuantity: 5, setScale: {x: this.starsScale * (scaleModX), y: this.starsScale * (scaleModX)}})
         this.baseAgilityRating.setX(this.avatarStat3.x + this.avatarStat1.displayWidth * 1.25   ,this.baseAgilityRating.getChildren()[0].displayWidth * 0.75)
         this.baseAgilityRating.setY(this.avatarStat3.y - this.avatarStat1.displayHeight * 0.4)
-
-      
 
         // Primary Stat
         this.avatarStat4Value = this.add.text(statXPos, this.avatarStat3.y + this.avatarStat1.displayHeight * 0.45, '', { fontFamily: 'Gothic', fontStyle: 'italic' ,fill: 'white',align: 'center', fixedWidth:screenWidth * 0.05,fixedHeight:screenHeight * 0.075});
@@ -327,6 +320,7 @@ class SelectAvatar extends Phaser.Scene {
         });
 
         // Loads Avatar - overite preloaded Asha instance (cover via animation and have this as only load event?)
+        this.defaultAnim = Phaser.Math.Between(1,2)
         this.loadAvatar(this,this.selectedPatronArray,this.selectedPersonaArray)
         setTimeout(()=>{
         this.userActive = true
@@ -354,6 +348,8 @@ class SelectAvatar extends Phaser.Scene {
         game.loadAvatarStats()
    
         // Set Avatar Description
+
+        game.avatarDescription.setText(avatarData[id].DESCRIPTION)
 
         // Set Avatar Animations
         
@@ -519,8 +515,6 @@ class SelectAvatar extends Phaser.Scene {
                 game.activeAvatarSprite.play('player_Avatar_' + id + '_IDLE',true) 
             } else if (this.defaultAnim == 2) {
                 game.activeAvatarSprite.play('player_Avatar_' + id + '_RUN',true) 
-            } else {
-                game.activeAvatarSprite.play('player_Avatar_' + id + '_EVADE',true)
             }
               
         }
@@ -604,15 +598,10 @@ class SelectAvatar extends Phaser.Scene {
              this.menuOption5.setAlpha(1)
              this.patronIconLight.y = this.menuIcon5.y
              this.activeMenuBox.y = this.menuOption5.y + this.menuOption5.displayHeight * 0.25 
-             //this.menuIcon5.setTint()
          } 
 
          this.activeMenuBoxScaleX = 1
 
-        //  if (this.selectedPatronArray != 5){
-        
-        //     this.menuIcon5.setTint(0x333333)
-        // }
          // Animate Selection Box
          this.activeMenuBox.setAlpha(0).setScale(0,1)
          this.tweens.add({
@@ -630,9 +619,6 @@ class SelectAvatar extends Phaser.Scene {
     if (this.userActive){
     this.playAvatarPreview(this,this.selectedPatronArray,this.selectedPersonaArray) 
     }
-
-   
-        
 
     // Preview Sound - make function as above
 
@@ -663,7 +649,7 @@ class SelectAvatar extends Phaser.Scene {
                 this.selectedPatronArray += 1
                 
             // Stop Current Animation
-                 //this.activeAvatarSprite.stop()
+                 this.activeAvatarSprite.stop()
             // Feed updated Avatar Coordinates to Load Avatar Function
             this.selectedAvatar = await this.loadAvatar(this,this.selectedPatronArray,this.selectedPersonaArray)
                 
@@ -673,7 +659,7 @@ class SelectAvatar extends Phaser.Scene {
             upIsDown = false
             this.userActive = true
             // Stop Current Animation
-                //this.activeAvatarSprite.stop()
+                this.activeAvatarSprite.stop()
             // Update Selected Patron Group
                 this.selectedPatronArray -= 1
                 
@@ -684,6 +670,9 @@ class SelectAvatar extends Phaser.Scene {
 
         } else if (rightIsDown && this.selectedPersonaArray < this.avatarToLoad[this.selectedPatronArray].length - 1){
             rightIsDown = false
+            this.userActive = true
+            // Stop Current Animation
+                this.activeAvatarSprite.stop()
             this.rightSelectionArrow.setAlpha(1)
             this.selectedPersonaArray += 1
             this.selectedAvatar = await this.loadAvatar(this,this.selectedPatronArray,this.selectedPersonaArray)
@@ -696,6 +685,9 @@ class SelectAvatar extends Phaser.Scene {
             
         } else if (leftIsDown && this.selectedPersonaArray > 0){
             leftIsDown = false
+            this.userActive = true
+            // Stop Current Animation
+                this.activeAvatarSprite.stop()
             this.leftSelectionArrow.setAlpha(1)
             this.selectedPersonaArray -= 1
             
@@ -706,11 +698,14 @@ class SelectAvatar extends Phaser.Scene {
 
                 
         } else if (a1IsDown || s1IsDown){
-            this.defaultAnim = Phaser.Math.Between(1,3)
+            this.defaultAnim = Phaser.Math.Between(1,2)
+            this.userActive = true
+            
             this.runAnim = true
             if(this.confirmSelection < 1)
             this.confirmSelection += 0.02
         } else if (a2IsDown || s2IsDown){
+            activeUser = null
             this.scene.start('MainMenu')
         } else {
             this.runAnim = false
@@ -721,26 +716,16 @@ class SelectAvatar extends Phaser.Scene {
             a1IsDown = false
             s1IsDown = false
             activeAvatar = avatarData[this.avatarToLoad[this.selectedPatronArray][this.selectedPersonaArray]]
-            console.log(activeAvatar)
+            activeAvatarID = avatarData[this.avatarToLoad[this.selectedPatronArray][this.selectedPersonaArray]].ID
             nextScene = true
         }
         
-
-        console.log(this.confirmSelection)
-
-        
+    
 
         if (nextScene){
             nextScene = false
-            this.scene.start('Kianova',
-                            {
-                            mode: 'Free Play',
-                            avatar: this.selectedAvatar,
-                            
-                            })
+            this.scene.start('Kianova')
 
-
-  
         }
 
         

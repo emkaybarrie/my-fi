@@ -19,12 +19,14 @@ class MainMenu extends Phaser.Scene {
     }
 
     preload(){
-        this.load.image('menuSelectionTexture', 'assets/menuTexture.png');
-        this.load.image('menuBG', 'assets/TitleScreenD.png');
-        this.load.image('gameTitle', 'assets/tempLogo.png');
-        //this.load.audio("menuMusic", ["assets/music/Landslide.mp3"]);
-        //this.load.audio("menuMusic", ["assets/music/Talk_Like_Thunder.mp3"]);
-        this.load.audio("menuMusic", ["assets/music/Fate_I.mp3"]);
+        // Loaded in Boot on start up
+        
+        //this.load.image('menuSelectionTexture', 'assets/menuTexture.png');
+        //this.load.image('menuBG', 'assets/TitleScreenD.png');
+        //this.load.image('gameTitle', 'assets/tempLogo.png');
+        //this.load.audio("menuMusic1", ["assets/music/Landslide.mp3"]);
+        //this.load.audio("menuMusic2", ["assets/music/Talk_Like_Thunder.mp3"]);
+        //this.load.audio("menuMusic3", ["assets/music/Fate_I.mp3"]);
        
     }
     
@@ -61,13 +63,11 @@ class MainMenu extends Phaser.Scene {
 
         if (firstRun){
             firstRun = false
-            this.menuMusic = this.sound.add('menuMusic')
+            var musicPick = Phaser.Math.Between(1,4)
+            this.menuMusic = this.sound.add('menuMusic' + musicPick)
             this.menuMusic.setVolume(0.5).play()
         }
-
-        
-      
-        
+  
     }
     
     update(){
@@ -76,12 +76,6 @@ class MainMenu extends Phaser.Scene {
         
         this.activeMenuBox.tilePositionX += 2.5 * scaleModX
 
-        
-
-       
-
-        
-        
 
         if(downIsDown && this.selectedOption < 4 && this.selectedSubOption == 0){
             downIsDown = false
