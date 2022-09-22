@@ -2970,7 +2970,7 @@ class Badlands extends Phaser.Scene {
         bgScroll = activeStage.bgScroll
         fgScroll = activeStage.fgScroll
 
-        setTimeout(()=>{
+        //setTimeout(()=>{
             for (var i = 1; i < bgLayers + 1; i++){
                 console.log('bgL'+ i, activeStage.stageAssetPathRoot + 'BG' + activeStage.stageAssetName + i)
               
@@ -2988,7 +2988,7 @@ class Badlands extends Phaser.Scene {
                 console.log('fgL'+ i, activeStage.stageAssetPathRoot + 'FG' + activeStage.stageAssetName + i)
                 this.load.image('fgL'+ i, activeStage.stageAssetPathRoot + 'FG' + activeStage.stageAssetName + i);
             }
-        },500)
+        //},500)
         
  
 
