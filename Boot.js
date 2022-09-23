@@ -77,7 +77,7 @@ class Boot extends Phaser.Scene {
         }
 
         // Fake Loading - adds time for visual clarity 
-        for (var i = 0; i < 50; i++) {
+        for (var i = 0; i < 25; i++) {
             this.load.image('loadingSplashScreen' + i, 'assets/TitleScreenD.png')
         }
         

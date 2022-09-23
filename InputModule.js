@@ -120,6 +120,28 @@ class InputModule extends Phaser.Scene {
                 console.log('S2 Pressed: ' +  s2IsDown)
             })
 
+            // KeyC - Character Screen / Inspiration Menu
+            this.keyC.on('down', function (){
+                menuKey1IsDown = true
+                console.log('Menu 1 Pressed: ' +  menuKey1IsDown)
+            })
+
+            this.keyC.on('up', function (){
+                menuKey1IsDown = false 
+                console.log('Menu 1 Pressed: ' +  menuKey1IsDown)
+            })
+            menuKey1IsDown
+            // KeyZ - Menu Back 
+            this.keyZ.on('down', function (){
+                menuKey2IsDown = true
+                console.log('Menu 2 Pressed: ' +  menuKey1IsDown)
+            })
+
+            this.keyZ.on('up', function (){
+                menuKey2IsDown = false 
+                console.log('Menu 2 Pressed: ' +  menuKey1IsDown)
+            })
+
 
      
     }

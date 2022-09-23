@@ -126,13 +126,7 @@
         var secondsTimer 
         var regenTimer 
 
-        //var cursors 
-        var keyA 
-        var keyD 
-        var keyF 
-
-        var keyZ 
-        var  keyC 
+       
 
         var enemyLockedOn
         var thunderStrikeVFX
@@ -3813,13 +3807,7 @@ class Badlands extends Phaser.Scene {
             gamePadEnabled = true
         },this)
 
-        // Keyboard Keys
-        // cursors = this.input.keyboard.createCursorKeys();
-        // keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
-        // keyD = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
-        // keyF = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.F);
-        // keyZ = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Z);
-        // keyC = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.C);
+        
 
         this.input.on('gameobjectdown', function (pointer, gameObject) {
         
@@ -4100,32 +4088,15 @@ class Badlands extends Phaser.Scene {
 
 
 
-                if (Phaser.Input.Keyboard.JustDown(keyZ)){
-                    
+                if (menuKey2IsDown){
+                    menuKey2IsDown = false
                     this.scene.start('Kianova',{regionID:activeStage.regionID,glory:Math.round(glory)})
                     reset()
                     this.scene.stop('Badlands')
 
-                    // Decommissioned
-
-                    //this.scene.restart(activeStage)
-                    
-                    
-                    // if (touchEnabled){
-                    //     enableTouchControls(0)
-                    // } else {
-                    //     enableTouchControls(1)
-                    // }
-
                 }
 
-                if (Phaser.Input.Keyboard.JustDown(keyC)){
-
-                    
-                toggleSkillTree()
-                
-
-                }
+               
             
         // General / Universal
 

@@ -12,6 +12,8 @@
     var a2IsDown
     var s1IsDown
     var s2IsDown
+    var menuKey1IsDown
+    var menuKey2IsDown
 
 // Free Play Data
     var freePlayUser
