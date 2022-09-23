@@ -103,22 +103,22 @@ function powerPointMechanism(){
 }
 
 async function importUserData(userName,passWord){
+    
     // User Credentials & Kianova Data
-    if(userName == null){
-        var freePlayDataResponse = fetch(
-            "https://opensheet.elk.sh/1Tdh0tV-EapNYWqOS9GzKarnt_b4ZVy1YXPN4dq85H5o/FreePlay_Data_EndPoint"
-          )
+    if(userName == null || undefined || ''){
+        
+        var freePlayDataResponse = fetch("https://opensheet.elk.sh/1Tdh0tV-EapNYWqOS9GzKarnt_b4ZVy1YXPN4dq85H5o/FreePlay_Data_EndPoint")
+
+          
      
-          var freePlayData = await (await freePlayDataResponse).json() 
+        var freePlayData = await (await freePlayDataResponse).json()  
           console.log(freePlayData)
 
           freePlayUser = freePlayData[0]
           
     } else {
     
-    var userList = fetch(
-       "https://opensheet.elk.sh/1Tdh0tV-EapNYWqOS9GzKarnt_b4ZVy1YXPN4dq85H5o/PlayerDB"
-     )
+    var userList = fetch("https://opensheet.elk.sh/1Tdh0tV-EapNYWqOS9GzKarnt_b4ZVy1YXPN4dq85H5o/PlayerDB")
 
      var userListContent = await (await userList).json()
     
@@ -417,16 +417,14 @@ class DataModule extends Phaser.Scene {
 
     preload(){
         
-
-     
-
-        
+  
     }
 
     
    async create(){
         await importUserData()
         await importAvatarData()
+        console.log('Data Module Online')
         
  
     }

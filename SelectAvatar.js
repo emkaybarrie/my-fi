@@ -74,9 +74,9 @@ class SelectAvatar extends Phaser.Scene {
 
         camera = this.cameras.main
         
-        var freePlayBGScaleX = 1.3 * (scaleModX) 
-        var freePlayBGScaleY = 0.705 * (scaleModY) 
-        var freePlayBG = this.add.image(0,0,'freePlayBG').setScale(freePlayBGScaleX,freePlayBGScaleY).setOrigin(0,0).setAlpha(0.65)
+        this.freePlayBGScaleX = 1.3 * (scaleModX) 
+        this.freePlayBGScaleY = 0.705 * (scaleModY) 
+        this.freePlayBG = this.add.image(0,0,'freePlayBG').setScale(this.freePlayBGScaleX,this.freePlayBGScaleY).setOrigin(0,0).setAlpha(0.65)
 
         this.activeUserNameText = this.add.text(screenWidth * 0.5, screenHeight * 0.1, '', { fontFamily: 'Gothic', fontStyle: 'bold' ,align: 'center', fixedWidth:screenWidth * 0.25,fixedHeight:screenHeight * 0.075});
         this.activeUserNameText.setFontSize(54 * scaleModX).setOrigin(0.5,0)

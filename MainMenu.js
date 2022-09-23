@@ -30,12 +30,12 @@ class MainMenu extends Phaser.Scene {
     
     create(){
         
-        var menuBGScaleX = 1.94 * (scaleModX) 
-        var menuBGScaleY = 1.1 * (scaleModY)
-        var menuBG = this.add.image(0,0,'menuBG').setScale(menuBGScaleX,menuBGScaleY).setOrigin(0,0)
-        var gameTitle = this.add.image(screenWidth * 0.30,screenHeight * 0.175,'gameTitle').setScale(1.25 * scaleModX)
+        this.menuBGScaleX = 1.94 * (scaleModX) 
+        this.menuBGScaleY = 1.1 * (scaleModY)
+        this.menuBG = this.add.image(0,0,'menuBG').setScale(this.menuBGScaleX,this.menuBGScaleY).setOrigin(0,0)
+        this.gameTitle = this.add.image(screenWidth * 0.30,screenHeight * 0.175,'gameTitle').setScale(1.25 * scaleModX)
 
-        this.menuOption1 = this.add.text(gameTitle.x, screenHeight * 0.285, 'Prologue', { fontFamily: 'Gothic',align: 'center', fixedWidth:screenWidth * 0.25,fixedHeight:screenHeight * 0.075});
+        this.menuOption1 = this.add.text(this.gameTitle.x, screenHeight * 0.285, 'Prologue', { fontFamily: 'Gothic',align: 'center', fixedWidth:screenWidth * 0.25,fixedHeight:screenHeight * 0.075});
         this.menuOption2 = this.add.text(this.menuOption1.x,this.menuOption1.y + (screenHeight * 0.07) , 'Play', { fontFamily: 'Gothic',align: 'center', fixedWidth:screenWidth * 0.25,fixedHeight:screenHeight * 0.075});
         this.menuOption2_1 = this.add.text(this.menuOption2.x + (screenWidth * 0.11),this.menuOption2.y, 'Immersive', { fontFamily: 'Gothic',align: 'center', fixedWidth:screenWidth * 0.25,fixedHeight:screenHeight * 0.075});
         this.menuOption2_2 = this.add.text(this.menuOption2_1.x + (screenWidth * 0.11),this.menuOption2.y, 'Free Play', { fontFamily: 'Gothic',align: 'center', fixedWidth:screenWidth * 0.25,fixedHeight:screenHeight * 0.075});

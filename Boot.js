@@ -57,7 +57,6 @@ class Boot extends Phaser.Scene {
             this.progressBox.destroy();
             this.loadingText.destroy();
             this.percentText.destroy();
-            this.initialisationComplete = true
         },this);
     }
 
@@ -89,9 +88,14 @@ class Boot extends Phaser.Scene {
         this.scene.launch('DataModule')
         this.scene.launch('InputModule')
 
+        
+
         // Splash Screen & Animations
             // Add opening animation/splash screen / studio info here
-        
+            
+            setTimeout(()=>{
+                this.initialisationComplete = true
+            },500)
     }
     
     update(){
