@@ -85,7 +85,7 @@ class Boot extends Phaser.Scene {
         this.load.audio("menuMusic4", ["assets/music/Nine_Levels.mp3"]);
 
         // Fake Loading - adds time for visual clarity 
-        for (var i = 0; i < 100; i++) {
+        for (var i = 0; i < 50; i++) {
             this.load.image('loadingSplashScreen' + i, 'assets/TitleScreenD.png')
         }
         

@@ -143,7 +143,7 @@ class Region1 extends Phaser.Scene {
                game.stageForegroundLayers = 0
                game.stageBGScrollSpeedModifierSettings = [1,0.5,0.95,0.9,0.85,0.5,0.35,0.1,0]
                game.stageFGScrollSpeedModifierSettings = []
-               game.stageNormalMaps = [0,0,0,0,0,0,0,0,0]
+               game.stageNormalMaps = []
 
                // Day/Night Settings
                 // Enable/Disable Times
@@ -186,7 +186,7 @@ class Region1 extends Phaser.Scene {
                game.stageForegroundLayers = 3
                game.stageBGScrollSpeedModifierSettings = [1,0.5,0.95,0.9]
                game.stageFGScrollSpeedModifierSettings = [1.1,1.1,1.05]
-               game.stageNormalMaps = [0,0,0,0]
+               game.stageNormalMaps = []
 
                // Day/Night Settings
                 // Enable/Disable Times

@@ -2852,26 +2852,26 @@ class Badlands extends Phaser.Scene {
         
        this.stageRefresh()
 
-       t = this.make.text({
-        x: screenWidth * 1.85,
-        y: screenHeight * 0.175,
-        text:   'Region: ' + activeStage.region + ' (' + activeStage.regionID + ')' +  '\n' + 
-                'Region Patron: ' + activeStage.regionPatron + '\n' + 
-                'Region Affinity : ' + activeStage.regionAffinity + '\n' + 
-                'Stage: ' + activeStage.stageName + ' (' + activeStage.id + ')' + '\n' +
-                'Time of Day: ' + activeStage.timeText + ' (' + activeStage.timeCode + ')' + '\n' +
-                'Stage Music: ' + activeStage.stageMusicFileName + '\n',
-        origin: { x: 0.5, y: 0.5 },
-        style: {
-            font: 'bold 26px Gothic',
+    //    t = this.make.text({
+    //     x: screenWidth * 1.85,
+    //     y: screenHeight * 0.175,
+    //     text:   'Region: ' + activeStage.region + ' (' + activeStage.regionID + ')' +  '\n' + 
+    //             'Region Patron: ' + activeStage.regionPatron + '\n' + 
+    //             'Region Affinity : ' + activeStage.regionAffinity + '\n' + 
+    //             'Stage: ' + activeStage.stageName + ' (' + activeStage.id + ')' + '\n' +
+    //             'Time of Day: ' + activeStage.timeText + ' (' + activeStage.timeCode + ')' + '\n' +
+    //             'Stage Music: ' + activeStage.stageMusicFileName + '\n',
+    //     origin: { x: 0.5, y: 0.5 },
+    //     style: {
+    //         font: 'bold 26px Gothic',
 
-            fill: 'white',
-            align: 'left',
-            wordWrap: { width: 750 * (scaleModX)},
-        }
-        }).setDepth(4);
+    //         fill: 'white',
+    //         align: 'left',
+    //         wordWrap: { width: 750 * (scaleModX)},
+    //     }
+    //     }).setDepth(4);
 
-    t.setFontSize(26 * (scaleModX)) 
+    // t.setFontSize(26 * (scaleModX)) 
 
     
 
@@ -4137,7 +4137,7 @@ class Badlands extends Phaser.Scene {
                     showHUD()
                 }
 
-                t.x = camera.worldView.x + (screenWidth * 0.85) 
+                //t.x = camera.worldView.x + (screenWidth * 0.85) 
              
                 playerIconBox.x = camera.scrollX + (screenWidth * 0.075)
                 playerIconBox.y = camera.scrollY +  (screenHeight * 0.15 )
