@@ -7,15 +7,16 @@ class Boot extends Phaser.Scene {
         
         super("Boot")
 
+        this.initialisationComplete = false
     }
 
     loadBar(){
-        var progressBar = this.add.graphics();
-        var progressBox = this.add.graphics();
-        progressBox.fillStyle(0x222222, 0.8);
-        progressBox.fillRect(screenWidth * 0.33, screenHeight * 0.5, screenWidth * 0.33, screenHeight * 0.05);
+        this.progressBar = this.add.graphics();
+        this.progressBox = this.add.graphics();
+        this.progressBox.fillStyle(0x222222, 0.8);
+        this.progressBox.fillRect(screenWidth * 0.33, screenHeight * 0.5, screenWidth * 0.33, screenHeight * 0.05);
 
-        var loadingText = this.make.text({
+        this.loadingText = this.make.text({
             x: screenWidth * 0.5,
             y: screenHeight * 0.45,
             text: 'Loading...',
@@ -24,9 +25,9 @@ class Boot extends Phaser.Scene {
                 fill: '#ffffff'
             }
         });
-        loadingText.setOrigin(0.5, 0.5);
+        this.loadingText.setOrigin(0.5, 0.5);
 
-        var percentText = this.make.text({
+        this.percentText = this.make.text({
             x: screenWidth * 0.5,
             y: screenHeight * 0.525,
             text: '0%',
@@ -35,16 +36,16 @@ class Boot extends Phaser.Scene {
                 fill: '#ffffff'
             }
         });
-        percentText.setOrigin(0.5, 0.5);
+        this.percentText.setOrigin(0.5, 0.5);
 
         this.load.on('progress', function (value) {
             console.log(value);
-            percentText.setText(parseInt(value * 100) + '%');
-            progressBar.clear();
-            progressBar.fillStyle(0xffffff, 1);
-            progressBar.fillRect(screenWidth * 0.33, screenHeight * 0.5, screenWidth * 0.33 * value, screenHeight * 0.05);
+            this.percentText.setText(parseInt(value * 100) + '%');
+            this.progressBar.clear();
+            this.progressBar.fillStyle(0xffffff, 1);
+            this.progressBar.fillRect(screenWidth * 0.33, screenHeight * 0.5, screenWidth * 0.33 * value, screenHeight * 0.05);
             
-        });
+        },this);
                     
         this.load.on('fileprogress', function (file) {
             console.log(file.src);
@@ -52,12 +53,12 @@ class Boot extends Phaser.Scene {
         });
         this.load.on('complete', function () {
             console.log('complete');
-            progressBar.destroy();
-            progressBox.destroy();
-            loadingText.destroy();
-            percentText.destroy();
-            initialisationComplete = true
-        });
+            this.progressBar.destroy();
+            this.progressBox.destroy();
+            this.loadingText.destroy();
+            this.percentText.destroy();
+            this.initialisationComplete = true
+        },this);
     }
 
 
@@ -100,15 +101,12 @@ class Boot extends Phaser.Scene {
         // Splash Screen & Animations
             // Add opening animation/splash screen / studio info here
         
-
-        
-        
     }
     
     update(){
         
         // On Intro finish...
-        if(initialisationComplete){
+        if(this.initialisationComplete){
             if(this.sys.game.device.os.desktop){
                 nextScene = true
             } else {
@@ -117,15 +115,15 @@ class Boot extends Phaser.Scene {
                 this.lights.enable();
                 this.buttonLight = this.lights.addLight(screenWidth * 0.5, screenHeight * 0.5, screenWidth,0xFFFFFF, 1.25);
                 
-                var button = this.add.image(screenWidth * 0.5, screenHeight * 0.5, 'r0Icon').setInteractive().setScale(1.5).setPipeline('Light2D');
+                this.button = this.add.image(screenWidth * 0.5, screenHeight * 0.5, 'r0Icon').setInteractive().setScale(1.5).setPipeline('Light2D');
 
-            button.on('pointerup', function (){
-                vid = this.add.video(screenWidth * 0.5, screenHeight * 0.5, 'techDemo');
-                vid.displayWidth = screenWidth
-                vid.displayHeight = screenHeight
-                vid.play();
+                this.button.on('pointerup', function (){
+                    this.vid = this.add.video(screenWidth * 0.5, screenHeight * 0.5, 'techDemo');
+                    this.vid.displayWidth = screenWidth
+                    this.vid.displayHeight = screenHeight
+                    this.vid.play();
                 // Prevents video freeze when game is out of focus (i.e. user changes tab on the browser)
-                vid.setPaused(false);
+                    this.vid.setPaused(false);
             }, this);
 
             }

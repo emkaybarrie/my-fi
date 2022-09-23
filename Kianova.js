@@ -1,7 +1,4 @@
 
-
-
-var kControlsEnabled = false
 var autoPlayActive 
 var activeRegion
 
@@ -52,6 +49,10 @@ class Kianova extends Phaser.Scene {
 
     constructor() {
         super("Kianova")
+        // Input
+
+        this.controlsEnabled = false
+
         // Sector UI
         this.sectorUI
         
@@ -391,7 +392,7 @@ class Kianova extends Phaser.Scene {
                 loadScreen.setVisible(0)
 
                     this.sectorUI.setVisible(1)
-                    kControlsEnabled = true
+                    this.controlsEnabled = true
                     this.refreshUI()
                       
             }
@@ -407,7 +408,7 @@ class Kianova extends Phaser.Scene {
 
         this.selectedSectorIcon.tilePositionX += 5 * scaleModX
 
-        if(leftIsDown && kControlsEnabled){
+        if(leftIsDown && this.controlsEnabled){
             
             leftIsDown = false
 
@@ -420,7 +421,7 @@ class Kianova extends Phaser.Scene {
             this.refreshUI()
             
             
-        } else if (rightIsDown && kControlsEnabled){
+        } else if (rightIsDown && this.controlsEnabled){
     
                 rightIsDown = false
 
@@ -435,7 +436,7 @@ class Kianova extends Phaser.Scene {
                 
         }
 
-        if((a1IsDown || s1IsDown) && kControlsEnabled){
+        if((a1IsDown || s1IsDown) && this.controlsEnabled){
         
 
             camera.fadeOut(250)
@@ -453,7 +454,7 @@ class Kianova extends Phaser.Scene {
             
             
             })
-        } if ((s2IsDown || a2IsDown) && kControlsEnabled){
+        } if ((s2IsDown || a2IsDown) && this.controlsEnabled){
             activeUser = null
             this.scene.stop('Kianova')
             this.scene.start('MainMenu')
@@ -551,7 +552,7 @@ class Kianova extends Phaser.Scene {
 
         
 
-        if (nextScene && kControlsEnabled){
+        if (nextScene && this.controlsEnabled){
             this.scene.start(activeRegion, {targetZone: 0, currentTimePeriod: Phaser.Math.Between(1,4),rarityOverride:null})
             nextScene = false
             //setTimeout(() => {

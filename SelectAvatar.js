@@ -40,7 +40,7 @@ class SelectAvatar extends Phaser.Scene {
     }
 
   
-    preload(){
+    async preload(){
         this.load.image('freePlayBG', 'assets/KianovaMap.png');
 
         this.load.image('leftSelectionArrow', 'assets/vFX/ArrowsLeft.png');
@@ -64,7 +64,7 @@ class SelectAvatar extends Phaser.Scene {
 
          this.load.atlas('defaultAvatar', ['assets/Avatars/3/avatar3.png','assets/Avatars/3/avatar3_n.png'],'assets/Avatars/3/avatar3.json');
 
-         getRating()
+         await getRating()
     }
     
     
@@ -117,6 +117,11 @@ class SelectAvatar extends Phaser.Scene {
 
         this.activeMenuBox = this.add.tileSprite(this.menuOption3.x,this.menuOption3.y + (screenHeight * 0.0175),screenWidth * 0.1,screenHeight * 0.075,'menuSelectionTexture');
         this.activeMenuBox.setTexture('menuSelectionTexture').setAlpha(0.35).setOrigin(0.5,0.5)
+
+        this.activeMenuBoxSelection = this.add.tileSprite(this.menuOption6.x,this.menuOption6.y + (screenHeight * 0.0175),screenWidth * 0.1,screenHeight * 0.075,'menuSelectionTexture');
+        this.activeMenuBoxSelection.setTexture('menuSelectionTexture').setAlpha(0).setOrigin(0.5,0.5)
+        this.confirmSelection = 0
+
 
         this.lights.enable();
         this.patronIconLight = this.lights.addLight(this.menuIcon3.x, this.menuIcon3.y - this.menuIcon3.displayHeight * 0.25 , screenWidth * 0.035,0xFFFFFF, 1.25);
@@ -615,7 +620,7 @@ class SelectAvatar extends Phaser.Scene {
     
    async update(){
 
-    
+    console.log(this.confirmSelection)
     if (this.userActive){
     this.playAvatarPreview(this,this.selectedPatronArray,this.selectedPersonaArray) 
     }
@@ -639,7 +644,15 @@ class SelectAvatar extends Phaser.Scene {
     }, this);
   
 
-        this.activeMenuBox.tilePositionX += 2.5 * scaleModX        
+        this.activeMenuBox.tilePositionX += 2.5 * scaleModX     
+        this.activeMenuBoxSelection.tilePositionX += 2.5 * scaleModX
+        this.tweens.add({
+            //delay: 50,
+            targets: this.activeMenuBoxSelection,
+            alpha: { value: this.confirmSelection * 0.5, duration: 0, ease: 'Power1' },
+            scaleX: { value: this.confirmSelection * 1.75, duration: 0, ease: 'Power1' },
+  
+        });
     
     // Move into functions - culminating in refreshUI post menu selection
         if(downIsDown && this.selectedPatronArray < 5){
@@ -702,14 +715,19 @@ class SelectAvatar extends Phaser.Scene {
             this.userActive = true
             
             this.runAnim = true
-            if(this.confirmSelection < 1)
-            this.confirmSelection += 0.02
+            if(this.confirmSelection < 1) {
+            this.confirmSelection += 0.015
+            }
+
+
         } else if (a2IsDown || s2IsDown){
             activeUser = null
             this.scene.start('MainMenu')
         } else {
             this.runAnim = false
-            this.confirmSelection = 0
+            if(this.confirmSelection > 0) {
+            this.confirmSelection -= 0.04
+            }
         }
 
         if(this.confirmSelection >= 1){

@@ -1,9 +1,19 @@
 // System Variables
 
-var initialisationComplete = false
-var gameMode = 0 
+    var gameMode = 0 
+
+// Input Variables
+    var leftIsDown
+    var rightIsDown
+    var upIsDown
+    var downIsDown
+    var a1IsDown
+    var a2IsDown
+    var s1IsDown
+    var s2IsDown
+
 // Free Play Data
-var freePlayUser
+    var freePlayUser
 
 // User Data Stores
     // Player
@@ -56,7 +66,6 @@ var playerVitalsBox
 
 // Game Data Variables
 
-var vid
 
 
 function powerPointMechanism(){

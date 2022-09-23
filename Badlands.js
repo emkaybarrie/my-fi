@@ -126,7 +126,7 @@
         var secondsTimer 
         var regenTimer 
 
-        var cursors 
+        //var cursors 
         var keyA 
         var keyD 
         var keyF 
