@@ -500,7 +500,7 @@ class SelectAvatar extends Phaser.Scene {
     playAvatarPreview(game,patronGroup,patronGroupAvatar){
 
         var id = game.avatarToLoad[patronGroup][patronGroupAvatar]
-        var animToPlay
+        var animToPlay = '_ACTION_1'
         if(a1IsDown){
             animToPlay = '_ACTION_1'
         } else if (s1IsDown) {

@@ -2972,21 +2972,21 @@ class Badlands extends Phaser.Scene {
 
         //setTimeout(()=>{
             for (var i = 1; i < bgLayers + 1; i++){
-                console.log('bgL'+ i, activeStage.stageAssetPathRoot + 'BG' + activeStage.stageAssetName + i)
+                console.log('bgL'+ i, activeStage.stageAssetPathRoot + 'BG' + activeStage.stageAssetName + i + '.png')
               
                 if (activeStage.stageNormalMaps[i - 1] && this.sys.game.device.os.desktop ){
     
-                    this.load.image('bgL'+ i, [activeStage.stageAssetPathRoot + 'BG' + activeStage.stageAssetName + i,activeStage.stageAssetPathRoot + 'BG' + activeStage.stageAssetName + i + '_n']);
+                    this.load.image('bgL'+ i, [activeStage.stageAssetPathRoot + 'BG' + activeStage.stageAssetName + i,activeStage.stageAssetPathRoot + 'BG' + activeStage.stageAssetName + i + '_n.png']);
                 } else {
-                    this.load.image('bgL'+ i, activeStage.stageAssetPathRoot + 'BG' + activeStage.stageAssetName + i);
+                    this.load.image('bgL'+ i, activeStage.stageAssetPathRoot + 'BG' + activeStage.stageAssetName + i+ '.png');
                 }
                     
                 
             }
     
             for (var i = 1; i < fgLayers + 1; i++){
-                console.log('fgL'+ i, activeStage.stageAssetPathRoot + 'FG' + activeStage.stageAssetName + i)
-                this.load.image('fgL'+ i, activeStage.stageAssetPathRoot + 'FG' + activeStage.stageAssetName + i);
+                console.log('fgL'+ i, activeStage.stageAssetPathRoot + 'FG' + activeStage.stageAssetName + i+ '.png')
+                this.load.image('fgL'+ i, activeStage.stageAssetPathRoot + 'FG' + activeStage.stageAssetName + i+ '.png');
             }
         //},500)
         
