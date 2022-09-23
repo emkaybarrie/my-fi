@@ -1,23 +1,6 @@
 
-
-    // GamePad
-    // function activateGamePad(scene){
-        
-    //     this.input.gamepad.on('connected', function (pad) {
-    //         gamePad = pad
-    //     },this)
-    // }
-
-    // // Touch
-
-    // function activateTouch(scene){
-    //     this.input.addPointer(8);
-    // }
-
 class InputModule extends Phaser.Scene {
 
-    
-    
     constructor() {
         
         super("InputModule")
@@ -140,6 +123,17 @@ class InputModule extends Phaser.Scene {
 
      
     }
+
+    activateGamepad(){
+        this.input.gamepad.on('connected', function (pad) {
+                    gamePad = pad
+        },this)
+    }
+
+
+    // activateTouch(){
+    //     this.input.addPointer(8);
+    // }
 
     
     create(){

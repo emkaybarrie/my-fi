@@ -76,15 +76,6 @@ class Boot extends Phaser.Scene {
             this.load.video('techDemo', 'assets/video/techDemo.mp4', 'loadeddata', false, false);
         }
 
-        // Preload Main Menu Assets
-        this.load.image('menuBG', 'assets/TitleScreenD.png')
-        this.load.image('menuSelectionTexture', 'assets/menuTexture.png');
-        this.load.image('gameTitle', 'assets/tempLogo.png');
-        this.load.audio("menuMusic1", ["assets/music/Landslide.mp3"]);
-        this.load.audio("menuMusic2", ["assets/music/Talk_Like_Thunder.mp3"]);
-        this.load.audio("menuMusic3", ["assets/music/Fate_I.mp3"]);
-        this.load.audio("menuMusic4", ["assets/music/Nine_Levels.mp3"]);
-
         // Fake Loading - adds time for visual clarity 
         for (var i = 0; i < 50; i++) {
             this.load.image('loadingSplashScreen' + i, 'assets/TitleScreenD.png')

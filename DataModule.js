@@ -1,6 +1,7 @@
 // System Variables
 
     var gameMode = 0 
+    var firstRun = true
 
 // Input Variables
     var leftIsDown
