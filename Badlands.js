@@ -4088,8 +4088,8 @@ class Badlands extends Phaser.Scene {
 
 
 
-                if (menuKey2IsDown){
-                    menuKey2IsDown = false
+                if (abortStageIsDown){
+                    abortStageIsDown = false
                     this.scene.start('Kianova',{regionID:activeStage.regionID,glory:Math.round(glory)})
                     reset()
                     this.scene.stop('Badlands')
