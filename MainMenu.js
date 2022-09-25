@@ -48,7 +48,7 @@ class MainMenu extends Phaser.Scene {
         this.menuOption2_1.setFontSize(24 * scaleModX).setOrigin(0.5,0).setAlpha(0)
         this.menuOption2_2.setFontSize(24 * scaleModX).setOrigin(0.5,0).setAlpha(0)
         this.menuOption3.setFontSize(32 * scaleModX).setOrigin(0.5,0).setAlpha(0.35)
-        this.menuOption4.setFontSize(32 * scaleModX).setOrigin(0.5,0).setAlpha(0.35)
+        this.menuOption4.setFontSize(32 * scaleModX).setOrigin(0.5,0)
 
         this.menuTextGroup = this.add.group([this.menuOption1,this.menuOption2,this.menuOption3,this.menuOption4])
 
@@ -162,12 +162,14 @@ class MainMenu extends Phaser.Scene {
                 this.selectedMode = 'Login'
             } else if (this.selectedSubOption == 2){
                 this.selectedMode = 'SelectAvatar'
+                this.data = 'Kianova'
             }
            
         } else if (this.selectedOption == 3){
-           // this.selectedMode = 'The Crucible'
+           // this.selectedMode = 'Crucible'
         } else if (this.selectedOption == 4){
-           // this.selectedMode = 'The Simulacrum'
+            this.selectedMode = 'SelectAvatar'
+            this.data = 'Simulacrum'
         }
 
         if(this.selectedOption != 2){
@@ -182,8 +184,8 @@ class MainMenu extends Phaser.Scene {
 
         if (nextScene){
             nextScene = false
-           
-            this.scene.start(this.selectedMode)
+           console.log(this.data)
+            this.scene.start(this.selectedMode,{redirect:this.data})
             
         }
             

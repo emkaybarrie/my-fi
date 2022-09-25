@@ -41,33 +41,30 @@
     var patron5Rating_Prosperity
 
 // Avatar Data Stores
-var avatarData
-var activeAvatar
-var activeAvatarID
+    var avatarData
+    var activeAvatar
+    var activeAvatarID
 // System Variables
-var screenHeight = window.innerHeight * window.devicePixelRatio
-var screenWidth =  window.innerWidth * window.devicePixelRatio
-var globalGravityMod = screenHeight / 1080
+    var screenHeight = window.innerHeight * window.devicePixelRatio
+    var screenWidth =  window.innerWidth * window.devicePixelRatio
+    var globalGravityMod = screenHeight / 1080
 
-var scaleModX = screenWidth/1980
-var scaleModY = screenHeight / 1080
+    var scaleModX = screenWidth/1980
+    var scaleModY = screenHeight / 1080
 
 // Scene Variables
 
-var nextScene
+    var nextScene
 
 // Player Variables
 
-var playerIconBox
-var playerIconBoxScaleX = 0.0775 * (scaleModX) 
-var playerIconBoxScaleY = 0.25 * (scaleModX) 
-var playerIcon
-var playerIconScale = 0.125 * (scaleModX)   
+    var playerIconBox
+    var playerIconBoxScaleX = 0.0775 * (scaleModX) 
+    var playerIconBoxScaleY = 0.25 * (scaleModX) 
+    var playerIcon
+    var playerIconScale = 0.125 * (scaleModX)   
 
-var playerVitalsBox
-
-// Game Data Variables
-
+    var playerVitalsBox
 
 
 function powerPointMechanism(){

@@ -8,6 +8,8 @@ class SelectAvatar extends Phaser.Scene {
         
         super("SelectAvatar")
 
+        this.redirect
+
         this.activeMenuBox
         this.menuTextGroup
         this.menuOption1
@@ -69,8 +71,9 @@ class SelectAvatar extends Phaser.Scene {
     
     
 
-    create(){
+    create(data){
 
+        this.redirect = data.redirect
 
         camera = this.cameras.main
         
@@ -621,6 +624,7 @@ class SelectAvatar extends Phaser.Scene {
    async update(){
 
     console.log(this.confirmSelection)
+    console.log(this.redirect)
     if (this.userActive){
     this.playAvatarPreview(this,this.selectedPatronArray,this.selectedPersonaArray) 
     }
@@ -742,7 +746,12 @@ class SelectAvatar extends Phaser.Scene {
 
         if (nextScene){
             nextScene = false
-            this.scene.start('Kianova')
+            if (this.redirect == null || undefined || '') {
+                this.scene.start('Kianova')
+            } else {
+                this.scene.start(this.redirect)
+            }
+            
 
         }
 

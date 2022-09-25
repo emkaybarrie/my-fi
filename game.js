@@ -48,6 +48,9 @@ var config = {
             Login,
             // Screen to select Avatar for Badlands session, shows avatar base stats, info and preview
             SelectAvatar,
+            // The Crucible - TBD
+            // The Simulacrum
+            Simulacrum,
         // Hub Screen depicting the city of Kianova.  Return here after every run.  Acts as player base/game main menu.  Displays sector/district and avatar stats, in game info, etc
         Kianova,
         // Main game scene where action occurs.  Holds active stage data, outputs/updates game data during/after runs to relevant scenes.

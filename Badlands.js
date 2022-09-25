@@ -412,7 +412,209 @@
 
     function abstractedControls(){
         if(controlsEnabled){
-        if(s1IsDown){
+
+            if (gameMode == 0 || inBattle == 0){
+                playerAttackHitSmear = 'whiteHitSmear'
+                this.actionPower = currentEnergy / maxEnergy
+                this.skillPower = currentFocus / maxFocus
+                
+                if(!playerIsHit){
+                    player.flipX = false
+                }
+                
+                player.x -=  (screenWidth * 0.01) * ((player.x - (screenWidth * 1.25)) / screenWidth * 1.25)
+                player.setDragY(1250) * ((screenHeight - player.y) / (screenHeight * 0.75) )
+
+                
+                // Animations, Sprite/Hitbox Size & Collision Detection
+                // In Air
+                    if(!player.body.onFloor()){
+                        player.body.checkCollision.right = true
+                        player.body.setSize(10, 30).setOffset(25,15).setAllowDrag(true)
+                        if (s1IsDown){
+                            player.body.setSize(10, 15).setOffset(25,30).setAllowDrag(true)
+                            player.body.checkCollision.right = false
+                            player.play({key:'player_Avatar_3_EVADE',frameRate: 10},true)
+                        } else if(a1IsDown){
+                            player.play({key:'player_Avatar_3_SKILL_1',frameRate: 10},true)
+                        } else if(player.body.velocity.y >= (screenHeight * 0.02) * this.skillPower * 60 ){
+                            player.play({key:'player_Avatar_3_FALL',frameRate: 10},true)
+                        } else if (player.body.velocity.y < (screenHeight * 0.02) * this.actionPower * 60){
+                            if (upIsDown){
+                            player.play({key:'player_Avatar_3_JUMP',frameRate: 10},true)
+                            } else {
+                                player.play({key:'player_Avatar_3_FALL',frameRate: 10},true) 
+                            }
+                        }
+                
+                    } 
+                // Grounded 
+                    else {
+                        player.body.checkCollision.right = true
+                        if (s1IsDown){
+                            player.body.setSize(10, 15).setOffset(25,30).setAllowDrag(true)                    
+                            player.body.checkCollision.right = false
+                            player.play({key:'player_Avatar_3_EVADE',frameRate: 10},true)
+                        } else if(a1IsDown){
+                            player.play({key:'player_Avatar_3_ACTION_1',frameRate: 10},true)
+                        } else if (downIsDown){
+                            player.body.setSize(10, 15).setOffset(25,30).setAllowDrag(true)
+                            player.play({key:'player_Avatar_3_SLIDE',frameRate: 10},true)
+                        } else {
+                            player.body.setSize(10, 30).setOffset(25,15).setAllowDrag(true)
+                            player.play({key:'player_Avatar_3_RUN',frameRate: 6 + (6 * playerSpeed)},true)
+                        }
+                    }
+                
+                // Energy Costs & Recovery
+                    if (!s1IsDown && !a1IsDown &&!leftIsDown && !rightIsDown && !downIsDown  && !upIsDown) {
+
+                        regenActive = true
+
+                    } else {
+
+                        regenActive = false 
+                        this.baseCost = 0.25
+
+                        if(this.skillPower > 0){
+
+                            if (s1IsDown){
+                                playerVitals.decreaseFocus(this.baseCost * 2)
+                            }
+                        }
+                        
+                        if(this.actionPower > 0){
+                            if (a1IsDown){
+                                playerVitals.decreaseEnergy(this.baseCost * 1)
+                                
+                            }
+
+                            if(upIsDown){
+                                playerVitals.decreaseEnergy(this.baseCost * 1)
+                            }
+                            
+                            if(downIsDown){
+                                playerVitals.decreaseEnergy(this.baseCost * 1)
+                            }
+                            
+                            if(leftIsDown){
+                                playerVitals.decreaseEnergy(this.baseCost * 1)
+                            }
+
+                            if(rightIsDown){
+                                playerVitals.decreaseEnergy(this.baseCost * 1)
+                            }
+                        }
+                    }
+
+                // Positioning - additive
+
+                // S1 - Dash
+                if (s1IsDown){
+                    // All States
+                        if (this.skillPower >= 0.75){ 
+                            // Extra Forward motion at high power (toggle and test feel)
+                            player.x += (screenWidth * 0.00125) * this.skillPower
+                        }
+
+                    // On Ground
+                        if (player.body.onFloor()){
+                            player.x += (screenWidth * 0.01) * this.skillPower
+                        } 
+                    // In Air
+                        else  {
+                            player.x += (screenWidth * 0.005) * this.skillPower
+                        }
+
+                } 
+                // A1 - Attack
+                if (a1IsDown){
+                    // All States
+                        // Extra Forward motion at high power (toggle and test feel)
+                        if (this.actionPower  >= 0.9){ 
+                            
+                            player.x += (screenWidth * 0.005) * this.actionPower
+                        } else if (this.actionPower  >= 0.75){
+                            player.x += (screenWidth * 0.0025) * this.actionPower
+                        } else if (this.actionPower  >= 0.5) {
+                            player.x += (screenWidth * 0.001) * this.actionPower
+                        } else if (this.actionPower  <= 0.25) {
+                            player.x -= (screenWidth * 0.0015)
+                        }
+
+                    // On Ground
+                        if (player.body.onFloor()){
+                            player.x -= (screenWidth * 0.0025) * this.actionPower
+                        } 
+                    // In Air
+                        else  {
+                            player.x -= (screenWidth * 0.0035) * this.actionPower
+                        }
+
+                } 
+                // Up - Jump
+                if (upIsDown){
+                    
+                    // All States
+                        if (this.actionPower  >= 0.5){ 
+                            // Forward motion when jumping (toggle and test feel)
+                            player.x += (screenWidth * 0.00125)  * this.actionPower
+                        }
+
+                    // On Ground
+                        if (player.body.onFloor()){
+                            player.y -= (screenHeight * 0.08) * this.actionPower 
+                        } 
+                    // In Air
+                        else  {
+                        player.y -= (screenHeight * 0.02) * this.actionPower
+                        }
+
+                } 
+                // Down - Slide
+                if (downIsDown){
+                    // All States
+
+                    // On Ground
+                        if (player.body.onFloor()){
+                            // Forward motion when sliding (toggle and test feel)
+                            player.x += (screenWidth * 0.0025) * this.actionPower
+                        } 
+                    // In Air
+                        else {
+                            // Downward motion when in air (toggle and test feel)
+                            player.y += (screenHeight * 0.015) * this.actionPower
+                        } 
+                }
+                // Left - Slow
+                if (leftIsDown){
+                    // All States
+
+                    // On Ground
+                        if (player.body.onFloor()){
+                            player.x -= (screenWidth * 0.005) * this.actionPower
+                        } 
+                    // In Air
+                        else {
+                            player.x -= (screenWidth * 0.0025) * this.actionPower
+                        }
+                } 
+                // Right - Sprint
+                if (rightIsDown){   
+                    // All States
+
+                    // On Ground
+                        if (player.body.onFloor()){
+                            player.x += (screenWidth * 0.0075) * this.actionPower
+                        } 
+                    // In Air
+                        else {
+                            player.x += (screenWidth * 0.00375) * this.actionPower
+                        }
+                }
+            } else {
+
+                if(s1IsDown){
                     if(!playerIsHit){
 
                             regenActive = false
@@ -876,6 +1078,7 @@
                     
                 }
             }
+        }
     }
 
     class HealthBar {
@@ -3215,9 +3418,6 @@ class Badlands extends Phaser.Scene {
         platforms = this.physics.add.staticGroup();
         platforms.create(0, screenHeight * (1 - floorHeight), 'ground').setOrigin(0,0).setScale(screenWidth * 3 /400, 2 * (scaleModX)).refreshBody().setVisible(0);
 
-        
-
-        
        
         // General 
 
