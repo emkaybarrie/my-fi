@@ -49,7 +49,7 @@
 
 
 
-    var platforms
+    var ground
     var playerShadow
     var player
     var sword
@@ -410,6 +410,24 @@
      kianovaBuffTier = 0
     }
 
+    function platformsTEMP(game){
+        // Platforms
+        game.platform.setVelocityX(-(screenWidth * 0.5) * playerSpeed)
+        game.platform2.setVelocityX(-(screenWidth * 0.5) * playerSpeed)
+
+        if(game.platform.x < 0){
+            game.platform.x = Phaser.Math.FloatBetween(screenWidth * 2.25, screenWidth * 3)
+            game.platform.body.velocity.x = 0
+            game.platform.y = Phaser.Math.FloatBetween(screenHeight * 0.75, screenHeight * 0.65)
+        }
+
+        if(game.platform2.x < 0){
+            game.platform2.x = Phaser.Math.FloatBetween(screenWidth * 2.15, screenWidth * 3)
+            game.platform2.body.velocity.x = 0
+            game.platform2.y = Phaser.Math.FloatBetween(screenHeight * 0.55, screenHeight * 0.3)
+        }
+    }
+
     function abstractedControls(){
         if(controlsEnabled){
 
@@ -514,16 +532,16 @@
                     // All States
                         if (this.skillPower >= 0.75){ 
                             // Extra Forward motion at high power (toggle and test feel)
-                            player.x += (screenWidth * 0.00125) * this.skillPower
+                            player.x += (screenWidth * 0.005) * this.skillPower
                         }
 
                     // On Ground
                         if (player.body.onFloor()){
-                            player.x += (screenWidth * 0.01) * this.skillPower
+                            player.x += (screenWidth * 0.02) * this.skillPower
                         } 
                     // In Air
                         else  {
-                            player.x += (screenWidth * 0.005) * this.skillPower
+                            player.x += (screenWidth * 0.01) * this.skillPower
                         }
 
                 } 
@@ -2831,6 +2849,16 @@ hide ()
         playerVitals.decreaseEnergy(-energyRegen / 200)
         playerVitals.decreaseFocus(-focusRegen / 200) 
         }  
+
+        } else {
+            if(currentEnergy < 0){
+                currentEnergy = 0
+            }  else {
+                playerVitals.decreaseLife(-lifeRegen / 400) 
+            playerVitals.decreaseEnergy(-energyRegen / 400)
+            playerVitals.decreaseFocus(-focusRegen / 400) 
+            }    
+        }
         
 
         if (!inBattle && !nightBorneCamActive){
@@ -2841,7 +2869,7 @@ hide ()
             
         } 
 
-        }
+        
 
         
     }
@@ -3420,10 +3448,13 @@ class Badlands extends Phaser.Scene {
         // Load Stage Floor
 
         var floorHeight = Phaser.Math.FloatBetween(activeStage.floorPosYMin,activeStage.floorPosYMax)
-        platforms = this.physics.add.staticGroup();
-        platforms.create(0, screenHeight * (1 - floorHeight), 'ground').setOrigin(0,0).setScale(screenWidth * 3 /400, 2 * (scaleModX)).refreshBody().setVisible(0);
+        ground = this.physics.add.staticGroup();
+        ground.create(0, screenHeight * (1 - floorHeight), 'ground').setOrigin(0,0).setScale(screenWidth * 3 /400, 2 * (scaleModX)).refreshBody().setVisible(0);
 
        
+
+        
+
         // General 
 
             // Controls
@@ -3508,7 +3539,26 @@ class Badlands extends Phaser.Scene {
         
         player.setBounceY(0.05);
         player.setCollideWorldBounds(true);
-        this.physics.add.collider(player,platforms);
+        this.physics.add.collider(player,ground);
+
+        // // Platform Code - TEMP
+        this.platform = this.physics.add.image(screenWidth, screenHeight * 0.75 ,'ground').setScale(1,0.75).setImmovable(true)
+        this.platform2 = this.physics.add.image(screenWidth * 0.5, screenHeight * 0.75 ,'ground').setScale(0.5,0.5).setImmovable(true)
+        this.platform.body.setAllowGravity(false)
+        this.platform2.body.setAllowGravity(false)
+        this.physics.add.collider(player,[this.platform,this.platform2], function (player,platform){
+            player.setVelocityX(0)
+            if(player.body.touching.down && platform.body.touching.up){
+                player.x += (screenWidth * 0.04) * (Math.abs((player.x - (screenWidth * 1.25))) / screenWidth * 1.25)
+               
+            }
+        });
+        this.physics.add.overlap(player,[this.platform,this.platform2], function (){
+      
+                player.setVelocityY(1500 * globalGravityMod)
+           
+        });
+
 
         spotlightPlayerHealth = this.lights.addLight(0, 0, player.displayWidth * 10,0xd4b9e2);
         spotlightPlayerPower = this.lights.addLight(0, 0, player.displayWidth * 10 ,0x6d54a9);
@@ -3550,7 +3600,7 @@ class Badlands extends Phaser.Scene {
         }) 
         obstacles.addMultiple([highObstacle,lowObstacle]) 
         this.physics.add.overlap(player,obstacles,obstacleCollision)
-        this.physics.add.collider(platforms,obstacles);
+        this.physics.add.collider(ground,obstacles);
         
         
         obstacles.setOrigin(0,0)
@@ -3595,7 +3645,7 @@ class Badlands extends Phaser.Scene {
             nightBorne.body.setAllowGravity(1)
             this.physics.add.overlap(nightBorne, player, startNightBorneBattle);
             
-            this.physics.add.collider(platforms,nightBorne);
+            this.physics.add.collider(ground,nightBorne);
 
             nightBorneSword = this.add.rectangle(nightBorne.x, nightBorne.y, 350, 300);
             this.physics.add.existing(nightBorneSword, false)
@@ -3615,7 +3665,7 @@ class Badlands extends Phaser.Scene {
             creep = this.physics.add.sprite(0, 0, 'doomsayer').setScale(creepScale).setPipeline('Light2D')
             creep.setCollideWorldBounds(true)
             creep.body.setAllowGravity(1)
-            this.physics.add.collider(platforms,creep);
+            this.physics.add.collider(ground,creep);
             this.physics.add.overlap(creep, player, playerHit);
 
             enemies = this.physics.add.group({
@@ -3759,7 +3809,7 @@ class Badlands extends Phaser.Scene {
         //thunderStrikeVFX.body.setAllowGravity(false)
         thunderStrikeVFX.body.checkCollision.none = true
         this.physics.add.overlap(thunderStrikeVFX,enemies,enemyHit,null,this)
-        this.physics.add.collider(platforms,thunderStrikeVFX);
+        this.physics.add.collider(ground,thunderStrikeVFX);
         thunderStrikeVFX.setCollideWorldBounds(true)
         thunderStrikeVFX.setDepth(2).setScale(3.5 * (scaleModX),15 * (scaleModX)).setOrigin(0.5,1)
         thunderStrikeLighting = this.lights.addLight(0, 0, 0).setIntensity(5)
@@ -4873,6 +4923,7 @@ class Badlands extends Phaser.Scene {
 
                     moveHighObstacle(highObstacle, 12 * (playerSpeed))
                     moveLowObstacle(lowObstacle, 12 * (playerSpeed))
+                    platformsTEMP(this)
 
                     if(creep.anims.getName() == 'nightBorneMinion_Move'){
                        moveCreep(creep, 18 * (playerSpeed))
