@@ -2569,7 +2569,9 @@ hide ()
 
     function obstacleCollision(){
         if(!skillTreeOpen){
+        if(player.body.checkCollision.right){
         playerIsHit = true
+        }
         camera.shake(500, 0.0025);
         if(player.flipX){
             player.flipX = false
@@ -2618,6 +2620,7 @@ hide ()
                     playerVitals.decreaseLife((nightBorneMaxLife * 0.1) / 50)
                     
             } else if (!playerBlocking){
+                
                 playerIsHit = true
 
                 playerVitals.decreaseLife((nightBorneMaxLife * 0.25) / 50)
@@ -2644,7 +2647,9 @@ hide ()
 
 
         } else if (controlsEnabled) {
+            if(player.body.checkCollision.right){
             playerIsHit = true
+            }
             
 
                     
