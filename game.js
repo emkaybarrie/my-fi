@@ -22,7 +22,7 @@ var config = {
     physics:{
         default:'arcade',
         arcade:{
-            gravity:{x: 0, y:3000 * globalGravityMod},
+            gravity:{x: 0, y:3500 * globalGravityMod},
             debug: 0,
             overlapBias: 20
         }
@@ -44,6 +44,8 @@ var config = {
         // Main Menu Screen - access Prologue, Play (Immersive/Free Play), The Crucible (TBD - boss rush mode or multiplayer spin), The Simulacrum (TBD - Training Area / KNowledge Centre possible rename if latter)
         // If Immersive option chosen - go to Login.  If Free Play, straight to Select Avatar screen
         MainMenu, 
+            // Mode select screen - route to Story and Explore mode user journeys
+            ModeSelect,
             // Login screen for credential entry & player data retreival and display
             Login,
             // Screen to select Avatar for Badlands session, shows avatar base stats, info and preview

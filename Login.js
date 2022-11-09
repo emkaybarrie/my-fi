@@ -171,7 +171,7 @@ class Login extends Phaser.Scene {
         } else if ((a1IsDown || s1IsDown) && this.selectedField == 4) {
             a1IsDown = false
             s1IsDown = false
-            this.scene.start('MainMenu')
+            this.scene.start('ModeSelect')
         }
 
         if(this.selectedField == 1){

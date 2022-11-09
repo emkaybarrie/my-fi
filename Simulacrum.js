@@ -89,11 +89,13 @@ class Simulacrum extends Phaser.Scene {
         this.physics.add.collider(player,ground);
 
         // Platform Code - to migrate
-        this.platform = this.physics.add.image(screenWidth, screenHeight * 0.75 ,'ground').setScale(1,1.5).setImmovable(true)
-        this.platform2 = this.physics.add.image(screenWidth * 1.25, screenHeight * 0.75 ,'ground').setScale(0.5,1.5).setImmovable(true)
+        this.platform = this.physics.add.image(screenWidth, screenHeight * 0.75 ,'ground').setScale(1.5,1.5).setImmovable(true)
+        this.platform2 = this.physics.add.image(screenWidth * 1.25, screenHeight * 0.75 ,'ground').setScale(1,1.5).setImmovable(true)
+        this.platform3 = this.physics.add.image(screenWidth * 1.25, screenHeight * 0.75 ,'ground').setScale(1.25,1.5).setImmovable(true)
         this.platform.body.setAllowGravity(false)
         this.platform2.body.setAllowGravity(false)
-        this.physics.add.collider(player,[this.platform,this.platform2], function (player,platform){
+        this.platform3.body.setAllowGravity(false)
+        this.physics.add.collider(player,[this.platform,this.platform2,this.platform3], function (player,platform){
             player.setVelocityX(0)
             if(player.body.touching.down && platform.body.touching.up){
                 player.x += (screenWidth * 0.2) * (Math.abs((player.x - (screenWidth * 0.125))) / screenWidth * 0.25)
@@ -176,7 +178,7 @@ class Simulacrum extends Phaser.Scene {
             } else {
 
                 regenActive = false 
-                this.baseCost = 1
+                this.baseCost = 0.25
 
                 if(this.skillPower > 0){
 
@@ -329,6 +331,7 @@ class Simulacrum extends Phaser.Scene {
         // Platforms
         this.platform.setVelocityX(-(screenWidth * 0.5) * this.playerSpeed)
         this.platform2.setVelocityX(-(screenWidth * 0.5) * this.playerSpeed)
+        this.platform3.setVelocityX(-(screenWidth * 0.5) * this.playerSpeed)
 
         if(this.platform.x < 0){
             this.platform.x = Phaser.Math.FloatBetween(screenWidth * 1.25, screenWidth * 1.35)
@@ -340,6 +343,12 @@ class Simulacrum extends Phaser.Scene {
             this.platform2.x = Phaser.Math.FloatBetween(screenWidth * 1.25, screenWidth * 1.5)
             this.platform2.body.velocity.x = 0
             this.platform2.y = Phaser.Math.FloatBetween(screenHeight * 0.65, screenHeight * 0.35)
+        }
+
+        if(this.platform3.x < 0){
+            this.platform3.x = Phaser.Math.FloatBetween(screenWidth * 1.5, screenWidth * 1.75)
+            this.platform3.body.velocity.x = 0
+            this.platform3.y = Phaser.Math.FloatBetween(screenHeight * 0.6, screenHeight * 0.15)
         }
 
         for (var i = 1; i < 4 + 1 ; i++){

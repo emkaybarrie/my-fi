@@ -139,8 +139,16 @@ class InputModule extends Phaser.Scene {
     activateGamepad(){
         this.input.gamepad.on('connected', function (pad) {
                     gamePad = pad
+                    gamePadEnabled = true
+                    console.log('Gamepad Active')
+                    
         },this)
     }
+
+    mapGamepad(){
+       
+    }
+    
 
 
     // activateTouch(){
@@ -152,9 +160,15 @@ class InputModule extends Phaser.Scene {
 
         this.activateKeyboard()
         this.mapKeyboard()
+        this.activateGamepad()
+        
+        
+        
         console.log('Input Module Online')
      
     }
+
+    
     
  
     

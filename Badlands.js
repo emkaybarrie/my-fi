@@ -171,7 +171,7 @@
     var playerIsHit = false
     var level = 0
     var progress = 0
-    var progressToNextLevel = Phaser.Math.Between(175,225) / 3
+    var progressToNextLevel = Phaser.Math.Between(375,425)
 
     var progressToNextCheckPoint = progressToNextLevel * 0.25
     
@@ -182,6 +182,7 @@
     var focusModeActive = false
     var scanningForDanger = true
     var playerSpeed = 1
+    var playerJumpReady = true
 
         //NightBorne
         var startNecroFloat = true
@@ -318,7 +319,7 @@
      playerIsHit = false
      level = 0
      progress = 0
-     progressToNextLevel = Phaser.Math.Between(175,225)
+     progressToNextLevel = Phaser.Math.Between(375,425)
 
      progressToNextCheckPoint = progressToNextLevel * 0.25
     
@@ -440,8 +441,8 @@
                     player.flipX = false
                 }
                 
-                player.x -=  (screenWidth * 0.01) * ((player.x - (screenWidth * 1.25)) / screenWidth * 1.25)
-                player.setDragY(1250) * ((screenHeight - player.y) / (screenHeight * 0.75) )
+                player.x -=  (screenWidth * 0.0025) * ((player.x - (screenWidth * 1.25)) / screenWidth * 1.25)
+                player.setDragY(500) * (((screenHeight * 0.75) - player.y) / (screenHeight * 0.75) )
 
                 
                 // Animations, Sprite/Hitbox Size & Collision Detection
@@ -481,6 +482,8 @@
                         } else {
                             player.body.setSize(10, 30).setOffset(25,15).setAllowDrag(true)
                             player.play({key:'player_Avatar_3_RUN',frameRate: 6 + (6 * playerSpeed)},true)
+                            
+                            
                         }
                     }
                 
@@ -497,26 +500,26 @@
                         if(this.skillPower > 0){
 
                             if (s1IsDown){
-                                playerVitals.decreaseFocus(this.baseCost * 2)
+                                playerVitals.decreaseFocus(this.baseCost * 8)
                             }
                         }
                         
                         if(this.actionPower > 0){
                             if (a1IsDown){
-                                playerVitals.decreaseEnergy(this.baseCost * 1)
+                                playerVitals.decreaseEnergy(this.baseCost * 4)
                                 
                             }
 
                             if(upIsDown){
-                                playerVitals.decreaseEnergy(this.baseCost * 1)
+                                playerVitals.decreaseEnergy(this.baseCost * 3)
                             }
                             
                             if(downIsDown){
-                                playerVitals.decreaseEnergy(this.baseCost * 1)
+                                playerVitals.decreaseEnergy(this.baseCost * 2)
                             }
                             
                             if(leftIsDown){
-                                playerVitals.decreaseEnergy(this.baseCost * 1)
+                                playerVitals.decreaseEnergy(this.baseCost * -0.5)
                             }
 
                             if(rightIsDown){
@@ -537,11 +540,11 @@
 
                     // On Ground
                         if (player.body.onFloor()){
-                            player.x += (screenWidth * 0.02) * this.skillPower
+                            player.x += (screenWidth * 0.005) * this.skillPower
                         } 
                     // In Air
                         else  {
-                            player.x += (screenWidth * 0.01) * this.skillPower
+                            player.x += (screenWidth * 0.0025) * this.skillPower
                         }
 
                 } 
@@ -579,13 +582,21 @@
                             player.x += (screenWidth * 0.00125)  * this.actionPower
                         }
 
+                        playerLanded = false
+                        playerJumping = true
+
                     // On Ground
                         if (player.body.onFloor()){
-                            player.y -= (screenHeight * 0.08) * this.actionPower 
+                            
+                            //player.y -= (screenHeight * 0.08) * this.actionPower 
+                            player.setVelocityY(-750 - (750 * this.actionPower))
+                            
                         } 
                     // In Air
-                        else  {
-                        player.y -= (screenHeight * 0.02) * this.actionPower
+                        else {
+                        //player.y -= (screenHeight * 0.02) * this.actionPower
+                        player.setVelocityY(player.body.velocity.y -= 25 * this.actionPower)
+                        
                         }
 
                 } 
@@ -610,11 +621,11 @@
 
                     // On Ground
                         if (player.body.onFloor()){
-                            player.x -= (screenWidth * 0.005) * this.actionPower
+                            player.x -= screenWidth * 0.005 + (screenWidth * 0.0025 * this.actionPower)
                         } 
                     // In Air
                         else {
-                            player.x -= (screenWidth * 0.0025) * this.actionPower
+                            player.x -= screenWidth * 0.00275 + (screenWidth * 0.00175 * this.actionPower)
                         }
                 } 
                 // Right - Sprint
@@ -623,11 +634,11 @@
 
                     // On Ground
                         if (player.body.onFloor()){
-                            player.x += (screenWidth * 0.0075) * this.actionPower
+                            player.x += screenWidth * 0.0015 + (screenWidth * 0.0035 * this.actionPower)
                         } 
                     // In Air
                         else {
-                            player.x += (screenWidth * 0.00375) * this.actionPower
+                            player.x += screenWidth * 0.0015 + (screenWidth * 0.0015 * this.actionPower)
                         }
                 }
             } else {
@@ -2608,7 +2619,7 @@ hide ()
 
     function playerHitAnimation(){
         
-        player.play('player_Avatar_3_TAKE_HIT',true)
+        player.play({key:'player_Avatar_3_TAKE_HIT',frameRate: 12},true)
         player.once('animationcomplete',function(){
             playerIsHit = false
             
@@ -2845,18 +2856,18 @@ hide ()
         if(currentEnergy < 0){
             currentEnergy = 0
         }  else {
-            playerVitals.decreaseLife(-lifeRegen / 200) 
-        playerVitals.decreaseEnergy(-energyRegen / 200)
-        playerVitals.decreaseFocus(-focusRegen / 200) 
+            playerVitals.decreaseLife(-lifeRegen / 400) 
+        playerVitals.decreaseEnergy(-energyRegen / 400)
+        playerVitals.decreaseFocus(-focusRegen / 400) 
         }  
 
         } else {
             if(currentEnergy < 0){
                 currentEnergy = 0
             }  else {
-                playerVitals.decreaseLife(-lifeRegen / 400) 
-            playerVitals.decreaseEnergy(-energyRegen / 400)
-            playerVitals.decreaseFocus(-focusRegen / 400) 
+                playerVitals.decreaseLife(-lifeRegen / 800) 
+            playerVitals.decreaseEnergy(-energyRegen / 800)
+            playerVitals.decreaseFocus(-focusRegen / 800) 
             }    
         }
         
@@ -3542,14 +3553,14 @@ class Badlands extends Phaser.Scene {
         this.physics.add.collider(player,ground);
 
         // // Platform Code - TEMP
-        this.platform = this.physics.add.image(screenWidth, screenHeight * 0.75 ,'ground').setScale(1,0.75).setImmovable(true)
-        this.platform2 = this.physics.add.image(screenWidth * 0.5, screenHeight * 0.75 ,'ground').setScale(0.5,0.5).setImmovable(true)
+        this.platform = this.physics.add.image(screenWidth, screenHeight * 0.75 ,'ground').setScale(1.75,1).setImmovable(true)
+        this.platform2 = this.physics.add.image(screenWidth * 0.5, screenHeight * 0.75 ,'ground').setScale(1.25,0.75).setImmovable(true)
         this.platform.body.setAllowGravity(false)
         this.platform2.body.setAllowGravity(false)
         this.physics.add.collider(player,[this.platform,this.platform2], function (player,platform){
             player.setVelocityX(0)
             if(player.body.touching.down && platform.body.touching.up){
-                player.x += (screenWidth * 0.04) * (Math.abs((player.x - (screenWidth * 1.25))) / screenWidth * 1.25)
+                player.x += (screenWidth * 0.0075) //* (Math.abs((player.x - (screenWidth * 1.25))) / screenWidth * 1.25)
                
             }
         });
@@ -4057,10 +4068,10 @@ class Badlands extends Phaser.Scene {
        
         // GamePad
 
-        this.input.gamepad.on('connected', function (pad) {
-            gamePad = pad
-            gamePadEnabled = true
-        },this)
+        // this.input.gamepad.on('connected', function (pad) {
+        //     gamePad = pad
+        //     gamePadEnabled = true
+        // },this)
 
         
 
@@ -4814,8 +4825,11 @@ class Badlands extends Phaser.Scene {
                 // Players crouch animation when player lands back on ground
                 if (!playerLanded){
                     if(playerJumping && player.body.deltaY() > 0 && player.body.onFloor()){
-                            player.play({key:'player_Avatar_3_CROUCH',frameRate:18},true);
-
+                        if (gameMode == 0){
+                            player.play({key:'player_Avatar_3_SLIDE',frameRate:24},true);
+                        }   else { 
+                        player.play({key:'player_Avatar_3_CROUCH',frameRate:24},true);
+                        }
                             player.once('animationcomplete', function () {
 
                             playerLanded = true

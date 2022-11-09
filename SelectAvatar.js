@@ -121,8 +121,8 @@ class SelectAvatar extends Phaser.Scene {
         this.activeMenuBox = this.add.tileSprite(this.menuOption3.x,this.menuOption3.y + (screenHeight * 0.0175),screenWidth * 0.1,screenHeight * 0.075,'menuSelectionTexture');
         this.activeMenuBox.setTexture('menuSelectionTexture').setAlpha(0.35).setOrigin(0.5,0.5)
 
-        this.activeMenuBoxSelection = this.add.tileSprite(this.menuOption6.x,this.menuOption6.y + (screenHeight * 0.0175),screenWidth * 0.1,screenHeight * 0.075,'menuSelectionTexture');
-        this.activeMenuBoxSelection.setTexture('menuSelectionTexture').setAlpha(0).setOrigin(0.5,0.5)
+        this.activeMenuBoxSelection = this.add.tileSprite(this.menuOption6.x - screenWidth * 0.075,this.menuOption6.y + (screenHeight * 0.025),screenWidth * 0.1,screenHeight * 0.075,'menuSelectionTexture');
+        this.activeMenuBoxSelection.setTexture('menuSelectionTexture').setAlpha(0).setOrigin(0,0.5)
         this.confirmSelection = 0
 
 
@@ -720,13 +720,15 @@ class SelectAvatar extends Phaser.Scene {
             
             this.runAnim = true
             if(this.confirmSelection < 1) {
-            this.confirmSelection += 0.015
+            this.confirmSelection += 0.03
             }
 
 
         } else if (a2IsDown || s2IsDown){
             activeUser = null
-            this.scene.start('MainMenu')
+            a2IsDown = false
+            s2IsDown = false
+            this.scene.start('ModeSelect')
         } else {
             this.runAnim = false
             if(this.confirmSelection > 0) {

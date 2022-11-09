@@ -4,6 +4,10 @@
     var firstRun = true
 
 // Input Variables
+
+    var gamePad
+    var gamePadEnabled = false
+
     var leftIsDown
     var rightIsDown
     var upIsDown
