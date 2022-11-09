@@ -202,7 +202,7 @@ class MainMenu extends Phaser.Scene {
         if(firstRun){
             var music = this.sound.add('mainTheme');
             music.play();
-            
+
             var tween = this.tweens.add({
                 delay: 500,
                 targets: menuPrompt,
@@ -299,8 +299,8 @@ class MainMenu extends Phaser.Scene {
             this.selectedMode = 'ModeSelect'
            
         } else if (this.selectedOption == 3){
-            this.selectedMode = 'SelectAvatar'
-            this.data = 'Simulacrum'
+            //this.selectedMode = 'SelectAvatar'
+            //this.data = 'Simulacrum'
             
         } 
 
