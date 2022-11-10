@@ -70,7 +70,7 @@ class ModeSelect extends Phaser.Scene {
         this.mode1Image = this.add.image(screenWidth * 0.5,screenHeight * 0.35,this.mode1ImageArray[this.mode1ImageChoice]).setOrigin(0.5,0.5).setAlpha(0)
         this.mode2Image = this.add.image(screenWidth * 0.75,screenHeight * 0.35,this.mode2ImageArray[this.mode2ImageChoice]).setOrigin(0.5,0.5).setAlpha(0)
 
-        this.activeModeBox = this.add.tileSprite(this.mode1Image.x,this.mode1Image.y,this.mode1Image.displayWidth * 0.25,this.mode1Image.displayHeight * 0.25,'menuSelectionTexture');
+        this.activeModeBox = this.add.tileSprite(this.mode0Image.x,this.mode0Image.y,this.mode0Image.displayWidth * 0.25,this.mode0Image.displayHeight * 0.25,'menuSelectionTexture');
         this.activeModeBox.setTexture('menuSelectionTexture').setAlpha(0)
 
         this.tweens.add({
@@ -109,7 +109,7 @@ class ModeSelect extends Phaser.Scene {
         this.proceedConfirmation.setTexture('menuSelectionTexture').setAlpha(0).setOrigin(0,0.5)
         this.confirmSelection = 0.1
        
-        this.selectedOption = 1
+        this.selectedOption = 0
         this.imageChangeTimer = 0
   
     }
