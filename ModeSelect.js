@@ -89,7 +89,7 @@ class ModeSelect extends Phaser.Scene {
         this.modeOption2.setFontSize(32 * scaleModX).setOrigin(0.5,0.5)
 
         this.mode0Description = this.add.text(this.modeOption0.x,this.modeOption0.y + screenHeight * 0.085, 'Welcome to the Badlands', { fontFamily: 'Gothic',align: 'center', fixedWidth:screenWidth * 0.25,fixedHeight:screenHeight * 0.15,wordWrap: { width: screenWidth * 0.2 }});
-        this.mode1Description = this.add.text(this.modeOption1.x,this.modeOption1.y + screenHeight * 0.085, 'Choose your avatar and defend Kianova from the unchecked power ravaging the Badlands', { fontFamily: 'Gothic',align: 'center', fixedWidth:screenWidth * 0.25,fixedHeight:screenHeight * 0.15,wordWrap: { width: screenWidth * 0.2 }});
+        this.mode1Description = this.add.text(this.modeOption1.x,this.modeOption1.y + screenHeight * 0.085, 'Empower your chosen Avatar and defend Kianova from the forces ravaging the Badlands', { fontFamily: 'Gothic',align: 'center', fixedWidth:screenWidth * 0.25,fixedHeight:screenHeight * 0.15,wordWrap: { width: screenWidth * 0.2 }});
         this.mode2Description = this.add.text(this.modeOption2.x,this.modeOption2.y + screenHeight * 0.085, 'Experience the Badlands and explore the city of Kianova through the eyes of one of its citizens', { fontFamily: 'Gothic',align: 'center', fixedWidth:screenWidth * 0.25,fixedHeight:screenHeight * 0.15,wordWrap: { width: screenWidth * 0.2 }});
        
         this.mode0Description.setFontSize(20 * scaleModX).setOrigin(0.5,0.5)
@@ -102,7 +102,7 @@ class ModeSelect extends Phaser.Scene {
         this.mode1Description2.setFontSize(20 * scaleModX).setOrigin(0.5,0.5)
         this.mode2Description2.setFontSize(20 * scaleModX).setOrigin(0.5,0.5)
 
-        this.proceedText = this.add.text(screenWidth * 0.5,screenHeight * 0.95, 'Proceed', { fontFamily: 'Gothic', fontStyle: 'italic' ,align: 'center', fixedWidth:screenWidth * 0.25,fixedHeight:screenHeight * 0.075});
+        this.proceedText = this.add.text(screenWidth * 0.5,screenHeight * 0.975, 'Proceed', { fontFamily: 'Gothic', fontStyle: 'italic' ,align: 'center', fixedWidth:screenWidth * 0.25,fixedHeight:screenHeight * 0.075});
         this.proceedText.setFontSize(30 * scaleModX).setOrigin(0.5,0.5)
         
         this.proceedConfirmation = this.add.tileSprite(this.proceedText.x - screenWidth * 0.035 ,this.proceedText.y - (screenHeight * 0.0175),screenWidth * 0.075,screenHeight * 0.05,'menuSelectionTexture');
