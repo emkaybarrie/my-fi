@@ -500,22 +500,22 @@
                         if(this.skillPower > 0){
 
                             if (s1IsDown){
-                                playerVitals.decreaseFocus(this.baseCost * 8)
+                                playerVitals.decreaseFocus(this.baseCost * 6)
                             }
                         }
                         
                         if(this.actionPower > 0){
                             if (a1IsDown){
-                                playerVitals.decreaseEnergy(this.baseCost * 4)
+                                playerVitals.decreaseEnergy(this.baseCost * 3)
                                 
                             }
 
                             if(upIsDown){
-                                playerVitals.decreaseEnergy(this.baseCost * 3)
+                                playerVitals.decreaseEnergy(this.baseCost * 2)
                             }
                             
                             if(downIsDown){
-                                playerVitals.decreaseEnergy(this.baseCost * 2)
+                                playerVitals.decreaseEnergy(this.baseCost * 1.5)
                             }
                             
                             if(leftIsDown){
