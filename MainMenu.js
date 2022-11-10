@@ -84,69 +84,23 @@ class MainMenu extends Phaser.Scene {
        
         // Preload Mode Select Menu Assets
             
+        var prologueImages = 5
+        var storyImages = 48
+        var exploreImages = 15
 
-        this.load.image('mode1A', 'assets/icons/menus/mode1A.png')
-        this.load.image('mode1B', 'assets/icons/menus/mode1B.png')
-        this.load.image('mode1C', 'assets/icons/menus/mode1C.png')
-        this.load.image('mode1D', 'assets/icons/menus/mode1D.png')
-        this.load.image('mode1E', 'assets/icons/menus/mode1E.png')
-        this.load.image('mode1F', 'assets/icons/menus/mode1F.png')
-        this.load.image('mode1G', 'assets/icons/menus/mode1G.png')
-        this.load.image('mode1H', 'assets/icons/menus/mode1H.png')
-        this.load.image('mode1I', 'assets/icons/menus/mode1I.png')
-        this.load.image('mode1J', 'assets/icons/menus/mode1J.png')
-        this.load.image('mode1K', 'assets/icons/menus/mode1K.png')
-        this.load.image('mode1L', 'assets/icons/menus/mode1L.png')
-        this.load.image('mode1M', 'assets/icons/menus/mode1M.png')
-        this.load.image('mode1N', 'assets/icons/menus/mode1N.png')
-        this.load.image('mode1O', 'assets/icons/menus/mode1O.png')
-        this.load.image('mode1P', 'assets/icons/menus/mode1P.png')
-        this.load.image('mode1Q', 'assets/icons/menus/mode1Q.png')
-        this.load.image('mode1R', 'assets/icons/menus/mode1R.png')
-        this.load.image('mode1S', 'assets/icons/menus/mode1S.png')
-        this.load.image('mode1T', 'assets/icons/menus/mode1T.png')
-        this.load.image('mode1U', 'assets/icons/menus/mode1U.png')
-        this.load.image('mode1V', 'assets/icons/menus/mode1V.png')
-        this.load.image('mode1W', 'assets/icons/menus/mode1W.png')
-        this.load.image('mode1X', 'assets/icons/menus/mode1X.png')
-        this.load.image('mode1Y', 'assets/icons/menus/mode1Y.png')
-        this.load.image('mode1Z', 'assets/icons/menus/mode1Z.png')
-        this.load.image('mode1_27', 'assets/icons/menus/mode1_27.png')
-        this.load.image('mode1_28', 'assets/icons/menus/mode1_28.png')
-        this.load.image('mode1_29', 'assets/icons/menus/mode1_29.png')
-        this.load.image('mode1_30', 'assets/icons/menus/mode1_30.png')
-        this.load.image('mode1_31', 'assets/icons/menus/mode1_31.png')
-        this.load.image('mode1_32', 'assets/icons/menus/mode1_32.png')
-        this.load.image('mode1_33', 'assets/icons/menus/mode1_33.png')
-        this.load.image('mode1_34', 'assets/icons/menus/mode1_34.png')
-        this.load.image('mode1_35', 'assets/icons/menus/mode1_35.png')
-        this.load.image('mode1_36', 'assets/icons/menus/mode1_36.png')
-        this.load.image('mode1_37', 'assets/icons/menus/mode1_37.png')
-        this.load.image('mode1_38', 'assets/icons/menus/mode1_38.png')
-        this.load.image('mode1_39', 'assets/icons/menus/mode1_39.png')
-        this.load.image('mode1_40', 'assets/icons/menus/mode1_40.png')
-        this.load.image('mode1_41', 'assets/icons/menus/mode1_41.png')
-        this.load.image('mode1_42', 'assets/icons/menus/mode1_42.png')
-        this.load.image('mode1_43', 'assets/icons/menus/mode1_43.png')
-        this.load.image('mode1_44', 'assets/icons/menus/mode1_44.png')
-        this.load.image('mode1_45', 'assets/icons/menus/mode1_45.png')
-        this.load.image('mode1_46', 'assets/icons/menus/mode1_46.png')
-        this.load.image('mode1_47', 'assets/icons/menus/mode1_47.png')
-        this.load.image('mode1_48', 'assets/icons/menus/mode1_48.png')
-        this.load.image('mode1_49', 'assets/icons/menus/mode1_49.png')
-        this.load.image('mode1_50', 'assets/icons/menus/mode1_50.png')
-        this.load.image('mode1_51', 'assets/icons/menus/mode1_51.png')
-        this.load.image('mode1_52', 'assets/icons/menus/mode1_52.png')
-        this.load.image('mode1_53', 'assets/icons/menus/mode1_53.png')
-        this.load.image('mode1_54', 'assets/icons/menus/mode1_54.png')
-        this.load.image('mode1_55', 'assets/icons/menus/mode1_55.png')
-        this.load.image('mode1_56', 'assets/icons/menus/mode1_56.png')
-        this.load.image('mode1_57', 'assets/icons/menus/mode1_57.png')
-        this.load.image('mode1_58', 'assets/icons/menus/mode1_58.png')
+        for (var i = 1; i < prologueImages + 1;i++){
+            this.load.image('prologue' + i, 'assets/icons/menus/prologue/' + i + '.png')
+        }
 
+        for (var i = 1; i < storyImages + 1;i++){
+            this.load.image('story' + i, 'assets/icons/menus/story/' + i + '.png')
+        }
 
-        this.load.image('mode2', 'assets/icons/menus/mode2.png')
-              
+        for (var i = 1; i < exploreImages + 1;i++){
+            this.load.image('explore' + i, 'assets/icons/menus/explore/' + i + '.png')
+        }
+
+       
     
     }
     
@@ -175,16 +129,13 @@ class MainMenu extends Phaser.Scene {
         menuPrompt.setAlpha(0).setFontSize(44 * scaleModX).setOrigin(0.5,0)
         this.gameTitle = this.add.image(screenWidth * 0.30,screenHeight * 0.2,'gameTitle').setScale(1.25 * scaleModX)
 
-        this.menuOption1 = this.add.text(this.gameTitle.x, screenHeight * 0.65, 'Prologue', { fontFamily: 'Gothic',align: 'center', fixedWidth:screenWidth * 0.25,fixedHeight:screenHeight * 0.075});
-        this.menuOption2 = this.add.text(this.menuOption1.x,this.menuOption1.y + (screenHeight * 0.07) , 'Start', { fontFamily: 'Gothic',align: 'center', fixedWidth:screenWidth * 0.25,fixedHeight:screenHeight * 0.075});
-        this.menuOption3 = this.add.text(this.menuOption2.x,this.menuOption2.y + (screenHeight * 0.07) , 'The Simulacrum', { fontFamily: 'Gothic',align: 'center', fixedWidth:screenWidth * 0.25,fixedHeight:screenHeight * 0.075});
+        this.menuOption1 = this.add.text(this.gameTitle.x, screenHeight * 0.65 , 'Start', { fontFamily: 'Gothic',align: 'center', fixedWidth:screenWidth * 0.25,fixedHeight:screenHeight * 0.075});
+        this.menuOption2 = this.add.text(this.gameTitle.x,this.menuOption1.y + (screenHeight * 0.07) , 'Settings', { fontFamily: 'Gothic',align: 'center', fixedWidth:screenWidth * 0.25,fixedHeight:screenHeight * 0.075});
         
+        this.menuOption1.setFontSize(32 * scaleModX).setOrigin(0.5,0)
+        this.menuOption2.setFontSize(32 * scaleModX).setOrigin(0.5,0).setAlpha(0.35)
 
-        this.menuOption1.setFontSize(32 * scaleModX).setOrigin(0.5,0).setAlpha(0.35)
-        this.menuOption2.setFontSize(32 * scaleModX).setOrigin(0.5,0)//.setAlpha(0.35)
-        this.menuOption3.setFontSize(32 * scaleModX).setOrigin(0.5,0).setAlpha(0.35)
-
-        var menuTextGroup = this.add.group([this.menuOption1,this.menuOption2,this.menuOption3])
+        var menuTextGroup = this.add.group([this.menuOption1,this.menuOption2])
 
         menuTextGroup.setVisible(0)
 
@@ -245,7 +196,7 @@ class MainMenu extends Phaser.Scene {
         });
 
         if (!firstRun){
-        if(downIsDown && this.selectedOption < 3){
+        if(downIsDown && this.selectedOption < 2){
             downIsDown = false
             this.selectedOption += 1
             activeMenuBox.y += (screenHeight * 0.07)
@@ -261,12 +212,7 @@ class MainMenu extends Phaser.Scene {
        
                 
         } else if (a1IsDown  || s1IsDown){
-            // a1IsDown = false
-            // s1IsDown = false
            
-            // if (this.selectedMode != undefined){
-            //     nextScene = true
-            // }
 
             if(this.confirmSelection < 1) {
                 this.confirmSelection += 0.03
@@ -293,18 +239,11 @@ class MainMenu extends Phaser.Scene {
       console.log(this.selectedMode)
       
         if (this.selectedOption == 1){
-            //this.selectedMode = 'Prologue'
-        } else if (this.selectedOption == 2){
-            
             this.selectedMode = 'ModeSelect'
+        } else if (this.selectedOption == 2){
+            this.selectedMode = undefined
            
-        } else if (this.selectedOption == 3){
-            //this.selectedMode = 'SelectAvatar'
-            //this.data = 'Simulacrum'
-            
         } 
-
-        
 
         if (nextScene){
             nextScene = false

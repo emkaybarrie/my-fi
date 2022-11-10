@@ -10,14 +10,8 @@ class SelectAvatar extends Phaser.Scene {
 
         this.redirect
 
-        this.activeMenuBox
+      
         this.menuTextGroup
-        this.menuOption1
-        this.menuOption2
-        this.menuOption3
-        this.menuOption4
-        this.menuOption5
-        
 
         this.patronIconLight
 
@@ -73,6 +67,7 @@ class SelectAvatar extends Phaser.Scene {
 
     create(data){
 
+        prololgueCompleted = true
         this.redirect = data.redirect
 
         camera = this.cameras.main
@@ -81,7 +76,7 @@ class SelectAvatar extends Phaser.Scene {
         this.freePlayBGScaleY = 0.705 * (scaleModY) 
         this.freePlayBG = this.add.image(0,0,'freePlayBG').setScale(this.freePlayBGScaleX,this.freePlayBGScaleY).setOrigin(0,0).setAlpha(0.65)
 
-        this.activeUserNameText = this.add.text(screenWidth * 0.5, screenHeight * 0.1, '', { fontFamily: 'Gothic', fontStyle: 'bold' ,align: 'center', fixedWidth:screenWidth * 0.25,fixedHeight:screenHeight * 0.075});
+        this.activeUserNameText = this.add.text(screenWidth * 0.1, screenHeight * 0.1, '', { fontFamily: 'Gothic', fontStyle: 'bold' ,align: 'center', fixedWidth:screenWidth * 0.25,fixedHeight:screenHeight * 0.075});
         this.activeUserNameText.setFontSize(54 * scaleModX).setOrigin(0.5,0)
         if(activeUser != null || undefined || ''){
             this.activeUserNameText.setText(activeUser.USERNAME)
@@ -89,45 +84,20 @@ class SelectAvatar extends Phaser.Scene {
             this.activeUserNameText.setText(freePlayUser.USERNAME)
         }
 
-        this.patronTitle = this.add.text(screenWidth * 0.25, screenHeight * 0.2, 'Patron', { fontFamily: 'Gothic', fontStyle: 'italic' ,align: 'center', fixedWidth:screenWidth * 0.25,fixedHeight:screenHeight * 0.075});
-        this.avatarTitle = this.add.text(screenWidth * 0.75, screenHeight * 0.2, 'Choose your Avatar', { fontFamily: 'Gothic', fontStyle: 'italic' ,align: 'center', fixedWidth:screenWidth * 0.25,fixedHeight:screenHeight * 0.075});
+        this.avatarTitle = this.add.text(screenWidth * 0.5, screenHeight * 0.2, 'Choose your Avatar', { fontFamily: 'Gothic', fontStyle: 'italic' ,align: 'center', fixedWidth:screenWidth * 0.25,fixedHeight:screenHeight * 0.075});
 
-        this.patronTitle.setFontSize(42 * scaleModX).setOrigin(0.5,0)
         this.avatarTitle.setFontSize(42 * scaleModX).setOrigin(0.5,0)
 
-        this.menuOption1 = this.add.text(screenWidth * 0.1, screenHeight * 0.35, 'Amara', { fontFamily: 'Gothic', fontStyle: 'italic' ,align: 'center', fixedWidth:screenWidth * 0.25,fixedHeight:screenHeight * 0.075});
-        this.menuOption2 = this.add.text(this.menuOption1.x,this.menuOption1.y + (screenHeight * 0.08) , 'Mundo', { fontFamily: 'Gothic', fontStyle: 'italic' ,align: 'center', fixedWidth:screenWidth * 0.25,fixedHeight:screenHeight * 0.075});
-        this.menuOption3 = this.add.text(this.menuOption2.x,this.menuOption2.y + (screenHeight * 0.08) , 'Omnia', { fontFamily: 'Gothic', fontStyle: 'bold' ,align: 'center', fixedWidth:screenWidth * 0.25,fixedHeight:screenHeight * 0.075});
-        this.menuOption4 = this.add.text(this.menuOption3.x,this.menuOption3.y + (screenHeight * 0.08) , 'Lucarus', { fontFamily: 'Gothic', fontStyle: 'italic' ,align: 'center', fixedWidth:screenWidth * 0.25,fixedHeight:screenHeight * 0.075});
-        this.menuOption5 = this.add.text(this.menuOption4.x,this.menuOption4.y + (screenHeight * 0.08) , 'Illuvik', { fontFamily: 'Gothic', fontStyle: 'italic' ,align: 'center', fixedWidth:screenWidth * 0.25,fixedHeight:screenHeight * 0.075});
-        
-        this.menuOption1.setFontSize(32 * scaleModX).setOrigin(0.5,0).setAlpha(0.25)
-        this.menuOption2.setFontSize(32 * scaleModX).setOrigin(0.5,0).setAlpha(0.25)
-        this.menuOption3.setFontSize(32 * scaleModX).setOrigin(0.5,0).setAlpha(1)
-        this.menuOption4.setFontSize(32 * scaleModX).setOrigin(0.5,0).setAlpha(0.25)
-        this.menuOption5.setFontSize(32 * scaleModX).setOrigin(0.5,0).setAlpha(0.25)
 
-        this.menuOption6 = this.add.text(screenWidth * 0.5,this.menuOption5.y + (screenHeight * 0.15) , 'Enter Kianova', { fontFamily: 'Gothic', fontStyle: 'italic' ,align: 'center', fixedWidth:screenWidth * 0.25,fixedHeight:screenHeight * 0.075});
+        this.menuOption6 = this.add.text(screenWidth * 0.5,screenHeight * 0.9 , 'Enter Kianova', { fontFamily: 'Gothic', fontStyle: 'italic' ,align: 'center', fixedWidth:screenWidth * 0.25,fixedHeight:screenHeight * 0.075});
         this.menuOption6.setFontSize(42 * scaleModX).setOrigin(0.5,0).setAlpha(0.75)
 
-        this.menuTextGroup = this.add.group([this.menuOption1,this.menuOption2,this.menuOption3,this.menuOption4,this.menuOption5,this.menuOption6])
+        this.menuTextGroup = this.add.group(this.menuOption6)
 
-        this.menuIcon1 = this.add.image(this.menuOption1.x + (screenWidth * 0.075),this.menuOption1.y + (screenHeight * 0.0175), 'r1Icon').setScale(0.25 * (scaleModX)).setPipeline('Light2D')//.setInteractive() 
-        this.menuIcon2 = this.add.image(this.menuOption1.x + (screenWidth * 0.075),this.menuOption2.y + (screenHeight * 0.0175), 'r2Icon').setScale(0.25 * (scaleModX)).setPipeline('Light2D')//.setInteractive()
-        this.menuIcon3 = this.add.image(this.menuOption1.x + (screenWidth * 0.075),this.menuOption3.y + (screenHeight * 0.0175), 'r3Icon').setScale(0.25 * (scaleModX)).setPipeline('Light2D')//.setInteractive()
-        this.menuIcon4 = this.add.image(this.menuOption1.x + (screenWidth * 0.075),this.menuOption4.y + (screenHeight * 0.0175), 'r4Icon').setScale(0.25 * (scaleModX)).setPipeline('Light2D')//.setInteractive()
-        this.menuIcon5 = this.add.image(this.menuOption1.x + (screenWidth * 0.075),this.menuOption5.y + (screenHeight * 0.0175), 'r5Icon').setScale(0.25 * (scaleModX)).setPipeline('Light2D')
-
-        this.activeMenuBox = this.add.tileSprite(this.menuOption3.x,this.menuOption3.y + (screenHeight * 0.0175),screenWidth * 0.1,screenHeight * 0.075,'menuSelectionTexture');
-        this.activeMenuBox.setTexture('menuSelectionTexture').setAlpha(0.35).setOrigin(0.5,0.5)
 
         this.activeMenuBoxSelection = this.add.tileSprite(this.menuOption6.x - screenWidth * 0.075,this.menuOption6.y + (screenHeight * 0.025),screenWidth * 0.1,screenHeight * 0.075,'menuSelectionTexture');
         this.activeMenuBoxSelection.setTexture('menuSelectionTexture').setAlpha(0).setOrigin(0,0.5)
         this.confirmSelection = 0
-
-
-        this.lights.enable();
-        this.patronIconLight = this.lights.addLight(this.menuIcon3.x, this.menuIcon3.y - this.menuIcon3.displayHeight * 0.25 , screenWidth * 0.035,0xFFFFFF, 1.25);
 
 
         this.anims.create({
@@ -138,106 +108,11 @@ class SelectAvatar extends Phaser.Scene {
             yoyo: 0
         });
 
-        this.patronRatingScale = 2
-  
 
-        // Patron 1
-        this.patron1Stat1Rating = patron1Rating_Influence
-        this.patron1Stat2Rating = patron1Rating_Prosperity
-        this.patron1Rating = Phaser.Math.Average([this.patron1Stat1Rating,this.patron1Stat2Rating])
-  
-        
-        this.patron1RatingIcons = this.add.group()
-        this.patron1RatingIcons.createMultiple({key:'star',frameQuantity: 5, setScale: {x: this.patronRatingScale * (scaleModX), y: this.patronRatingScale * (scaleModX)}})
-        this.patron1RatingIcons.setX(this.menuIcon1.x + this.menuIcon1.displayWidth * 1.75   , this.patron1RatingIcons.getChildren()[0].displayWidth * 0.75)
-        this.patron1RatingIcons.setY(this.menuIcon1.y - this.menuIcon1.displayHeight * 0.05)
+        this.leftSelectionArrow = this.add.image(screenWidth * 0.2,screenHeight * 0.5 ,'leftSelectionArrow').setScale(1,1).setAlpha(0.5)
+        this.rightSelectionArrow = this.add.image(screenWidth - this.leftSelectionArrow.x,this.leftSelectionArrow.y,'rightSelectionArrow').setScale(1,1).setAlpha(0.5)
 
-        for (var i = 0; i < Math.round(this.patron1Rating); i++){
-            this.patron1RatingIcons.getChildren()[i].setTint().play('star',true)
-        }
-
-        for (var i = Math.round(this.patron1Rating); i < 5; i++){
-            this.patron1RatingIcons.getChildren()[i].setTint(0x000000).stop() 
-        }
-
-        // Patron 2
-        this.patron2Stat1Rating = patron2Rating_Influence
-        this.patron2Stat2Rating = patron2Rating_Prosperity
-        this.patron2Rating = Phaser.Math.Average([this.patron2Stat1Rating,this.patron2Stat2Rating])
-       
-        this.patron2RatingIcons = this.add.group()
-        this.patron2RatingIcons.createMultiple({key:'star',frameQuantity: 5, setScale: {x: this.patronRatingScale * (scaleModX), y: this.patronRatingScale * (scaleModX)}})
-        this.patron2RatingIcons.setX(this.menuIcon2.x + this.menuIcon2.displayWidth * 1.75   , this.patron1RatingIcons.getChildren()[0].displayWidth * 0.75)
-        this.patron2RatingIcons.setY(this.menuIcon2.y - this.menuIcon2.displayHeight * 0.05)
-
-        for (var i = 0; i < Math.round(this.patron2Rating); i++){
-            this.patron2RatingIcons.getChildren()[i].setTint().play('star',true)
-        }
-
-        for (var i = Math.round(this.patron2Rating); i < 5; i++){
-            this.patron2RatingIcons.getChildren()[i].setTint(0x000000).stop() 
-        }
-
-        // Patron 3
-        this.patron3Stat1Rating = patron3Rating_Influence
-        console.log(patron3Rating_Influence, this.patron3Stat1Rating)
-        this.patron3Stat2Rating = patron3Rating_Prosperity
-        this.patron3Rating = Phaser.Math.Average([this.patron3Stat1Rating,this.patron3Stat2Rating])
-
-        this.patron3RatingIcons = this.add.group()
-        this.patron3RatingIcons.createMultiple({key:'star',frameQuantity: 5, setScale: {x: this.patronRatingScale * (scaleModX), y: this.patronRatingScale * (scaleModX)}})
-        this.patron3RatingIcons.setX(this.menuIcon3.x + this.menuIcon3.displayWidth * 1.75 , this.patron3RatingIcons.getChildren()[0].displayWidth * 0.75)
-        this.patron3RatingIcons.setY(this.menuIcon3.y - this.menuIcon3.displayHeight * 0.05)
-
-        for (var i = 0; i < Math.round(this.patron3Rating); i++){
-            this.patron3RatingIcons.getChildren()[i].setTint().play('star',true)
-        }
-
-        for (var i = Math.round(this.patron3Rating); i < 5; i++){
-            this.patron3RatingIcons.getChildren()[i].setTint(0x000000).stop() 
-        }
-
-        // Patron 4
-        this.patron4Stat1Rating = patron4Rating_Influence
-        this.patron4Stat2Rating = patron4Rating_Prosperity
-        this.patron4Rating = Phaser.Math.Average([this.patron4Stat1Rating,this.patron4Stat2Rating])
-
-        this.patron4RatingIcons = this.add.group()
-        this.patron4RatingIcons.createMultiple({key:'star',frameQuantity: 5, setScale: {x: this.patronRatingScale * (scaleModX), y: this.patronRatingScale * (scaleModX)}})
-        this.patron4RatingIcons.setX(this.menuIcon4.x + this.menuIcon4.displayWidth * 1.75   , this.patron4RatingIcons.getChildren()[0].displayWidth * 0.75)
-        this.patron4RatingIcons.setY(this.menuIcon4.y - this.menuIcon4.displayHeight * 0.05)
-
-        for (var i = 0; i < Math.round(this.patron4Rating); i++){
-            this.patron4RatingIcons.getChildren()[i].setTint().play('star',true)
-        }
-
-        for (var i = Math.round(this.patron3Rating); i < 5; i++){
-            this.patron4RatingIcons.getChildren()[i].setTint(0x000000).stop() 
-        }
-
-        // Patron 5
-        this.patron5Stat1Rating = patron5Rating_Influence
-        this.patron5Stat2Rating = patron5Rating_Prosperity
-        this.patron5Rating = Phaser.Math.Average([this.patron5Stat1Rating,this.patron5Stat2Rating])
-
-        this.patron5RatingIcons = this.add.group()
-        this.patron5RatingIcons.createMultiple({key:'star',frameQuantity: 5, setScale: {x: this.patronRatingScale * (scaleModX), y: this.patronRatingScale * (scaleModX)}})
-        this.patron5RatingIcons.setX(this.menuIcon5.x + this.menuIcon5.displayWidth * 1.75   , this.patron5RatingIcons.getChildren()[0].displayWidth * 0.75)
-        this.patron5RatingIcons.setY(this.menuIcon5.y - this.menuIcon5.displayHeight * 0.05)
-
-        for (var i = 0; i < Math.round(this.patron5Rating); i++){
-            this.patron5RatingIcons.getChildren()[i].setTint().play('star',true)
-        }
-
-        for (var i = Math.round(this.patron5Rating); i < 5; i++){
-            this.patron5RatingIcons.getChildren()[i].setTint(0x000000).stop() 
-        }
-
-
-        this.leftSelectionArrow = this.add.image(this.menuIcon3.x + (screenWidth * 0.225),this.menuIcon3.y,'leftSelectionArrow').setScale(1,1).setAlpha(0.5)
-        this.rightSelectionArrow = this.add.image(this.leftSelectionArrow.x + (screenWidth * 0.575),this.leftSelectionArrow.y,'rightSelectionArrow').setScale(1,1).setAlpha(0.5)
-
-        this.avatarProfilePic = this.add.image(this.leftSelectionArrow.x + (screenWidth * 0.0725),this.menuIcon1.y - this.menuIcon1.displayHeight * 0.45,'ashaIcon').setScale(0.125 * scaleModX, 0.125 * scaleModY).setOrigin(0)
+        this.avatarProfilePic = this.add.image(this.leftSelectionArrow.x + (screenWidth * 0.0725),screenHeight * 0.35,'ashaIcon').setScale(0.125 * scaleModX, 0.125 * scaleModY).setOrigin(0)
         
         var statXPos = this.avatarProfilePic.x - this.avatarProfilePic.displayWidth * 0.15
 
@@ -307,15 +182,15 @@ class SelectAvatar extends Phaser.Scene {
 
 
         // Avatar
-        this.avatarName = this.add.text(this.avatarProfilePic.x + this.avatarProfilePic.displayWidth * 2 , this.avatarProfilePic.y + this.avatarProfilePic.displayHeight * 0.5, 'Asha', { fontFamily: 'Gothic', fontStyle: 'bold' ,align: 'center', fixedWidth:screenWidth * 0.1,fixedHeight:screenHeight * 0.075});
+        this.avatarName = this.add.text(screenWidth * 0.5 , this.avatarProfilePic.y + this.avatarProfilePic.displayHeight * 0.25, 'Asha', { fontFamily: 'Gothic', fontStyle: 'bold' ,align: 'center', fixedWidth:screenWidth * 0.1,fixedHeight:screenHeight * 0.075});
         this.avatarName.setFontSize(32 * scaleModX).setOrigin(0.5,0.5)
-        this.activeAvatarSprite = this.add.sprite(this.avatarName.x + this.avatarName.displayWidth * 0.15, this.menuOption4.y ,'defaultAvatar').setScale(5).setOrigin(0.5,0.5)//.setPipeline('Light2D');
+        this.activeAvatarSprite = this.add.sprite(this.avatarName.x + this.avatarName.displayWidth * 0.15, this.avatarName.y + screenHeight * 0.175 ,'defaultAvatar').setScale(5).setOrigin(0.5,0.5)
 
         this.activeAvatarSprite.play('defaultAvatarPreview',true)
 
         this.avatarDescription = this.make.text({
             x: this.avatarName.x + this.avatarName.displayWidth * 1.8 ,
-            y: this.menuIcon3.y,
+            y: screenHeight * 0.5,
             text: 'A fiery and talented warrior, with a penchant for adapting on the fly.',
             origin: { x: 0.5, y: 0.5 },
             style: {
@@ -585,40 +460,9 @@ class SelectAvatar extends Phaser.Scene {
     refreshUI(){
        
          // Highlight Selected Patron Group and dim non-selected groups
-         this.menuTextGroup.setAlpha(0.25)
-         if (this.selectedPatronArray == 1){
-             this.menuOption1.setAlpha(1)
-             this.patronIconLight.y = this.menuIcon1.y
-             this.activeMenuBox.y = this.menuOption1.y + this.menuOption1.displayHeight * 0.25 
-         } else if (this.selectedPatronArray == 2){
-             this.menuOption2.setAlpha(1)  
-             this.patronIconLight.y = this.menuIcon2.y  
-             this.activeMenuBox.y = this.menuOption2.y + this.menuOption2.displayHeight * 0.25    
-         } else if (this.selectedPatronArray == 3){
-             this.menuOption3.setAlpha(1)
-             this.patronIconLight.y = this.menuIcon3.y
-             this.activeMenuBox.y = this.menuOption3.y + this.menuOption3.displayHeight * 0.25 
-         } else if (this.selectedPatronArray == 4){
-             this.menuOption4.setAlpha(1)
-             this.patronIconLight.y = this.menuIcon4.y
-             this.activeMenuBox.y = this.menuOption4.y + this.menuOption4.displayHeight * 0.25 // (screenHeight * 0.08)
-         } else if (this.selectedPatronArray == 5){
-             this.menuOption5.setAlpha(1)
-             this.patronIconLight.y = this.menuIcon5.y
-             this.activeMenuBox.y = this.menuOption5.y + this.menuOption5.displayHeight * 0.25 
-         } 
+        
 
-         this.activeMenuBoxScaleX = 1
-
-         // Animate Selection Box
-         this.activeMenuBox.setAlpha(0).setScale(0,1)
-         this.tweens.add({
-             delay: 50,
-             targets: this.activeMenuBox,
-             alpha: { value: 0.35, duration: 50, ease: 'Power1' },
-             scaleX: { value: this.activeMenuBoxScaleX, duration: 250, ease: 'Power1' },
-   
-         });
+         
     }
     
    async update(){
@@ -647,8 +491,7 @@ class SelectAvatar extends Phaser.Scene {
 
     }, this);
   
-
-        this.activeMenuBox.tilePositionX += 2.5 * scaleModX     
+   
         this.activeMenuBoxSelection.tilePositionX += 2.5 * scaleModX
         this.tweens.add({
             //delay: 50,
@@ -659,30 +502,40 @@ class SelectAvatar extends Phaser.Scene {
         });
     
     // Move into functions - culminating in refreshUI post menu selection
-        if(downIsDown && this.selectedPatronArray < 5){
-            downIsDown = false
+        if(rightIsDown && this.selectedPatronArray < 5){
+            rightIsDown = false
             this.userActive = true
             // Update Selected Patron Group
                 this.selectedPatronArray += 1
                 
             // Stop Current Animation
                  this.activeAvatarSprite.stop()
+            // Animated Selection Arrow
+                this.rightSelectionArrow.setAlpha(1)
             // Feed updated Avatar Coordinates to Load Avatar Function
             this.selectedAvatar = await this.loadAvatar(this,this.selectedPatronArray,this.selectedPersonaArray)
                 
             // Refresh UI
+            setTimeout(()=>{
+                this.rightSelectionArrow.setAlpha(0.5)
+            },250)
                 this.refreshUI()
-        } else if (upIsDown && this.selectedPatronArray > 1){
-            upIsDown = false
+        } else if (leftIsDown && this.selectedPatronArray > 1){
+            leftIsDown = false
             this.userActive = true
             // Stop Current Animation
                 this.activeAvatarSprite.stop()
+            // Animated Selection Arrow
+                this.leftSelectionArrow.setAlpha(1)
             // Update Selected Patron Group
                 this.selectedPatronArray -= 1
                 
             // Feed updated Avatar Coordinates to Load Avatar Function
             this.selectedAvatar = await this.loadAvatar(this,this.selectedPatronArray,this.selectedPersonaArray)
             // Refresh UI
+                setTimeout(()=>{
+                    this.leftSelectionArrow.setAlpha(0.5)
+                },250)
                 this.refreshUI()
 
         } else if (rightIsDown && this.selectedPersonaArray < this.avatarToLoad[this.selectedPatronArray].length - 1){
