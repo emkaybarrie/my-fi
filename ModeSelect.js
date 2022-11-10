@@ -90,7 +90,7 @@ class ModeSelect extends Phaser.Scene {
 
         this.mode0Description = this.add.text(this.modeOption0.x,this.modeOption0.y + screenHeight * 0.085, 'Welcome to the Badlands', { fontFamily: 'Gothic',align: 'center', fixedWidth:screenWidth * 0.25,fixedHeight:screenHeight * 0.15,wordWrap: { width: screenWidth * 0.2 }});
         this.mode1Description = this.add.text(this.modeOption1.x,this.modeOption1.y + screenHeight * 0.085, 'Empower your chosen Avatar and defend Kianova from the forces ravaging the Badlands', { fontFamily: 'Gothic',align: 'center', fixedWidth:screenWidth * 0.25,fixedHeight:screenHeight * 0.15,wordWrap: { width: screenWidth * 0.2 }});
-        this.mode2Description = this.add.text(this.modeOption2.x,this.modeOption2.y + screenHeight * 0.085, 'Experience the Badlands and explore the city of Kianova through the eyes of one of its citizens', { fontFamily: 'Gothic',align: 'center', fixedWidth:screenWidth * 0.25,fixedHeight:screenHeight * 0.15,wordWrap: { width: screenWidth * 0.2 }});
+        this.mode2Description = this.add.text(this.modeOption2.x,this.modeOption2.y + screenHeight * 0.085, 'Experience the Badlands and explore the city of Kianova through the eyes of an Avatar', { fontFamily: 'Gothic',align: 'center', fixedWidth:screenWidth * 0.25,fixedHeight:screenHeight * 0.15,wordWrap: { width: screenWidth * 0.2 }});
        
         this.mode0Description.setFontSize(20 * scaleModX).setOrigin(0.5,0.5)
         this.mode1Description.setFontSize(20 * scaleModX).setOrigin(0.5,0.5)
