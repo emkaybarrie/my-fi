@@ -86,7 +86,7 @@ class MainMenu extends Phaser.Scene {
             
         var prologueImages = 1
         var storyImages = 41
-        var exploreImages = 19
+        var exploreImages = 14
 
         for (var i = 1; i < prologueImages + 1;i++){
             this.load.image('prologue' + i, 'assets/icons/menus/prologue/' + i + '.png')

@@ -52,15 +52,14 @@ class ModeSelect extends Phaser.Scene {
 
         this.mode2ImageArray = ['explore1','explore2','explore3','explore4','explore5', 
                             'explore6','explore7','explore8', 'explore9', 'explore10',
-                            'explore11','explore12','explore13','explore14','explore15',
-                            'explore16','explore17','explore18','explore16'
+                            'explore11','explore12','explore13','explore14'
                             ]
        
         this.mode0ImageChoice = Phaser.Math.Between(0,this.mode0ImageArray.length - 1)
         if(prololgueCompleted){
             this.mode1ImageChoice = Phaser.Math.Between(0,this.mode1ImageArray.length - 1)
         } else { 
-            this.mode1ImageChoice = Phaser.Math.Between(6,17)
+            this.mode1ImageChoice = Phaser.Math.Between(6,17)   
         }
         this.mode2ImageChoice = Phaser.Math.Between(0,this.mode2ImageArray.length - 1)
 
@@ -94,7 +93,7 @@ class ModeSelect extends Phaser.Scene {
         this.mode1Description.setFontSize(20 * scaleModX).setOrigin(0.5,0.5)
         this.mode2Description.setFontSize(20 * scaleModX).setOrigin(0.5,0.5)
 
-        this.mode1Description2 = this.add.text(this.mode1Description.x,this.mode1Description.y + screenHeight * 0.075, 'Requires a myFi account\nPersistent world affected by real-world actions\nRewards enabled', { fontFamily: 'Gothic', fontStyle: 'italic' ,align: 'center', fixedWidth:screenWidth * 0.25,fixedHeight:screenHeight * 0.15,wordWrap: { width: screenWidth * 0.2 }});
+        this.mode1Description2 = this.add.text(this.mode1Description.x,this.mode1Description.y + screenHeight * 0.075, 'Requires a myFi account\nPersistent world affected by real-world actions\nRewards enabled\nLeaderboards enabled', { fontFamily: 'Gothic', fontStyle: 'italic' ,align: 'center', fixedWidth:screenWidth * 0.25,fixedHeight:screenHeight * 0.15,wordWrap: { width: screenWidth * 0.2 }});
         this.mode2Description2 = this.add.text(this.mode2Description.x,this.mode2Description.y + screenHeight * 0.075, 'No signup required\nSaving disabled\nRewards disabled', { fontFamily: 'Gothic',fontStyle: 'italic' ,align: 'center', fixedWidth:screenWidth * 0.25,fixedHeight:screenHeight * 0.15,wordWrap: { width: screenWidth * 0.2 }});
        
         this.mode1Description2.setFontSize(20 * scaleModX).setOrigin(0.5,0.5)
@@ -286,6 +285,7 @@ class ModeSelect extends Phaser.Scene {
 
         if (nextScene){
             nextScene = false
+            prololgueCompleted = true
             this.scene.start(this.selectedMode,{redirect:this.data})
             this.selectedOption = 1
             this.selectedMode = undefined
