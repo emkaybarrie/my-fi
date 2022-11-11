@@ -84,9 +84,9 @@ class MainMenu extends Phaser.Scene {
        
         // Preload Mode Select Menu Assets
             
-        var prologueImages = 5
-        var storyImages = 48
-        var exploreImages = 15
+        var prologueImages = 1
+        var storyImages = 41
+        var exploreImages = 19
 
         for (var i = 1; i < prologueImages + 1;i++){
             this.load.image('prologue' + i, 'assets/icons/menus/prologue/' + i + '.png')
@@ -109,6 +109,7 @@ class MainMenu extends Phaser.Scene {
         
 
         camera = this.cameras.main
+        
         this.menuBGScaleX = 1.94 * (scaleModX) 
         this.menuBGScaleY = 1.1 * (scaleModY)
         var menuBG = this.add.image(0,0,'menuBG').setScale(this.menuBGScaleX,this.menuBGScaleY).setOrigin(0,0)

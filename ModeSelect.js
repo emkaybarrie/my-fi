@@ -40,8 +40,7 @@ class ModeSelect extends Phaser.Scene {
         });
 
         
-        this.mode0ImageArray = ['prologue1','prologue2','prologue3','prologue4',
-                            'prologue5']
+        this.mode0ImageArray = ['prologue1']
         this.mode1ImageArray = ['story1', 'story2','story3','story4', 'story5', 
                             'story6', 'story7', 'story8','story9','story10','story11',
                             'story12','story13','story14','story15','story16','story17',
@@ -49,22 +48,21 @@ class ModeSelect extends Phaser.Scene {
                             'story24','story25','story26','story27','story28','story29',
                             'story30','story31','story32','story33','story34','story35',
                             'story36','story37','story38','story39','story40','story41',
-                            'story42','story43','story44','story45','story46','story47','story48']
+                            ]
 
-        this.mode2ImageArray = ['explore1','explore2','explore3','explore4',
-                            'explore5', 'explore6','explore7',
-                            'explore8', 'explore9', 'explore10','explore11',
-                            'explore12','explore13','explore14','explore15']
+        this.mode2ImageArray = ['explore1','explore2','explore3','explore4','explore5', 
+                            'explore6','explore7','explore8', 'explore9', 'explore10',
+                            'explore11','explore12','explore13','explore14','explore15',
+                            'explore16','explore17','explore18','explore16'
+                            ]
        
-        if(prololgueCompleted){
         this.mode0ImageChoice = Phaser.Math.Between(0,this.mode0ImageArray.length - 1)
-        this.mode1ImageChoice = Phaser.Math.Between(0,this.mode1ImageArray.length - 1)
-        this.mode2ImageChoice = Phaser.Math.Between(0,this.mode2ImageArray.length - 1)
-        } else {
-            this.mode0ImageChoice = Phaser.Math.Between(0,2)
-            this.mode1ImageChoice = Phaser.Math.Between(6,18)
-            this.mode2ImageChoice = Phaser.Math.Between(8,14)
+        if(prololgueCompleted){
+            this.mode1ImageChoice = Phaser.Math.Between(0,this.mode1ImageArray.length - 1)
+        } else { 
+            this.mode1ImageChoice = Phaser.Math.Between(6,17)
         }
+        this.mode2ImageChoice = Phaser.Math.Between(0,this.mode2ImageArray.length - 1)
 
         this.mode0Image = this.add.image(screenWidth * 0.25,screenHeight * 0.35,this.mode0ImageArray[this.mode0ImageChoice]).setOrigin(0.5,0.5).setAlpha(0)
         this.mode1Image = this.add.image(screenWidth * 0.5,screenHeight * 0.35,this.mode1ImageArray[this.mode1ImageChoice]).setOrigin(0.5,0.5).setAlpha(0)
@@ -89,8 +87,8 @@ class ModeSelect extends Phaser.Scene {
         this.modeOption2.setFontSize(32 * scaleModX).setOrigin(0.5,0.5)
 
         this.mode0Description = this.add.text(this.modeOption0.x,this.modeOption0.y + screenHeight * 0.085, 'Welcome to the Badlands', { fontFamily: 'Gothic',align: 'center', fixedWidth:screenWidth * 0.25,fixedHeight:screenHeight * 0.15,wordWrap: { width: screenWidth * 0.2 }});
-        this.mode1Description = this.add.text(this.modeOption1.x,this.modeOption1.y + screenHeight * 0.085, 'Empower your chosen Avatar and defend Kianova from the forces ravaging the Badlands', { fontFamily: 'Gothic',align: 'center', fixedWidth:screenWidth * 0.25,fixedHeight:screenHeight * 0.15,wordWrap: { width: screenWidth * 0.2 }});
-        this.mode2Description = this.add.text(this.modeOption2.x,this.modeOption2.y + screenHeight * 0.085, 'Experience the Badlands and explore the city of Kianova through the eyes of an Avatar', { fontFamily: 'Gothic',align: 'center', fixedWidth:screenWidth * 0.25,fixedHeight:screenHeight * 0.15,wordWrap: { width: screenWidth * 0.2 }});
+        this.mode1Description = this.add.text(this.modeOption1.x,this.modeOption1.y + screenHeight * 0.085, 'Empower your Avatar and defend Kianova from the forces ravaging the Badlands', { fontFamily: 'Gothic',align: 'center', fixedWidth:screenWidth * 0.25,fixedHeight:screenHeight * 0.15,wordWrap: { width: screenWidth * 0.2 }});
+        this.mode2Description = this.add.text(this.modeOption2.x,this.modeOption2.y + screenHeight * 0.085, 'Experience the Badlands and explore the city of Kianova through the eyes of your Avatar', { fontFamily: 'Gothic',align: 'center', fixedWidth:screenWidth * 0.25,fixedHeight:screenHeight * 0.15,wordWrap: { width: screenWidth * 0.2 }});
        
         this.mode0Description.setFontSize(20 * scaleModX).setOrigin(0.5,0.5)
         this.mode1Description.setFontSize(20 * scaleModX).setOrigin(0.5,0.5)
