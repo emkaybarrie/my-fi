@@ -67,7 +67,7 @@ class SelectAvatar extends Phaser.Scene {
 
     create(data){
 
-        prololgueCompleted = true
+        
         this.redirect = data.redirect
 
         camera = this.cameras.main
