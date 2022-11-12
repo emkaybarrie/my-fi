@@ -577,7 +577,7 @@
                 if (upIsDown){
                     
                     // All States
-                        if (this.actionPower  >= 0.5){ 
+                        if (this.actionPower  >= 0.25){ 
                             // Forward motion when jumping (toggle and test feel)
                             player.x += (screenWidth * 0.00125)  * this.actionPower
                         }
@@ -589,13 +589,13 @@
                         if (player.body.onFloor()){
                             
                             //player.y -= (screenHeight * 0.08) * this.actionPower 
-                            player.setVelocityY(-1250 - (250 * this.actionPower))
+                            player.setVelocityY(-1350 - (150 * this.actionPower))
                             
                         } 
                     // In Air
                         else {
                         //player.y -= (screenHeight * 0.02) * this.actionPower
-                        player.setVelocityY(player.body.velocity.y -= 20 + (5 * this.actionPower))
+                        player.setVelocityY(player.body.velocity.y -= 15 + (10 * this.actionPower))
                         
                         }
 
