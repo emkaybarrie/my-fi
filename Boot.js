@@ -98,7 +98,7 @@ class Boot extends Phaser.Scene {
             text: 'A\nmyFi\nProject',
             origin: { x: 0.5, y: 0.5 },
             style: {
-                font: 'italic 90px Gothic',
+                font: 'italic 90px Georgia',
                 fill: 'white',
                 align: 'center',
                 wordWrap: { width: screenWidth * 0.15 }

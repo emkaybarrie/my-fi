@@ -30,16 +30,16 @@ class Login extends Phaser.Scene {
 
     this.loginBG = this.add.image(0,0,'loginBG').setScale(1.94,1.1).setOrigin(0,0)
         
-    this.userNamePrompt = this.add.text(screenWidth * 0.45, screenHeight * 0.45, 'Enter Username', { font: '32px Gothic', fill: '#ffffff' }).setOrigin(1,0.5);
-    this.passWordPrompt =  this.add.text(screenWidth * 0.45, screenHeight * 0.55, 'Enter Password', { font: '32px Gothic', fill: '#ffffff' }).setOrigin(1,0.5);
-    this.confirmationPrompt =  this.add.text(screenWidth * 0.5, screenHeight * 0.7, 'Login', { font: '32px bold Gothic', fill: '#ffffff' }).setOrigin(0.5,0.5);
-    this.backPrompt =  this.add.text(screenWidth * 0.5, screenHeight * 0.85, 'Back', { font: '24px bold Gothic', fill: '#ffffff' }).setOrigin(0.5,0.5);
+    this.userNamePrompt = this.add.text(screenWidth * 0.45, screenHeight * 0.45, 'Enter Username', { font: '32px Georgia', fill: '#ffffff' }).setOrigin(1,0.5);
+    this.passWordPrompt =  this.add.text(screenWidth * 0.45, screenHeight * 0.55, 'Enter Password', { font: '32px Georgia', fill: '#ffffff' }).setOrigin(1,0.5);
+    this.confirmationPrompt =  this.add.text(screenWidth * 0.5, screenHeight * 0.7, 'Login', { font: '32px bold Georgia', fill: '#ffffff' }).setOrigin(0.5,0.5);
+    this.backPrompt =  this.add.text(screenWidth * 0.5, screenHeight * 0.85, 'Back', { font: '24px bold Georgia', fill: '#ffffff' }).setOrigin(0.5,0.5);
 
-    this.userNameEntry = this.add.text(this.userNamePrompt.x + (screenWidth * 0.05), this.userNamePrompt.y, '', { font: '32px bold Gothic', fill: '#ffff00' }).setOrigin(0,0.5);
-    this.passWordEntry = this.add.text(this.passWordPrompt.x + (screenWidth * 0.05), this.passWordPrompt.y, '', { font: '32px bold Gothic', fill: '#ffff00' }).setOrigin(0,0.5);
+    this.userNameEntry = this.add.text(this.userNamePrompt.x + (screenWidth * 0.05), this.userNamePrompt.y, '', { font: '32px bold Georgia', fill: '#ffff00' }).setOrigin(0,0.5);
+    this.passWordEntry = this.add.text(this.passWordPrompt.x + (screenWidth * 0.05), this.passWordPrompt.y, '', { font: '32px bold Georgia', fill: '#ffff00' }).setOrigin(0,0.5);
     this.passWordEntryActual = ''
 
-    this.loginResponse =  this.add.text(screenWidth * 0.5, screenHeight * 0.775,"", { font: '32px Gothic', fill: '#ffffff' }).setOrigin(0.5,0.5);
+    this.loginResponse =  this.add.text(screenWidth * 0.5, screenHeight * 0.775,"", { font: '32px Georgia', fill: '#ffffff' }).setOrigin(0.5,0.5);
     
     this.activeFieldBox = this.add.tileSprite(this.userNamePrompt.x - (this.userNamePrompt.displayWidth/2),this.userNamePrompt.y,screenWidth * 0.15,screenHeight * 0.075,'menuSelectionTexture');
     this.activeFieldBox.setTexture('menuSelectionTexture').setAlpha(0.35)    

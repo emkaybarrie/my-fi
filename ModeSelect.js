@@ -71,29 +71,29 @@ class ModeSelect extends Phaser.Scene {
   
         });
 
-        this.modeOption0 = this.add.text(this.mode0Image.x,this.mode0Image.y + screenHeight * 0.4, 'Prologue', { fontFamily: 'Gothic',align: 'center', fixedWidth:screenWidth * 0.25,fixedHeight:screenHeight * 0.1});
-        this.modeOption1 = this.add.text(this.mode1Image.x,this.mode1Image.y + screenHeight * 0.4, 'Story', { fontFamily: 'Gothic',align: 'center', fixedWidth:screenWidth * 0.25,fixedHeight:screenHeight * 0.1});
-        this.modeOption2 = this.add.text(this.mode2Image.x,this.mode2Image.y + screenHeight * 0.4, 'Explore', { fontFamily: 'Gothic',align: 'center', fixedWidth:screenWidth * 0.25,fixedHeight:screenHeight * 0.1});
+        this.modeOption0 = this.add.text(this.mode0Image.x,this.mode0Image.y + screenHeight * 0.4, 'Prologue', { fontFamily: 'Georgia',align: 'center', fixedWidth:screenWidth * 0.25,fixedHeight:screenHeight * 0.1});
+        this.modeOption1 = this.add.text(this.mode1Image.x,this.mode1Image.y + screenHeight * 0.4, 'Story', { fontFamily: 'Georgia',align: 'center', fixedWidth:screenWidth * 0.25,fixedHeight:screenHeight * 0.1});
+        this.modeOption2 = this.add.text(this.mode2Image.x,this.mode2Image.y + screenHeight * 0.4, 'Explore', { fontFamily: 'Georgia',align: 'center', fixedWidth:screenWidth * 0.25,fixedHeight:screenHeight * 0.1});
        
         this.modeOption0.setFontSize(32 * scaleModX).setOrigin(0.5,0.5)
         this.modeOption1.setFontSize(32 * scaleModX).setOrigin(0.5,0.5)
         this.modeOption2.setFontSize(32 * scaleModX).setOrigin(0.5,0.5)
 
-        this.mode0Description = this.add.text(this.modeOption0.x,this.modeOption0.y + screenHeight * 0.085, 'Welcome to the Badlands', { fontFamily: 'Gothic',align: 'center', fixedWidth:screenWidth * 0.25,fixedHeight:screenHeight * 0.15,wordWrap: { width: screenWidth * 0.2 }});
-        this.mode1Description = this.add.text(this.modeOption1.x,this.modeOption1.y + screenHeight * 0.085, 'Empower your Avatar and defend Kianova from the forces ravaging the Badlands', { fontFamily: 'Gothic',align: 'center', fixedWidth:screenWidth * 0.25,fixedHeight:screenHeight * 0.15,wordWrap: { width: screenWidth * 0.2 }});
-        this.mode2Description = this.add.text(this.modeOption2.x,this.modeOption2.y + screenHeight * 0.085, 'Experience the Badlands and the city of Kianova through the eyes of your Avatar', { fontFamily: 'Gothic',align: 'center', fixedWidth:screenWidth * 0.25,fixedHeight:screenHeight * 0.15,wordWrap: { width: screenWidth * 0.2 }});
+        this.mode0Description = this.add.text(this.modeOption0.x,this.modeOption0.y + screenHeight * 0.085, 'Welcome to the Badlands', { fontFamily: 'Georgia',align: 'center', fixedWidth:screenWidth * 0.25,fixedHeight:screenHeight * 0.15,wordWrap: { width: screenWidth * 0.2 }});
+        this.mode1Description = this.add.text(this.modeOption1.x,this.modeOption1.y + screenHeight * 0.085, 'Empower your Avatar and defend Kianova from the forces ravaging the Badlands', { fontFamily: 'Georgia',align: 'center', fixedWidth:screenWidth * 0.25,fixedHeight:screenHeight * 0.15,wordWrap: { width: screenWidth * 0.2 }});
+        this.mode2Description = this.add.text(this.modeOption2.x,this.modeOption2.y + screenHeight * 0.085, 'Experience the Badlands and the city of Kianova through the eyes of your Avatar', { fontFamily: 'Georgia',align: 'center', fixedWidth:screenWidth * 0.25,fixedHeight:screenHeight * 0.15,wordWrap: { width: screenWidth * 0.2 }});
        
         this.mode0Description.setFontSize(20 * scaleModX).setOrigin(0.5,0.5)
         this.mode1Description.setFontSize(20 * scaleModX).setOrigin(0.5,0.5)
         this.mode2Description.setFontSize(20 * scaleModX).setOrigin(0.5,0.5)
 
-        this.mode1Description2 = this.add.text(this.mode1Description.x,this.mode1Description.y + screenHeight * 0.075, 'Requires a myFi account\nPersistent world affected by real-world actions\nRewards enabled\nLeaderboards enabled', { fontFamily: 'Gothic', fontStyle: 'italic' ,align: 'center', fixedWidth:screenWidth * 0.25,fixedHeight:screenHeight * 0.15,wordWrap: { width: screenWidth * 0.2 }});
-        this.mode2Description2 = this.add.text(this.mode2Description.x,this.mode2Description.y + screenHeight * 0.075, 'No signup required\nSaving disabled\nRewards disabled', { fontFamily: 'Gothic',fontStyle: 'italic' ,align: 'center', fixedWidth:screenWidth * 0.25,fixedHeight:screenHeight * 0.15,wordWrap: { width: screenWidth * 0.2 }});
+        this.mode1Description2 = this.add.text(this.mode1Description.x,this.mode1Description.y + screenHeight * 0.075, 'Requires a myFi account\nPersistent world affected by real-world actions\nRewards enabled\nLeaderboards enabled', { fontFamily: 'Georgia', fontStyle: 'italic' ,align: 'center', fixedWidth:screenWidth * 0.25,fixedHeight:screenHeight * 0.15,wordWrap: { width: screenWidth * 0.2 }});
+        this.mode2Description2 = this.add.text(this.mode2Description.x,this.mode2Description.y + screenHeight * 0.075, 'No signup required\nSaving disabled\nRewards disabled', { fontFamily: 'Georgia',fontStyle: 'italic' ,align: 'center', fixedWidth:screenWidth * 0.25,fixedHeight:screenHeight * 0.15,wordWrap: { width: screenWidth * 0.2 }});
        
-        this.mode1Description2.setFontSize(20 * scaleModX).setOrigin(0.5,0.5)
-        this.mode2Description2.setFontSize(20 * scaleModX).setOrigin(0.5,0.5)
+        this.mode1Description2.setFontSize(16 * scaleModX).setOrigin(0.5,0.5)
+        this.mode2Description2.setFontSize(16 * scaleModX).setOrigin(0.5,0.5)
 
-        this.proceedText = this.add.text(screenWidth * 0.5,screenHeight * 0.975, 'Proceed', { fontFamily: 'Gothic', fontStyle: 'italic' ,align: 'center', fixedWidth:screenWidth * 0.25,fixedHeight:screenHeight * 0.075});
+        this.proceedText = this.add.text(screenWidth * 0.5,screenHeight * 0.975, 'Proceed', { fontFamily: 'Georgia', fontStyle: 'italic' ,align: 'center', fixedWidth:screenWidth * 0.25,fixedHeight:screenHeight * 0.075});
         this.proceedText.setFontSize(30 * scaleModX).setOrigin(0.5,0.5)
         
         this.proceedConfirmation = this.add.tileSprite(this.proceedText.x - screenWidth * 0.035 ,this.proceedText.y - (screenHeight * 0.0175),screenWidth * 0.075,screenHeight * 0.05,'menuSelectionTexture');

@@ -76,7 +76,7 @@ class SelectAvatar extends Phaser.Scene {
         this.freePlayBGScaleY = 0.705 * (scaleModY) 
         this.freePlayBG = this.add.image(0,0,'freePlayBG').setScale(this.freePlayBGScaleX,this.freePlayBGScaleY).setOrigin(0,0).setAlpha(0.65)
 
-        this.activeUserNameText = this.add.text(screenWidth * 0.1, screenHeight * 0.1, '', { fontFamily: 'Gothic', fontStyle: 'bold' ,align: 'center', fixedWidth:screenWidth * 0.25,fixedHeight:screenHeight * 0.075});
+        this.activeUserNameText = this.add.text(screenWidth * 0.1, screenHeight * 0.1, '', { fontFamily: 'Georgia', fontStyle: 'bold' ,align: 'center', fixedWidth:screenWidth * 0.25,fixedHeight:screenHeight * 0.075});
         this.activeUserNameText.setFontSize(54 * scaleModX).setOrigin(0.5,0)
         if(activeUser != null || undefined || ''){
             this.activeUserNameText.setText(activeUser.USERNAME)
@@ -84,12 +84,12 @@ class SelectAvatar extends Phaser.Scene {
             this.activeUserNameText.setText(freePlayUser.USERNAME)
         }
 
-        this.avatarTitle = this.add.text(screenWidth * 0.5, screenHeight * 0.2, 'Choose your Avatar', { fontFamily: 'Gothic', fontStyle: 'italic' ,align: 'center', fixedWidth:screenWidth * 0.25,fixedHeight:screenHeight * 0.075});
+        this.avatarTitle = this.add.text(screenWidth * 0.5, screenHeight * 0.2, 'Choose your Avatar', { fontFamily: 'Georgia', fontStyle: 'italic' ,align: 'center', fixedWidth:screenWidth * 0.25,fixedHeight:screenHeight * 0.075});
 
         this.avatarTitle.setFontSize(42 * scaleModX).setOrigin(0.5,0)
 
 
-        this.menuOption6 = this.add.text(screenWidth * 0.5,screenHeight * 0.9 , 'Enter Kianova', { fontFamily: 'Gothic', fontStyle: 'italic' ,align: 'center', fixedWidth:screenWidth * 0.25,fixedHeight:screenHeight * 0.075});
+        this.menuOption6 = this.add.text(screenWidth * 0.5,screenHeight * 0.9 , 'Enter Kianova', { fontFamily: 'Georgia', fontStyle: 'italic' ,align: 'center', fixedWidth:screenWidth * 0.25,fixedHeight:screenHeight * 0.075});
         this.menuOption6.setFontSize(42 * scaleModX).setOrigin(0.5,0).setAlpha(0.75)
 
         this.menuTextGroup = this.add.group(this.menuOption6)
@@ -116,10 +116,10 @@ class SelectAvatar extends Phaser.Scene {
         
         var statXPos = this.avatarProfilePic.x - this.avatarProfilePic.displayWidth * 0.15
 
-        this.avatarStat1 = this.add.text(statXPos  , this.avatarProfilePic.y + this.avatarProfilePic.displayHeight * 1.35, 'Damage', { fontFamily: 'Gothic', fontStyle: 'bold' ,fill: 'white',align: 'right', fixedWidth:screenWidth * 0.05,fixedHeight:screenHeight * 0.075});
-        this.avatarStat2 = this.add.text(statXPos, this.avatarStat1.y + this.avatarStat1.displayHeight * 0.45, 'Armour', { fontFamily: 'Gothic', fontStyle: 'bold',fill: 'white' ,align: 'right', fixedWidth:screenWidth * 0.05,fixedHeight:screenHeight * 0.075});
-        this.avatarStat3 = this.add.text(statXPos, this.avatarStat2.y + this.avatarStat1.displayHeight * 0.45, 'Agility', { fontFamily: 'Gothic', fontStyle: 'bold',fill: 'white' ,align: 'right', fixedWidth:screenWidth * 0.05,fixedHeight:screenHeight * 0.075});
-        this.avatarStat4 = this.add.text(statXPos, this.avatarStat3.y + this.avatarStat1.displayHeight * 0.45, 'Strength', { fontFamily: 'Gothic', fontStyle: 'bold' ,fill: 'white',align: 'right', fixedWidth:screenWidth * 0.05,fixedHeight:screenHeight * 0.075});
+        this.avatarStat1 = this.add.text(statXPos  , this.avatarProfilePic.y + this.avatarProfilePic.displayHeight * 1.35, 'Damage', { fontFamily: 'Georgia', fontStyle: 'bold' ,fill: 'white',align: 'right', fixedWidth:screenWidth * 0.05,fixedHeight:screenHeight * 0.075});
+        this.avatarStat2 = this.add.text(statXPos, this.avatarStat1.y + this.avatarStat1.displayHeight * 0.45, 'Armour', { fontFamily: 'Georgia', fontStyle: 'bold',fill: 'white' ,align: 'right', fixedWidth:screenWidth * 0.05,fixedHeight:screenHeight * 0.075});
+        this.avatarStat3 = this.add.text(statXPos, this.avatarStat2.y + this.avatarStat1.displayHeight * 0.45, 'Agility', { fontFamily: 'Georgia', fontStyle: 'bold',fill: 'white' ,align: 'right', fixedWidth:screenWidth * 0.05,fixedHeight:screenHeight * 0.075});
+        this.avatarStat4 = this.add.text(statXPos, this.avatarStat3.y + this.avatarStat1.displayHeight * 0.45, 'Strength', { fontFamily: 'Georgia', fontStyle: 'bold' ,fill: 'white',align: 'right', fixedWidth:screenWidth * 0.05,fixedHeight:screenHeight * 0.075});
         
         this.avatarStat1.setOrigin(0,0.5)
         this.avatarStat2.setOrigin(0,0.5)
@@ -166,7 +166,7 @@ class SelectAvatar extends Phaser.Scene {
         this.baseAgilityRating.setY(this.avatarStat3.y - this.avatarStat1.displayHeight * 0.4)
 
         // Primary Stat
-        this.avatarStat4Value = this.add.text(statXPos, this.avatarStat3.y + this.avatarStat1.displayHeight * 0.45, '', { fontFamily: 'Gothic', fontStyle: 'italic' ,fill: 'white',align: 'center', fixedWidth:screenWidth * 0.05,fixedHeight:screenHeight * 0.075});
+        this.avatarStat4Value = this.add.text(statXPos, this.avatarStat3.y + this.avatarStat1.displayHeight * 0.45, '', { fontFamily: 'Georgia', fontStyle: 'italic' ,fill: 'white',align: 'center', fixedWidth:screenWidth * 0.05,fixedHeight:screenHeight * 0.075});
         this.avatarStat4Value.setPosition(this.avatarStat4.x + this.avatarStat4.displayWidth * 1.25,this.avatarStat4.y - this.avatarStat4.displayHeight * 0.5)
 
         
@@ -182,7 +182,7 @@ class SelectAvatar extends Phaser.Scene {
 
 
         // Avatar
-        this.avatarName = this.add.text(screenWidth * 0.5 , this.avatarProfilePic.y + this.avatarProfilePic.displayHeight * 0.25, 'Asha', { fontFamily: 'Gothic', fontStyle: 'bold' ,align: 'center', fixedWidth:screenWidth * 0.1,fixedHeight:screenHeight * 0.075});
+        this.avatarName = this.add.text(screenWidth * 0.5 , this.avatarProfilePic.y + this.avatarProfilePic.displayHeight * 0.25, 'Asha', { fontFamily: 'Georgia', fontStyle: 'bold' ,align: 'center', fixedWidth:screenWidth * 0.1,fixedHeight:screenHeight * 0.075});
         this.avatarName.setFontSize(32 * scaleModX).setOrigin(0.5,0.5)
         this.activeAvatarSprite = this.add.sprite(this.avatarName.x + this.avatarName.displayWidth * 0.15, this.avatarName.y + screenHeight * 0.175 ,'defaultAvatar').setScale(5).setOrigin(0.5,0.5)
 
@@ -194,7 +194,7 @@ class SelectAvatar extends Phaser.Scene {
             text: 'A fiery and talented warrior, with a penchant for adapting on the fly.',
             origin: { x: 0.5, y: 0.5 },
             style: {
-                font: 'italic 25px Gothic',
+                font: 'italic 25px Georgia',
                 fill: 'white',
                 align: 'center',
                 wordWrap: { width: screenWidth * 0.15 }
