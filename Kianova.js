@@ -37,18 +37,18 @@ var chosenSectorArrayIcon = 2
 
 var sectorDescription
 var sectorAffinity
-var influenceScore = 0
-var prosperityScore = 0
+var votingPowerGrowthScore = 0
+var regionPowerGrowthScore = 0
 var gloryScore
-var sectorOptions
 
-var patronIcon
-var influenceIcon
-var prosperityIcon
+
+
+var regionRewardsIcon
+var regionPowerGrowthIcon
 var gloryIconK
 
-var influenceStars 
-var prosperityStars
+var votingPowerGrowthStars 
+var regionPowerGrowthStars
 
 
 class Kianova extends Phaser.Scene {
@@ -89,7 +89,7 @@ class Kianova extends Phaser.Scene {
 
         this.textBox
         this.textBoxScaleX = 0.275 * (scaleModX) 
-        this.textBoxScaleY = 0.1 * (scaleModX)
+        this.textBoxScaleY = 0.085 * (scaleModX)
 
         this.text
         this.textScaleX =  1 
@@ -121,6 +121,8 @@ class Kianova extends Phaser.Scene {
         this.load.image('resilienceIcon', 'assets/ach_00059.png');
         this.load.image('focusIcon', 'assets/ach_00057.png');
         this.load.image('staminaIcon', 'assets/ach_00046.png');
+        this.load.image('powerCrystalIcon', 'assets/ach_00028.png');
+       
 
         this.load.image('load', 'assets/KianovaLoadScreen.png');
         this.load.image('map', 'assets/KianovaMap.png');
@@ -130,11 +132,13 @@ class Kianova extends Phaser.Scene {
         this.load.image('textBox', 'assets/vFX/textBox.png');
         //this.load.image('textBox_P', 'assets/vFX/inspirationBox.png');
         this.load.image('sectorNameBox', 'assets/vFX/playerHUDBox.png');
-        this.load.image('cityStat1Icon', 'assets/ach_00024.png');
-        this.load.image('cityStat2Icon', 'assets/ach_00037.png');
-        this.load.image('cityStat3Icon', 'assets/ach_00010.png');
-        this.load.image('cityStat4Icon', 'assets/ach_00019.png');
+        this.load.image('cityStat1Icon', 'assets/ach_00037.png');
+        this.load.image('cityStat2Icon', 'assets/ach_00024.png');
+        this.load.image('cityStat3Icon', 'assets/ach_00019.png');
+        this.load.image('cityStat4Icon', 'assets/ach_00010.png');
         this.load.image('cityStat5Icon', 'assets/ach_00035.png');
+
+        this.load.image('cityStat6Icon', 'assets/ach_00033.png');
 
         this.load.spritesheet('star', 'assets/starSprite.png', { frameWidth: 32, frameHeight: 32});
 
@@ -233,12 +237,28 @@ class Kianova extends Phaser.Scene {
         avatarName = this.add.text(playerIconBox.x, playerIconBox.y + screenHeight * 0.2, activeAvatar.NAME, { fontFamily: 'Gothic', fontStyle: 'italic bold' ,align: 'center', fixedWidth:screenWidth * 0.1,fixedHeight:screenHeight * 0.075});
         avatarName.setFontSize(28 * scaleModX).setOrigin(0.5,0.5)
 
-        playerVitalsBox = this.add.image(playerIconBox.x + (playerIconBox.displayWidth / 2) + screenWidth * 0.01,playerIconBox.y,'textBox').setScale(0.31  * (scaleModX),0.145  * (scaleModY)).setOrigin(0,0.5).setAlpha(0.75).setTint(0x7851a9)
+        playerVitalsBox = this.add.image(playerIconBox.x + (playerIconBox.displayWidth / 2) + screenWidth * 0.01,playerIconBox.y,'textBox').setScale(0.31  * (scaleModX),0.115  * (scaleModY)).setOrigin(0,0.5).setAlpha(0.75).setTint(0x7851a9)
 
-        playerLoginName = this.add.text(playerVitalsBox.x + playerVitalsBox.displayWidth * 0.5,playerIconBox.y - (playerIconBox.displayHeight * 0.25), this.patronData.USERNAME, { fontFamily: 'Gothic', fontStyle: 'italic bold' ,align: 'center', fixedWidth:screenWidth * 0.1,fixedHeight:screenHeight * 0.075});
+        playerLoginName = this.add.text(screenWidth * 0.5,playerIconBox.y - (playerIconBox.displayHeight * 0.25), this.patronData.USERNAME, { fontFamily: 'Gothic', fontStyle: 'italic bold' ,align: 'center', fixedWidth:screenWidth * 0.1,fixedHeight:screenHeight * 0.075});
         playerLoginName.setFontSize(24 * scaleModX).setOrigin(0.5,0.5)
 
-        resilienceIcon = this.add.image(playerVitalsBox.x + playerVitalsBox.displayWidth * 0.2,playerIconBox.y - (playerIconBox.displayHeight * 0.15),'resilienceIcon').setScale(this.iconScale)
+        this.gloryScoreIcon = this.add.image(playerLoginName.x - 30,playerLoginName.y + screenHeight * 0.015,'cityStat5Icon').setScale(this.iconScale)
+        this.gloryScoreText = this.make.text({
+            origin: { x: 0.5, y: 0.5 },
+            style: {
+                font: 'px Gothic',
+
+                fill: 'white',
+                align: 'center',
+                wordWrap: { width: 300 * (scaleModX), useAdvancedWrap: false},
+            }
+        });
+        this.gloryScoreText.x = this.gloryScoreIcon.x + this.gloryScoreIcon.displayWidth * 1.15
+        this.gloryScoreText.y = this.gloryScoreIcon.y
+        this.gloryScoreText.setFontSize(20)
+        this.gloryScoreText.setFontStyle('bold')
+
+        resilienceIcon = this.add.image(playerVitalsBox.x + playerVitalsBox.displayWidth * 0.2,playerIconBox.y - (playerIconBox.displayHeight * 0.225),'resilienceIcon').setScale(this.iconScale)
         focusIcon = this.add.image(resilienceIcon.x,resilienceIcon.y + resilienceIcon.displayHeight * 0.85 ,'focusIcon').setScale(this.iconScale)
         staminaIcon = this.add.image(resilienceIcon.x,focusIcon.y + resilienceIcon.displayHeight * 0.85,'staminaIcon').setScale(this.iconScale)
 
@@ -286,6 +306,27 @@ class Kianova extends Phaser.Scene {
             staminaStars.getChildren()[i].setTint(0x000000).stop() 
         }
 
+        this.storedRewardsIcon = this.add.image(staminaIcon.x,staminaIcon.y + staminaIcon.displayHeight * 0.85,'powerCrystalIcon').setScale(this.iconScale)
+        
+        this.storedRewardsText = this.make.text({
+            origin: { x: 0.5, y: 0.5 },
+            style: {
+                font: 'px Gothic',
+
+                fill: 'white',
+                align: 'center',
+                wordWrap: { width: 300 * (scaleModX), useAdvancedWrap: false},
+            }
+        });
+
+        this.storedRewardsText.x = playerVitalsBox.x + playerVitalsBox.displayWidth * 0.55
+        this.storedRewardsText.y = this.storedRewardsIcon.y
+        this.storedRewardsText.setFontSize(20)
+        this.storedRewardsText.setText(500)
+
+        
+
+
         // City Stats
         this.cityIconBox  = this.add.image(screenWidth - playerIconBox.x ,playerIconBox.y,'playerIconBox').setScale(playerIconBoxScaleX,playerIconBoxScaleY).setOrigin(0.5)
         
@@ -298,12 +339,20 @@ class Kianova extends Phaser.Scene {
                                         });
         sectorNameText.setFontSize(28 * scaleModX).setOrigin(0.5,0.5)
 
-        this.sectorVitalsBox = this.add.image(this.cityIconBox.x - ((this.cityIconBox.displayWidth / 2) + screenWidth * 0.01),this.cityIconBox.y,'textBox').setScale(0.31  * (scaleModX),0.145  * (scaleModY)).setOrigin(1,0.5).setAlpha(0.75).setTint(0x7851a9)
+        this.sectorVitalsBox = this.add.image(this.cityIconBox.x - ((this.cityIconBox.displayWidth / 2) + screenWidth * 0.01),this.cityIconBox.y,'textBox').setScale(0.31  * (scaleModX),0.115  * (scaleModY)).setOrigin(1,0.5).setAlpha(0.75).setTint(0x7851a9)
         
         var iconSpacingModifier = 1
-        this.placeholderIcon = this.add.image(this.sectorVitalsBox.x - this.sectorVitalsBox.displayWidth * 0.8,this.cityIconBox.y - (this.cityIconBox.displayHeight * 0.3),'cityStat1Icon').setScale(this.iconScale)
-        patronIcon = this.add.image(this.placeholderIcon.x,this.placeholderIcon.y + this.placeholderIcon.displayHeight * iconSpacingModifier,'cityStat2Icon').setScale(this.iconScale)
-        this.patronNameText = this.make.text({
+
+        this.anims.create({
+            key: 'star',
+            frames: this.anims.generateFrameNumbers('star', { start:0, end: 12}),
+            frameRate: 13,
+            repeat: -1,
+            yoyo: 0
+        });
+
+        this.votingPowerIcon = this.add.image(this.sectorVitalsBox.x - this.sectorVitalsBox.displayWidth * 0.8,this.cityIconBox.y - (this.cityIconBox.displayHeight * 0.225),'cityStat1Icon').setScale(this.iconScale)
+        this.votingPowerText = this.make.text({
             origin: { x: 0.5, y: 0.5 },
             style: {
                 font: 'px Gothic',
@@ -313,13 +362,19 @@ class Kianova extends Phaser.Scene {
                 wordWrap: { width: 300 * (scaleModX), useAdvancedWrap: false},
             }
         });
-        this.patronNameText.x = this.sectorVitalsBox.x - this.sectorVitalsBox.displayWidth * 0.45
-        this.patronNameText.y = patronIcon.y
-        this.patronNameText.setFontSize(20)
-        influenceIcon = this.add.image(patronIcon.x,patronIcon.y + patronIcon.displayHeight * iconSpacingModifier,'cityStat3Icon').setScale(this.iconScale)
-        prosperityIcon = this.add.image(patronIcon.x,influenceIcon.y + influenceIcon.displayHeight * iconSpacingModifier ,'cityStat4Icon').setScale(this.iconScale)
-        gloryIconK = this.add.image(patronIcon.x,prosperityIcon.y + prosperityIcon.displayHeight * iconSpacingModifier,'cityStat5Icon').setScale(this.iconScale)
-        this.gloryScoreText = this.make.text({
+        this.votingPowerText.x = this.sectorVitalsBox.x - this.sectorVitalsBox.displayWidth * 0.45
+        this.votingPowerText.y = this.votingPowerIcon.y
+        this.votingPowerText.setFontSize(20)
+        
+        this.votingPowerGrowthIcon = this.add.image(this.votingPowerIcon.x,this.votingPowerIcon.y + this.votingPowerIcon.displayHeight * iconSpacingModifier,'cityStat2Icon').setScale(this.iconScale)
+
+        votingPowerGrowthStars = this.add.group()
+        votingPowerGrowthStars.createMultiple({key:'star',frameQuantity: 5, setScale: {x: 1.25 * (scaleModX), y: 1.25 * (scaleModX)}})
+        votingPowerGrowthStars.setVisible(0)
+
+        regionRewardsIcon = this.add.image(this.votingPowerGrowthIcon.x,this.votingPowerGrowthIcon.y + this.votingPowerGrowthIcon.displayHeight * iconSpacingModifier,'cityStat3Icon').setScale(this.iconScale)
+        
+        this.regionRewardsText = this.make.text({
             origin: { x: 0.5, y: 0.5 },
             style: {
                 font: 'px Gothic',
@@ -329,9 +384,17 @@ class Kianova extends Phaser.Scene {
                 wordWrap: { width: 300 * (scaleModX), useAdvancedWrap: false},
             }
         });
-        this.gloryScoreText.x = this.sectorVitalsBox.x - this.sectorVitalsBox.displayWidth * 0.45
-        this.gloryScoreText.y = gloryIconK.y
-        this.gloryScoreText.setFontSize(20)
+        this.regionRewardsText.x = this.sectorVitalsBox.x - this.sectorVitalsBox.displayWidth * 0.45
+        this.regionRewardsText.y = regionRewardsIcon.y
+        this.regionRewardsText.setFontSize(20)
+        
+        regionPowerGrowthIcon = this.add.image(this.votingPowerGrowthIcon.x,regionRewardsIcon.y + regionRewardsIcon.displayHeight * iconSpacingModifier ,'cityStat4Icon').setScale(this.iconScale)
+        
+        regionPowerGrowthStars = this.add.group()
+        regionPowerGrowthStars.createMultiple({key:'star',frameQuantity: 5, setScale: {x: 1.25 * (scaleModX), y: 1.25 * (scaleModX)}})
+        regionPowerGrowthStars.setVisible(0)
+        
+        
 
 
         this.textBox = this.add.image(0,0,'textBox').setScale(this.textBoxScaleX,this.textBoxScaleY).setAlpha(0.75).setInteractive()
@@ -350,10 +413,29 @@ class Kianova extends Phaser.Scene {
         this.text.setFontSize(18 * (scaleModX))
 
         
+        this.patronIcon = this.add.image(0,0,'cityStat6Icon').setScale(this.iconScale)
+        this.patronNameText = this.make.text({
+            origin: { x: 0.5, y: 0.5 },
+            style: {
+                font: 'px Gothic',
+
+                fill: 'white',
+                align: 'center',
+                wordWrap: { width: 300 * (scaleModX), useAdvancedWrap: false},
+            }
+        });
+        this.patronNameText.x = this.patronIcon.x + 75
+        this.patronNameText.y = this.patronIcon.y
+        this.patronNameText.setFontSize(20)
+        this.patronNameText.setText('Omnia')
+       
+        
+        
+
+
         
        
         
-
        
 
         
@@ -392,35 +474,23 @@ class Kianova extends Phaser.Scene {
         sector5Icon = this.add.image(screenWidth * 0.685, screenHeight * 0.89, 'r5Icon').setScale(0.5 * (scaleModX))//.setPipeline('Light2D').setInteractive()
 
         sectorInfo = this.add.group()
-        sectorInfo.addMultiple([this.textBox,this.text,
+        sectorInfo.addMultiple([this.textBox,this.text,this.patronIcon,this.patronNameText
                                 
                             ]) 
         sectorInfo.setVisible(0)
 
         this.sectorUI = this.add.group()
-        this.sectorUI.addMultiple([playerIconBox,playerIcon,playerLoginName,avatarName,resilienceIcon,resilienceStars,focusIcon,focusStars,staminaIcon,staminaStars,playerVitalsBox,
-                                    this.cityIconBox,this.sectorImage,sectorNameText,this.placeholderIcon,patronIcon,influenceIcon,prosperityIcon,gloryIconK,this.sectorVitalsBox,sector1Icon,sector2Icon,sector3Icon,sector4Icon,sector5Icon,
+        this.sectorUI.addMultiple([playerIconBox,playerIcon,playerLoginName,avatarName,resilienceIcon,resilienceStars,focusIcon,focusStars,staminaIcon,
+                                    staminaStars,this.storedRewardsIcon,this.storedRewardsText,playerVitalsBox,
+                                    this.cityIconBox,this.sectorImage,sectorNameText,this.votingPowerIcon,this.votingPowerGrowthIcon,regionRewardsIcon,
+                                    regionPowerGrowthIcon,this.gloryScoreIcon,this.gloryScoreText,this.sectorVitalsBox,sector1Icon,sector2Icon,sector3Icon,
+                                    sector4Icon,sector5Icon,
                                     sector1MapIcon,sector2MapIcon,sector3MapIcon,sector4MapIcon,sector5MapIcon,this.selectedSectorIcon
                                 ]) 
         this.sectorUI.setVisible(0)
         
 
-        this.anims.create({
-            key: 'star',
-            frames: this.anims.generateFrameNumbers('star', { start:0, end: 12}),
-            frameRate: 13,
-            repeat: -1,
-            yoyo: 0
-        });
-
-
-        influenceStars = this.add.group()
-        influenceStars.createMultiple({key:'star',frameQuantity: 5, setScale: {x: 1.25 * (scaleModX), y: 1.25 * (scaleModX)}})
-        influenceStars.setVisible(0)
-       
-        prosperityStars = this.add.group()
-        prosperityStars.createMultiple({key:'star',frameQuantity: 5, setScale: {x: 1.25 * (scaleModX), y: 1.25 * (scaleModX)}})
-        prosperityStars.setVisible(0)
+        
 
         camera.on('cameraflashcomplete',function(){
 
@@ -595,7 +665,7 @@ class Kianova extends Phaser.Scene {
 
             },this) 
 
-        
+           
 
         if (nextScene && this.controlsEnabled){
             this.scene.start(activeRegion, {targetZone: 0, currentTimePeriod: Phaser.Math.Between(1,4),rarityOverride:null})
@@ -616,15 +686,15 @@ class Kianova extends Phaser.Scene {
         // Hide Textbox and Info
 
             sectorInfo.setAlpha(0)
-            influenceStars.setAlpha(0)
-            prosperityStars.setAlpha(0)
+            votingPowerGrowthStars.setAlpha(0)
+            regionPowerGrowthStars.setAlpha(0)
 
 
             this.textBox.setScale(0)
 
             sectorInfo.setVisible()
-            influenceStars.setVisible()
-            prosperityStars.setVisible()
+            votingPowerGrowthStars.setVisible()
+            regionPowerGrowthStars.setVisible()
 
         // Identify Selected Sector
             selectedSector = this.sectorIconArray[chosenSectorArrayIcon]
@@ -653,15 +723,18 @@ class Kianova extends Phaser.Scene {
                 playerVitalsBox.setTint(0x67ef8a)
                 this.cityIconBox.setTint(0x67ef8a)
                 this.sectorVitalsBox.setTint(0x67ef8a)
+                this.gloryScoreText.setColor('#67ef8a')
+
                 sectorName = 'West Sector\n[Risk Band 1]'
-                sectorAffinity = 'Amara'
-                influenceScore = patron1Rating_Influence
-                prosperityScore = patron1Rating_Prosperity
+                this.votingPower = '1075 (10%)'
+                this.regionRewards = 884
+                votingPowerGrowthScore = patron1Rating_Influence
+                regionPowerGrowthScore = patron1Rating_Prosperity
                 gloryScore = this.freePlayGloryAmara
 
                 this.textBox.setTint(0x67ef8a)
                 sectorDescription = 'Home to the Order of Amara.\nPractitioners of the ancient Essence Arts.'
-                sectorOptions = '\n\n- Visit Western Sector\n- Recruit Amaran Magus\n- Explore Western Badlands'
+                sectorAffinity = 'Amara'
 
                 
                 
@@ -677,15 +750,18 @@ class Kianova extends Phaser.Scene {
                 playerVitalsBox.setTint(0xf7944a)
                 this.cityIconBox.setTint(0xf7944a)
                 this.sectorVitalsBox.setTint(0xf7944a)
+                this.gloryScoreText.setColor('#f7944a')
+
                 sectorName = 'North Sector\n[Risk Band 2]'
-                sectorAffinity = 'Mundo'
-                influenceScore = patron2Rating_Influence
-                prosperityScore = patron2Rating_Prosperity
+                this.votingPower = '575 (5%)'
+                this.regionRewards = 683
+                votingPowerGrowthScore = patron2Rating_Influence
+                regionPowerGrowthScore = patron2Rating_Prosperity
                 gloryScore = this.freePlayGloryMundo
 
                 this.textBox.setTint(0xf7944a)
                 sectorDescription = 'Home to the Disciples of Mundo.\nMaster practioners and scholars of the ways of Sustahnus.' 
-                sectorOptions = '\n\n- Visit Northern Sector\n- Recruit Mundus Priest\n- Explore Northern Badlands'
+                sectorAffinity = 'Mundo'
 
                 
     
@@ -701,15 +777,19 @@ class Kianova extends Phaser.Scene {
                 playerVitalsBox.setTint(0x7851a9)
                 this.cityIconBox.setTint(0x7851a9)
                 this.sectorVitalsBox.setTint(0x7851a9)
-                sectorName = 'Grand Square\n[HQ]'
-                sectorAffinity = 'Omnia'
-                influenceScore = patron3Rating_Influence
-                prosperityScore = patron3Rating_Prosperity
+                //this.gloryScoreText.setColor('#7851a9')
+                this.gloryScoreText.setColor('#ffffff')
+
+                sectorName = 'Grand Square\n[HQ]' 
+                this.votingPower = '1475 (2%)'               
+                this.regionRewards = 12053
+                votingPowerGrowthScore = patron3Rating_Influence
+                regionPowerGrowthScore = patron3Rating_Prosperity
                 gloryScore = this.freePlayGloryAmara + this.freePlayGloryMundo + this.freePlayGlorylucarus + this.freePlayGloryIlluvik
                 
                 this.textBox.setTint(0x7851a9)
-                sectorDescription = 'Political Hub of Kianova.\nHome to the Great Houses that power the city\n'  
-                sectorOptions = '\n\n- Enter House of the Forerunner\n- Enter House of the Creators\n- Enter House of the Oracles'
+                sectorDescription = 'Political hub of Kianova.\nHome to the Great Houses that power the city\n'  
+                sectorAffinity = 'Omnia'
 
             } else if (selectedSector == 4){
       
@@ -721,16 +801,19 @@ class Kianova extends Phaser.Scene {
                 playerVitalsBox.setTint(0xc6f5ff)
                 this.cityIconBox.setTint(0xc6f5ff)
                 this.sectorVitalsBox.setTint(0xc6f5ff)
+                this.gloryScoreText.setColor('#c6f5ff')
+
                 sectorName = 'South Sector\n[Risk Band 4]'
-                sectorAffinity = 'Lucarus'
-                influenceScore = patron4Rating_Influence
-                prosperityScore = patron4Rating_Prosperity
+                this.votingPower = '2546 (23%)'
+                this.regionRewards = 1053
+                votingPowerGrowthScore = patron4Rating_Influence
+                regionPowerGrowthScore = patron4Rating_Prosperity
                 gloryScore = this.freePlayGlorylucarus
 
                 this.textBox.setTint(0xc6f5ff)
                 
                 sectorDescription = 'Home to the Lucarian Guard.\nMasterful warriors known for their fortitude and resilience.'
-                sectorOptions = '\n\n- Visit Southern Sector\n- Recruit Lucarian Knight\n- Explore Southern Badlands'
+                sectorAffinity = 'Lucarus'
 
             } else if (selectedSector == 5){
 
@@ -744,23 +827,27 @@ class Kianova extends Phaser.Scene {
                 playerVitalsBox.setTint(0xda2c1f)
                 this.cityIconBox.setTint(0xda2c1f)
                 this.sectorVitalsBox.setTint(0xda2c1f)
+                this.gloryScoreText.setColor('#da2c1f')
+
                 sectorName = 'East Sector\n[Risk Band 5]'
-                sectorAffinity = 'Illuvik'
-                influenceScore = patron5Rating_Influence
-                prosperityScore = patron5Rating_Prosperity
+                this.votingPower = '4655 (41%)'
+                this.regionRewards = 1753
+                votingPowerGrowthScore = patron5Rating_Influence
+                regionPowerGrowthScore = patron5Rating_Prosperity
                 gloryScore = this.freePlayGloryIlluvik
 
 
                 this.textBox.setTint(0xda2c1f)
                 sectorDescription = 'Home to the Illuvium Brotherhood.\nA favourite haunt of arcanists and elementalists.' 
-                sectorOptions = '\n\n- Visit Eastern Sector\n- Recruit Illuvium Assassin\n- Explore Eastern Badlands'
+                sectorAffinity = 'Illuvik'
 
             }
             
             sectorNameText.setText(sectorName)
-            this.patronNameText.setText(sectorAffinity)
+            this.votingPowerText.setText(this.votingPower)
+            this.regionRewardsText.setText(this.regionRewards)
             this.gloryScoreText.setText(gloryScore)
-            this.text.setText(sectorDescription + sectorOptions)
+            this.text.setText(sectorDescription)
             
 
             
@@ -782,7 +869,24 @@ class Kianova extends Phaser.Scene {
  
                 } 
                     
-                    this.text.setPosition(this.textBox.x,this.textBox.y)
+                if (Phaser.Math.Between(0,1) == 0){
+                    this.text.setPosition(this.textBox.x,this.textBox.y - 30)
+                    this.patronIcon.setPosition(this.textBox.x,this.text.y + 55)
+                    this.patronNameText.x = this.patronIcon.x
+                    this.patronNameText.y = this.patronIcon.y + 30
+                    this.patronNameText.setFontSize(20)
+                    this.patronNameText.setText(sectorAffinity)
+                } else {
+                    this.patronIcon.setPosition(this.textBox.x,this.textBox.y - 45)
+                    this.patronNameText.x = this.patronIcon.x
+                    this.patronNameText.y = this.patronIcon.y + 30
+                    this.patronNameText.setFontSize(20)
+                    this.patronNameText.setText(sectorAffinity)
+
+                    this.text.setPosition(this.textBox.x,this.patronNameText.y + 60)
+                    
+                }
+                    
                     
                     
 
@@ -790,30 +894,30 @@ class Kianova extends Phaser.Scene {
                     
 
 
-                    influenceStars.setX(influenceIcon.x + (65 * (scaleModX)) , 30 * (scaleModX))
-                    influenceStars.setY(influenceIcon.y)
+                    votingPowerGrowthStars.setX(this.votingPowerGrowthIcon.x + (65 * (scaleModX)) , 30 * (scaleModX))
+                    votingPowerGrowthStars.setY(this.votingPowerGrowthIcon.y)
 
                     setTimeout(() => {
-                    for (var i = 0; i < influenceScore; i++){
-                        influenceStars.getChildren()[i].setTint().play('star',true)
+                    for (var i = 0; i < votingPowerGrowthScore; i++){
+                        votingPowerGrowthStars.getChildren()[i].setTint().play('star',true)
                     }
 
-                    for (var i = influenceScore; i < 5; i++){
-                        influenceStars.getChildren()[i].setTint(0x000000).stop() 
+                    for (var i = votingPowerGrowthScore; i < 5; i++){
+                        votingPowerGrowthStars.getChildren()[i].setTint(0x000000).stop() 
                     }
                     }, 10)
                     
 
-                    prosperityStars.setX(prosperityIcon.x + (65 * (scaleModX)),30 * (scaleModX))
-                    prosperityStars.setY(prosperityIcon.y)
+                    regionPowerGrowthStars.setX(regionPowerGrowthIcon.x + (65 * (scaleModX)),30 * (scaleModX))
+                    regionPowerGrowthStars.setY(regionPowerGrowthIcon.y)
 
                     setTimeout(() => {
-                    for (var i = 0; i < prosperityScore; i++){
-                        prosperityStars.getChildren()[i].setTint().play('star',true)
+                    for (var i = 0; i < regionPowerGrowthScore; i++){
+                        regionPowerGrowthStars.getChildren()[i].setTint().play('star',true)
                     }
 
-                    for (var i = prosperityScore; i < 5; i++){
-                        prosperityStars.getChildren()[i].setTint(0x000000).stop() 
+                    for (var i = regionPowerGrowthScore; i < 5; i++){
+                        regionPowerGrowthStars.getChildren()[i].setTint(0x000000).stop() 
                     }
                     }, 10)
 
@@ -835,9 +939,9 @@ class Kianova extends Phaser.Scene {
 
         
                 sectorInfo.setVisible(1)
-                influenceStars.setVisible(1)
-                prosperityStars.setVisible(1)
-
+                votingPowerGrowthStars.setVisible(1)
+                regionPowerGrowthStars.setVisible(1)
+              
                 this.tweens.add({
                     
                     targets: this.textBox,
@@ -847,25 +951,25 @@ class Kianova extends Phaser.Scene {
                 });
 
                 this.tweens.add({
-                    targets: [this.text],
+                    targets: [this.text,this.patronIcon,this.patronNameText],
                     alpha: { value: 1, duration: 1000, ease: 'Power1' }, 
                 });
 
                 
 
                 this.tweens.add({
-                    targets: influenceStars.getChildren(),
+                    targets: votingPowerGrowthStars.getChildren(),
                     alpha: { value: 1, duration: 1000, ease: 'Power1' },
 
                 });
 
                 this.tweens.add({
-                    targets: prosperityStars.getChildren(),
+                    targets: regionPowerGrowthStars.getChildren(),
                     alpha: { value: 1, duration: 1000, ease: 'Power1' },
     
                 });
 
-
+                
     }
 }
 

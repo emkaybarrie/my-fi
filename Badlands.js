@@ -589,13 +589,13 @@
                         if (player.body.onFloor()){
                             
                             //player.y -= (screenHeight * 0.08) * this.actionPower 
-                            player.setVelocityY(-750 - (750 * this.actionPower))
+                            player.setVelocityY(-1250 - (250 * this.actionPower))
                             
                         } 
                     // In Air
                         else {
                         //player.y -= (screenHeight * 0.02) * this.actionPower
-                        player.setVelocityY(player.body.velocity.y -= 25 * this.actionPower)
+                        player.setVelocityY(player.body.velocity.y -= 20 + (5 * this.actionPower))
                         
                         }
 

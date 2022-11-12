@@ -1,4 +1,4 @@
-var prololgueCompleted = false
+var prologueCompleted = false
 class ModeSelect extends Phaser.Scene {
 
     
@@ -46,21 +46,15 @@ class ModeSelect extends Phaser.Scene {
                             'story12','story13','story14','story15','story16','story17',
                             'story18','story19','story20','story21','story22','story23',
                             'story24','story25','story26','story27','story28','story29',
-                            'story30','story31','story32','story33','story34','story35',
-                            'story36','story37','story38','story39','story40','story41',
+                            'story30','story31','story32','story33','story34'
                             ]
 
         this.mode2ImageArray = ['explore1','explore2','explore3','explore4','explore5', 
-                            'explore6','explore7','explore8', 'explore9', 'explore10',
-                            'explore11','explore12','explore13','explore14'
+                            'explore6','explore7'
                             ]
        
-        this.mode0ImageChoice = Phaser.Math.Between(0,this.mode0ImageArray.length - 1)
-        if(prololgueCompleted){
-            this.mode1ImageChoice = Phaser.Math.Between(0,this.mode1ImageArray.length - 1)
-        } else { 
-            this.mode1ImageChoice = Phaser.Math.Between(6,17)   
-        }
+        this.mode0ImageChoice = 0//Phaser.Math.Between(0,this.mode0ImageArray.length - 1)
+        this.mode1ImageChoice = Phaser.Math.Between(6,8)//Phaser.Math.Between(0,this.mode1ImageArray.length - 1)
         this.mode2ImageChoice = Phaser.Math.Between(0,this.mode2ImageArray.length - 1)
 
         this.mode0Image = this.add.image(screenWidth * 0.25,screenHeight * 0.35,this.mode0ImageArray[this.mode0ImageChoice]).setOrigin(0.5,0.5).setAlpha(0)
@@ -119,10 +113,10 @@ class ModeSelect extends Phaser.Scene {
 
         if (this.imageChangeTimer >= 500){
             this.imageChangeTimer = 0
-            if (prololgueCompleted){
+            if (prologueCompleted){
                 this.mode1ImageChoice = Phaser.Math.Between(0,this.mode1ImageArray.length - 1)
             } else {
-                this.mode1ImageChoice = Phaser.Math.Between(6,18)
+                this.mode1ImageChoice = Phaser.Math.Between(6,15)
             }
             
             this.mode1Image.setTexture(this.mode1ImageArray[this.mode1ImageChoice])
@@ -285,7 +279,7 @@ class ModeSelect extends Phaser.Scene {
 
         if (nextScene){
             nextScene = false
-            prololgueCompleted = true
+            prologueCompleted = true
             this.scene.start(this.selectedMode,{redirect:this.data})
             this.selectedOption = 1
             this.selectedMode = undefined
