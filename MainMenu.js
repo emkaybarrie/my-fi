@@ -242,8 +242,8 @@ class MainMenu extends Phaser.Scene {
         if (this.selectedOption == 1){
             this.selectedMode = 'ModeSelect'
         } else if (this.selectedOption == 2){
-            this.selectedMode = undefined
-           
+            this.selectedMode = 'SelectAvatar'//undefined
+            this.data = 'Simulacrum'
         } 
 
         if (nextScene){
