@@ -131,10 +131,10 @@ class MainMenu extends Phaser.Scene {
         this.gameTitle = this.add.image(screenWidth * 0.30,screenHeight * 0.2,'gameTitle').setScale(1.25 * scaleModX)
 
         this.menuOption1 = this.add.text(this.gameTitle.x, screenHeight * 0.65 , 'Start', { fontFamily: 'Georgia',align: 'center', fixedWidth:screenWidth * 0.25,fixedHeight:screenHeight * 0.075});
-        this.menuOption2 = this.add.text(this.gameTitle.x,this.menuOption1.y + (screenHeight * 0.07) , 'Settings', { fontFamily: 'Georgia',align: 'center', fixedWidth:screenWidth * 0.25,fixedHeight:screenHeight * 0.075});
+        this.menuOption2 = this.add.text(this.gameTitle.x,this.menuOption1.y + (screenHeight * 0.07) , 'Test Environment', { fontFamily: 'Georgia',align: 'center', fixedWidth:screenWidth * 0.25,fixedHeight:screenHeight * 0.075});
         
         this.menuOption1.setFontSize(32 * scaleModX).setOrigin(0.5,0)
-        this.menuOption2.setFontSize(32 * scaleModX).setOrigin(0.5,0).setAlpha(0.35)
+        this.menuOption2.setFontSize(32 * scaleModX).setOrigin(0.5,0)//.setAlpha(0.35)
 
         var menuTextGroup = this.add.group([this.menuOption1,this.menuOption2])
 

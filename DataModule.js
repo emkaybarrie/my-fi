@@ -16,6 +16,7 @@
     var a2IsDown
     var s1IsDown
     var s2IsDown
+    var openMenuIsDown
     var abortStageIsDown
 
 // Free Play Data
