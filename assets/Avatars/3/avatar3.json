@@ -640,6 +640,69 @@
 					}
 				},
 				{
+					"filename": "BLOCK_1",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 44
+					},
+					"spriteSourceSize": {
+						"x": 13,
+						"y": 3,
+						"w": 51,
+						"h": 41
+					},
+					"frame": {
+						"x": 1,
+						"y": 232,
+						"w": 51,
+						"h": 41
+					}
+				},
+				{
+					"filename": "BLOCK_2",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 44
+					},
+					"spriteSourceSize": {
+						"x": 16,
+						"y": 3,
+						"w": 42,
+						"h": 41
+					},
+					"frame": {
+						"x": 54,
+						"y": 232,
+						"w": 42,
+						"h": 41
+					}
+				},
+				{
+					"filename": "BLOCK_3",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 44
+					},
+					"spriteSourceSize": {
+						"x": 19,
+						"y": 13,
+						"w": 25,
+						"h": 31
+					},
+					"frame": {
+						"x": 98,
+						"y": 232,
+						"w": 25,
+						"h": 31
+					}
+				},
+				{
 					"filename": "CROUCH_1",
 					"rotated": false,
 					"trimmed": true,

@@ -286,6 +286,8 @@ class Simulacrum extends Phaser.Scene {
         this.actionPower = currentEnergy / maxEnergy
         this.skillPower = currentFocus / maxFocus
 
+       
+
         // Add State Machine section (playerDefending, etc)
 
         // Energy Costs & Recovery
@@ -328,29 +330,27 @@ class Simulacrum extends Phaser.Scene {
                 
                 playerVitals.decreaseEnergy(this.baseCost * this.action2CostModifier)
             }
-
-            if (this.actionPower < 1){
+   
+            if(upIsDown){
                 
-                if(upIsDown){
-                    
-                    playerVitals.decreaseEnergy(this.baseCost * this.moveUpCostModifier)
-                }
-                
-                if(downIsDown){
-                    
-                    playerVitals.decreaseEnergy(this.baseCost * this.moveDownCostModifier)
-                }
-                
-                if(leftIsDown){
-                    
-                    playerVitals.decreaseEnergy(this.baseCost * this.moveLeftCostModifier)
-                }
-
-                if(rightIsDown){
-                    playerVitals.decreaseEnergy(this.baseCost * this.moveRightCostModifier)
-                }
-
+                playerVitals.decreaseEnergy(this.baseCost * this.moveUpCostModifier)
             }
+            
+            if(downIsDown){
+                
+                playerVitals.decreaseEnergy(this.baseCost * this.moveDownCostModifier)
+            }
+            
+            if(leftIsDown){
+                
+                playerVitals.decreaseEnergy(this.baseCost * this.moveLeftCostModifier)
+            }
+
+            if(rightIsDown){
+                playerVitals.decreaseEnergy(this.baseCost * this.moveRightCostModifier)
+            }
+
+            
         }
 
         if(this.skillPower > 0){
@@ -586,11 +586,20 @@ class Simulacrum extends Phaser.Scene {
                     } else if (a2IsDown){
                         player.body.setSize(10, 15).setOffset(25,30).setAllowDrag(true)                    
                         player.body.checkCollision.right = false
-                        player.play({key:'player_Avatar_3_ACTION_1',frameRate: 2,startFrame:8},false)
+                        if(!this.a2Held){
+                        player.play({key:'player_Avatar_3_BLOCK',frameRate: 8 + (8 * Math.abs(this.actionPower))},true)
+                        this.a2Held = true
+                        }
                         
                     } else if (downIsDown){
+                        
                         player.body.setSize(10, 15).setOffset(25,30).setAllowDrag(true)
+                        if(!this.downHeld){
                         player.play({key:'player_Avatar_3_CROUCH',frameRate: 10},true)
+                        this.downHeld = true
+                        }
+                        
+
                     } else if (leftIsDown || rightIsDown){
                         if (this.playerBattleSpeed > 0.01 && leftIsDown || this.playerBattleSpeed < 0.01 && rightIsDown ){
                             player.play({key:'player_Avatar_3_EVADE',frameRate: 2,startFrame:5},true)
@@ -603,10 +612,24 @@ class Simulacrum extends Phaser.Scene {
                         player.body.setSize(10, 30).setOffset(25,15).setAllowDrag(true)
                         if (!leftIsDown && !rightIsDown && Math.abs(this.playerBattleSpeed) > 1){
                             player.play({key:'player_Avatar_3_SLIDE',frameRate: 10},true)
+                            
+                            
                         } else {
                         player.play({key:'player_Avatar_3_IDLE',frameRate: 8 + (4 * (1 - Math.abs(this.actionPower)))},true)
                         }
                     }
+
+                    if (!downIsDown){
+                        this.downHeld = false
+                    }
+
+                    if (!a2IsDown){
+                        this.a2Held = false
+                    }
+
+                   
+
+                    
                 }
 
             // Positioning - additive
@@ -693,7 +716,7 @@ class Simulacrum extends Phaser.Scene {
                    
                     }
     
-            }
+            } else 
             // Down - Slide
             if (downIsDown){
                 // All States
@@ -715,20 +738,26 @@ class Simulacrum extends Phaser.Scene {
                     // On Ground
                     if (player.body.onFloor()){
                         if (this.playerBattleSpeed > 0){
-                            this.playerBattleSpeed -= 0.05
+                            this.playerBattleSpeed -= 0.02 + 0.03 * this.actionPower
                          }
 
                          if (this.playerBattleSpeed > -1.5){
-                            this.playerBattleSpeed -= 0.025
+                            this.playerBattleSpeed -= 0.01 + 0.015 * this.actionPower
                          }
+
+                         if(!downIsDown){
                         // Better for more tactical play, keep stamina high to maintain good mobility.  Max speed capped by stamina - Speed  
                         //player.x -= (screenWidth * 0.005) + (screenWidth * 0.0025) * this.actionPower
-                        // Flat movement.  Can be modified directly via game perks/items/skills
-                        //player.x -= (screenWidth * 0.0075) 
+                        
                         // Ramp up movement for added realism but same as flat
-                        player.x -= (screenWidth * 0.004) + (screenWidth * 0.004) * -this.playerBattleSpeed
+                        player.x -= ((screenWidth * 0.004) + ((screenWidth * 0.004) * -this.playerBattleSpeed) + ((screenWidth * 0.002) * this.actionPower))
+                        //player.setVelocityX(-(screenWidth * 0.2) + (screenWidth * 0.3) * this.playerBattleSpeed)
+                        // Velocity Based - Max Velocity set, accelerate at 10% of max, with portion affected by Stamina - More responsive/agile at igher actionPower
+                        // player.body.maxVelocity.x = (screenWidth * 0.5)
+                        // player.setVelocityX(player.body.velocity.x - (screenWidth * 0.035) - (screenWidth * 0.015) * this.actionPower)
                         // Ramp up based on stamina - blend of above, keep stamina high to maintain good agility.  Max acceleration capped by stamina - Responsiveness
                         //player.x -= (screenWidth * 0.005) + (screenWidth * 0.0025) * (this.playerBattleSpeed * this.actionPower)
+                         }
                     } 
                 // In Air
                     else {
@@ -758,21 +787,27 @@ class Simulacrum extends Phaser.Scene {
                 // On Ground
                 if (player.body.onFloor()){
 
+                    
                     if (this.playerBattleSpeed < 0){
-                        this.playerBattleSpeed += 0.05
+                        this.playerBattleSpeed += 0.02 + 0.03 * this.actionPower
                      }
 
                     if (this.playerBattleSpeed < 1.5){
-                        this.playerBattleSpeed += 0.025
+                        this.playerBattleSpeed += 0.01 + 0.015 * this.actionPower
                     }
+                
+
+                    if(!downIsDown){
                     // Better for more tactical play, keep stamina high to maintain good mobility.  Max speed capped by stamina - Speed  
-                    //player.x += (screenWidth * 0.005) + (screenWidth * 0.0025) * this.actionPower
-                    // Flat movement.  Can be modified directly via game perks/items/skills
-                    //player.x += (screenWidth * 0.0075) 
+                    //player.x += (screenWidth * 0.004) + (screenWidth * 0.004) * this.actionPower
+                
                     // Ramp up movement for added realism but same as flat
-                    player.x += (screenWidth * 0.004) + (screenWidth * 0.004) * this.playerBattleSpeed
-                    // Ramp up based on stamina - blend of above, keep stamina high to maintain good agility.  Max acceleration capped by stamina - Responsiveness
-                    //player.x += (screenWidth * 0.005) + (screenWidth * 0.0025) * (this.playerBattleSpeed * this.actionPower)
+                    player.x += ((screenWidth * 0.004) + ((screenWidth * 0.004) * this.playerBattleSpeed) + ((screenWidth * 0.002) * this.actionPower))
+                    //player.setVelocityX((screenWidth * 0.2) + (screenWidth * 0.3) * this.playerBattleSpeed)
+                    // player.body.maxVelocity.x = (screenWidth * 0.5)
+                    // player.setVelocityX(player.body.velocity.x + (screenWidth * 0.035) + (screenWidth * 0.015) * this.actionPower)
+                    
+                    }
                 } 
             // In Air
                 else {
@@ -798,32 +833,22 @@ class Simulacrum extends Phaser.Scene {
   
             }
 
-            if (!leftIsDown && !rightIsDown && Math.abs(this.playerBattleSpeed) < 0.05){
+            if (!leftIsDown && !rightIsDown && Math.abs(this.playerBattleSpeed) < 0.05 ){
                 this.playerBattleSpeed = 0
             }
 
-            if (!leftIsDown && this.playerBattleSpeed < 0) {
-                if (upIsDown){
+            if (a1IsDown || a2IsDown || downIsDown || upIsDown || (!leftIsDown && !rightIsDown)){
 
-                            this.playerBattleSpeed += 0.01 
+                if (Math.abs(this.playerBattleSpeed) <= 0.05 ){
+                    this.playerBattleSpeed = 0
+                } else 
 
-                } else {
+                if (this.playerBattleSpeed < 0){
                     if (this.playerBattleSpeed < -1){
                         this.playerBattleSpeed += 0.025
                     } else {
                         this.playerBattleSpeed += 0.05
                     }
-                             
-                }
-
-                player.x -= (screenWidth * 0.002) * -this.playerBattleSpeed
-            }
-
-            if (!rightIsDown && this.playerBattleSpeed > 0) {
-                if (upIsDown){
-                      
-                            this.playerBattleSpeed -= 0.01 
-                          
                 } else {
                     if (this.playerBattleSpeed > 1){
                         this.playerBattleSpeed -= 0.025
@@ -831,11 +856,45 @@ class Simulacrum extends Phaser.Scene {
                         this.playerBattleSpeed -= 0.05
                     }
                 }
-
-                player.x += (screenWidth * 0.002) * this.playerBattleSpeed
+                
             }
 
-            
+            //if (this.playerBattleSpeed < 0 && (!leftIsDown || (leftIsDown && (a1IsDown || a2IsDown))) ) {
+            //     if (this.playerBattleSpeed < 0 && !leftIsDown) {
+            //     if (upIsDown){
+
+            //                 this.playerBattleSpeed += 0.01 
+
+            //     } else {
+            //         if (this.playerBattleSpeed < -1){
+            //             this.playerBattleSpeed += 0.025
+            //         } else {
+            //             this.playerBattleSpeed += 0.05
+            //         }
+                             
+            //     }
+
+               
+            // }
+
+            //if (this.playerBattleSpeed > 0 && (!rightIsDown || (rightIsDown && (a1IsDown || a2IsDown)))) {
+            //     if (this.playerBattleSpeed > 0 && !rightIsDown) {
+            //     if (upIsDown){
+                      
+            //                 this.playerBattleSpeed -= 0.01 
+                          
+            //     } else {
+            //         if (this.playerBattleSpeed > 1){
+            //             this.playerBattleSpeed -= 0.025
+            //         } else {
+            //             this.playerBattleSpeed -= 0.05
+            //         }
+            //     }
+
+                
+            // }
+
+            player.x += (screenWidth * 0.002) * this.playerBattleSpeed
                   
         }
         
@@ -909,6 +968,7 @@ class Simulacrum extends Phaser.Scene {
         
         this.playerBattleSpeedText.setText(Math.round(this.playerBattleSpeed * 100))
         this.playerSpeedText.setText(Math.round(this.playerSpeed * 100))
+   
         
         playerVitals.draw()
         
