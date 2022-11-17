@@ -898,9 +898,6 @@ class Simulacrum extends Phaser.Scene {
 
             if (a1IsDown || a2IsDown || downIsDown || upIsDown || (!leftIsDown && !rightIsDown)){
 
-                if (Math.abs(this.playerBattleSpeed) <= 0.05 ){
-                    this.playerBattleSpeed = 0
-                } else 
 
                 if (player.body.onFloor()){
                     this.playerBattleSpeedDecelerationStandard = 0.05
@@ -917,7 +914,7 @@ class Simulacrum extends Phaser.Scene {
                     } else {
                         this.playerBattleSpeed += this.playerBattleSpeedDecelerationStandard
                     }
-                } else {
+                } else if (this.playerBattleSpeed > 0) {
                     if (this.playerBattleSpeed > 1){
                         this.playerBattleSpeed -= this.playerBattleSpeedDecelerationSprint
                     } else {
@@ -970,8 +967,10 @@ class Simulacrum extends Phaser.Scene {
     }
 
     enterBattle(game){
-        game.playerSpeed = 0
+        
         game.enterBattleAnimation = true
+        game.playerSpeed = 0
+        game.playerBattleSpeed = 0
         // Pan here has fluid effect of transition into action, carries momentum, but less clear entrance to Battle Phase
         game.camera.pan(player.x,null,1000,'Power2')
         player.play({key:'player_Avatar_3_SLIDE',frameRate: 10},true)
@@ -993,6 +992,7 @@ class Simulacrum extends Phaser.Scene {
 
     exitBattle(game){
         game.playerBattleSpeed = 0
+        game.playerSpeed = 0
         game.camera.stopFollow()
         
         game.physics.world.setBounds(game.camera.worldView.x,game.camera.worldView.y,screenWidth,screenHeight)
@@ -1011,7 +1011,7 @@ class Simulacrum extends Phaser.Scene {
                 this.camera.flash()
                 this.gameMode = 1
                 this.enterBattle(this)
-                this.playerBattleSpeed = 0
+                
  
             } else {
                 this.gameMode = 0
