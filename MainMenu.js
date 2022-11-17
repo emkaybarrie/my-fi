@@ -81,6 +81,8 @@ class MainMenu extends Phaser.Scene {
         this.load.image('menuSelectionTexture', 'assets/menuTexture.png');
         this.load.image('gameTitle', 'assets/tempLogo.png');
         this.load.audio("mainTheme", ["assets/music/Main_Theme.mp3"]);
+        this.load.audio("kianovaTheme", ["assets/music/Kianova_Theme.mp3"]);
+        
        
         // Preload Mode Select Menu Assets
             

@@ -198,6 +198,7 @@ class Kianova extends Phaser.Scene {
         console.log(activeUser)
 
         
+        
 
         if (data.glory > 0){
             this.updateGlory(data)
@@ -206,6 +207,7 @@ class Kianova extends Phaser.Scene {
 
         camera = this.cameras.main.fadeIn(500)
         camera.flash(1000)
+        this.sound.stopAll();
         camera.setBounds(0, 0, screenWidth, screenHeight)
 
 
@@ -543,6 +545,8 @@ class Kianova extends Phaser.Scene {
                     this.sectorUI.setVisible(1)
                     this.controlsEnabled = true
                     this.refreshUI()
+                    
+                    this.sound.play('kianovaTheme')
                       
             }
         });
