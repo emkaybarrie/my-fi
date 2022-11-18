@@ -347,17 +347,17 @@ class Simulacrum extends Phaser.Scene {
         if (this.gameMode == 0){
             this.action1CostModifier = 1
             this.action2CostModifier = 0.25
-            this.moveUpCostModifier = 0.75
-            this.moveDownCostModifier = 0.75
-            this.moveLeftCostModifier = 0.5
-            this.moveRightCostModifier = 0.5
+            this.moveUpCostModifier = 1.25
+            this.moveDownCostModifier = 1.25
+            this.moveLeftCostModifier = 0.75
+            this.moveRightCostModifier = 0.75
         } else     
         // Battle
         if (this.gameMode == 1){
             this.action1CostModifier = 1
             this.action2CostModifier = 0.25
-            this.moveUpCostModifier = 0.75
-            this.moveDownCostModifier = 0.75
+            this.moveUpCostModifier = 1
+            this.moveDownCostModifier = 1
             this.moveLeftCostModifier = 0.5
             this.moveRightCostModifier = 0.5
         }
@@ -543,15 +543,17 @@ class Simulacrum extends Phaser.Scene {
                     
     
                 // On Ground
-                    if (player.body.onFloor()){
+                if (player.body.onFloor()){
                         
-                        player.setVelocityY(-1500) * this.actionPower
-                    } 
+                    player.setVelocityY(-1000 - 500 * this.actionPower)
+                } 
+
                 // In Air
-                    else  {
-                    player.y -= (screenHeight * 0.01) * this.actionPower
-                   
-                    }
+                else  {
+                //player.y -= (screenHeight * 0.0075 * this.actionPower)
+                player.setVelocityY(player.body.velocity.y - 25 * this.actionPower)
+
+                }
     
             } 
             // Down - Slide
@@ -588,11 +590,11 @@ class Simulacrum extends Phaser.Scene {
                 
                 // On Ground
                     if (player.body.onFloor()){
-                        player.x += (screenWidth * 0.004) + (screenWidth * 0.004 * this.actionPower)
+                        player.x += (screenWidth * 0.003) + (screenWidth * 0.003 * this.actionPower)
                     } 
                 // In Air
                     else {
-                        player.x += (screenWidth * 0.002) + (screenWidth * 0.002 * this.actionPower)
+                        player.x += (screenWidth * 0.0015) + (screenWidth * 0.0015 * this.actionPower)
                     }
             }
 
@@ -605,10 +607,13 @@ class Simulacrum extends Phaser.Scene {
                     
                     if(a1IsDown && this.actionPower > 0){
                         // Air attack animation
+                        if (upIsDown){
+                            player.play({key:'player_Avatar_3_ACTION_3',frameRate: 4 + (6 * Math.abs(this.actionPower))},true)
+                        } else
                         if (leftIsDown || rightIsDown){
-                            player.play({key:'player_Avatar_3_SKILL_1',frameRate: 12 + (4 * Math.abs(this.actionPower))},true)
+                            player.play({key:'player_Avatar_3_ACTION_2',frameRate: 6 + (6 * Math.abs(this.actionPower))},true)
                         } else {
-                            player.play({key:'player_Avatar_3_ACTION_1',frameRate: 12 + (4 * Math.abs(this.actionPower))},true)
+                            player.play({key:'player_Avatar_3_ACTION_1',frameRate: 10 + (6 * Math.abs(this.actionPower))},true)
                         }
                     } else if (a2IsDown){
                         // Air block animation
@@ -637,12 +642,15 @@ class Simulacrum extends Phaser.Scene {
                 else {
 
                     if(a1IsDown && this.actionPower > 0.01){
+                        if (upIsDown){
+                            player.play({key:'player_Avatar_3_ACTION_3',frameRate: 4 + (6 * Math.abs(this.actionPower))},true)
+                        } else
                         if (leftIsDown || rightIsDown){
-                            player.play({key:'player_Avatar_3_SKILL_1',frameRate: 12 + (4 * Math.abs(this.actionPower))},true)
+                            player.play({key:'player_Avatar_3_ACTION_2',frameRate: 6 + (6 * Math.abs(this.actionPower))},true)
                         } else {
-                            player.play({key:'player_Avatar_3_ACTION_1',frameRate: 12 + (4 * Math.abs(this.actionPower))},true)
+                            player.play({key:'player_Avatar_3_ACTION_1',frameRate: 10 + (6 * Math.abs(this.actionPower))},true)
                         }
-                    } else if (a2IsDown){
+                    } else if (a2IsDown && this.actionPower > 0.01){
                         player.body.setSize(10, 15).setOffset(25,30).setAllowDrag(true)                    
                         player.body.checkCollision.right = false
                         if(!this.a2Held){
@@ -650,7 +658,7 @@ class Simulacrum extends Phaser.Scene {
                         this.a2Held = true
                         }
                         
-                    } else if (downIsDown){
+                    } else if (downIsDown && !a1IsDown && !a2IsDown){
                         
                         player.body.setSize(10, 15).setOffset(25,30).setAllowDrag(true)
                         if(!this.downHeld){
@@ -659,7 +667,7 @@ class Simulacrum extends Phaser.Scene {
                         }
                         
 
-                    } else if (leftIsDown || rightIsDown){
+                    } else if ((leftIsDown || rightIsDown) && !a1IsDown && !a2IsDown){
                         if (this.playerBattleSpeed > 0.01 && leftIsDown || this.playerBattleSpeed < 0.01 && rightIsDown ){
                             player.play({key:'player_Avatar_3_EVADE',frameRate: 2,startFrame:5},true)
                         }  else {
@@ -767,12 +775,13 @@ class Simulacrum extends Phaser.Scene {
                 // On Ground
                     if (player.body.onFloor()){
                         
-                        player.setVelocityY(-1500) * this.actionPower
+                        player.setVelocityY(-1000 - 500 * this.actionPower)
                     } 
                 // In Air
                     else  {
-                    player.y -= (screenHeight * 0.0075) * this.actionPower
-                   
+                    //player.y -= (screenHeight * 0.0075 * this.actionPower)
+                    player.setVelocityY(player.body.velocity.y - 25 * this.actionPower)
+
                     }
     
             } else 
@@ -797,11 +806,11 @@ class Simulacrum extends Phaser.Scene {
                     // On Ground
                     if (player.body.onFloor()){
                         if (this.playerBattleSpeed > 0){
-                            this.playerBattleSpeed -= 0.02 + 0.03 * this.actionPower
+                            this.playerBattleSpeed -= 0.02 + 0.06 * this.actionPower
                          }
 
                          if (this.playerBattleSpeed > -1.5){
-                            this.playerBattleSpeed -= 0.01 + 0.015 * this.actionPower
+                            this.playerBattleSpeed -= 0.01 + 0.03 * this.actionPower
                          }
 
                          if(!downIsDown){
@@ -822,11 +831,11 @@ class Simulacrum extends Phaser.Scene {
                     else {
                 
                         if (this.playerBattleSpeed > 0){
-                            this.playerBattleSpeed -= 0.01 + 0.015 * this.actionPower
+                            this.playerBattleSpeed -= 0.01 + 0.03 * this.actionPower
                          }
 
                          if (this.playerBattleSpeed > -1.5){
-                            this.playerBattleSpeed -= 0.005 + 0.0075 * this.actionPower
+                            this.playerBattleSpeed -= 0.005 + 0.015 * this.actionPower
                          }
                         // Better for more tactical play, keep stamina high to maintain good mobility.  Max speed capped by stamina - Speed  
                         //player.x += (screenWidth * 0.00225) + (screenWidth * 0.0015) * this.actionPower
@@ -848,11 +857,11 @@ class Simulacrum extends Phaser.Scene {
 
                     
                     if (this.playerBattleSpeed < 0){
-                        this.playerBattleSpeed += 0.02 + 0.03 * this.actionPower
+                        this.playerBattleSpeed += 0.02 + 0.06 * this.actionPower
                      }
 
                     if (this.playerBattleSpeed < 1.5){
-                        this.playerBattleSpeed += 0.01 + 0.015 * this.actionPower
+                        this.playerBattleSpeed += 0.01 + 0.03 * this.actionPower
                     }
                 
 
@@ -871,11 +880,11 @@ class Simulacrum extends Phaser.Scene {
             // In Air
                 else {
                     if (this.playerBattleSpeed < 0){
-                        this.playerBattleSpeed += 0.01 + 0.015 * this.actionPower
+                        this.playerBattleSpeed += 0.01 + 0.03 * this.actionPower
                      }
 
                      if (this.playerBattleSpeed < -1.5){
-                        this.playerBattleSpeed += 0.005 + 0.0075 * this.actionPower
+                        this.playerBattleSpeed += 0.005 + 0.015 * this.actionPower
                      }
 
                     // Better for more tactical play, keep stamina high to maintain good mobility.  Max speed capped by stamina - Speed  
