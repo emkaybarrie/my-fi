@@ -442,7 +442,7 @@ class Simulacrum extends Phaser.Scene {
                     if (a2IsDown){
                         player.body.setSize(10, 15).setOffset(25,30).setAllowDrag(true)
                         player.body.checkCollision.right = false
-                        player.play({key:'player_Avatar_3_EVADE',frameRate: 10},true)
+                        player.play({key:'player_Avatar_3_EVADE',frameRate: 3, startFrame: 5},true)
                     } else if(player.body.velocity.y >= (screenHeight * 0.02) * this.actionPower * 60 ){
                         player.play({key:'player_Avatar_3_FALL',frameRate: 10},true)
                     } else if (player.body.velocity.y < (screenHeight * 0.02) * this.actionPower * 60){
@@ -460,7 +460,7 @@ class Simulacrum extends Phaser.Scene {
                     if (a2IsDown){
                         player.body.setSize(10, 15).setOffset(25,30).setAllowDrag(true)                    
                         player.body.checkCollision.right = false
-                        player.play({key:'player_Avatar_3_EVADE',frameRate: 10},true)
+                        player.play({key:'player_Avatar_3_EVADE',frameRate: 3, startFrame: 5},true)
                     // } else if(a1IsDown){
                        
                     //     player.play({key:'player_Avatar_3_RUN',frameRate: 6 + (6 * Math.abs(this.playerSpeed))},true)
