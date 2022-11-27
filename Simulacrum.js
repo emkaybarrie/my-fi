@@ -269,6 +269,14 @@ class Simulacrum extends Phaser.Scene {
             showOnStart: 1,
             repeat:-1
         });
+
+        this.anims.create({
+            key: 'nightBorne_Move',
+            frames: this.anims.generateFrameNumbers('nightBorne', { start:23, end: 28}),
+            frameRate: 12,
+            showOnStart: 1,
+            repeat:-1
+        });
           
         this.physics.add.collider(this.enemyGroup,ground); 
         this.physics.add.collider(this.enemyGroup,this.platformGroup);  
@@ -486,7 +494,12 @@ class Simulacrum extends Phaser.Scene {
                         enemy.setTexture('nightBorne')
                         enemy.setOrigin(0.5,1)
                         enemy.body.setSize(25, 25).setOffset(25,37.5)
-                        enemy.play('nightBorne_Idle')
+                        if (this.enemyOrientation == 1){
+                            enemy.play('nightBorne_Move')
+                        } else {
+                            enemy.play('nightBorne_Idle')
+                        }
+                        
                         
                     }
                     enemy.x = Phaser.Math.FloatBetween(screenWidth * 2 + (screenWidth * 0.3 * i), screenWidth * 2.15 + (screenWidth * 0.3 * i)) //screenWidth * 2
@@ -507,7 +520,7 @@ class Simulacrum extends Phaser.Scene {
             if(e.speedMod == 1){
                 e.x -= (this.baseSpeed + this.baseSpeedAdd) * this.playerSpeed 
             } else {
-                e.x -= (this.baseSpeed + this.baseSpeedAdd) * this.playerSpeed * 2
+                e.x -= (this.baseSpeed + this.baseSpeedAdd) * this.playerSpeed * 1.5
             }
             
 
@@ -1198,6 +1211,14 @@ class Simulacrum extends Phaser.Scene {
         this.camera.flash()
         this.gameMode = 1
         this.enterBattleAnimation = true
+
+        this.enemyGroup.children.each(function(e) {
+            if(e.speedMod == 2){
+                e.play('nightBorne_Idle')
+            } 
+
+        }.bind(this));
+
         
         // Pan here has fluid effect of transition into action, carries momentum, but less clear entrance to Battle Phase
         this.camera.pan(player.x,null,1000,'Power2')
