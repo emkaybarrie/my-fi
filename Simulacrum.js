@@ -167,9 +167,6 @@ class Simulacrum extends Phaser.Scene {
         
     }
 
-   
-
-
     preload(){
        
         
@@ -177,11 +174,13 @@ class Simulacrum extends Phaser.Scene {
 
         
         this.load.image('ground', 'assets/woodground.png');
+        this.load.atlas('doomsayer', ['assets/doomsayer.png','assets/doomsayer_n.png'],'assets/doomsayersprites.json');
+        this.load.spritesheet('nightBorne', ['assets/nightBorne.png','assets/nightBorne.png'], { frameWidth: 80, frameHeight: 80});
 
-        for (var i = 1; i < 4 + 1; i++){
+        for (var i = 1; i < 7 + 1; i++){
             
           
-                this.load.image('bgL'+ i, 'assets/BGdesert' + i + '.png');
+                this.load.image('bgL'+ i, 'assets/BGforest' + i + '.png');
            
                 
             
@@ -205,17 +204,15 @@ class Simulacrum extends Phaser.Scene {
         
         // Debug Code
         controlsEnabled = true
-        
-
 
         this.playerSpeed = 0
        
         
         //BG Temp
 
-        this.scroll = [1,0.85,0.5,0]
+        this.scroll = [1,0.95,0.75,0.65,0.45,0.2,0,0]
 
-        for (var i = 4; i > 0; i--){
+        for (var i = 7; i > 0; i--){
             
             var textureToApply = this.textures.get('bgL' + i).getSourceImage()
             console.log('Texture Width: ' + textureToApply.width,'\nTexture Height: ' + textureToApply.height)
@@ -233,18 +230,51 @@ class Simulacrum extends Phaser.Scene {
            
         }
 
-        this.physics.world.setBounds(0, 0, screenWidth * 2,  screenHeight);
+        this.physics.world.setBounds(0, 0 - screenHeight * 0.1, screenWidth * 2,  screenHeight * 1.1);
 
         var ground = this.physics.add.image(0, screenHeight,'ground').setScale(screenWidth * 3/400, 1).setImmovable(true).refreshBody().setOrigin(0,1)
         ground.body.setAllowGravity(false)
 
         // Platform Code - to migrate
-        this.platform = this.physics.add.image(screenWidth * 1.3  , screenHeight * 0.75 ,'ground').setScale(1,1.5).setImmovable(true).setOrigin(1,0)
-        this.platform2 = this.physics.add.image(screenWidth * 1.6 , screenHeight * 0.5 ,'ground').setScale(1,1.5).setImmovable(true).setOrigin(1,0)
-        this.platform3 = this.physics.add.image(screenWidth * 1.9 , screenHeight * 0.65 ,'ground').setScale(1,1.5).setImmovable(true).setOrigin(1,0)
-        this.platform.body.setAllowGravity(false)
-        this.platform2.body.setAllowGravity(false)
-        this.platform3.body.setAllowGravity(false)
+
+        this.platformGroup = this.physics.add.group({
+            defaultKey: 'ground',
+            maxSize: 20
+        });
+
+        this.spawningPlatform = false
+        this.platformTimer = this.time.addEvent({delay: 3000, callback: this.spawnPlatform, args: [], callbackScope: this, loop: true});
+
+        // Enemy
+        this.enemyGroup = this.physics.add.group({
+            defaultKey: 'doomsayer',
+            maxSize: 20
+        });
+        
+        this.spawningEnemy = false  
+        this.enemyTimer = this.time.addEvent({delay: 1500, callback: this.spawnEnemy, args: [], callbackScope: this, loop: true});
+
+        this.anims.create({
+            key: 'nightBorneMinion_Idle',
+            frames: this.anims.generateFrameNames('doomsayer',{prefix: 'idle', start: 1, end: 8}),
+            frameRate: 10,
+            showOnStart: 1,
+            repeat:-1
+        });
+
+        this.anims.create({
+            key: 'nightBorne_Idle',
+            frames: this.anims.generateFrameNumbers('nightBorne', { start:0, end: 8}),
+            frameRate: 12,
+            showOnStart: 1,
+            repeat:-1
+        });
+          
+        this.physics.add.collider(this.enemyGroup,ground); 
+        this.physics.add.collider(this.enemyGroup,this.platformGroup);  
+        
+          
+        // Player
        
         var playerScale = 4 * (scaleModX) 
         player = this.physics.add.sprite(screenWidth * 0.5, screenHeight * 0.5 ,'avatar3').setScale(playerScale)
@@ -252,22 +282,8 @@ class Simulacrum extends Phaser.Scene {
         player.setBounce(0.05)
         player.setCollideWorldBounds(true);
         this.physics.add.collider(player,ground);
-
-        
-        this.physics.add.collider(player,[this.platform,this.platform2,this.platform3], function (player,platform){
-           
-            // if(player.body.touching.up && platform.body.touching.down){
-            //   player.body.checkCollision.none = true
-            //     player.setVelocityY(-700)
-     
-            // } 
-           
-        });
-        // this.physics.add.overlap(player,[this.platform,this.platform2], function (){
-      
-        //         player.setVelocityY(1000 * globalGravityMod)
-           
-        // });
+        this.physics.add.collider(player,this.platformGroup)
+        this.physics.add.overlap(player,this.enemyGroup,this.enterBattle,null,this)
 
         this.camera = this.cameras.main
         this.camera.setBounds(0,0,screenWidth * 2, screenHeight)
@@ -291,8 +307,8 @@ class Simulacrum extends Phaser.Scene {
 
         this.gameMode = 0
         this.baseSpeed = 10
-        this.baseSpeedAdd = 0
-        this.speedLevel = 1
+        this.baseSpeedAdd = 10
+        this.speedLevel = 2
 
         // Music
         this.sound.stopByKey('mainTheme');
@@ -314,22 +330,189 @@ class Simulacrum extends Phaser.Scene {
 
             // Background Music
 
-                // bgMusic.on('complete', function(){
+                 bgMusic.on('complete', function(){
                 //     songChoice = Math.floor(Phaser.Math.Between(1,songDatabaseSize))
                 //     Phaser.Utils.Array.Add(bgMusicArray,"bgMusic" + songChoice)
-                //     bgMusic.destroy()
-                //     bgMusic = this.sound.add(Phaser.Utils.Array.GetRandom(bgMusicArray))
-                //     bgMusic.play()
-                // },this)  
+                     bgMusic.destroy()
+                     bgMusic = this.sound.add(Phaser.Utils.Array.GetRandom(bgMusicArray))
+                     bgMusic.play()
+                 },this)  
         
+    }
+
+    spawnPlatform(){
+        if (this.gameMode == 0){
+        this.spawningPlatform = true
+        } 
+    }
+
+    platforms(game){
+
+        
+
+        if(game.spawningPlatform){
+
+            for (var i = 0; i < 2; i++){
+            var platform = game.platformGroup.get()
+
+            if(game.speedLevel == 1){
+                
+                this.platformScaleXMin = 2.125
+                this.platformScaleXMax = 2.125
+
+                this.platformPositionYMin = screenHeight * 0.5
+                this.platformPositionYMax = screenHeight * 0.75
+
+            } else
+            // Level 2
+            if(game.speedLevel == 2){
+                this.platformScaleXMin = 2
+                this.platformScaleXMax = 2.25
+
+                this.platformPositionYMin = screenHeight * 0.4
+                this.platformPositionYMax = screenHeight * 0.8
+            } else
+            // Level 3
+            if(game.speedLevel == 3){
+                this.platformScaleXMin = 1.75
+                this.platformScaleXMax = 2.5
+
+                this.platformPositionYMin = screenHeight * 0.3
+                this.platformPositionYMax = screenHeight * 0.85
+            } else
+            // Level 4
+            if(game.speedLevel == 4){
+                this.platformScaleXMin = 1.5
+                this.platformScaleXMax = 2.75
+
+                this.platformPositionYMin = screenHeight * 0.2
+                this.platformPositionYMax = screenHeight * 0.85
+            } 
+
+            if(platform){
+                platform.setOrigin(1,0)
+                platform.x = Phaser.Math.FloatBetween(screenWidth * 2.25 + (screenWidth * 0.6 * i), screenWidth * 2.35 + (screenWidth * 0.6 * i)) //screenWidth * 2
+                platform.y = Phaser.Math.FloatBetween(this.platformPositionYMin, this.platformPositionYMax)
+                platform.setScale(Phaser.Math.FloatBetween(this.platformScaleXMin,this.platformScaleXMax),Phaser.Math.FloatBetween(1, 1.25))
+                platform.setActive(true)
+                platform.setImmovable(true)
+                platform.body.setAllowGravity(false)
+                
+            }
+            }
+
+            game.spawningPlatform = false
+        }
+
+        game.platformGroup.children.each(function(p) {
+
+            p.x -= (this.baseSpeed + this.baseSpeedAdd) * this.playerSpeed 
+
+            if (p.active) {
+                if (p.x < 0) {
+                    p.setActive(false);
+                }
+            }
+        }.bind(game));
+
+
+    }
+
+    spawnEnemy(){
+        if (this.gameMode == 0){
+        this.spawningEnemy = true
+        this.enemyTimer.delay = Phaser.Math.Between(1500,3000)
+        } 
+    }
+
+    enemies(game){
+
+        
+
+        if(game.spawningEnemy){
+
+            this.enemiesSpawned = Phaser.Math.Between(1,2)
+
+            for (var i = 0; i < this.enemiesSpawned; i++){
+            var enemy = game.enemyGroup.get()
+
+            this.enemiesType = Phaser.Math.Between(1,2)
+            if(this.enemiesType == 1){
+                this.creepScale = Phaser.Math.FloatBetween(2.5,3) //* (scaleModX) 
+            } else {
+                this.creepScale = Phaser.Math.FloatBetween(7.5,8.5) //* (scaleModX) 
+        
+            }
+            
+            this.enemyOrientation = Phaser.Math.Between(1,2)
+
+            if(this.enemyOrientation == 1){
+                enemy.flipX = true 
+            } else {
+                enemy.flipX = false  
+        
+            }
+     
+
+            if(game.speedLevel == 1){
+                
+
+            } else
+            // Level 2
+            if(game.speedLevel == 2){
+         
+            } else
+            // Level 3
+            if(game.speedLevel == 3){
+              
+            } else
+            // Level 4
+            if(game.speedLevel == 4){
+         
+            } 
+
+                if(enemy){
+                    if(this.enemiesType == 1){
+                        enemy.setTexture('doomsayer')
+                        enemy.play('nightBorneMinion_Idle')
+                        
+                    } else {
+                        enemy.setTexture('nightBorne')
+                        enemy.setOrigin(0.5,1)
+                        enemy.body.setSize(25, 25).setOffset(25,37.5)
+                        enemy.play('nightBorne_Idle')
+                        
+                    }
+                    enemy.x = Phaser.Math.FloatBetween(screenWidth * 2 + (screenWidth * 0.3 * i), screenWidth * 2.15 + (screenWidth * 0.3 * i)) //screenWidth * 2
+                    enemy.y = Phaser.Math.FloatBetween(0, screenHeight * 0.5)
+                    enemy.setScale(this.creepScale)
+                    enemy.setActive(true)
+                    enemy.body.setAllowGravity(true)
+    
+                }
+            }
+
+            game.spawningEnemy = false
+        }
+
+        game.enemyGroup.children.each(function(e) {
+
+            e.x -= (this.baseSpeed + this.baseSpeedAdd) * this.playerSpeed 
+
+            if (e.active) {
+                if (e.x < 0) {
+                    e.setActive(false);
+                }
+            }
+        }.bind(game));
+
+
     }
 
     controls(){
 
         this.actionPower = currentEnergy / maxEnergy
         this.skillPower = currentFocus / maxFocus
-
-       
 
         // Add State Machine section (playerDefending, etc)
 
@@ -551,7 +734,7 @@ class Simulacrum extends Phaser.Scene {
                 // In Air
                 else  {
                 //player.y -= (screenHeight * 0.0075 * this.actionPower)
-                player.setVelocityY(player.body.velocity.y - 25 * this.actionPower)
+                player.setVelocityY(player.body.velocity.y - 35 * this.actionPower)
 
                 }
     
@@ -577,11 +760,11 @@ class Simulacrum extends Phaser.Scene {
     
                 // On Ground
                 if (player.body.onFloor()){
-                    player.x -= (screenWidth * 0.002) + (screenWidth * 0.002 * this.actionPower)
+                    player.x -= (screenWidth * 0.003) + (screenWidth * 0.006 * this.actionPower)
                 } 
             // In Air
                 else {
-                    player.x -= (screenWidth * 0.001) + (screenWidth * 0.001 * this.actionPower)
+                    player.x -= (screenWidth * 0.0015) + (screenWidth * 0.003 * this.actionPower)
                 }
             } 
             // Right 
@@ -590,11 +773,11 @@ class Simulacrum extends Phaser.Scene {
                 
                 // On Ground
                     if (player.body.onFloor()){
-                        player.x += (screenWidth * 0.003) + (screenWidth * 0.003 * this.actionPower)
+                        player.x += (screenWidth * 0.003) + (screenWidth * 0.006 * this.actionPower)
                     } 
                 // In Air
                     else {
-                        player.x += (screenWidth * 0.0015) + (screenWidth * 0.0015 * this.actionPower)
+                        player.x += (screenWidth * 0.0015) + (screenWidth * 0.003 * this.actionPower)
                     }
             }
 
@@ -652,11 +835,26 @@ class Simulacrum extends Phaser.Scene {
                         }
                     } else if (a2IsDown && this.actionPower > 0.01){
                         player.body.setSize(10, 15).setOffset(25,30).setAllowDrag(true)                    
-                        player.body.checkCollision.right = false
+                        
+                        if(leftIsDown || rightIsDown){
+                            player.play({key:'player_Avatar_3_EVADE',frameRate: 12 + (8 * Math.abs(this.actionPower))},true)
+
+                            player.once('animationcomplete', function (anim,frame) {
+                                player.emit('animationcomplete_' + anim.key, frame)
+                            }, player)
+                            
+                            player.once('animationcomplete_player_Avatar_3_EVADE', function(){
+                                leftIsDown = false
+                                rightIsDown = false
+                            })
+                            
+                        } else 
                         if(!this.a2Held){
                         player.play({key:'player_Avatar_3_BLOCK',frameRate: 8 + (8 * Math.abs(this.actionPower))},true)
                         this.a2Held = true
                         }
+
+                        
                         
                     } else if (downIsDown && !a1IsDown && !a2IsDown){
                         
@@ -708,7 +906,7 @@ class Simulacrum extends Phaser.Scene {
                 player.flipX = false
             }
             // Movement
-            // A1 - Sprint
+            // A1 - Attack
             if (a1IsDown){
                 //if(this.actionPower > 0){
     
@@ -722,6 +920,9 @@ class Simulacrum extends Phaser.Scene {
                 } 
                 // In Air
                 else  {
+                 
+                        player.body.velocity.y -= 50 * this.actionPower
+                        //player.setVelocityY(0)
                     
                 }
     
@@ -729,7 +930,7 @@ class Simulacrum extends Phaser.Scene {
                 //}
     
             } else 
-            // A2 - Slow
+            // A2 - Block
             if (a2IsDown){
                 
     
@@ -737,26 +938,61 @@ class Simulacrum extends Phaser.Scene {
     
                     // All States
                 // Extra Forward motion at high power (toggle and test feel)
-                
-    
-                // On Ground
-                if (player.body.onFloor()){
-                    if(this.playerSpeed > 0.5){
-                        this.playerSpeed -= 0.0125  + (0.0125 * this.actionPower)
-                    }
-                } 
-                // In Air
-                else  {
-                    if(this.playerSpeed > 0.5){
-                        this.playerSpeed -= 0.005  + (0.005 * this.actionPower)
-                    }
-                }
-    
+                //if (this.a2Held){
                     
+                    if (leftIsDown){
+                        if (this.playerBattleSpeed > 0){
+                            this.playerBattleSpeed -= 0.015 + 0.12 * this.actionPower
+                         }
+
+                         if (this.playerBattleSpeed > -0.5){
+                            this.playerBattleSpeed -= 0.0075 + 0.06 * this.actionPower
+                         }
+
+                         
+                        //player.x -= ((screenWidth * 0.008) + ((screenWidth * 0.008) * -this.playerBattleSpeed) + ((screenWidth * 0.004) * this.actionPower))
+                        if (player.body.onFloor()){
+                        player.x -= ((screenWidth * 0.004) + ((screenWidth * 0.006) * this.actionPower))
+                        } else {
+                            player.x -= ((screenWidth * 0.002) + ((screenWidth * 0.006) * this.actionPower))
+                        }
+                    } else if (rightIsDown) {
+                        if (this.playerBattleSpeed < 0){
+                            this.playerBattleSpeed += 0.015 + 0.12 * this.actionPower
+                         }
+
+                         if (this.playerBattleSpeed < 0.5){
+                            this.playerBattleSpeed += 0.0075 + 0.06 * this.actionPower
+                            
+                         }
+
+                         //player.x += ((screenWidth * 0.008) + ((screenWidth * 0.008) * this.playerBattleSpeed) + ((screenWidth * 0.004) * this.actionPower))
+                         if (player.body.onFloor()){
+                         player.x += ((screenWidth * 0.004) + ((screenWidth * 0.006) * this.actionPower))
+                        } else {
+                            player.x += ((screenWidth * 0.002) + ((screenWidth * 0.006) * this.actionPower))
+                        }
+                    } else
+        
+                    // On Ground
+                    if (player.body.onFloor()){
+                        if(this.playerBattleSpeed > 0.5){
+                            this.playerBattleSpeed -= 0.0125  + (0.0125 * this.actionPower)
+                        } else if (this.playerBattleSpeed < -0.5){
+                            this.playerBattleSpeed += 0.0125  + (0.0125 * this.actionPower)
+                        }
+                    } 
+                    // In Air
+                    else  {
+                        if(this.playerBattleSpeed > 0.5){
+                            this.playerBattleSpeed -= 0.0125  + (0.0125 * this.actionPower)
+                        } else if (this.playerBattleSpeed < -0.5){
+                            this.playerBattleSpeed += 0.0125  + (0.0125 * this.actionPower)
+                        }
+                    }
                 //}
-                
     
-    
+
             } else {
             // Up - Jump
             if (upIsDown){
@@ -780,7 +1016,7 @@ class Simulacrum extends Phaser.Scene {
                 // In Air
                     else  {
                     //player.y -= (screenHeight * 0.0075 * this.actionPower)
-                    player.setVelocityY(player.body.velocity.y - 25 * this.actionPower)
+                    player.setVelocityY(player.body.velocity.y - 35 * this.actionPower)
 
                     }
     
@@ -806,11 +1042,11 @@ class Simulacrum extends Phaser.Scene {
                     // On Ground
                     if (player.body.onFloor()){
                         if (this.playerBattleSpeed > 0){
-                            this.playerBattleSpeed -= 0.02 + 0.06 * this.actionPower
+                            this.playerBattleSpeed -= 0.03 + 0.06 * this.actionPower
                          }
 
                          if (this.playerBattleSpeed > -1.5){
-                            this.playerBattleSpeed -= 0.01 + 0.03 * this.actionPower
+                            this.playerBattleSpeed -= 0.015 + 0.03 * this.actionPower
                          }
 
                          if(!downIsDown){
@@ -831,11 +1067,11 @@ class Simulacrum extends Phaser.Scene {
                     else {
                 
                         if (this.playerBattleSpeed > 0){
-                            this.playerBattleSpeed -= 0.01 + 0.03 * this.actionPower
+                            this.playerBattleSpeed -= 0.015 + 0.03 * this.actionPower
                          }
 
                          if (this.playerBattleSpeed > -1.5){
-                            this.playerBattleSpeed -= 0.005 + 0.015 * this.actionPower
+                            this.playerBattleSpeed -= 0.0075 + 0.015 * this.actionPower
                          }
                         // Better for more tactical play, keep stamina high to maintain good mobility.  Max speed capped by stamina - Speed  
                         //player.x += (screenWidth * 0.00225) + (screenWidth * 0.0015) * this.actionPower
@@ -857,11 +1093,11 @@ class Simulacrum extends Phaser.Scene {
 
                     
                     if (this.playerBattleSpeed < 0){
-                        this.playerBattleSpeed += 0.02 + 0.06 * this.actionPower
+                        this.playerBattleSpeed += 0.03 + 0.06 * this.actionPower
                      }
 
                     if (this.playerBattleSpeed < 1.5){
-                        this.playerBattleSpeed += 0.01 + 0.03 * this.actionPower
+                        this.playerBattleSpeed += 0.015 + 0.03 * this.actionPower
                     }
                 
 
@@ -880,11 +1116,11 @@ class Simulacrum extends Phaser.Scene {
             // In Air
                 else {
                     if (this.playerBattleSpeed < 0){
-                        this.playerBattleSpeed += 0.01 + 0.03 * this.actionPower
+                        this.playerBattleSpeed += 0.015 + 0.03 * this.actionPower
                      }
 
                      if (this.playerBattleSpeed < -1.5){
-                        this.playerBattleSpeed += 0.005 + 0.015 * this.actionPower
+                        this.playerBattleSpeed += 0.0075 + 0.015 * this.actionPower
                      }
 
                     // Better for more tactical play, keep stamina high to maintain good mobility.  Max speed capped by stamina - Speed  
@@ -933,40 +1169,7 @@ class Simulacrum extends Phaser.Scene {
                 
             }
 
-            //if (this.playerBattleSpeed < 0 && (!leftIsDown || (leftIsDown && (a1IsDown || a2IsDown))) ) {
-            //     if (this.playerBattleSpeed < 0 && !leftIsDown) {
-            //     if (upIsDown){
-
-            //                 this.playerBattleSpeed += 0.01 
-
-            //     } else {
-            //         if (this.playerBattleSpeed < -1){
-            //             this.playerBattleSpeed += 0.025
-            //         } else {
-            //             this.playerBattleSpeed += 0.05
-            //         }
-                             
-            //     }
-
-               
-            // }
-
-            //if (this.playerBattleSpeed > 0 && (!rightIsDown || (rightIsDown && (a1IsDown || a2IsDown)))) {
-            //     if (this.playerBattleSpeed > 0 && !rightIsDown) {
-            //     if (upIsDown){
-                      
-            //                 this.playerBattleSpeed -= 0.01 
-                          
-            //     } else {
-            //         if (this.playerBattleSpeed > 1){
-            //             this.playerBattleSpeed -= 0.025
-            //         } else {
-            //             this.playerBattleSpeed -= 0.05
-            //         }
-            //     }
-
-                
-            // }
+            
 
             player.x += (screenWidth * 0.002) * this.playerBattleSpeed
                   
@@ -975,28 +1178,34 @@ class Simulacrum extends Phaser.Scene {
         
     }
 
-    enterBattle(game){
+    enterBattle(){
+        if(this.gameMode == 0){
+        this.playerSpeed = 0
+        this.playerBattleSpeed = 0
+
+        this.camera.flash()
+        this.gameMode = 1
+        this.enterBattleAnimation = true
         
-        game.enterBattleAnimation = true
-        game.playerSpeed = 0
-        game.playerBattleSpeed = 0
         // Pan here has fluid effect of transition into action, carries momentum, but less clear entrance to Battle Phase
-        game.camera.pan(player.x,null,1000,'Power2')
+        this.camera.pan(player.x,null,1000,'Power2')
         player.play({key:'player_Avatar_3_SLIDE',frameRate: 10},true)
         player.setVelocityX(100)
         player.once('animationcomplete', function (){
             player.setVelocityX(0)
-            game.enterBattleAnimation = false
+            this.enemyGroup.setVelocityX(0)
+            this.enterBattleAnimation = false
             // Pan here has effect of whipping to action and clear entrance to Battle Phase
-            //game.camera.pan(player.x,null,1000,'Power2')
-            game.camera.once('camerapancomplete', function () {
-                game.camera.startFollow(player,true,0.5,0.5)
+            //this.camera.pan(player.x,null,1000,'Power2')
+            this.camera.once('camerapancomplete', function () {
+                this.camera.startFollow(player,true,0.5,0.5)
                 
                 
             },this)
             
-        })
-        game.physics.world.setBounds(0, 0, screenWidth * 2,  screenHeight)
+        },this)
+        this.physics.world.setBounds(0, 0, screenWidth * 2,  screenHeight)
+        }
     }
 
     exitBattle(game){
@@ -1006,6 +1215,8 @@ class Simulacrum extends Phaser.Scene {
         
         game.physics.world.setBounds(game.camera.worldView.x,game.camera.worldView.y,screenWidth,screenHeight)
     }
+
+    
     
     update(time,delta){
         // UI
@@ -1014,26 +1225,22 @@ class Simulacrum extends Phaser.Scene {
         this.playerBattleSpeedText.x = this.playerSpeedText.x + screenWidth * 0.3
         // Debug
         
+        // Update to toggle and combine enter and exit functions to toggle mode function
         if (openMenuIsDown){
             openMenuIsDown = false
-            if (this.gameMode == 0){
-                this.camera.flash()
-                this.gameMode = 1
-                this.enterBattle(this)
-                
- 
-            } else {
+            if (this.gameMode == 1){
                 this.gameMode = 0
                 this.exitBattle(this)
-
-            }
+                
+ 
+            } 
         }
 
 
-
+        // Add to BG function (maybe combine with BG objects? and terrain?)
         if (this.gameMode == 0){
-            for (var i = 1; i < 4 + 1 ; i++){
-                window['bgL'+i].tilePositionX += ((this.baseSpeed + this.baseSpeedAdd)* this.playerSpeed)  * window['bgL'+ i + 'ScrollMod'] * (scaleModX / (screenWidth / this.textures.get('bgL' + i).getSourceImage().width))
+            for (var i = 1; i < 7 + 1 ; i++){
+                window['bgL'+i].tilePositionX += ((this.baseSpeed + this.baseSpeedAdd) * this.playerSpeed)  * window['bgL'+ i + 'ScrollMod'] * (scaleModX / (screenWidth / this.textures.get('bgL' + i).getSourceImage().width))
             }
         } else {
 
@@ -1044,55 +1251,18 @@ class Simulacrum extends Phaser.Scene {
         }
         
         this.playerBattleSpeedText.setText(Math.round(this.playerBattleSpeed * 100))
-        this.playerSpeedText.setText(Math.round(this.playerSpeed * 100))
+        this.playerSpeedText.setText(this.speedLevel)//(this.platformGroup.countActive())//(Math.round(this.playerSpeed * 100))
    
         
         playerVitals.draw()
         
 
-        // Platforms
-        if (this.gameMode == 0){
-
-            
-            this.platform.x -= (this.baseSpeed + this.baseSpeedAdd)* this.playerSpeed 
-            this.platform2.x -= (this.baseSpeed + this.baseSpeedAdd)* this.playerSpeed 
-            this.platform3.x -= (this.baseSpeed + this.baseSpeedAdd)* this.playerSpeed 
-        
-
-            if(this.platform3.x < 0){
-                this.platform.x = screenWidth * 1.3 //+ this.platform.displayWidth//Phaser.Math.FloatBetween(screenWidth * 1 + this.platform.displayWidth, screenWidth * 1.35)
-                this.platform.body.velocity.x = 0
-                this.platform.y = Phaser.Math.FloatBetween(screenHeight * 0.9, screenHeight * 0.7)
-
-                this.platform2.x = screenWidth * 1.6 //+ this.platform2.displayWidth//Phaser.Math.FloatBetween(screenWidth * 1.5, screenWidth * 1.5)
-                this.platform2.body.velocity.x = 0
-                this.platform2.y = Phaser.Math.FloatBetween(screenHeight * 0.65, screenHeight * 0.35)
-
-                this.platform3.x = screenWidth * 1.9 //+ this.platform3.displayWidth//Phaser.Math.FloatBetween(screenWidth * 1.25, screenWidth * 1.75)
-                this.platform3.body.velocity.x = 0
-                this.platform3.y = Phaser.Math.FloatBetween(screenHeight * 0.6, screenHeight * 0.15)
-            }
-
-            // if(this.platform2.x < 0 ){
-            //     this.platform2.x = screenWidth * 1.3 + this.platform2.displayWidth//Phaser.Math.FloatBetween(screenWidth * 1.5, screenWidth * 1.5)
-            //     this.platform2.body.velocity.x = 0
-            //     this.platform2.y = Phaser.Math.FloatBetween(screenHeight * 0.65, screenHeight * 0.35)
-            // }
-
-            // if(this.platform3.x < 0 ){
-            //     this.platform3.x = screenWidth * 1.6 + this.platform3.displayWidth//Phaser.Math.FloatBetween(screenWidth * 1.25, screenWidth * 1.75)
-            //     this.platform3.body.velocity.x = 0
-            //     this.platform3.y = Phaser.Math.FloatBetween(screenHeight * 0.6, screenHeight * 0.15)
-            // }
-        } else {
-           
-            
-        }
-
+        this.platforms(this)
+        this.enemies(this)
         
 
         // Controls
-        this.controls(this)
+        this.controls()
 
         // Regen
  
@@ -1115,12 +1285,17 @@ class Simulacrum extends Phaser.Scene {
             this.baseSpeedAdd +=  this.baseSpeed
             this.speedLevel += 1
             }
+
+            
+            this.platformTimer.delay -= 750
         } else if (s2IsDown){
             if(this.baseSpeedAdd > 0){
             s2IsDown = false
             this.baseSpeedAdd -=  this.baseSpeed
             this.speedLevel -= 1
             }
+
+            this.platformTimer.delay += 750
         }
 
        if (abortStageIsDown){
