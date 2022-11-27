@@ -452,6 +452,12 @@ class Simulacrum extends Phaser.Scene {
                 enemy.flipX = false  
         
             }
+
+            if (this.enemiesType == 2 && this.enemyOrientation == 1){
+                enemy.speedMod = 2
+            } else {
+                enemy.speedMod = 1
+            }
      
 
             if(game.speedLevel == 1){
@@ -497,7 +503,13 @@ class Simulacrum extends Phaser.Scene {
 
         game.enemyGroup.children.each(function(e) {
 
-            e.x -= (this.baseSpeed + this.baseSpeedAdd) * this.playerSpeed 
+            
+            if(e.speedMod == 1){
+                e.x -= (this.baseSpeed + this.baseSpeedAdd) * this.playerSpeed 
+            } else {
+                e.x -= (this.baseSpeed + this.baseSpeedAdd) * this.playerSpeed * 2
+            }
+            
 
             if (e.active) {
                 if (e.x < 0) {
