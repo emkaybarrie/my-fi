@@ -369,7 +369,7 @@ class Simulacrum extends Phaser.Scene {
                 this.platformScaleXMax = 2.125
 
                 this.platformPositionYMin = screenHeight * 0.5
-                this.platformPositionYMax = screenHeight * 0.75
+                this.platformPositionYMax = screenHeight * 0.7
 
             } else
             // Level 2
@@ -378,7 +378,7 @@ class Simulacrum extends Phaser.Scene {
                 this.platformScaleXMax = 2.25
 
                 this.platformPositionYMin = screenHeight * 0.4
-                this.platformPositionYMax = screenHeight * 0.8
+                this.platformPositionYMax = screenHeight * 0.75
             } else
             // Level 3
             if(game.speedLevel == 3){
@@ -386,7 +386,7 @@ class Simulacrum extends Phaser.Scene {
                 this.platformScaleXMax = 2.5
 
                 this.platformPositionYMin = screenHeight * 0.3
-                this.platformPositionYMax = screenHeight * 0.85
+                this.platformPositionYMax = screenHeight * 0.75
             } else
             // Level 4
             if(game.speedLevel == 4){
@@ -394,7 +394,7 @@ class Simulacrum extends Phaser.Scene {
                 this.platformScaleXMax = 2.75
 
                 this.platformPositionYMin = screenHeight * 0.2
-                this.platformPositionYMax = screenHeight * 0.85
+                this.platformPositionYMax = screenHeight * 0.8
             } 
 
             if(platform){
