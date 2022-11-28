@@ -206,7 +206,14 @@ class Simulacrum extends Phaser.Scene {
         controlsEnabled = true
 
         this.playerSpeed = 0
-       
+
+        // Settings
+
+        this.musicBPM = 146
+        this.baseScreenClearTime = 4 // Seconds
+        this.basePlatformDelayTime = 2 // Seconds 
+        this.baseEnemyDelayTime = 1 // Seconds 
+
         
         //BG Temp
 
@@ -239,11 +246,11 @@ class Simulacrum extends Phaser.Scene {
 
         this.platformGroup = this.physics.add.group({
             defaultKey: 'ground',
-            maxSize: 20
+            maxSize: 12
         });
 
         this.spawningPlatform = false
-        this.platformTimer = this.time.addEvent({delay: 3000, callback: this.spawnPlatform, args: [], callbackScope: this, loop: true});
+        this.platformTimer = this.time.addEvent({delay: (this.baseScreenClearTime * 2 ) * (60/this.musicBPM) * (this.basePlatformDelayTime* 1000), callback: this.spawnPlatform, args: [], callbackScope: this, loop: true});
 
         // Enemy
         this.enemyGroup = this.physics.add.group({
@@ -252,7 +259,7 @@ class Simulacrum extends Phaser.Scene {
         });
         
         this.spawningEnemy = false  
-        this.enemyTimer = this.time.addEvent({delay: 1500, callback: this.spawnEnemy, args: [], callbackScope: this, loop: true});
+        this.enemyTimer = this.time.addEvent({delay: (this.baseScreenClearTime * 2 ) * (60/this.musicBPM) * (this.baseEnemyDelayTime* 1000), callback: this.spawnEnemy, args: [], callbackScope: this, loop: true});
 
         this.anims.create({
             key: 'nightBorneMinion_Idle',
@@ -314,8 +321,8 @@ class Simulacrum extends Phaser.Scene {
         this.playerBattleSpeedText.setFontSize(60).setDepth(1).setColor('#803421')
 
         this.gameMode = 0
-        this.baseSpeed = 10
-        this.baseSpeedAdd = 10
+        this.baseSpeed = screenWidth / ((this.baseScreenClearTime * 60 * 2 ) * (60/this.musicBPM))
+        this.baseSpeedAdd = 0
         this.speedLevel = 2
 
         // Music
@@ -429,7 +436,7 @@ class Simulacrum extends Phaser.Scene {
     spawnEnemy(){
         if (this.gameMode == 0){
         this.spawningEnemy = true
-        this.enemyTimer.delay = Phaser.Math.Between(1500,3000)
+        //this.enemyTimer.delay = Phaser.Math.Between(1500,3000)
         } 
     }
 
@@ -543,7 +550,7 @@ class Simulacrum extends Phaser.Scene {
 
         // Energy Costs & Recovery
 
-        this.baseCost = 1
+        this.baseCost = 0//1
             
         if (a1IsDown || a2IsDown ) {
             regenActive = false
@@ -1205,6 +1212,8 @@ class Simulacrum extends Phaser.Scene {
 
     enterBattle(){
         if(this.gameMode == 0){
+
+         if(this.playerSpeed < 0.25){   
         this.playerSpeed = 0
         this.playerBattleSpeed = 0
 
@@ -1238,7 +1247,10 @@ class Simulacrum extends Phaser.Scene {
             
         },this)
         this.physics.world.setBounds(0, 0, screenWidth * 2,  screenHeight)
+        } else {
+            this.playerSpeed -= 0.08 
         }
+    } 
     }
 
     exitBattle(game){
@@ -1284,7 +1296,7 @@ class Simulacrum extends Phaser.Scene {
         }
         
         this.playerBattleSpeedText.setText(Math.round(this.playerBattleSpeed * 100))
-        this.playerSpeedText.setText(this.speedLevel)//(this.platformGroup.countActive())//(Math.round(this.playerSpeed * 100))
+        this.playerSpeedText.setText(Math.round(this.playerSpeed * 100))//(this.platformGroup.countActive())//(Math.round(this.playerSpeed * 100))
    
         
         playerVitals.draw()
@@ -1314,21 +1326,23 @@ class Simulacrum extends Phaser.Scene {
         // Level 4 = 40
         if(s1IsDown){
             s1IsDown = false
-            if(this.baseSpeedAdd < this.baseSpeed * 3){
-            this.baseSpeedAdd +=  this.baseSpeed
-            this.speedLevel += 1
+            if(this.speedLevel < 4){
+                this.baseSpeed *=  2
+                this.speedLevel += 1
             }
 
             
-            this.platformTimer.delay -= 750
+            this.platformTimer.delay /= 2
+            this.enemyTimer.delay /= 2
         } else if (s2IsDown){
-            if(this.baseSpeedAdd > 0){
             s2IsDown = false
-            this.baseSpeedAdd -=  this.baseSpeed
+            if(this.speedLevel > 1){
+                this.baseSpeed /=  2
             this.speedLevel -= 1
             }
 
-            this.platformTimer.delay += 750
+            this.platformTimer.delay *= 2
+            this.enemyTimer.delay *= 2
         }
 
        if (abortStageIsDown){
