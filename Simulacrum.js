@@ -210,7 +210,7 @@ class Simulacrum extends Phaser.Scene {
         // Settings
 
         this.musicBPM = 146
-        this.baseScreenClearTime = 4 // Seconds
+        this.baseScreenClearTime = 2 // Seconds
         this.basePlatformDelayTime = 2 // Seconds 
         this.baseEnemyDelayTime = 1 // Seconds 
 
@@ -299,6 +299,8 @@ class Simulacrum extends Phaser.Scene {
         this.physics.add.collider(player,ground);
         this.physics.add.collider(player,this.platformGroup)
         this.physics.add.overlap(player,this.enemyGroup,this.enterBattle,null,this)
+
+        this.playerIsHit = false
 
         this.camera = this.cameras.main
         this.camera.setBounds(0,0,screenWidth * 2, screenHeight)
@@ -550,7 +552,7 @@ class Simulacrum extends Phaser.Scene {
 
         // Energy Costs & Recovery
 
-        this.baseCost = 0//1
+        this.baseCost = 0.5//1
             
         if (a1IsDown || a2IsDown ) {
             regenActive = false
@@ -654,13 +656,13 @@ class Simulacrum extends Phaser.Scene {
                 if(!player.body.onFloor()){
                     player.body.checkCollision.right = true
                     player.body.setSize(10, 30).setOffset(25,15).setAllowDrag(true)
-                    if (a2IsDown){
+                    if (a2IsDown && !this.playerIsHit){
                         player.body.setSize(10, 15).setOffset(25,30).setAllowDrag(true)
                         player.body.checkCollision.right = false
                         player.play({key:'player_Avatar_3_EVADE',frameRate: 3, startFrame: 5},true)
-                    } else if(player.body.velocity.y >= (screenHeight * 0.02) * this.actionPower * 60 ){
+                    } else if(player.body.velocity.y >= (screenHeight * 0.02) * this.actionPower * 60 && !this.playerIsHit){
                         player.play({key:'player_Avatar_3_FALL',frameRate: 10},true)
-                    } else if (player.body.velocity.y < (screenHeight * 0.02) * this.actionPower * 60){
+                    } else if (player.body.velocity.y < (screenHeight * 0.02) * this.actionPower * 60 && !this.playerIsHit){
                         if (upIsDown){
                         player.play({key:'player_Avatar_3_JUMP',frameRate: 10},true)
                         } else {
@@ -672,7 +674,7 @@ class Simulacrum extends Phaser.Scene {
             // Grounded 
                 else {
                     player.body.checkCollision.right = true
-                    if (a2IsDown){
+                    if (a2IsDown && !this.playerIsHit){
                         player.body.setSize(10, 15).setOffset(25,30).setAllowDrag(true)                    
                         player.body.checkCollision.right = false
                         player.play({key:'player_Avatar_3_EVADE',frameRate: 3, startFrame: 5},true)
@@ -682,7 +684,7 @@ class Simulacrum extends Phaser.Scene {
                     } else if (downIsDown){
                         player.body.setSize(10, 15).setOffset(25,30).setAllowDrag(true)
                         player.play({key:'player_Avatar_3_SLIDE',frameRate: 10},true)
-                    } else {
+                    } else if (!this.playerIsHit){
                         player.body.setSize(10, 30).setOffset(25,15).setAllowDrag(true)
                         player.play({key:'player_Avatar_3_RUN',frameRate: this.baseRunFrameRate + (6 * Math.abs(this.playerSpeed))},true)
                     }
@@ -1249,6 +1251,13 @@ class Simulacrum extends Phaser.Scene {
         this.physics.world.setBounds(0, 0, screenWidth * 2,  screenHeight)
         } else {
             this.playerSpeed -= 0.08 
+            playerVitals.decreaseLife(0.5)
+            this.playerIsHit = true
+            player.flipX = true
+            player.play({key:'player_Avatar_3_TAKE_HIT',frameRate: 10 * this.playerSpeed},true)
+            player.once('animationcomplete', function (){
+                this.playerIsHit = false
+            },this)
         }
     } 
     }
