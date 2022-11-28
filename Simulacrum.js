@@ -210,9 +210,9 @@ class Simulacrum extends Phaser.Scene {
         // Settings
 
         this.musicBPM = 146
-        this.baseScreenClearTime = 2 // Seconds
-        this.basePlatformDelayTime = 2 // Seconds 
-        this.baseEnemyDelayTime = 1 // Seconds 
+        this.baseScreenClearTime = 4 // Beats
+        this.basePlatformDelayTime = 6 // Beats 
+        this.baseEnemyDelayTime = 3 // Beats 
 
         
         //BG Temp
@@ -250,7 +250,7 @@ class Simulacrum extends Phaser.Scene {
         });
 
         this.spawningPlatform = false
-        this.platformTimer = this.time.addEvent({delay: (this.baseScreenClearTime * 2 ) * (60/this.musicBPM) * (this.basePlatformDelayTime* 1000), callback: this.spawnPlatform, args: [], callbackScope: this, loop: true});
+        this.platformTimer = this.time.addEvent({delay: this.basePlatformDelayTime * (60/this.musicBPM) * 1000, callback: this.spawnPlatform, args: [], callbackScope: this, loop: true});
 
         // Enemy
         this.enemyGroup = this.physics.add.group({
@@ -259,7 +259,7 @@ class Simulacrum extends Phaser.Scene {
         });
         
         this.spawningEnemy = false  
-        this.enemyTimer = this.time.addEvent({delay: (this.baseScreenClearTime * 2 ) * (60/this.musicBPM) * (this.baseEnemyDelayTime* 1000), callback: this.spawnEnemy, args: [], callbackScope: this, loop: true});
+        this.enemyTimer = this.time.addEvent({delay: this.baseEnemyDelayTime * (60/this.musicBPM) * 1000, callback: this.spawnEnemy, args: [], callbackScope: this, loop: true});
 
         this.anims.create({
             key: 'nightBorneMinion_Idle',
@@ -323,7 +323,7 @@ class Simulacrum extends Phaser.Scene {
         this.playerBattleSpeedText.setFontSize(60).setDepth(1).setColor('#803421')
 
         this.gameMode = 0
-        this.baseSpeed = screenWidth / ((this.baseScreenClearTime * 60 * 2 ) * (60/this.musicBPM))
+        this.baseSpeed = screenWidth /  (60 * 4 * (60/this.musicBPM)) //((this.baseScreenClearTime * 60 * 2 )
         this.baseSpeedAdd = 0
         this.speedLevel = 2
 
@@ -1335,7 +1335,7 @@ class Simulacrum extends Phaser.Scene {
         // Level 4 = 40
         if(s1IsDown){
             s1IsDown = false
-            if(this.speedLevel < 4){
+            if(this.speedLevel < 3){
                 this.baseSpeed *=  2
                 this.speedLevel += 1
             }
