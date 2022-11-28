@@ -270,6 +270,22 @@ class Simulacrum extends Phaser.Scene {
         });
 
         this.anims.create({
+            key: 'nightBorneMinion_Hurt',
+            frames: this.anims.generateFrameNames('doomsayer',{prefix: 'hurt', start: 1, end: 3}),
+            frameRate: 10,
+            repeat: 0
+        });
+
+        this.anims.create({
+            key: 'nightBorneMinion_Death',
+            frames: this.anims.generateFrameNames('doomsayer',{prefix: 'death', start: 1, end: 10}),
+            frameRate: 12,
+            repeat: 0,
+            hideOnComplete: 1
+            
+        });
+
+        this.anims.create({
             key: 'nightBorne_Idle',
             frames: this.anims.generateFrameNumbers('nightBorne', { start:0, end: 8}),
             frameRate: 12,
@@ -284,6 +300,22 @@ class Simulacrum extends Phaser.Scene {
             showOnStart: 1,
             repeat:-1
         });
+
+        this.anims.create({
+            key: 'nightBorne_Hurt',
+            frames: this.anims.generateFrameNumbers('nightBorne', { start:69, end: 73}),
+            frameRate: 12,
+            showOnStart: 1,
+            repeat:0
+        });
+
+        this.anims.create({
+            key: 'nightBorne_Death',
+            frames: this.anims.generateFrameNumbers('nightBorne', { start:91, end: 115}),
+            frameRate: 23,
+            repeat:0,
+            hideOnComplete: 1
+        });
           
         this.physics.add.collider(this.enemyGroup,ground); 
         this.physics.add.collider(this.enemyGroup,this.platformGroup);  
@@ -292,13 +324,19 @@ class Simulacrum extends Phaser.Scene {
         // Player
        
         var playerScale = 4 * (scaleModX) 
-        player = this.physics.add.sprite(screenWidth * 0.5, screenHeight * 0.5 ,'avatar3').setScale(playerScale)
+        player = this.physics.add.sprite(screenWidth * 0.5, screenHeight * 0.5 ,'avatar3').setScale(playerScale).setDepth(1)
         player.body.setSize(10, 30).setOffset(25,15).setAllowDrag(true)
         player.setBounce(0.05)
         player.setCollideWorldBounds(true);
         this.physics.add.collider(player,ground);
         this.physics.add.collider(player,this.platformGroup)
         this.physics.add.overlap(player,this.enemyGroup,this.enterBattle,null,this)
+
+        this.playerAttackHitBox = this.add.sprite(player.x, player.y)
+        this.physics.add.existing(this.playerAttackHitBox, false)
+        this.playerAttackHitBox.body.setAllowGravity(false).setSize(150, 100)//.setOffset(0,5)
+        this.playerAttackHitBox.body.checkCollision.none = true
+        this.physics.add.overlap(this.playerAttackHitBox,this.enemyGroup,this.enemyTakeHit,null,this)
 
         this.playerIsHit = false
 
@@ -323,7 +361,7 @@ class Simulacrum extends Phaser.Scene {
         this.playerBattleSpeedText.setFontSize(60).setDepth(1).setColor('#803421')
 
         this.gameMode = 0
-        this.baseSpeed = screenWidth /  (60 * 4 * (60/this.musicBPM)) //((this.baseScreenClearTime * 60 * 2 )
+        this.baseSpeed = screenWidth /  (60 * this.baseScreenClearTime * (60/this.musicBPM)) //((this.baseScreenClearTime * 60 * 2 )
         this.baseSpeedAdd = 0
         this.speedLevel = 2
 
@@ -444,8 +482,8 @@ class Simulacrum extends Phaser.Scene {
 
     enemies(game){
 
-        
-
+        if (this.gameMode == 0){
+        // Spawn Code
         if(game.spawningEnemy){
 
             this.enemiesSpawned = Phaser.Math.Between(1,2)
@@ -497,10 +535,12 @@ class Simulacrum extends Phaser.Scene {
                 if(enemy){
                     if(this.enemiesType == 1){
                         enemy.setTexture('doomsayer')
+                        enemy.type = 1
                         enemy.play('nightBorneMinion_Idle')
                         
                     } else {
                         enemy.setTexture('nightBorne')
+                        enemy.type = 2
                         enemy.setOrigin(0.5,1)
                         enemy.body.setSize(25, 25).setOffset(25,37.5)
                         if (this.enemyOrientation == 1){
@@ -516,6 +556,8 @@ class Simulacrum extends Phaser.Scene {
                     enemy.setScale(this.creepScale)
                     enemy.setActive(true)
                     enemy.body.setAllowGravity(true)
+                    enemy.isHit = false
+                    enemy.hitsTaken = 0
     
                 }
             }
@@ -523,6 +565,7 @@ class Simulacrum extends Phaser.Scene {
             game.spawningEnemy = false
         }
 
+        // Movement Code
         game.enemyGroup.children.each(function(e) {
 
             
@@ -540,7 +583,84 @@ class Simulacrum extends Phaser.Scene {
             }
         }.bind(game));
 
+    } else if (game.gameMode == 1){
 
+        game.enemyGroup.children.each(function(e) {
+
+            if (e.x < screenWidth * 0.25){
+                e.x += 15
+            } else if (e.x > screenWidth * 1.75){
+                e.x -= 15
+            }
+
+        }.bind(game));
+
+        if (game.enemyGroup.countActive() == 0){
+            game.exitBattle(game)
+        } else if (openMenuIsDown){
+                    openMenuIsDown = false
+                    game.exitBattle(game)      
+        }
+    }
+
+
+    }
+
+    enemyTakeHit(playerAttackHitBox,enemy){
+            if(this.gameMode == 1){
+            if(!enemy.isHit){
+                enemy.isHit = true
+
+  
+                if(enemy.type == 1){
+                    enemy.play('nightBorneMinion_Hurt',true)
+                    enemy.once('animationcomplete', function (anim,frame) {
+                        enemy.emit('animationcomplete_' + anim.key, frame)
+                    }, enemy)
+                    enemy.once('animationcomplete_nightBorneMinion_Hurt',function(){
+                        enemy.isHit = false
+                        enemy.hitsTaken += 1
+                        if (enemy.hitsTaken >= 2){
+                            enemy.play('nightBorneMinion_Death',true)
+                            enemy.once('animationcomplete', function (anim,frame) {
+                                enemy.emit('animationcomplete_' + anim.key, frame)
+                            }, enemy)
+                            enemy.once('animationcomplete_nightBorneMinion_Death',function(){
+                            enemy.setActive(false)
+                            enemy.x = 0
+                            })
+                        } else {
+                            enemy.play('nightBorneMinion_Idle',true)
+                        }
+                        
+                    })
+                } else if (enemy.type == 2){
+                    enemy.play('nightBorne_Hurt',true)
+                    enemy.once('animationcomplete', function (anim,frame) {
+                        enemy.emit('animationcomplete_' + anim.key, frame)
+                    }, enemy)
+                    enemy.once('animationcomplete_nightBorne_Hurt',function(){
+                        enemy.isHit = false
+                        enemy.hitsTaken += 1
+                        if (enemy.hitsTaken >= 2){
+                            enemy.play('nightBorne_Death',true)
+                            enemy.once('animationcomplete', function (anim,frame) {
+                                enemy.emit('animationcomplete_' + anim.key, frame)
+                            }, enemy)
+                            enemy.once('animationcomplete_nightBorne_Death',function(){
+                            enemy.setActive(false)
+                            enemy.x = 0
+                            })
+                        } else {
+                            enemy.play('nightBorne_Idle',true)
+                        }
+                        
+                    })
+                }
+
+                
+            }
+        }
     }
 
     controls(){
@@ -548,11 +668,62 @@ class Simulacrum extends Phaser.Scene {
         this.actionPower = currentEnergy / maxEnergy
         this.skillPower = currentFocus / maxFocus
 
+        this.playerAttackHitBox.x = player.x
+
+        if (player.flipX){
+            this.playerAttackHitBox.x = player.x - 10
+            this.playerAttackHitBox.y = player.y - 15
+        } else {
+            this.playerAttackHitBox.x = player.x + 10
+            this.playerAttackHitBox.y = player.y - 15
+        }
+
+        this.playerAttackHitBox.body.checkCollision.none = true
+
+        // Enable player sword collision detection
+        if (player.anims.getName() == 'player_Avatar_3_ACTION_1'){
+            // playerSwordSwing.play()
+            
+            
+
+            if (player.anims.currentFrame.index >= 6 && player.anims.currentFrame.index < 12){
+                
+                this.playerAttackHitBox.body.checkCollision.none = false
+                
+            } else {
+                this.playerAttackHitBox.body.checkCollision.none = true
+            }
+
+        } else if (player.anims.getName() == 'player_Avatar_3_ACTION_2'){
+            // playerSwordSwing.play()
+
+            if (player.anims.currentFrame.index >= 4 && player.anims.currentFrame.index < 6 
+                || player.anims.currentFrame.index >= 12 && player.anims.currentFrame.index < 14 ){
+                
+                this.playerAttackHitBox.body.checkCollision.none = false
+                
+            } else {
+                this.playerAttackHitBox.body.checkCollision.none = true
+            }
+
+        } else if (player.anims.getName() == 'player_Avatar_3_ACTION_3'){
+            // playerSwordSwing.play()
+            
+            if (player.anims.currentFrame.index >= 3 && player.anims.currentFrame.index < 5){
+                
+                this.playerAttackHitBox.body.checkCollision.none = false
+                
+            } else {
+                this.playerAttackHitBox.body.checkCollision.none = true
+            }
+
+        }
+
         // Add State Machine section (playerDefending, etc)
 
         // Energy Costs & Recovery
 
-        this.baseCost = 0.5//1
+        this.baseCost = 0.25//1
             
         if (a1IsDown || a2IsDown ) {
             regenActive = false
@@ -1241,7 +1412,7 @@ class Simulacrum extends Phaser.Scene {
             this.enterBattleAnimation = false
             // Pan here has effect of whipping to action and clear entrance to Battle Phase
             //this.camera.pan(player.x,null,1000,'Power2')
-            this.camera.once('camerapancomplete', function () {
+            this.camera.on('camerapancomplete', function () {
                 this.camera.startFollow(player,true,0.5,0.5)
                 
                 
@@ -1263,6 +1434,7 @@ class Simulacrum extends Phaser.Scene {
     }
 
     exitBattle(game){
+        game.gameMode = 0
         game.playerBattleSpeed = 0
         game.playerSpeed = 0
         game.camera.stopFollow()
@@ -1280,15 +1452,15 @@ class Simulacrum extends Phaser.Scene {
         // Debug
         
         // Update to toggle and combine enter and exit functions to toggle mode function
-        if (openMenuIsDown){
-            openMenuIsDown = false
-            if (this.gameMode == 1){
-                this.gameMode = 0
-                this.exitBattle(this)
+        // if (openMenuIsDown){
+        //     openMenuIsDown = false
+        //     if (this.gameMode == 1){
+                
+        //         this.exitBattle(this)
                 
  
-            } 
-        }
+        //     } 
+        // }
 
 
         // Add to BG function (maybe combine with BG objects? and terrain?)
@@ -1305,7 +1477,7 @@ class Simulacrum extends Phaser.Scene {
         }
         
         this.playerBattleSpeedText.setText(Math.round(this.playerBattleSpeed * 100))
-        this.playerSpeedText.setText(Math.round(this.playerSpeed * 100))//(this.platformGroup.countActive())//(Math.round(this.playerSpeed * 100))
+        this.playerSpeedText.setText(this.enemyGroup.countActive())//(this.platformGroup.countActive())//(Math.round(this.playerSpeed * 100))
    
         
         playerVitals.draw()
@@ -1336,22 +1508,29 @@ class Simulacrum extends Phaser.Scene {
         if(s1IsDown){
             s1IsDown = false
             if(this.speedLevel < 3){
-                this.baseSpeed *=  2
+                if(this.speedLevel == 2){
+                    this.baseSpeedAdd +=  this.baseSpeed * 0.5
+                    
+                }
+                
+                this.platformTimer.delay /= 1.5
+                this.enemyTimer.delay /= 1.5
                 this.speedLevel += 1
             }
-
             
-            this.platformTimer.delay /= 2
-            this.enemyTimer.delay /= 2
+            
         } else if (s2IsDown){
             s2IsDown = false
             if(this.speedLevel > 1){
-                this.baseSpeed /=  2
-            this.speedLevel -= 1
+                if(this.speedLevel == 3){
+                    this.baseSpeedAdd -=  this.baseSpeed * 0.5
+                    
+                }
+                
+                this.platformTimer.delay *= 1.5
+                this.enemyTimer.delay *= 1.5
+                this.speedLevel -= 1
             }
-
-            this.platformTimer.delay *= 2
-            this.enemyTimer.delay *= 2
         }
 
        if (abortStageIsDown){

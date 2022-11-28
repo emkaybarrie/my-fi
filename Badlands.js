@@ -3002,119 +3002,118 @@ hide ()
     
     function enemyHit(playerAttackHitBox,enemy){
         if(!enemyIsHit){
-        enemyIsHit = true
-        var chaos = Phaser.Math.FloatBetween(0.00,1.00)
-        
-        var power
-        var fDamage = damage
+            enemyIsHit = true
+            var chaos = Phaser.Math.FloatBetween(0.00,1.00)
+            
+            var power
+            var fDamage = damage
 
-        if (chaos < 0.01){
-            power = Phaser.Math.FloatBetween(0.75,1.25)
-            fDamage *= Phaser.Math.Between(1.5,1.75)
-        } else if (chaos < 0.05){
-            power = Phaser.Math.FloatBetween(0.25,0.75)
-            fDamage *= Phaser.Math.Between(1,1.25)
-        } else {
-            power = Phaser.Math.FloatBetween(0,0.25)
-            fDamage *= Phaser.Math.Between(0.85,1.1)
-        }
-
-
-        playerHitVFX.x = enemy.x
-        playerHitVFX.y = playerAttackHitBox.y
-        if(!player.flipX){
-            playerHitVFX.flipX = false
-        } else {
-            playerHitVFX.flipX = true
-        }
-        playerHitVFX.play(playerAttackHitSmear,true)
-        hitImpactAnimation(this,enemy,power)
-        playerHitVFX.on('animationcomplete', function (){
-            enemyIsHit = false
-        },this)
-        
-        if(enemy == nightBorne){
-            if(enemy.anims.getName() != 'nightBorne_Idle'){
-            if(nArmour <= 0){
-                enemy.play({key:'nightBorne_Hurt',frameRate: 8},true);
-                nightBorneVitals.decreaseNightborneLife(fDamage) 
-                nArmour = nightBorneMaxLife * 0.15
+            if (chaos < 0.01){
+                power = Phaser.Math.FloatBetween(0.75,1.25)
+                fDamage *= Phaser.Math.Between(1.5,1.75)
+            } else if (chaos < 0.05){
+                power = Phaser.Math.FloatBetween(0.25,0.75)
+                fDamage *= Phaser.Math.Between(1,1.25)
             } else {
-                nArmour -= (fDamage)
-                enemy.play({key:'nightBorne_Hurt',frameRate: 12},true);
-                    nightBorneVitals.decreaseNightborneLife(fDamage * 0.85) 
+                power = Phaser.Math.FloatBetween(0,0.25)
+                fDamage *= Phaser.Math.Between(0.85,1.1)
             }
-            
-            nightBorneVitals.decreaseNightborneLife(fDamage * 0.85)
-            
+
+
+            playerHitVFX.x = enemy.x
+            playerHitVFX.y = playerAttackHitBox.y
+            if(!player.flipX){
+                playerHitVFX.flipX = false
             } else {
+                playerHitVFX.flipX = true
+            }
+            playerHitVFX.play(playerAttackHitSmear,true)
+            hitImpactAnimation(this,enemy,power)
+            playerHitVFX.on('animationcomplete', function (){
+                enemyIsHit = false
+            },this)
+            
+            if(enemy == nightBorne){
+                if(enemy.anims.getName() != 'nightBorne_Idle'){
                 if(nArmour <= 0){
                     enemy.play({key:'nightBorne_Hurt',frameRate: 8},true);
                     nightBorneVitals.decreaseNightborneLife(fDamage) 
-                    nArmour = nightBorneMaxLife * 0.05
+                    nArmour = nightBorneMaxLife * 0.15
                 } else {
                     nArmour -= (fDamage)
                     enemy.play({key:'nightBorne_Hurt',frameRate: 12},true);
-                    nightBorneVitals.decreaseNightborneLife(fDamage * 0.95) 
+                        nightBorneVitals.decreaseNightborneLife(fDamage * 0.85) 
                 }
                 
-            }
-
-            
-            
-                        
-            
+                nightBorneVitals.decreaseNightborneLife(fDamage * 0.85)
+                
+                } else {
+                    if(nArmour <= 0){
+                        enemy.play({key:'nightBorne_Hurt',frameRate: 8},true);
+                        nightBorneVitals.decreaseNightborneLife(fDamage) 
+                        nArmour = nightBorneMaxLife * 0.05
+                    } else {
+                        nArmour -= (fDamage)
+                        enemy.play({key:'nightBorne_Hurt',frameRate: 12},true);
+                        nightBorneVitals.decreaseNightborneLife(fDamage * 0.95) 
+                    }
                     
-                if (nightBorneLife <= 0 && nightBorneAlive){
-                    enemy.once('animationcomplete', function () {  
-                    enemy.body.enable = false  
-                    nightBorneAlive = false
-                    enemy.play({key:'nightBorne_Death',frameRate: 23},true);
-                    
-                    enemy.once('animationcomplete', function (anim,frame) {
-
-                                    enemy.setDragX(0)
-                                    enemy.setVelocityX(0)
-                                    enemy.flipX = false
-                                    enemy.x = 0
-                                    enemy.y = 0
-                                    nightBorneMaxLife = Phaser.Math.Between(income * 0.8, (income * 0.8) * chaosFactor) 
-                                    nightBorneLife = nightBorneMaxLife
-                                    nightBorneVitals.p = 38 / nightBorneMaxLife
-                                    
-                                    nightBorneAlive = true
-                                    enemy.body.enable = true
-                                    modeSwitch(0)
-                                    toggleSkillTree()
-                                    
-                                    
-                    }, enemy)
-                }, this)
                 }
-                                
-                                
-            ;
-        } else if (enemy == creep){
-            creepIsHit = true
-            glory += level + 1
-            gold += (level * 2) + 1
-            enemy.play('nightBorneMinion_Hurt',true)
-            if(creepIsHit){
-                enemy.x = player.x + 35
+
+                
+                
+                            
+                
+                        
+                    if (nightBorneLife <= 0 && nightBorneAlive){
+                        enemy.once('animationcomplete', function () {  
+                        enemy.body.enable = false  
+                        nightBorneAlive = false
+                        enemy.play({key:'nightBorne_Death',frameRate: 23},true);
+                        
+                        enemy.once('animationcomplete', function (anim,frame) {
+
+                                        enemy.setDragX(0)
+                                        enemy.setVelocityX(0)
+                                        enemy.flipX = false
+                                        enemy.x = 0
+                                        enemy.y = 0
+                                        nightBorneMaxLife = Phaser.Math.Between(income * 0.8, (income * 0.8) * chaosFactor) 
+                                        nightBorneLife = nightBorneMaxLife
+                                        nightBorneVitals.p = 38 / nightBorneMaxLife
+                                        
+                                        nightBorneAlive = true
+                                        enemy.body.enable = true
+                                        modeSwitch(0)
+                                        toggleSkillTree()
+                                        
+                                        
+                        }, enemy)
+                    }, this)
+                    }
+                                    
+                                    
+                ;
+            } else if (enemy == creep){
+                creepIsHit = true
+                glory += level + 1
+                gold += (level * 2) + 1
+                enemy.play('nightBorneMinion_Hurt',true)
+                if(creepIsHit){
+                    enemy.x = player.x + 35
+                }
+                enemy.once('animationcomplete', function(){ 
+                    enemy.play('nightBorneMinion_Death',true)
+                    enemy.body.enable = false
+                    enemy.once('animationcomplete', function(){
+                        creepIsHit = false
+                        resetCreep(enemy)
+                        enemy.body.enable = true
+                        enemy.setVelocityX(0)
+                        
+                    },enemy)
+                },this)
             }
-            enemy.once('animationcomplete', function(){ 
-                enemy.play('nightBorneMinion_Death',true)
-                enemy.body.enable = false
-                enemy.once('animationcomplete', function(){
-                    creepIsHit = false
-                    resetCreep(enemy)
-                    enemy.body.enable = true
-                    enemy.setVelocityX(0)
-                    
-                },enemy)
-            },this)
-        }
-        
         
         }
     }
