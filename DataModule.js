@@ -1,5 +1,5 @@
 // System Variables
-
+    var gameInitialised = false
     var gameMode = 0 
     var firstRun = true
 
@@ -10,10 +10,10 @@
 
     var leftIsDown
     var rightIsDown
-    var upIsDown
-    var downIsDown
+    var upIsDown = false
+    var downIsDown = false
     var a1IsDown
-    var a2IsDown
+    var a2IsDown = false
     var s1IsDown
     var s2IsDown
     var openMenuIsDown
@@ -427,12 +427,13 @@ class DataModule extends Phaser.Scene {
         await importUserData()
         await importAvatarData()
         console.log('Data Module Online')
+        gameInitialised = true
         
  
     }
     
     update(){
- 
+        
     }
 
     

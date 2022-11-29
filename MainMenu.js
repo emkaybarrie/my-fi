@@ -157,23 +157,25 @@ class MainMenu extends Phaser.Scene {
             var music = this.sound.add('mainTheme');
             music.play();
 
-            var tween = this.tweens.add({
-                delay: 500,
-                targets: menuPrompt,
-                alpha: { value: 1, duration: 1500, ease: 'Power1'},
-                yoyo: 1,
-                repeat: -1,
-                onUpdate: function (){
-                    if(a1IsDown){
-                        menuPrompt.setAlpha(0)
-                        tween.stop()
-                        camera.flash(500)
-                        menuTextGroup.setVisible(1)
-                        activeMenuBox.setVisible(1)
-                        firstRun = false
-                    }
-                },
-            });
+            //if (gameInitialised){
+                var tween = this.tweens.add({
+                    delay: 500,
+                    targets: menuPrompt,
+                    alpha: { value: 1, duration: 1500, ease: 'Power1'},
+                    yoyo: 1,
+                    repeat: -1,
+                    onUpdate: function (){
+                        if(a1IsDown && gameInitialised){
+                            menuPrompt.setAlpha(0)
+                            tween.stop()
+                            camera.flash(500)
+                            menuTextGroup.setVisible(1)
+                            activeMenuBox.setVisible(1)
+                            firstRun = false
+                        }
+                    },
+                });
+            //}
         }
 
         
@@ -198,7 +200,7 @@ class MainMenu extends Phaser.Scene {
   
         });
 
-        if (!firstRun){
+        if (!firstRun && gameInitialised){
         if(downIsDown && this.selectedOption < 2){
             downIsDown = false
             this.selectedOption += 1

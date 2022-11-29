@@ -74,7 +74,7 @@ class InputModule extends Phaser.Scene {
             // Key A - Action 1
             this.keyA.on('down', function (){
                 a1IsDown = true
-                usingPower = true
+               
                 console.log('A1 Pressed: ' +  a1IsDown)
             })
 
@@ -98,7 +98,7 @@ class InputModule extends Phaser.Scene {
 
             this.cursors.space.on('down', function (){
                 s1IsDown = true
-                usingPower = true
+                
                 console.log('S1 Pressed: ' +  s1IsDown)
             })
 
@@ -111,7 +111,7 @@ class InputModule extends Phaser.Scene {
 
             this.keyF.on('down', function (){
                 s2IsDown = true
-                usingPower = true
+                
                 console.log('S2 Pressed: ' +  s2IsDown)
             })
 

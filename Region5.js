@@ -152,8 +152,8 @@ class Region5 extends Phaser.Scene {
 
                 // Floor Settings
         
-                game.floorPosYMin = 0.05
-                game.floorPosYMax = 0.15    
+                game.floorMin = 0.05
+                game.floorMax = 0.15    
 
     }
 
