@@ -4577,6 +4577,15 @@ class Badlands extends Phaser.Scene {
         }
 
         //refreshStats()
+        // Regen
+        this.regenMod = 1
+        if (regenActive){
+            if(this.actionPower < 1){
+                this.playerVitals.decreaseEnergy(-1 * this.regenMod)
+                
+            }
+   
+        }
 
             if (this.currentLife <= 0 && gameOver == false){
                     
