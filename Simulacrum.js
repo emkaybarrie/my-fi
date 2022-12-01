@@ -158,13 +158,6 @@ class Simulacrum extends Phaser.Scene {
         
         super("Simulacrum")
 
-        this.power = 100
-        this.platform
-
-    
-       
-
-      
         
     }
 
@@ -284,7 +277,7 @@ class Simulacrum extends Phaser.Scene {
             this.textureWidthScaleMod = screenWidth / this.textureToApply.width
             this.textureHeightScaleMod = screenHeight / this.textureToApply.height
            
-            window['fgL'+i] =  this.add.tileSprite(0,0,screenWidth,screenHeight).setScrollFactor(0).setOrigin(0).setDepth(1).setAlpha(this.fgAlpha[i-1])
+            window['fgL'+i] =  this.add.tileSprite(0,0,screenWidth,screenHeight).setScrollFactor(0).setOrigin(0).setDepth(2).setAlpha(this.fgAlpha[i-1])
             window['fgL'+i].setTexture('fgL'+i).setTileScale(this.textureWidthScaleMod,this.textureHeightScaleMod)
             window['fgL'+i+'ScrollMod'] = + fgScroll[i - 1]
             
@@ -365,7 +358,7 @@ class Simulacrum extends Phaser.Scene {
                 // Player - To be updated
        
                 this.playerScale = 4 * (scaleModX) 
-                this.player = this.physics.add.sprite(screenWidth * 1.75, screenHeight * 0.5 ,'avatar3').setScale(this.playerScale)
+                this.player = this.physics.add.sprite(screenWidth * 1.75, screenHeight * 0.5 ,'avatar3').setScale(this.playerScale).setDepth(1)
                 this.player.body.setSize(10, 30).setOffset(25,15).setAllowDrag(true)
                 this.player.setBounce(0.05)
                 this.player.setCollideWorldBounds(true);
@@ -392,7 +385,6 @@ class Simulacrum extends Phaser.Scene {
                 this.playerVitals = new HealthBar(this,this.currentLife, 175, 100)
                 //this.playerVitals = new HealthBar(this,this.currentLife, levelIcon.x + (30 * (scaleModX)), playerIcon.y + (20 * (scaleModX)))
             
-
                 // Camera
 
                 this.camera = this.cameras.main
@@ -401,7 +393,6 @@ class Simulacrum extends Phaser.Scene {
                 this.camera.fadeIn(2000)
 
                 this.baseSpeed = screenWidth /  (60 * this.baseScreenClearTime * (60/this.musicBPM)) 
-                this.baseSpeedAdd = 0
                 this.speedLevel = 2
         
         // V1 Code End
@@ -461,48 +452,6 @@ class Simulacrum extends Phaser.Scene {
             repeat:0,
             hideOnComplete: 1
         });
- 
-        // Player
-       
-        // this.playerScale = 4 * (scaleModX) 
-        // this.player = this.physics.add.sprite(screenWidth * 1.75, screenHeight * 0.5 ,'avatar3').setScale(this.playerScale)
-        // this.player.body.setSize(10, 30).setOffset(25,15).setAllowDrag(true)
-        // this.player.setBounce(0.05)
-        // this.player.setCollideWorldBounds(true);
-        // this.physics.add.collider(this.player,this.floor);
-        // this.physics.add.collider(this.player,this.platformGroup)
-        // this.physics.add.overlap(this.player,this.enemyGroup,this.enterBattle,null,this)
-
-        // this.playerAttackHitBox = this.add.sprite(this.player.x, this.player.y)
-        // this.physics.add.existing(this.playerAttackHitBox, false)
-        // this.playerAttackHitBox.body.setAllowGravity(false).setSize(175, 100)
-        // this.playerAttackHitBox.body.checkCollision.none = true
-        // this.physics.add.overlap(this.playerAttackHitBox,this.enemyGroup,this.enemyTakeHit,null,this)
-        // this.playerIsHit = false
-
-        // this.currentEnergy = 100
-        // this.maxEnergy = 100
-
-        // this.currentFocus = 100
-        // this.maxFocus = 100
-
-        // this.currentLife = 100
-        // this.maxLife = 100
-
-        // this.playerVitals = new HealthBar(this,this.currentLife, 175, 100)
-        // //this.playerVitals = new HealthBar(this,this.currentLife, levelIcon.x + (30 * (scaleModX)), playerIcon.y + (20 * (scaleModX)))
-       
-
-        // // Camera
-
-        // this.camera = this.cameras.main
-        // this.camera.setBounds(screenWidth,0,screenWidth * 2,screenHeight)
-        // this.camera.centerOnX(screenWidth * 2)
-        // this.camera.fadeIn(2000)
-
-        // this.baseSpeed = screenWidth /  (60 * this.baseScreenClearTime * (60/this.musicBPM)) 
-        // this.baseSpeedAdd = 0
-        // this.speedLevel = 2
 
         // Music
         this.sound.stopByKey('mainTheme');
@@ -600,7 +549,7 @@ class Simulacrum extends Phaser.Scene {
 
         game.platformGroup.children.each(function(p) {
 
-            p.x -= (this.baseSpeed + this.baseSpeedAdd) * this.playerSpeed 
+            p.x -= this.baseSpeed * this.playerSpeed 
 
             if (p.active) {
                 if (p.x < 0) {
@@ -673,7 +622,6 @@ class Simulacrum extends Phaser.Scene {
                 enemy.flipX = true 
             } else {
                 enemy.flipX = false  
-        
             }
 
             if (this.enemiesType == 2 && this.enemyOrientation == 1){
@@ -681,6 +629,7 @@ class Simulacrum extends Phaser.Scene {
             } else {
                 enemy.speedMod = 1
             }
+
 
     
                 if(enemy){
@@ -707,9 +656,16 @@ class Simulacrum extends Phaser.Scene {
                     enemy.setScale(this.creepScale)
                     enemy.setVisible(true)
                     enemy.setActive(true)
+                    enemy.setDepth(Phaser.Math.Between(0,1))
                     enemy.body.setAllowGravity(true)
                     enemy.isHit = false
                     enemy.hitsTaken = 0
+                    if (enemy.type == 1){
+                        enemy.hitHP = Phaser.Math.Between(2,4)
+                    } else if (enemy.type == 2){
+                        enemy.hitHP = Phaser.Math.Between(4,8)
+                    }
+                    
     
                 }
             }
@@ -722,9 +678,9 @@ class Simulacrum extends Phaser.Scene {
 
             
             if(e.speedMod == 1){
-                e.x -= (this.baseSpeed + this.baseSpeedAdd) * this.playerSpeed 
+                e.x -= this.baseSpeed * this.playerSpeed 
             } else {
-                e.x -= (this.baseSpeed + this.baseSpeedAdd) * this.playerSpeed * 1.5
+                e.x -= this.baseSpeed * this.playerSpeed * 1.5
             }
             
 
@@ -782,7 +738,7 @@ class Simulacrum extends Phaser.Scene {
                     enemy.once('animationcomplete_nightBorneMinion_Hurt',function(){
                         enemy.isHit = false
                         enemy.hitsTaken += 1
-                        if (enemy.hitsTaken >= 2){
+                        if (enemy.hitsTaken >= enemy.hitHP){
                             enemy.play('nightBorneMinion_Death',true)
                             enemy.once('animationcomplete', function (anim,frame) {
                                 enemy.emit('animationcomplete_' + anim.key, frame)
@@ -805,7 +761,7 @@ class Simulacrum extends Phaser.Scene {
                     enemy.once('animationcomplete_nightBorne_Hurt',function(){
                         enemy.isHit = false
                         enemy.hitsTaken += 1
-                        if (enemy.hitsTaken >= 2){
+                        if (enemy.hitsTaken >= enemy.hitHP){
                             enemy.play('nightBorne_Death',true)
                             enemy.once('animationcomplete', function (anim,frame) {
                                 enemy.emit('animationcomplete_' + anim.key, frame)
@@ -833,8 +789,26 @@ class Simulacrum extends Phaser.Scene {
         this.actionPower = this.currentEnergy / this.maxEnergy
         this.skillPower = this.currentFocus / this.maxFocus
 
+        if (a1IsDown || a2IsDown || s1IsDown || s2IsDown){
+            regenActive = false
+        } else {
+            regenActive = true
+        }
 
-
+        // Base Mode Toggles 
+        // Cost
+        if (this.prod == true){
+            this.baseCost = 0.5
+        } else {
+            this.baseCost = 1
+        }
+        
+        // Movement
+        if (this.prod == true){
+            this.movementMod = 0.5
+        } else {
+            this.movementMod = 1
+        }
 
         this.playerAttackHitBox.x = this.player.x
 
@@ -848,482 +822,352 @@ class Simulacrum extends Phaser.Scene {
 
         this.playerAttackHitBox.body.checkCollision.none = true
 
-        
-
         // Add State Machine section (playerDefending, etc)
 
-        // Energy Costs & Recovery
-
-        this.baseCost = 1
-            
-        if (a1IsDown || a2IsDown ) {
-            regenActive = false
-        } else {
-            regenActive = true 
-        }
     
         // Running
         if (this.gameMode == 0){
-            this.action1CostModifier = 1
-            this.action2CostModifier = 0.25
-            this.moveUpCostModifier = 1.25
-            this.moveDownCostModifier = 1.25
-            this.moveLeftCostModifier = 0.75
-            this.moveRightCostModifier = 0.75
+            this.action1CostModifier = 2
+            this.action2CostModifier = 0.5
+            this.skill1CostModifier = 4
+            this.skill2CostModifier = 4
+
+            this.moveUpCostModifier = 1.5
+            this.moveDownCostModifier = 1.5
+            this.moveLeftCostModifier = 0.5
+            this.moveRightCostModifier = 0.5
         } else     
         // Battle
         if (this.gameMode == 1){
             this.action1CostModifier = 1
-            this.action2CostModifier = 0.25
-            this.moveUpCostModifier = 1
-            this.moveDownCostModifier = 1
-            this.moveLeftCostModifier = 0.5
-            this.moveRightCostModifier = 0.5
+            this.action2CostModifier = 0.125
+            this.skill1CostModifier = 2
+            this.skill2CostModifier = 2
+
+            this.moveUpCostModifier = 0.75
+            this.moveDownCostModifier = 0.75
+            this.moveLeftCostModifier = 0.25
+            this.moveRightCostModifier = 0.25
         }
         
-        if(this.actionPower > 0 ){
+        this.player.setTint()
+      
             if (a1IsDown){
-                
-                this.playerVitals.decreaseEnergy(this.baseCost * this.action1CostModifier)
+                if(this.actionPower > 0 ){
+                    this.playerVitals.decreaseEnergy(this.baseCost * this.action1CostModifier)
+                } else {
+                    this.player.setTint(0xff7a7a)
+                    this.playerVitals.decreaseEnergy(this.baseCost * this.action1CostModifier)
+                    this.playerVitals.decreaseLife((this.baseCost / 2) * this.action1CostModifier)
+                }
                 
             }
 
             if (a2IsDown){
+
+
+                if(this.actionPower > 0 ){
+                    this.playerVitals.decreaseEnergy(this.baseCost * this.action2CostModifier)
+                } else {
+                    this.player.setTint(0xff7a7a)
+                    this.playerVitals.decreaseEnergy(this.baseCost * this.action2CostModifier)
+                    this.playerVitals.decreaseLife((this.baseCost / 2) * this.action2CostModifier)
+                }
+            }
+
+            if (s1IsDown){
+                if(this.actionPower > 0 ){
+                    this.playerVitals.decreaseFocus(this.baseCost * this.skill1CostModifier)
+                } else {
+                    this.player.setTint(0xff7a7a)
+                    this.playerVitals.decreaseFocus(this.baseCost * this.skill1CostModifier)
+                    this.playerVitals.decreaseLife((this.baseCost / 2) * this.skill1CostModifier)
+                }
                 
-                this.playerVitals.decreaseEnergy(this.baseCost * this.action2CostModifier)
+            }
+
+            if (s2IsDown){
+
+
+                if(this.actionPower > 0 ){
+                    this.playerVitals.decreaseFocus(this.baseCost * this.skill2CostModifier)
+                } else {
+                    this.player.setTint(0xff7a7a)
+                    this.playerVitals.decreaseFocus(this.baseCost * this.skill2CostModifier)
+                    this.playerVitals.decreaseLife((this.baseCost / 2) * this.skill2CostModifier)
+                }
             }
    
             if(upIsDown){
-                
-                this.playerVitals.decreaseEnergy(this.baseCost * this.moveUpCostModifier)
+
+
+                if(this.actionPower > 0 ){
+                    this.playerVitals.decreaseEnergy(this.baseCost * this.moveUpCostModifier)
+                } else {
+                    this.playerVitals.decreaseEnergy(this.baseCost * this.moveUpCostModifier)
+                    this.playerVitals.decreaseLife((this.baseCost / 2) * this.moveUpCostModifier)
+                }
             }
             
             if(downIsDown){
-                
-                this.playerVitals.decreaseEnergy(this.baseCost * this.moveDownCostModifier)
+
+                if(this.actionPower > 0 ){
+                    this.playerVitals.decreaseEnergy(this.baseCost * this.moveDownCostModifier)
+                } else {
+                    this.playerVitals.decreaseEnergy(this.baseCost * this.moveDownCostModifier)
+                    this.playerVitals.decreaseLife((this.baseCost / 2) * this.moveDownCostModifier)
+                }
             }
             
             if(leftIsDown){
-                
-                this.playerVitals.decreaseEnergy(this.baseCost * this.moveLeftCostModifier)
+    
+
+                if(this.actionPower > 0 ){
+                    this.playerVitals.decreaseEnergy(this.baseCost * this.moveLeftCostModifier)
+                } else {
+                    this.playerVitals.decreaseEnergy(this.baseCost * this.moveLeftCostModifier)
+                    this.playerVitals.decreaseLife((this.baseCost / 2) * this.moveLeftCostModifier)
+                }
             }
 
             if(rightIsDown){
-                this.playerVitals.decreaseEnergy(this.baseCost * this.moveRightCostModifier)
-            }
+                
 
-            
-        }
-
-        if(this.skillPower > 0){
-
-            
-        }
-
-        // Player
-        if (this.gameMode == 0){
-
-            if(this.playerSpeed > 1){
-                // Lose more acceleration at higher speed - GAMEPLAY WISE, ALLOWS PLAYER TO BUILD SPEED EASIER, FUNNELS PLAYER TO MAXIMISE REGEN 
-                    //this.playerSpeed -= 0.0075 * (this.playerSpeed / 2) 
-                // Lose more acceleration at lower speed - NEXT FAV, MOST RELAISTIC PHYSICS WISE (MOMENTUM), PROVIDES REWARD FOR ACHIEVING HIGHER SPEED (LESS INVOVLED AS REWARD), FUNNELS PLAYER TO MAXIMISE MAX ENERGY
-                    //this.playerSpeed -= 0.0075 * (1 / this.playerSpeed) 
-                // Lose more acceleration at lower energy (100 - 50 %) - FUNNLES PLAYER TO BOTH REGEN & MAX ENERGY
-                    this.playerSpeed -= 0.004 + (0.004 * (1 - this.actionPower)) 
-            } else if (this.playerSpeed < 1 ){
-                this.playerSpeed += 0.005 + (0.005 * this.actionPower)
-            }
-
-            // A1 Button
-                // Sprint
-                if (a1IsDown){
-        
-                    // Animation
-
-                        // Ground / Air
-                            // this.pattern = new RegExp('RUN*')
-                            // this.patternMatch = this.pattern.test(this.player.anims.getFrameName())
-                            // if (this.patternMatch){
-                            //     this.player.play({key:this.player.anims.getName(),frameRate: this.baseRunFrameRate + (6 * Math.abs(this.playerSpeed))},true)
-                            // } else {
-                            //     this.player.play(this.player.anims.getName())
-                            // }
-  
-                    // Positioning
-
-                    // Other
-
-                        // Ground
-                        if (this.player.body.onFloor()){
-                            if(this.playerSpeed < 2){
-                                this.playerSpeed += 0.0125  + (0.0125 * this.actionPower)
-                            }
-                        } 
-                        // Air
-                        else  {
-                            if(this.playerSpeed < 2){
-                                this.playerSpeed += 0.0075  + (0.0075 * this.actionPower)
-                            }
-                        }
-
-                } 
-            // A2 Button 
-                // Slow
-                if (a2IsDown){
-                    // Animation
-
-                        // Ground / Air
-                            this.player.play({key:'player_Avatar_3_EVADE',frameRate: 3, startFrame: 5},true)
-
-
-                    // Positioning
-
-                    // Other
-
-                        // Ground
-                        if (this.player.body.onFloor()){
-                            if(this.playerSpeed > 0.5){
-                                this.playerSpeed -= 0.0125  + (0.0125 * this.actionPower)
-                            }
-                        } 
-                        // Air
-                        else  {
-                            if(this.playerSpeed > 0.5){
-                                this.playerSpeed -= 0.0075  + (0.0075 * this.actionPower)
-                            }
-                        }
-
+                if(this.actionPower > 0 ){
+                    this.playerVitals.decreaseEnergy(this.baseCost * this.moveRightCostModifier)
+                } else {
+                    this.playerVitals.decreaseEnergy(this.baseCost * this.moveRightCostModifier)
+                    this.playerVitals.decreaseLife((this.baseCost / 2) * this.moveRightCostModifier)
                 }
-            // Up Button 
-                // Jump
-                if (upIsDown){
+            }
 
-                    // Animation
+        // Player Sprite 
+            if (this.gameMode == 0){
 
-                        this.player.play({key:'player_Avatar_3_JUMP',frameRate: 10},true)
-                         
-                    // Positioning  
-                            
-                        // Ground
-                            if (this.player.body.onFloor()){ 
-                                this.player.x += (screenWidth * 0.0025) * this.actionPower // Forward motion when jumping (toggle and test feel)
-                                this.player.setVelocityY(-1000 - 500 * this.actionPower)
+                if(this.playerSpeed > 1){
+                    // Lose more acceleration at higher speed - GAMEPLAY WISE, ALLOWS PLAYER TO BUILD SPEED EASIER, FUNNELS PLAYER TO MAXIMISE REGEN 
+                        //this.playerSpeed -= 0.0075 * (this.playerSpeed / 2) 
+                    // Lose more acceleration at lower speed - NEXT FAV, MOST RELAISTIC PHYSICS WISE (MOMENTUM), PROVIDES REWARD FOR ACHIEVING HIGHER SPEED (LESS INVOVLED AS REWARD), FUNNELS PLAYER TO MAXIMISE MAX ENERGY
+                        //this.playerSpeed -= 0.0075 * (1 / this.playerSpeed) 
+                    // Lose more acceleration at lower energy (100 - 50 %) - FUNNLES PLAYER TO BOTH REGEN & MAX ENERGY
+                        this.playerSpeed -= 0.004 + (0.004 * (1 - this.actionPower)) 
+                } else if (this.playerSpeed < 1 ){
+                    this.playerSpeed += 0.005 + (0.005 * this.actionPower)
+                }
+
+                // A1 Button
+                    // Sprint
+                    if (a1IsDown){
+            
+                        // Animation
+
+                            // Ground / Air
+                                // this.pattern = new RegExp('RUN*')
+                                // this.patternMatch = this.pattern.test(this.player.anims.getFrameName())
+                                // if (this.patternMatch){
+                                //     this.player.play({key:this.player.anims.getName(),frameRate: this.baseRunFrameRate + (6 * Math.abs(this.playerSpeed))},true)
+                                // } else {
+                                //     this.player.play(this.player.anims.getName())
+                                // }
+    
+                        // Positioning
+
+                        // Other
+
+                            // Ground
+                            if (this.player.body.onFloor()){
+                                if(this.playerSpeed < 2){
+                                    this.playerSpeed += 0.0125  + (0.0125 * this.actionPower)
+                                }
                             } 
-                        // Air
+                            // Air
                             else  {
-                                this.player.x += (screenWidth * 0.00125) * this.actionPower // Forward motion when jumping (toggle and test feel)
-                                this.player.setVelocityY(this.player.body.velocity.y - 35 * this.actionPower)
+                                if(this.playerSpeed < 2){
+                                    this.playerSpeed += 0.0075  + (0.0075 * this.actionPower)
+                                }
                             }
-        
-                } 
-            // Down Button
-                // Slide
-                if (downIsDown){
-                    // Animation
-                        //Ground
-                        if (this.player.body.onFloor()){
-                            this.player.play({key:'player_Avatar_3_SLIDE',frameRate: 8},true)
-                        } 
-                        // Air
-                        else {
-                            this.player.play({key:'player_Avatar_3_FALL',frameRate: 10},true)    
-                        }
-                    // Positioning
-        
+
+                    } 
+                // A2 Button 
+                    // Slow
+                    if (a2IsDown){
+                        // Animation
+
+                            // Ground / Air
+                                this.player.play({key:'player_Avatar_3_EVADE',frameRate: 3, startFrame: 5},true)
+
+
+                        // Positioning
+
+                        // Other
+
+                            // Ground
+                            if (this.player.body.onFloor()){
+                                if(this.playerSpeed > 0.5){
+                                    this.playerSpeed -= 0.0125  + (0.0125 * this.actionPower)
+                                }
+                            } 
+                            // Air
+                            else  {
+                                if(this.playerSpeed > 0.5){
+                                    this.playerSpeed -= 0.0075  + (0.0075 * this.actionPower)
+                                }
+                            }
+
+                    }
+                // Up Button 
+                    // Jump
+                    if (upIsDown){
+
+                        // Animation
+
+                            this.player.play({key:'player_Avatar_3_JUMP',frameRate: 10},true)
+                            
+                        // Positioning 
+                        
+                            
+                            // Ground
+                                if (this.player.body.onFloor()){ 
+                                    this.player.x += ((screenWidth * 0.0025) * this.actionPower) * this.movementMod 
+                                    this.player.setVelocityY(-1000 - 500 * this.actionPower)
+  
+                                } 
+                            // Air
+                                else  {
+                                    this.player.x += ((screenWidth * 0.00125) * this.actionPower) * this.movementMod
+                                    this.player.setVelocityY(this.player.body.velocity.y - (35  * this.actionPower * this.movementMod))
+                            
+                                }
+            
+                    } 
+                // Down Button
+                    // Slide
+                    if (downIsDown){
+                        // Animation
+                            // Ground
+                            if (this.player.body.onFloor()){
+                                this.player.play({key:'player_Avatar_3_SLIDE',frameRate: 8},true)
+                            } 
+                            // Air
+                            else {
+                                this.player.play({key:'player_Avatar_3_FALL',frameRate: 10},true)    
+                            }
+                        // Positioning
+            
+                            // Ground
+                                if (this.player.body.onFloor()){
+                                    // Forward motion when sliding (toggle and test feel)
+                                    this.player.x += ((screenWidth * 0.00125) * this.actionPower) * this.movementMod
+                                } 
+                            // Air
+                                else {
+                                    // Downward motion when in air (toggle and test feel)
+                                    this.player.y += ((screenHeight * 0.015) * this.actionPower) * this.movementMod
+                                } 
+                    }
+                // Left Button
+                    // Move Left
+                    if (leftIsDown){
+                        // Animation
+            
+                        // Positioning
+
+                            // Ground
+                            if (this.player.body.onFloor()){
+                                this.player.x -= ((screenWidth * 0.003) + (screenWidth * 0.006 * this.actionPower)) * this.movementMod
+                            } 
+                            // Air
+                            else {
+                                this.player.x -= ((screenWidth * 0.0015) + (screenWidth * 0.003 * this.actionPower)) * this.movementMod
+                            }
+                    } 
+                // Right Button
+                    // Move Right
+                    if (rightIsDown){   
+                        // Animation
+            
+                        // Positioning
+                        
                         // Ground
                             if (this.player.body.onFloor()){
-                                // Forward motion when sliding (toggle and test feel)
-                                this.player.x += (screenWidth * 0.00125) * this.actionPower
+                                this.player.x += ((screenWidth * 0.003) + (screenWidth * 0.006 * this.actionPower)) * this.movementMod
                             } 
                         // Air
                             else {
-                                // Downward motion when in air (toggle and test feel)
-                                this.player.y += (screenHeight * 0.015) * this.actionPower
-                            } 
-                }
-            // Left Button
-                // Move Left
-                if (leftIsDown){
-                    // Animation
-        
-                    // Positioning
-
-                        // Ground
-                        if (this.player.body.onFloor()){
-                            this.player.x -= (screenWidth * 0.003) + (screenWidth * 0.006 * this.actionPower)
-                        } 
-                        // Air
-                        else {
-                            this.player.x -= (screenWidth * 0.0015) + (screenWidth * 0.003 * this.actionPower)
-                        }
-                } 
-            // Right Button
-                // Move Right
-                if (rightIsDown){   
-                    // Animation
-        
-                    // Positioning
-                    
-                    // Ground
-                        if (this.player.body.onFloor()){
-                            this.player.x += (screenWidth * 0.003) + (screenWidth * 0.006 * this.actionPower)
-                        } 
-                    // Air
-                        else {
-                            this.player.x += (screenWidth * 0.0015) + (screenWidth * 0.003 * this.actionPower)
-                        }
-                }
-            // Neutral
-                // No A2, Up or Down
-                if (!this.playerIsHit && !a2IsDown && !upIsDown && !downIsDown){
-                    // Animation
-
-                        // Variables
-
-                        // Level 1
-                        if(this.speedLevel == 1){
-                            this.baseRunFrameRate = 4
-                        } else
-                        // Level 2
-                        if(this.speedLevel == 2){
-                            this.baseRunFrameRate = 6
-                        } else
-                        // Level 3
-                        if(this.speedLevel == 3){
-                            this.baseRunFrameRate = 8
-                        } else
-                        // Level 4
-                        if(this.speedLevel == 4){
-                            this.baseRunFrameRate = 10
-                        }
-
-                        // Ground / Air 
-
-                        this.player.flipX = false
-
-                        // Ground
-                        if (this.player.body.onFloor()){
-                            this.player.play({key:'player_Avatar_3_RUN',frameRate: this.baseRunFrameRate + (6 * Math.abs(this.playerSpeed))},true)
-                        } 
-                        // Air
-                        else {
-                            this.player.play({key:'player_Avatar_3_FALL',frameRate: 10},true)
-                        }
-                    
-                }
-
-        } else if (this.gameMode == 1) {
-
-            // Auto lock - Enables Player to automatically face closest enemy
-                if(Math.abs(this.player.x - this.closestEnemy.x) <= screenWidth * 0.25){
-                    this.playerLockedOn = true
-                    if(this.player.x < this.closestEnemy.x){
-                        this.player.flipX = false
-                        
-                    } else {
-                        this.player.flipX = true
-                        
-                    }
-                } else {
-                    this.playerLockedOn = false
-                }
-  
-            // Animations, Sprite/Hitbox Size & Collision Detection
-
-            // Enable player sword collision detection
-                if (this.player.anims.getName() == 'player_Avatar_3_ACTION_1'){
-                    // playerSwordSwing.play()
-                    
-                    
-
-                    if (this.player.anims.currentFrame.index >= 6 && this.player.anims.currentFrame.index < 12){
-                        
-                        this.playerAttackHitBox.body.checkCollision.none = false
-                        
-                    } else {
-                        this.playerAttackHitBox.body.checkCollision.none = true
-                    }
-
-                } else if (this.player.anims.getName() == 'player_Avatar_3_ACTION_2'){
-                    // playerSwordSwing.play()
-
-                    if (this.player.anims.currentFrame.index >= 4 && this.player.anims.currentFrame.index < 6 
-                        || this.player.anims.currentFrame.index >= 12 && this.player.anims.currentFrame.index < 14 ){
-                        
-                        this.playerAttackHitBox.body.checkCollision.none = false
-                        
-                    } else {
-                        this.playerAttackHitBox.body.checkCollision.none = true
-                    }
-
-                } else if (this.player.anims.getName() == 'player_Avatar_3_ACTION_3'){
-                    // playerSwordSwing.play()
-                    
-                    if (this.player.anims.currentFrame.index >= 3 && this.player.anims.currentFrame.index < 5){
-                        
-                        this.playerAttackHitBox.body.checkCollision.none = false
-                        
-                    } else {
-                        this.playerAttackHitBox.body.checkCollision.none = true
-                    }
-
-                }
-
-
-            // In Air
-                if(!this.player.body.onFloor()){
-                    
-                    if(a1IsDown && this.actionPower > 0){
-                        // Air attack animation
-                        if (upIsDown){
-                            this.player.play({key:'player_Avatar_3_ACTION_3',frameRate: 4 + (6 * Math.abs(this.actionPower))},true)
-                        } else
-                        if (leftIsDown || rightIsDown){
-                            this.player.play({key:'player_Avatar_3_ACTION_2',frameRate: 6 + (6 * Math.abs(this.actionPower))},true)
-                        } else {
-                            this.player.play({key:'player_Avatar_3_ACTION_1',frameRate: 10 + (6 * Math.abs(this.actionPower))},true)
-                        }
-                    } else if (a2IsDown){
-                        // Air block animation
-                        this.player.body.setSize(10, 15).setOffset(25,30).setAllowDrag(true)                    
-                        this.player.body.checkCollision.right = false
-                        this.player.play({key:'player_Avatar_3_EVADE',frameRate: 10},true)
-                    
-                    
-                    } else if (!this.enterBattleAnimation) {
-                        this.player.body.setSize(10, 30).setOffset(25,15).setAllowDrag(true)
-                        // Fall / Jump Animation based on velocity and player action
-                        if(this.player.body.velocity.y >= (screenHeight * 0.02) * this.actionPower * 60 ){
-                            this.player.play({key:'player_Avatar_3_FALL',frameRate: 10},true)
-                        } else if (this.player.body.velocity.y < (screenHeight * 0.02) * this.actionPower * 60){
-                            if (upIsDown){
-                                this.player.play({key:'player_Avatar_3_JUMP',frameRate: 10},true)
-                            } else {
-                                this.player.play({key:'player_Avatar_3_FALL',frameRate: 10},true) 
+                                this.player.x += ((screenWidth * 0.0015) + (screenWidth * 0.003 * this.actionPower)) * this.movementMod
                             }
-                        }
+                    }
+                // Neutral
+                    // No A2, Up or Down
+                    if (!this.playerIsHit && !a2IsDown && !upIsDown && !downIsDown){
+                        // Animation
+
+                            // Variables
+
+                            // Level 1
+                            if(this.speedLevel == 1){
+                                this.baseRunFrameRate = 4
+                            } else
+                            // Level 2
+                            if(this.speedLevel == 2){
+                                this.baseRunFrameRate = 6
+                            } else
+                            // Level 3
+                            if(this.speedLevel == 3){
+                                this.baseRunFrameRate = 8
+                            } else
+                            // Level 4
+                            if(this.speedLevel == 4){
+                                this.baseRunFrameRate = 10
+                            }
+
+                            // Ground / Air 
+
+                            this.player.flipX = false
+
+                            // Ground
+                            if (this.player.body.onFloor()){
+                                this.player.play({key:'player_Avatar_3_RUN',frameRate: this.baseRunFrameRate + (6 * Math.abs(this.playerSpeed))},true)
+                            } 
+                            // Air
+                            else {
+                                this.player.play({key:'player_Avatar_3_FALL',frameRate: 10},true)
+                            }
                         
                     }
-            
-                } 
-            // Grounded 
-                else {
 
-                    if(a1IsDown && this.actionPower > 0.01){
-                        if (upIsDown){
-                            this.player.play({key:'player_Avatar_3_ACTION_3',frameRate: 4 + (6 * Math.abs(this.actionPower))},true)
-                        } else
-                        if (leftIsDown || rightIsDown){
-                            this.player.play({key:'player_Avatar_3_ACTION_2',frameRate: 6 + (6 * Math.abs(this.actionPower))},true)
-                        } else {
-                            this.player.play({key:'player_Avatar_3_ACTION_1',frameRate: 10 + (6 * Math.abs(this.actionPower))},true)
-                        }
-                    } else if (a2IsDown && this.actionPower > 0.01){
-                        this.player.body.setSize(10, 15).setOffset(25,30).setAllowDrag(true)                    
-                        
-                        if(leftIsDown || rightIsDown){
-                            this.player.play({key:'player_Avatar_3_EVADE',frameRate: 12 + (8 * Math.abs(this.actionPower))},true)
+            } else if (this.gameMode == 1) {
 
-                            this.player.once('animationcomplete', function (anim,frame) {
-                                this.player.emit('animationcomplete_' + anim.key, frame)
-                            }, this)
-                            
-                            this.player.once('animationcomplete_player_Avatar_3_EVADE', function(){
-                                leftIsDown = false
-                                rightIsDown = false
-                            })
-                            
-                        } else 
-                        if(!this.a2Held){
-                            this.player.play({key:'player_Avatar_3_BLOCK',frameRate: 8 + (8 * Math.abs(this.actionPower))},true)
-                        this.a2Held = true
-                        }
-
+                // Auto lock - Enables Player to automatically face closest enemy
+                    if(Math.abs(this.player.x - this.closestEnemy.x) <= screenWidth * 0.25){
+                        this.playerLockedOn = true
+                        if (!leftIsDown && !rightIsDown){
+                        if(this.player.x < this.closestEnemy.x){
                         
-                        
-                    } else if (downIsDown && !a1IsDown && !a2IsDown){
-                        
-                        this.player.body.setSize(10, 15).setOffset(25,30).setAllowDrag(true)
-                        if(!this.downHeld){
-                            this.player.play({key:'player_Avatar_3_CROUCH',frameRate: 10},true)
-                        this.downHeld = true
-                        }
-                        
-
-                    } else if ((leftIsDown || rightIsDown) && !a1IsDown && !a2IsDown){
-                        if (this.playerBattleSpeed > 0.01 && leftIsDown || this.playerBattleSpeed < 0.01 && rightIsDown ){
-                            this.player.play({key:'player_Avatar_3_EVADE',frameRate: 2,startFrame:5},true)
-                        }  else {
-                            this.player.play({key:'player_Avatar_3_RUN',frameRate: 8 + (4 * Math.abs(this.actionPower))},true)
-                        }
-                        
-                        
-                    } else if (!this.enterBattleAnimation) {
-                        this.player.body.setSize(10, 30).setOffset(25,15).setAllowDrag(true)
-                        if (!leftIsDown && !rightIsDown && Math.abs(this.playerBattleSpeed) > 1){
-                            this.player.play({key:'player_Avatar_3_SLIDE',frameRate: 10},true)
-                            
+                            this.player.flipX = false
                             
                         } else {
-                            this.player.play({key:'player_Avatar_3_IDLE',frameRate: 8 + (4 * (1 - Math.abs(this.actionPower)))},true)
+                            this.player.flipX = true
+                            
                         }
                     }
-
-                    if (!downIsDown){
-                        this.downHeld = false
+                    } else {
+                        this.playerLockedOn = false
                     }
 
-                    if (!a2IsDown){
-                        this.a2Held = false
-                    }
-
-                   
-
-                    
-                }
-
-            // Positioning - additive
-
-            // Facing
-            if (!this.playerLockedOn || this.player.body.onFloor()){
-                if(leftIsDown){
-                    this.player.flipX = true
-                } else if (rightIsDown){
-                    this.player.flipX = false
-                }
-           }
-            // Movement
-            // A1 - Attack
-            if (a1IsDown){
-                //if(this.actionPower > 0){
-    
-                    // All States
-                // Snap to Locked on Enemy
-
-                if (this.playerLockedOn){
-                    if(Math.abs(this.player.x - this.closestEnemy.x) <= screenWidth * 0.025 && Math.abs(this.player.x - this.closestEnemy.x) >= screenWidth * 0.001 ){
-                        if (this.closestEnemy.x > this.player.x){
-                            this.player.x = this.closestEnemy.x - (screenWidth * 0.0075)
-                        } else {
-                            this.player.x = this.closestEnemy.x + (screenWidth * 0.0075)
-                        }
-                    
-                    }
-                }
-
-                // Move Forwards with Swings
+                // Enable player sword collision detection
                     if (this.player.anims.getName() == 'player_Avatar_3_ACTION_1'){
                         // playerSwordSwing.play()
                         
                         
 
                         if (this.player.anims.currentFrame.index >= 6 && this.player.anims.currentFrame.index < 12){
-                            if (this.player.flipX){
-                                this.player.x -= (screenWidth * 0.001)
-                            } else {
-                                this.player.x += (screenWidth * 0.001)
-                            }  
-                        } 
+                            
+                            this.playerAttackHitBox.body.checkCollision.none = false
+                            
+                        } else {
+                            this.playerAttackHitBox.body.checkCollision.none = true
+                        }
 
                     } else if (this.player.anims.getName() == 'player_Avatar_3_ACTION_2'){
                         // playerSwordSwing.play()
@@ -1331,268 +1175,481 @@ class Simulacrum extends Phaser.Scene {
                         if (this.player.anims.currentFrame.index >= 4 && this.player.anims.currentFrame.index < 6 
                             || this.player.anims.currentFrame.index >= 12 && this.player.anims.currentFrame.index < 14 ){
                             
-                                if (this.player.flipX){
-                                    this.player.x -= (screenWidth * 0.002)
-                                } else {
-                                    this.player.x += (screenWidth * 0.002)
-                                }  
-                        } 
+                            this.playerAttackHitBox.body.checkCollision.none = false
+                            
+                        } else {
+                            this.playerAttackHitBox.body.checkCollision.none = true
+                        }
 
                     } else if (this.player.anims.getName() == 'player_Avatar_3_ACTION_3'){
                         // playerSwordSwing.play()
                         
                         if (this.player.anims.currentFrame.index >= 3 && this.player.anims.currentFrame.index < 5){
                             
-                            if (this.player.flipX){
-                                this.player.x -= (screenWidth * 0.0005)
+                            this.playerAttackHitBox.body.checkCollision.none = false
+                            
+                        } else {
+                            this.playerAttackHitBox.body.checkCollision.none = true
+                        }
+
+                    }
+    
+                // A1 Button
+                    // Attack
+                    if (a1IsDown){
+            
+                        // Animation
+
+                            // Ground / Air
+
+                            if (leftIsDown){
+                                this.player.flipX = true
+                            } else if (rightIsDown){
+                                this.player.flipX = false
+                            }
+
+                            if (upIsDown){
+                                this.player.play({key:'player_Avatar_3_ACTION_3',frameRate: 4 + (6 * Math.abs(this.actionPower))},true)
+                            } else
+                            if (leftIsDown || rightIsDown){
+                                this.player.play({key:'player_Avatar_3_ACTION_2',frameRate: 6 + (6 * Math.abs(this.actionPower))},true)
                             } else {
-                                this.player.x += (screenWidth * 0.0005)
-                            }  
+                                this.player.play({key:'player_Avatar_3_ACTION_1',frameRate: 10 + (6 * Math.abs(this.actionPower))},true)
+                            }
+                        
+    
+                        // Positioning
+
+                            // Ground / Air
+
+                                // Snap to Locked on Enemy
+
+                                    if (this.playerLockedOn){
+                                        if(Math.abs(this.player.x - this.closestEnemy.x) <= screenWidth * 0.025 && Math.abs(this.player.x - this.closestEnemy.x) >= screenWidth * 0.001 ){
+                                            if (this.closestEnemy.x > this.player.x){
+                                                this.player.x = this.closestEnemy.x - (screenWidth * 0.0075)
+                                            } else {
+                                                this.player.x = this.closestEnemy.x + (screenWidth * 0.0075)
+                                            }
+                                        
+                                        }
+                                    }
+
+                                // Move Forwards with Swings
+                                    if (this.player.anims.getName() == 'player_Avatar_3_ACTION_1'){
+                                        
+
+                                        if (this.player.anims.currentFrame.index >= 6 && this.player.anims.currentFrame.index < 12){
+                                            if (this.player.flipX){
+                                                this.player.x -= (screenWidth * 0.001) * this.movementMod
+                                            } else {
+                                                this.player.x += (screenWidth * 0.001) * this.movementMod
+                                            }  
+                                        } 
+
+                                    } else if (this.player.anims.getName() == 'player_Avatar_3_ACTION_2'){
+                                        
+
+                                        if (this.player.anims.currentFrame.index >= 4 && this.player.anims.currentFrame.index < 6 
+                                            || this.player.anims.currentFrame.index >= 12 && this.player.anims.currentFrame.index < 14 ){
+                                            
+                                                if (this.player.flipX){
+                                                    this.player.x -= (screenWidth * 0.004) * this.movementMod
+                                                } else {
+                                                    this.player.x += (screenWidth * 0.004) * this.movementMod
+                                                }  
+                                        } 
+
+                                    } else if (this.player.anims.getName() == 'player_Avatar_3_ACTION_3'){
+                                        
+                                        
+                                        if (this.player.anims.currentFrame.index >= 3 && this.player.anims.currentFrame.index < 5){
+                                            
+                                            if (this.player.flipX){
+                                                this.player.x -= (screenWidth * 0.0005) * this.movementMod
+                                            } else {
+                                                this.player.x += (screenWidth * 0.0005) * this.movementMod
+                                            }  
+                                            
+                                        } 
+
+                                    }
+
+                            // Ground 
+
+                                if (this.player.body.onFloor()){ 
+                                } 
+                            // Air
+                                else  {
+                                    this.player.body.velocity.y -= (50 * this.actionPower)  * this.movementMod
+                                }   
+
+                        // Other
+
+                            // Ground
+                        
+                            // Air
+                            
+
+                    } else
+                // A2 Button 
+                    // Defend
+                    if (a2IsDown){
+                        // Animation
+
+                            // Ground / Air
+                                
+                                if(leftIsDown || rightIsDown){
+                                    
+
+                                    if (leftIsDown){
+                                        this.player.flipX = true
+                                    } else if (rightIsDown) {
+                                        this.player.flipX = false
+                                    }
+                                    
+                                    
+                                    this.player.play({key:'player_Avatar_3_EVADE',frameRate: 12 + (8 * Math.abs(this.actionPower))},true)
+
+                                    this.player.once('animationcomplete', function (anim,frame) {
+                                        this.player.emit('animationcomplete_' + anim.key, frame)
+                                    }, this)
+                                    
+                                    this.player.once('animationcomplete_player_Avatar_3_EVADE', function(){
+                                        leftIsDown = false
+                                        rightIsDown = false
+                                        this.player.play({key:'player_Avatar_3_BLOCK',frameRate: 8 + (8 * Math.abs(this.actionPower))},true)
+                                    
+                                    },this)
+                                    
+                                } else 
+                                if(!this.a2Held){
+                                    this.player.play({key:'player_Avatar_3_BLOCK',frameRate: 8 + (8 * Math.abs(this.actionPower))},true)
+                                    this.a2Held = true
+                                }
+
+
+                        // Positioning
+
+                                // Ground
+                                if (this.player.body.onFloor()){
+
+                                    if (leftIsDown){
+                                        if (this.playerBattleSpeed > 0){
+                                            this.playerBattleSpeed -= 0.015 + 0.12 * this.actionPower
+                                        }
+                
+                                        if (this.playerBattleSpeed > -0.5){
+                                            this.playerBattleSpeed -= 0.0075 + 0.06 * this.actionPower
+                                        }
+                
+                                        this.player.x -= (((screenWidth * 0.004) + ((screenWidth * 0.006) * this.actionPower))) * this.movementMod
+                                    } else if (rightIsDown){
+                                        if (this.playerBattleSpeed < 0){
+                                            this.playerBattleSpeed += 0.015 + 0.12 * this.actionPower
+                                        }
+                
+                                        if (this.playerBattleSpeed < 0.5){
+                                            this.playerBattleSpeed += 0.0075 + 0.06 * this.actionPower
+                                            
+                                        }
+                
+                                        this.player.x += (((screenWidth * 0.004) + ((screenWidth * 0.006) * this.actionPower))) * this.movementMod
+                                    } else {
+                                        if(this.playerBattleSpeed > 0.5){
+                                            this.playerBattleSpeed -= 0.0125  + (0.0125 * this.actionPower)
+                                        } else if (this.playerBattleSpeed < -0.5){
+                                            this.playerBattleSpeed += 0.0125  + (0.0125 * this.actionPower)
+                                        }
+                                    }
+                                }    
+                                // Air
+                                else {
+                
+                                    if (leftIsDown){
+                
+                                        if (this.playerBattleSpeed > 0){
+                                            this.playerBattleSpeed -= 0.0075 + 0.6 * this.actionPower
+                                        }
+                
+                                        if (this.playerBattleSpeed > -0.5){
+                                            this.playerBattleSpeed -= 0.00375 + 0.03 * this.actionPower
+                                        }
+                
+                                        this.player.x -= (((screenWidth * 0.002) + ((screenWidth * 0.006) * this.actionPower))) * this.movementMod
+                                    } else if (rightIsDown){
+                
+                                        if (this.playerBattleSpeed < 0){
+                                            this.playerBattleSpeed += 0.0075 + 0.06 * this.actionPower
+                                        }
+                
+                                        if (this.playerBattleSpeed < 0.5){
+                                            this.playerBattleSpeed += 0.00375 + 0.03 * this.actionPower
+                                            
+                                        }
+                                        this.player.x += (((screenWidth * 0.002) + ((screenWidth * 0.006) * this.actionPower))) * this.movementMod
+                                    } else {
+                                        if(this.playerBattleSpeed > 0.5){
+                                            this.playerBattleSpeed -= 0.0125  + (0.0125 * this.actionPower)
+                                        } else if (this.playerBattleSpeed < -0.5){
+                                            this.playerBattleSpeed += 0.0125  + (0.0125 * this.actionPower)
+                                        }
+                                    }
+                                }
+                                
+                            
+
+                    } else {
+        
+                    // Up Button 
+                    // Jump
+                        if (upIsDown){
+
+                            // Animation
+
+                                // Ground / Air
+
+                                if (this.player.body.onFloor()){
+
+                                    this.player.play({key:'player_Avatar_3_CROUCH',frameRate: 20 + (8 * Math.abs(this.actionPower))},true)
+                            
+                                        this.player.once('animationcomplete', function (anim,frame) {
+                                            this.player.emit('animationcomplete_' + anim.key, frame)
+                                    },this)
+
+                                } else {
+                                    this.player.play({key:'player_Avatar_3_JUMP',frameRate: 10},true)
+                                }
+                                
+                            // Positioning 
+                            
+                                // Ground / Air
+
+                                    // Forward motion when jumping (toggle and test feel)
+                                    if(this.player.flipX){
+                                        this.player.x -= ((screenWidth * 0.0025) * -this.playerBattleSpeed) * this.movementMod
+                                    } else {
+                                        this.player.x += ((screenWidth * 0.0025) * this.playerBattleSpeed) * this.movementMod
+                                    }
+                
+                                // Ground
+                                    if (this.player.body.onFloor()){
+
+                                        this.player.once('animationcomplete_player_Avatar_3_CROUCH', function (){
+                                            this.player.setVelocityY(-1000 - 500 * this.actionPower)
+                                        },this)
+                                    } 
+                                // Air
+                                    else  {                     
+                                        this.player.setVelocityY(this.player.body.velocity.y - (35  * this.actionPower * this.movementMod))
+
+                                    }
+
+                        }
+                    // Down Button
+                        // Slide
+                        if (downIsDown){
+                            // Animation
+                                // Ground
+                                if (this.player.body.onFloor()){
+                                    if(!this.downHeld){
+                                        this.player.play({key:'player_Avatar_3_CROUCH',frameRate: 10},true)
+                                        this.downHeld = true
+                                    }
+                                }
+                                // Air
+                                else {
+                                    this.player.play({key:'player_Avatar_3_FALL',frameRate: 10},true)
+                                }
+                            // Positioning
+
+                                // Ground
+                                if (this.player.body.onFloor()){
+                                    
+                                } 
+                                // Air
+                                else {
+                                    // Downward motion when in air (toggle and test feel)
+                                    this.player.y += ((screenHeight * 0.015) * this.actionPower) * this.movementMod
+                                } 
+        
+                        }
+                    // Left Button
+                        // Move Left
+                        if (leftIsDown){
+                            // Animation
+
+                            this.player.flipX = true
+                            // Ground
+                            if (this.player.body.onFloor() && !upIsDown && !downIsDown){
+                                if (this.playerBattleSpeed > 0.01){
+                                    this.player.play({key:'player_Avatar_3_EVADE',frameRate: 2,startFrame:5},true)
+                                }  else {
+                                    this.player.play({key:'player_Avatar_3_RUN',frameRate: 8 + (4 * Math.abs(this.actionPower))},true)
+                                }
+
+                            }
+                            // Air 
+                            else {
+
+                            }
+
+                            // Positioning
+                                // On Ground
+                                    if (this.player.body.onFloor() && !upIsDown && !downIsDown){
+                                        if (this.playerBattleSpeed > 0){
+                                            this.playerBattleSpeed -= 0.03 + 0.06 * this.actionPower
+                                        } else
+
+                                        if (this.playerBattleSpeed > -1.5){
+                                            this.playerBattleSpeed -= 0.015 + 0.03 * this.actionPower
+                                        }
+
+                                        if(!downIsDown){
+                                        
+                                        // Ramp up movement for added realism but same as flat
+                                        this.player.x -= (((screenWidth * 0.004) + ((screenWidth * 0.004) * -this.playerBattleSpeed) + ((screenWidth * 0.002) * this.actionPower))) * this.movementMod
+                                    
+                                        }
+                                    } 
+                                // In Air
+                                    else {
+                                
+                                        // if (this.playerBattleSpeed > 0){
+                                        //     this.playerBattleSpeed -= 0.015 + 0.03 * this.actionPower
+                                        // } else 
+
+                                        // if (this.playerBattleSpeed > -1.5){
+                                        //     this.playerBattleSpeed -= 0.0075 + 0.015 * this.actionPower
+                                        // }
+                        
+                                        // Ramp up movement for added realism but same as flat
+                                        this.player.x -= ((screenWidth * 0.002) + ((screenWidth * 0.002) * -this.playerBattleSpeed)) * this.movementMod
+                
+                    
+                                    }  
                             
                         } 
+                    // Right Button
+                        // Move Right
+                        if (rightIsDown){   
+                            // Animation
 
-                    }
-                
-    
-                // On Ground
-                if (this.player.body.onFloor()){
-                    
-                } 
-                // In Air
-                else  {
-                 
-                    this.player.body.velocity.y -= 50 * this.actionPower
-                  
-                    
-                }
-    
-                    
-                //}
-    
-            } else 
-            // A2 - Block
-            if (a2IsDown){
-                
-    
-                //if(this.actionPower > 0){
-    
-                    // All States
-                // Extra Forward motion at high power (toggle and test feel)
-                //if (this.a2Held){
-                    
-                    if (leftIsDown){
-                        if (this.playerBattleSpeed > 0){
-                            this.playerBattleSpeed -= 0.015 + 0.12 * this.actionPower
-                         }
+                            this.player.flipX = false
 
-                         if (this.playerBattleSpeed > -0.5){
-                            this.playerBattleSpeed -= 0.0075 + 0.06 * this.actionPower
-                         }
+                            if (this.player.body.onFloor() && !upIsDown && !downIsDown){
+                                if (this.playerBattleSpeed < 0.01){
+                                    this.player.play({key:'player_Avatar_3_EVADE',frameRate: 2,startFrame:5},true)
+                                }  else {
+                                    this.player.play({key:'player_Avatar_3_RUN',frameRate: 8 + (4 * Math.abs(this.actionPower))},true)
+                                }
 
-                         
-                        if (this.player.body.onFloor()){
-                            this.player.x -= ((screenWidth * 0.004) + ((screenWidth * 0.006) * this.actionPower))
-                        } else {
-                            this.player.x -= ((screenWidth * 0.002) + ((screenWidth * 0.006) * this.actionPower))
-                        }
-                    } else if (rightIsDown) {
-                        if (this.playerBattleSpeed < 0){
-                            this.playerBattleSpeed += 0.015 + 0.12 * this.actionPower
-                         }
+                            } else {
 
-                         if (this.playerBattleSpeed < 0.5){
-                            this.playerBattleSpeed += 0.0075 + 0.06 * this.actionPower
+                            }
+
+                            // Positioning
                             
-                         }
+                            // On Ground
+                                if (this.player.body.onFloor() && !downIsDown){
 
-                        
-                         if (this.player.body.onFloor()){
-                            this.player.x += ((screenWidth * 0.004) + ((screenWidth * 0.006) * this.actionPower))
-                        } else {
-                            this.player.x += ((screenWidth * 0.002) + ((screenWidth * 0.006) * this.actionPower))
+                                    
+                                    if (this.playerBattleSpeed < 0){
+                                        this.playerBattleSpeed += 0.03 + 0.06 * this.actionPower
+                                    } else 
+
+                                    if (this.playerBattleSpeed < 1.5){
+                                        this.playerBattleSpeed += 0.015 + 0.03 * this.actionPower
+                                    }
+                                
+
+                                    if(!downIsDown){
+                
+                                
+                                    // Ramp up movement for added realism but same as flat
+                                    this.player.x += (((screenWidth * 0.004) + ((screenWidth * 0.004) * this.playerBattleSpeed) + ((screenWidth * 0.002) * this.actionPower))) * this.movementMod
+
+                                    
+                                    }
+                                } 
+                            // In Air
+                                else {
+                                    // if (this.playerBattleSpeed < 0){
+                                    //     this.playerBattleSpeed += 0.015 + 0.03 * this.actionPower
+                                    // } else
+
+                                    // if (this.playerBattleSpeed < 1.5){
+                                    //     this.playerBattleSpeed += 0.0075 + 0.015 * this.actionPower
+                                    // }
+
+                                    // Ramp up movement for added realism but same as flat
+                                    this.player.x += ((screenWidth * 0.002) + ((screenWidth * 0.002) * this.playerBattleSpeed)) * this.movementMod
+
+                                }
+                                
                         }
-                    } else
-        
-                    // On Ground
-                    if (this.player.body.onFloor()){
-                        if(this.playerBattleSpeed > 0.5){
-                            this.playerBattleSpeed -= 0.0125  + (0.0125 * this.actionPower)
-                        } else if (this.playerBattleSpeed < -0.5){
-                            this.playerBattleSpeed += 0.0125  + (0.0125 * this.actionPower)
+                    // Neutral 
+                        
+                        if (!this.enterBattleAnimation && !upIsDown && !downIsDown && !leftIsDown && !rightIsDown){
+                            if(this.player.body.onFloor()){
+
+                                if (Math.abs(this.playerBattleSpeed) > 1){
+                                    this.player.play({key:'player_Avatar_3_SLIDE',frameRate: 10},true) 
+                                } else {
+                                    this.player.play({key:'player_Avatar_3_IDLE',frameRate: 8 + (4 * (1 - Math.abs(this.actionPower)))},true)
+                                }
+                            } else {
+                                this.player.play({key:'player_Avatar_3_FALL',frameRate: 10},true)
+                            }
                         }
-                    } 
-                    // In Air
-                    else  {
-                        if(this.playerBattleSpeed > 0.5){
-                            this.playerBattleSpeed -= 0.0125  + (0.0125 * this.actionPower)
-                        } else if (this.playerBattleSpeed < -0.5){
-                            this.playerBattleSpeed += 0.0125  + (0.0125 * this.actionPower)
-                        }
-                    }
-                //}
-    
-
-            } else {
-            // Up - Jump
-            if (upIsDown){
-                
-                // All States
                     
-                        // Forward motion when jumping (toggle and test feel)
-                        if(this.player.flipX){
-                            this.player.x -= (screenWidth * 0.0025) * -this.playerBattleSpeed
-                        } else {
-                            this.player.x += (screenWidth * 0.0025) * this.playerBattleSpeed
-                        }
-                        
-                    
-    
-                // On Ground
-                    if (this.player.body.onFloor()){
-                        
-                        this.player.setVelocityY(-1000 - 500 * this.actionPower)
-                    } 
-                // In Air
-                    else  {
-                  
-                    this.player.setVelocityY(this.player.body.velocity.y - 35 * this.actionPower)
-
-                    }
-    
-            } else 
-            // Down - Slide
-            if (downIsDown){
-                // All States
-    
-                // On Ground
-                    if (this.player.body.onFloor()){
-                        
-                    } 
-                // In Air
-                    else {
-                        // Downward motion when in air (toggle and test feel)
-                        this.player.y += (screenHeight * 0.015) * this.actionPower
-                    } 
-            } 
-            // Left
-            if (leftIsDown){
-                 // All States
-                 
-                    // On Ground
-                    if (this.player.body.onFloor()){
-                        if (this.playerBattleSpeed > 0){
-                            this.playerBattleSpeed -= 0.03 + 0.06 * this.actionPower
-                         }
-
-                         if (this.playerBattleSpeed > -1.5){
-                            this.playerBattleSpeed -= 0.015 + 0.03 * this.actionPower
-                         }
-
-                         if(!downIsDown){
-                        
-                        // Ramp up movement for added realism but same as flat
-                        this.player.x -= ((screenWidth * 0.004) + ((screenWidth * 0.004) * -this.playerBattleSpeed) + ((screenWidth * 0.002) * this.actionPower))
-                     
-                         }
-                    } 
-                // In Air
-                    else {
-                
-                        if (this.playerBattleSpeed > 0){
-                            this.playerBattleSpeed -= 0.015 + 0.03 * this.actionPower
-                         }
-
-                         if (this.playerBattleSpeed > -1.5){
-                            this.playerBattleSpeed -= 0.0075 + 0.015 * this.actionPower
-                         }
-          
-                        // Ramp up movement for added realism but same as flat
-                        this.player.x -= (screenWidth * 0.002) + (screenWidth * 0.002) * -this.playerBattleSpeed
-  
-    
-                    }  
-            }
-            // Right - Sprint
-            if (rightIsDown){   
-                // All States
-                
-                // On Ground
-                if (this.player.body.onFloor()){
-
-                    
-                    if (this.playerBattleSpeed < 0){
-                        this.playerBattleSpeed += 0.03 + 0.06 * this.actionPower
-                     }
-
-                    if (this.playerBattleSpeed < 1.5){
-                        this.playerBattleSpeed += 0.015 + 0.03 * this.actionPower
-                    }
-                
-
-                    if(!downIsDown){
-  
-                
-                    // Ramp up movement for added realism but same as flat
-                    this.player.x += ((screenWidth * 0.004) + ((screenWidth * 0.004) * this.playerBattleSpeed) + ((screenWidth * 0.002) * this.actionPower))
-
-                    
-                    }
-                } 
-            // In Air
-                else {
-                    if (this.playerBattleSpeed < 0){
-                        this.playerBattleSpeed += 0.015 + 0.03 * this.actionPower
-                     }
-
-                     if (this.playerBattleSpeed < -1.5){
-                        this.playerBattleSpeed += 0.0075 + 0.015 * this.actionPower
-                     }
-
-                    // Ramp up movement for added realism but same as flat
-                    this.player.x += (screenWidth * 0.002) + (screenWidth * 0.002) * this.playerBattleSpeed
-
                 }
-            } 
-  
-            }
 
-            if (!leftIsDown && !rightIsDown && Math.abs(this.playerBattleSpeed) < 0.05 ){
-                this.playerBattleSpeed = 0
-            }
-
-            if (a1IsDown || a2IsDown || downIsDown || upIsDown || (!leftIsDown && !rightIsDown)){
-
-
-                if (this.player.body.onFloor()){
-                    this.playerBattleSpeedDecelerationStandard = 0.05
-                    this.playerBattleSpeedDecelerationSprint = 0.025
-                } else {
-                    this.playerBattleSpeedDecelerationStandard = 0.025
-                    this.playerBattleSpeedDecelerationSprint = 0.0125
+                if (!a2IsDown){
+                    this.a2Held = false
                 }
-                
 
-                if (this.playerBattleSpeed < 0){
-                    if (this.playerBattleSpeed < -1){
-                        this.playerBattleSpeed += this.playerBattleSpeedDecelerationSprint
+                if (!downIsDown){
+                    this.downHeld = false
+                }
+
+                if (!leftIsDown && !rightIsDown && Math.abs(this.playerBattleSpeed) < 0.05 ){
+                    this.playerBattleSpeed = 0
+                }
+
+                if (a1IsDown || a2IsDown || downIsDown || upIsDown || (!leftIsDown && !rightIsDown)){
+
+
+                    if (this.player.body.onFloor()){
+                        this.playerBattleSpeedDecelerationStandard = 0.05
+                        this.playerBattleSpeedDecelerationSprint = 0.025
                     } else {
-                        this.playerBattleSpeed += this.playerBattleSpeedDecelerationStandard
+                        this.playerBattleSpeedDecelerationStandard = 0.025
+                        this.playerBattleSpeedDecelerationSprint = 0.0125
                     }
-                } else if (this.playerBattleSpeed > 0) {
-                    if (this.playerBattleSpeed > 1){
-                        this.playerBattleSpeed -= this.playerBattleSpeedDecelerationSprint
-                    } else {
-                        this.playerBattleSpeed -= this.playerBattleSpeedDecelerationStandard
+                    
+
+                    if (this.playerBattleSpeed < 0){
+                        if (this.playerBattleSpeed < -1){
+                            this.playerBattleSpeed += this.playerBattleSpeedDecelerationSprint
+                        } else {
+                            this.playerBattleSpeed += this.playerBattleSpeedDecelerationStandard
+                        }
+                    } else if (this.playerBattleSpeed > 0) {
+                        if (this.playerBattleSpeed > 1){
+                            this.playerBattleSpeed -= this.playerBattleSpeedDecelerationSprint
+                        } else {
+                            this.playerBattleSpeed -= this.playerBattleSpeedDecelerationStandard
+                        }
                     }
+                    
                 }
+
+                this.player.x += ((screenWidth * 0.002) * this.playerBattleSpeed) * this.movementMod
+
                 
+                    
             }
-
-            
-
-            this.player.x += (screenWidth * 0.002) * this.playerBattleSpeed
-                  
-        }
         
         
     }
@@ -1672,11 +1729,11 @@ class Simulacrum extends Phaser.Scene {
         // Add to BG function (maybe combine with BG objects? and terrain?)
         if (this.gameMode == 0){
             for (var i = 1; i < this.bgLayers + 1 ; i++){
-                window['bgL'+i].tilePositionX += ((this.baseSpeed + this.baseSpeedAdd) * this.playerSpeed)  * window['bgL'+ i + 'ScrollMod'] * (scaleModX / (screenWidth / this.textures.get('bgL' + i).getSourceImage().width))
+                window['bgL'+i].tilePositionX += (this.baseSpeed* this.playerSpeed)  * window['bgL'+ i + 'ScrollMod'] * (scaleModX / (screenWidth / this.textures.get('bgL' + i).getSourceImage().width))
             }
 
             for (var i = 1; i < this.fgLayers + 1 ; i++){
-                window['fgL'+i].tilePositionX += ((this.baseSpeed + this.baseSpeedAdd) * this.playerSpeed)  * window['fgL'+ i + 'ScrollMod'] * (scaleModX / (screenWidth / this.textures.get('fgL' + i).getSourceImage().width))
+                window['fgL'+i].tilePositionX += (this.baseSpeed  * this.playerSpeed)  * window['fgL'+ i + 'ScrollMod'] * (scaleModX / (screenWidth / this.textures.get('fgL' + i).getSourceImage().width))
             }
         } else {
 
@@ -1718,10 +1775,9 @@ class Simulacrum extends Phaser.Scene {
         if(s1IsDown){
             s1IsDown = false
             if(this.speedLevel < 3){
-                //if(this.speedLevel == 2){
-                    this.baseSpeed *= 1.5   
-                //}
-                
+
+                this.baseSpeed *= 1.5   
+
                 this.platformTimer.delay /= 1.5
                 this.enemyTimer.delay /= 1.5
                 this.speedLevel += 1
@@ -1731,11 +1787,9 @@ class Simulacrum extends Phaser.Scene {
         } else if (s2IsDown){
             s2IsDown = false
             if(this.speedLevel > 1){
-                //if(this.speedLevel == 3){
-                    //this.baseSpeedAdd -=  this.baseSpeed * 0.5
-                    this.baseSpeed /= 1.5
-                //}
-                
+                   
+                this.baseSpeed /= 1.5
+
                 this.platformTimer.delay *= 1.5
                 this.enemyTimer.delay *= 1.5
                 this.speedLevel -= 1

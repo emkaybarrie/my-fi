@@ -16,6 +16,7 @@
     var a2IsDown = false
     var s1IsDown
     var s2IsDown
+    var buttonDown
     var openMenuIsDown
     var abortStageIsDown
 
