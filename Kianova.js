@@ -131,7 +131,7 @@ class Kianova extends Phaser.Scene {
         this.load.image('textBoxS', 'assets/vFX/textBox1a.png');
         this.load.image('textBoxM', 'assets/vFX/textBox2a.png');
         this.load.image('textBoxL', 'assets/vFX/textBox3a.png');
-        //this.load.image('textBox_P', 'assets/vFX/inspirationBox.png');
+    
         this.load.image('sectorNameBox', 'assets/vFX/playerHUDBox.png');
         this.load.image('cityStat1Icon', 'assets/ach_00037.png');
         this.load.image('cityStat2Icon', 'assets/ach_00024.png');
@@ -706,7 +706,7 @@ class Kianova extends Phaser.Scene {
            
 
         if (nextScene && this.controlsEnabled){
-            this.scene.start(activeRegion, {targetZone: 0, currentTimePeriod: Phaser.Math.Between(1,4),rarityOverride:null})
+            this.scene.start(activeRegion, {targetScene: 'Badlands',targetZone: 0, currentTimePeriod: Phaser.Math.Between(1,4),rarityOverride:null})
             nextScene = false
             //setTimeout(() => {
             this.scene.stop('Kianova')

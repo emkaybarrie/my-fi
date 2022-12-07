@@ -277,6 +277,7 @@ class ModeSelect extends Phaser.Scene {
         } 
 
 
+        console.log(this.selectedMode)
         if (nextScene){
             nextScene = false
             prologueCompleted = true

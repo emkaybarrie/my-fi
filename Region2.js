@@ -14,7 +14,7 @@ class Region2 extends Phaser.Scene {
     {
         console.log('Region Query Received: ', data)
         // Import Region Query Data
-        console.log()
+        this.targetScene = data.targetScene
         this.targetZone = data.targetZone
         this.currentTimePeriod = data.currentTimePeriod
         this.rarityOverride = data.rarityOverride
@@ -73,7 +73,11 @@ class Region2 extends Phaser.Scene {
 
         console.log('Data Packaged: \n', dataExport)
 
-        this.scene.run("Badlands", dataExport)
+        if (this.targetScene == 'Badlands'){
+            this.scene.run("Badlands", dataExport)
+        } else {
+            this.scene.run("Simulacrum", dataExport)
+        }
 
         console.log('Exporting Data to Badlands....')
     
@@ -166,8 +170,9 @@ class Region2 extends Phaser.Scene {
 
                 // Floor Settings
         
-                game.floorPosYMin = 0.05
-                game.floorPosYMax = 0.15
+                game.floorMin = 0.95
+                game.floorMax = 0.85 
+                game.floorColour = 0x375971 
 
     }
 
@@ -209,8 +214,9 @@ class Region2 extends Phaser.Scene {
 
                 // Floor Settings
         
-                game.floorPosYMin = 0.025
-                game.floorPosYMax = 0.075 
+                game.floorMin = 0.95
+                game.floorMax = 0.85 
+                game.floorColour = 0x375971  
 
     }
 
@@ -367,8 +373,9 @@ class Region2 extends Phaser.Scene {
  
      // Floor Settings
  
-     this.data.set('floorPosYMin',  this.floorPosYMin)
-     this.data.set('floorPosYMax', this.floorPosYMax)
+     this.data.set('floorMin',  this.floorMin)
+     this.data.set('floorMax', this.floorMax)
+     this.data.set('floorColour', this.floorColour)
  
      // Platform Settings
  
