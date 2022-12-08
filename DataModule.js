@@ -32,6 +32,9 @@
     var resilienceRating
     var focusRating
     var staminaRating
+
+    var storedRewards = 0
+    var gloryTotalHighScore
     // Kianova
     var patron1Rating_Influence 
     var patron1Rating_Prosperity 

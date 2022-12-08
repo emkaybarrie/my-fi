@@ -151,6 +151,7 @@ class Simulacrum extends Phaser.Scene {
 
             this.gameMode = 0 // Starting Game Mode - 0 = Run, 1 = Battle
             this.speedLevel = 2 // Starting Speed Level in Run Mode (rename to Intensity Level)
+            this.endRun = false
 
             if (this.gameMode == 0){
                 this.playerSpeed = 0 // Starting Player Speed in Run Mode  
@@ -428,13 +429,12 @@ class Simulacrum extends Phaser.Scene {
   
     }
 
-    
 
     stageModule(){
         // Stage Progress
         console.log(this.stageProgressEnabled)
         if (this.gameMode == 0 && this.stageProgressEnabled){
-            this.stageProgress.increaseProgress((2.5 / 30))
+            this.stageProgress.increaseProgress((2.5 / 15))
             // Glory Modifier
             if (this.player.x > this.camera.scrollX + (screenWidth * 0.6)){
                 this.gloryModifier = 1.25
@@ -460,6 +460,9 @@ class Simulacrum extends Phaser.Scene {
         // Return To Kianova
         if (this.currentLife <= 0 && this.stageProgressEnabled){
             this.stageProgressEnabled = false
+            this.endRun = true
+            this.playerSpeed = 0
+            playerInputActive = false
 
             this.recordScores()
             this.camera.fadeOut(6000)
@@ -472,7 +475,7 @@ class Simulacrum extends Phaser.Scene {
     }
 
     environmentModule(){
-        if (this.gameMode == 0){
+        if (this.gameMode == 0 && !this.endRun){
             for (var i = 1; i < this.bgLayers + 1 ; i++){
                 window['bgL'+i].tilePositionX += (this.baseSpeed* this.playerSpeed)  * window['bgL'+ i + 'ScrollMod'] * (scaleModX / (screenWidth / this.textures.get('bgL' + i).getSourceImage().width))
             }
@@ -757,7 +760,11 @@ class Simulacrum extends Phaser.Scene {
 
             if(!enemy.isHit){
                 enemy.isHit = true
-
+                if (enemy.x >= this.player.x){
+                    enemy.x += 20
+                } else {
+                    enemy.x -= 20
+                }
   
                 if(enemy.type == 1){
                     enemy.play('nightBorneMinion_Hurt',true)
@@ -1103,7 +1110,7 @@ class Simulacrum extends Phaser.Scene {
             }
 
         // Player Sprite 
-            if (this.gameMode == 0){
+            if (this.gameMode == 0 && !this.endRun){
 
                 
 

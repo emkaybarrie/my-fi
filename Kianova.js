@@ -105,6 +105,8 @@ class Kianova extends Phaser.Scene {
         this.freePlayGloryAmara = 0
         this.freePlayGloryIlluvik = 0
 
+        this.storedRewards = 0
+
         
     }
 
@@ -190,6 +192,12 @@ class Kianova extends Phaser.Scene {
             }
         }
     }
+
+    updateRewards(badlandsData){
+        if (storedRewards < badlandsData.rewards){
+            storedRewards = badlandsData.rewards
+        }
+    }
     
 
     create(data){
@@ -203,6 +211,8 @@ class Kianova extends Phaser.Scene {
         if (data.glory > 0){
             this.updateGlory(data)
         }
+
+        this.updateRewards(data)
 
 
         camera = this.cameras.main.fadeIn(500)
@@ -336,10 +346,11 @@ class Kianova extends Phaser.Scene {
             }
         });
 
+
         this.storedRewardsText.x = this.storedRewardsIcon.x + (this.starToIconSpacing * 2.15 * (scaleModX) ) //+ playerIcon.displayWidth * 1.1
         this.storedRewardsText.y = this.storedRewardsIcon.y
         this.storedRewardsText.setFontSize(20)
-        this.storedRewardsText.setText(500)
+        this.storedRewardsText.setText(this.storedRewards)
 
         
 
@@ -882,7 +893,7 @@ class Kianova extends Phaser.Scene {
 
             this.text.setText(sectorDescription)
             
-
+            this.storedRewardsText.setText(storedRewards)
             
                 // Reposition Elements
                 if(selectedSector == 1){

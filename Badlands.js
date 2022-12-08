@@ -591,16 +591,17 @@ class Badlands extends Phaser.Scene {
 
         console.log('Refreshing Stage')
 
-        for(var i = 1; i < bgLayers + 1;i++){
+        for(var i = 1; i < this.stageData.bgLayers + 1;i++){
             this.textures.remove('bgL' + i);
         }
 
-        for(var i = 1; i < fgLayers + 1;i++){
+        for(var i = 1; i < this.stageData.fgLayers + 1;i++){
             this.textures.remove('fgL' + i);
         }
         
+       
         console.log('Stage Refreshed')
-
+        
     }
 
     preload ()
@@ -745,6 +746,7 @@ class Badlands extends Phaser.Scene {
 
             this.gameMode = 0 // Starting Game Mode - 0 = Run, 1 = Battle
             this.speedLevel = 2 // Starting Speed Level in Run Mode (rename to Intensity Level)
+            this.endRun = false
 
             if (this.gameMode == 0){
                 this.playerSpeed = 0 // Starting Player Speed in Run Mode  
@@ -752,7 +754,7 @@ class Badlands extends Phaser.Scene {
                 this.playerBattleSpeed = 0 // Starting Player Battle Speed in Battle Mode  
             }
 
-            this.rewards = 0
+            this.rewards = storedRewards
             this.level = 1
             this.glory = 0
             this.gold = 0
@@ -847,7 +849,7 @@ class Badlands extends Phaser.Scene {
                 this.playerIsHit = false
 
                 this.currentEnergy = 100
-                this.maxEnergy = 200
+                this.maxEnergy = 300
 
                 this.currentFocus = 100
                 this.maxFocus = 100
@@ -1476,13 +1478,11 @@ class Badlands extends Phaser.Scene {
 
 }
 
-
-
 stageModule(){
     // Stage Progress
     console.log(this.stageProgressEnabled)
     if (this.gameMode == 0 && this.stageProgressEnabled){
-        this.stageProgress.increaseProgress((2.5 / 30))
+        this.stageProgress.increaseProgress((2.5 / 5))
         // Glory Modifier
         if (this.player.x > this.camera.scrollX + (screenWidth * 0.6)){
             this.gloryModifier = 1.25
@@ -1508,6 +1508,9 @@ stageModule(){
     // Return To Kianova
     if (this.currentLife <= 0 && this.stageProgressEnabled){
         this.stageProgressEnabled = false
+        this.endRun = true
+        this.playerspeed = 0
+        playerInputActive = false
 
         this.recordScores()
         this.camera.fadeOut(6000)
@@ -1520,7 +1523,7 @@ stageModule(){
 }
 
 environmentModule(){
-    if (this.gameMode == 0){
+    if (this.gameMode == 0 && !this.endRun){
         for (var i = 1; i < this.bgLayers + 1 ; i++){
             window['bgL'+i].tilePositionX += (this.baseSpeed* this.playerSpeed)  * window['bgL'+ i + 'ScrollMod'] * (scaleModX / (screenWidth / this.textures.get('bgL' + i).getSourceImage().width))
         }
@@ -1799,80 +1802,109 @@ enemies(game){
 }
 
 enemyTakeHit(playerAttackHitBox,enemy){
-        if(this.gameMode == 1){
+    if(this.gameMode == 1){
 
-            
+        
 
-        if(!enemy.isHit){
-            enemy.isHit = true
+    if(!enemy.isHit){
+        enemy.isHit = true
+        if (enemy.x >= this.player.x){
+            enemy.x += Phaser.Math.Between(0,50)
+        } else {
+            enemy.x -= Phaser.Math.Between(0,50)
+        }
 
-
-            if(enemy.type == 1){
-                enemy.play('nightBorneMinion_Hurt',true)
-                enemy.once('animationcomplete', function (anim,frame) {
-                    enemy.emit('animationcomplete_' + anim.key, frame)
-                }, enemy)
-                enemy.once('animationcomplete_nightBorneMinion_Hurt',function(){
-                    enemy.isHit = false
-                    enemy.hitsTaken += 1
-                    if (enemy.hitsTaken >= enemy.hitHP){
-                        enemy.play('nightBorneMinion_Death',true)
-                        this.physics.add.collider(enemy,this.floor); 
-                        this.physics.add.collider(enemy,this.platformGroup); 
-                        this.enemyGroup.remove(enemy)
-                        this.gold += Phaser.Math.Between(0,10)
-                          
-                        
-                        enemy.once('animationcomplete', function (anim,frame) {
-                            enemy.emit('animationcomplete_' + anim.key, frame)
-                        }, enemy)
-                        enemy.once('animationcomplete_nightBorneMinion_Death',function(){
-                            
-                        enemy.setActive(false)
-                        enemy.setVisible(false)
-                        enemy.x = -screenWidth * 0.25
-                        
-                        },this)
-                    } else {
-                        enemy.play('nightBorneMinion_Idle',true)
-                    }
-                    
-                },this)
-            } else if (enemy.type == 2){
-                enemy.play('nightBorne_Hurt',true)
-                enemy.once('animationcomplete', function (anim,frame) {
-                    enemy.emit('animationcomplete_' + anim.key, frame)
-                }, enemy)
-                enemy.once('animationcomplete_nightBorne_Hurt',function(){
-                    enemy.isHit = false
-                    enemy.hitsTaken += 1
-                    if (enemy.hitsTaken >= enemy.hitHP){
-                        enemy.play('nightBorne_Death',true)
-                        this.physics.add.collider(enemy,this.floor); 
-                        this.physics.add.collider(enemy,this.platformGroup); 
-                        this.enemyGroup.remove(enemy)
-                        this.gold += Phaser.Math.Between(5,50)  
-                        this.rewards += Phaser.Math.Between(0,5)  
-                        enemy.once('animationcomplete', function (anim,frame) {
-                            enemy.emit('animationcomplete_' + anim.key, frame)
-                        }, enemy)
-                        enemy.once('animationcomplete_nightBorne_Death',function(){
-                                    
-                        enemy.setActive(false)
-                        enemy.setVisible(false)
-                        enemy.x = -screenWidth * 0.25
-                       
-                        },this)
-                    } else {
-                        enemy.play('nightBorne_Idle',true)
-                    }
-                    
-                },this)
+        if(this.player.anims.getName() == 'player_Avatar_3_ACTION_2'){
+            this.strength = Phaser.Math.Between(25,75)
+            if (enemy.x >= this.player.x){
+                enemy.x += this.strength
+            } else {
+                enemy.x -= this.strength
             }
-
+            if (this.strength > 50){
+                this.camera.shake(250,0.02)
+            }
             
         }
+
+            if(this.player.anims.getName() == 'player_Avatar_3_ACTION_3'){
+                this.strength = Phaser.Math.Between(1750,3000)
+                enemy.setVelocityY(-this.strength * this.actionPower)
+                if (this.strength > 2500){
+                    this.camera.shake(250,0.02)
+                }
+                
+            }
+            
+           
+        
+
+        if(enemy.type == 1){
+            enemy.play('nightBorneMinion_Hurt',true)
+            enemy.once('animationcomplete', function (anim,frame) {
+                enemy.emit('animationcomplete_' + anim.key, frame)
+            }, enemy)
+            enemy.once('animationcomplete_nightBorneMinion_Hurt',function(){
+                enemy.isHit = false
+                enemy.hitsTaken += 1
+                if (enemy.hitsTaken >= enemy.hitHP){
+                    enemy.play('nightBorneMinion_Death',true)
+                    this.physics.add.collider(enemy,this.floor); 
+                    this.physics.add.collider(enemy,this.platformGroup); 
+                    this.enemyGroup.remove(enemy)
+                    this.gold += Phaser.Math.Between(0,10)
+                      
+                    
+                    enemy.once('animationcomplete', function (anim,frame) {
+                        enemy.emit('animationcomplete_' + anim.key, frame)
+                    }, enemy)
+                    enemy.once('animationcomplete_nightBorneMinion_Death',function(){
+                        
+                    enemy.setActive(false)
+                    enemy.setVisible(false)
+                    enemy.x = -screenWidth * 0.25
+                    
+                    },this)
+                } else {
+                    enemy.play('nightBorneMinion_Idle',true)
+                }
+                
+            },this)
+        } else if (enemy.type == 2){
+            enemy.play('nightBorne_Hurt',true)
+            enemy.once('animationcomplete', function (anim,frame) {
+                enemy.emit('animationcomplete_' + anim.key, frame)
+            }, enemy)
+            enemy.once('animationcomplete_nightBorne_Hurt',function(){
+                enemy.isHit = false
+                enemy.hitsTaken += 1
+                if (enemy.hitsTaken >= enemy.hitHP){
+                    enemy.play('nightBorne_Death',true)
+                    this.physics.add.collider(enemy,this.floor); 
+                    this.physics.add.collider(enemy,this.platformGroup); 
+                    this.enemyGroup.remove(enemy)
+                    this.gold += Phaser.Math.Between(5,50)  
+                    this.rewards += Phaser.Math.Between(0,5)  
+                    enemy.once('animationcomplete', function (anim,frame) {
+                        enemy.emit('animationcomplete_' + anim.key, frame)
+                    }, enemy)
+                    enemy.once('animationcomplete_nightBorne_Death',function(){
+                                
+                    enemy.setActive(false)
+                    enemy.setVisible(false)
+                    enemy.x = -screenWidth * 0.25
+                   
+                    },this)
+                } else {
+                    enemy.play('nightBorne_Idle',true)
+                }
+                
+            },this)
+        }
+
+        
     }
+}
 }
 
 cameraModule(){
@@ -2151,7 +2183,7 @@ playerModule(){
         }
 
     // Player Sprite 
-        if (this.gameMode == 0){
+        if (this.gameMode == 0 && !this.endRun){
 
             
 
@@ -3062,7 +3094,7 @@ exitBattle(game){
         this.stageModule()
 
         // Regen
-        this.regenMod = 1
+        this.regenMod = 2
         if (regenActive){
             if(this.skillPower < 1){
                 this.playerVitals.decreaseFocus(-0.5 * this.regenMod)  
@@ -3540,7 +3572,7 @@ exitBattle(game){
 
 
 
-            if (this.currentLife <= 0){
+            if (this.currentLife <= 0 && !this.endRun){
                     
                     this.player.anims.play({key:'player_Avatar_3_DOWNED',frameRate: 12},true); 
                     
