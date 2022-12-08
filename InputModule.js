@@ -170,7 +170,9 @@ class InputModule extends Phaser.Scene {
 
         this.activateKeyboard()
         this.mapKeyboard()
+        if (playerInputActive){
         this.activateGamepad()
+        }
         
         
         

@@ -24,8 +24,7 @@
     var playerSwordSwing
     var playerHeavySwordSwing
     var enemySwordSwing
-    //var screenWidth  //1980
-    //var screenHeight  //1080
+
     var spotlightPlayerHealth
     var spotlightPlayerPower
     var spotlightNightBorne
@@ -155,133 +154,7 @@
     var sunPositionX
     var sunPositionY
 
-    function reset(game){
-
-        
-
-     
-                                    
-                            
-
-     nightBorneAlive = true
-
-         lvlTransition = false
-
-         inspirationPic = Phaser.Math.Between(1,3)
-       
-        
-    //System & Game Settings
-
-     gameOver = false
-     gameRestart = false
-     returnToKianova = false
-
-    glory = 0
-     gold = 0
-     highScore = parseInt(localStorage.getItem('highScore')) || 0;
-
-     this.gameMode = 0
-
-
-    // Controls
-    
-     gamePadEnabled = false
-
-     moveCancelActive = true
-
-     a1IsDown = false
-     a2IsDown = false
-    s1IsDown = false
-     s2IsDown = false
-     leftIsDown = false
-     rightIsDown = false
-     upIsDown = false
-     downIsDown = false
-  
-
-    // Travel & Battle Mode
-
-     regenActive = true
-     playerIsHit = false
-     game.level = 0
-     game.progress = 0
-     game.progressToNextLevel = Phaser.Math.Between(375,425)
-
-     game.progressToNextCheckPoint = progressToNextLevel * 0.25
-    
-
-    // Travel Mode
-
-     playerFocusing = false
-    focusModeActive = false
-     scanningForDanger = true
-     playerSpeed = 1
-
-        //NightBorne
-        startNecroFloat = true
-      
-        
-
-    // Battle Mode
-
-        // Camera
-        cameraPanning = false
-
-        // Player
-         playerLockedOn
-         controlsEnabled = true
-        playerBlocking = false
-         playerDodging = false
-         playerJumping = false
-        playerCrouching = false
-
-         playerAttacking = false 
-         attackModeActive = false
-         usingPower = false
-     
-
-         playerLanded = true
-
    
-
-        // NightBorne
-      
-         nightBorneIsHit = false
-         nightBorneLife = (income * 0.8) 
-       
-         nightBorneMaxLife = (income * 0.8) 
-
-    // Character Management & Stats
-
-        // Financial Data
-        var income = 100
-            //TBC
-        var lifeRegenAllocation = 0.0 
-        var focusRegenAllocation = 0.3 // a) self -report budget driven (i.e. how much do you save/invest a month) b) queried - eventually determined by funds in specific location (myFi designated/directed savings/funds)
-        var energyRegenAllocation = 0.7  // a) self-report buidget driven b) delta of non-saved/invested income
-
-        // Game Stats
-        
-        var lifeRegen = lifeRegenAllocation * income // Calc TBD - Buy-in to myFi stable/pension/emergency fund provides buff to regen - lock tokens/stables and earn 1 - x% 'regen' i.e return
-        var focusRegen = focusRegenAllocation * income
-        var energyRegen = 0// energyRegenAllocation * income 
-        var lifeMultiplier = 3
-
-    
-
-        var damage = 0
-        var baseDamageMultiplier = 1
-
-
-    // TBC
-
-
-    skillTreeOpen = false
-    storingBuffTier = 0
-    spendingBuffTier = 0
-    growingBuffTier = 0
-     kianovaBuffTier = 0
-    }
 
     class HealthBar {
 
@@ -690,729 +563,6 @@
            
     }
 
-    function finish(game){
-        game.player.body.checkCollision.none = true        
-        game.camera.fadeOut(6000)
-        game.camera.on('camerafadeoutcomplete', function () {
-                game.scene.run('Kianova')
-                reset(game)
-                game.scene.stop('Badlands')
-           });
-            
-        
-        
-    }
-
-    function levelUp(game){
-        game.progress = 0
-        game.level += 1
-  
-        //chaosMultiplierMin *= 1.1
-        game.progressToNextLevel *= 1.08
-        game.stageProgress.p = (((screenWidth * 0.25)-2) * (scaleModX)) / game.progressToNextLevel
-        game.progressToNextCheckPoint = game.progressToNextLevel * 0.25
-        
-        
-    }
-
-//     function showHUD() {
-//         playerIcon.setVisible(1)
-//         playerIconBox.setVisible(1)
-//         playerVitalsBox.setVisible(1)
-//         playerVitals.show()
-//         playerVitalsTextL.setVisible(1)
-//         playerVitalsTextF.setVisible(1)
-//         playerVitalsTextE.setVisible(1)
-        
-//         levelIcon.setVisible(1)
-//         levelText.setVisible(1)
-        
-//         gloryIcon.setVisible(1)
-//         gloryText.setVisible(1)
-
-//         goldIcon.setVisible(1)
-//         goldText.setVisible(1)
-
-//         skillABox.setVisible(1)
-//         skillAIcon.setVisible(1)
-//         skillBBox.setVisible(1)
-//         skillBIcon.setVisible(1)
-
-//         levelProgress.show()
-        
-
-//     }
-
-//     function hideHUD() {
-//         playerIcon.setVisible()
-//         playerIconBox.setVisible()
-//         playerVitalsBox.setVisible()
-//         playerVitals.hide()
-//         playerVitalsTextL.setVisible()
-//         playerVitalsTextF.setVisible()
-//         playerVitalsTextE.setVisible()
-        
-//         levelIcon.setVisible()
-//         levelText.setVisible()
-        
-//         gloryIcon.setVisible()
-//         gloryText.setVisible()
-
-//         goldIcon.setVisible()
-//         goldText.setVisible()
-
-//         skillABox.setVisible()
-//         skillAIcon.setVisible()
-//         skillBBox.setVisible()
-//         skillBIcon.setVisible()
-
-//         levelProgress.hide()
-
-  
-//     }
-
-//     function enableTouchControls(isEnabled){
-//         if(isEnabled){
-
-//             touchEnabled = true
-
-//             left.setInteractive(1).setVisible(1)
-//             right.setInteractive(1).setVisible(1)
-//             up.setInteractive(1).setVisible(1)
-//             down.setInteractive(1).setVisible(1)
-
-//             actionA.setInteractive(1).setVisible(1)
-//             actionB.setInteractive(1).setVisible(1)
-//             skillA.setInteractive(1).setVisible(1)
-//             skillB.setInteractive(1).setVisible(1)
-
-            
-
-        
-
-//         } else {
-
-//             touchEnabled = false
-
-//             left.disableInteractive().setVisible()
-//             right.disableInteractive().setVisible()
-//             up.disableInteractive().setVisible()
-//             down.setInteractive().setVisible()
-            
-//             actionA.setInteractive().setVisible()
-//             actionB.setInteractive().setVisible()
-//             skillA.setInteractive().setVisible()
-//             skillB.setInteractive().setVisible()
-
-            
-
-//         }
-//     }
-     
-//    function modeSwitch(mode){
-//     if (mode == 0){
-        
-//         this.gameMode = 0
-//         this.enterBattleAnimation = false
-//         this.playerSpeed = 0
-//         this.playerBattleSpeed = 0
-//         inBattle = false
-//         levelProgress.show()
-//         sword.body.checkCollision.none = true
-//         nightBorneSword.body.checkCollision.none = true
-//         player.flipX = false
-
-//                             regenActive = true
-                            
-                            
-                            
-//                             highObstacle.body.checkCollision.none = false
-//                             lowObstacle.body.checkCollision.none = false
-                           
-
-              
-//     } else if (mode == 1){
-            
-            
-           
-//             inBattle = true
-//             this.gameMode = 1
-//             this.enterBattleAnimation = false
-//             this.playerSpeed = 0
-//             this.playerBattleSpeed = 0
-//             progressToNextCheckPoint += progressToNextLevel * 0.25
-            
-//             highObstacle.body.checkCollision.none = true
-//             lowObstacle.body.checkCollision.none = true
-//             nightBorneCamActive = false 
-//             nightBorneCamLocked = false
-
-
-//                     nightBorneGetInBattlePosition()
-//                     playerGetInBattlePosition()
-
-//                             camera.flash(250,1000)
-//                                 camera.once('cameraflashcomplete', function () {
-                                    
-//                                     regenActive = true                                    
-//                                     //camera.startFollow(player,true,0.1,0.1)
-                                    
-
-//                                 },this)
-                      
-                    
-//     }
-//    }
-
-//     function fireTowardsTarget(sprite,targetPosition,seconds,inAir){
-
-//         if (inAir){
-//             var d = Phaser.Math.Between(1000,1250)
-//         } else {
-//             var d = Phaser.Math.Between(1250,2000)
-//         }
-         
-
-//         sprite.setVelocityX(-(Phaser.Math.GetSpeed(sprite.x - targetPosition, seconds) * (seconds * d)))
-//     }
-
-//     function runFocusMode(){
-        
-        
-//         if(scanningForDanger){
-            
-//         if (Math.abs(lowObstacle.x - player.x) < Math.abs((highObstacle.x - player.x)) && lowObstacle.x > screenWidth && lowObstacle.x - player.x > -300 && lowObstacle.x - player.x < 150 && lowObstacle.x < screenWidth * 2){
-//             scanningForDanger = false
-
-//             camera.zoomTo(1.5,1000)
-//             camera.pan(player.x,player.y + 100,1000)
-           
-            
-//             if(player.x < lowObstacle.x + 100 && player.y > 75){
-//                 player.play({key:'player_Avatar_3_JUMP',frameRate:6},true)
-//                 player.y -= 8
-//                 player.x += 5
-//                 player.setDragY(1000)
-//             } else if (!player.body.onFloor()) {
-//                 player.play({key:'player_Avatar_3_FALL',frameRate:2},true)
-//                 player.x += 3
-//                 player.setDragY(250)
-//             } else {
-//                 player.play({key:'player_Avatar_3_RUN',repeat:-1,frameRate:6},true)
-//             }
-            
-
-//             player.once('animationcomplete', function(){
-//                 player.setDragY(0)
-//                scanningForDanger = true
-//            },this)
-                    
-              
-            
-            
-//         } else if (Math.abs(highObstacle.x - player.x) < Math.abs((lowObstacle.x - player.x)) && highObstacle.x > screenWidth && highObstacle.x - player.x > -300 && highObstacle.x - player.x < 150 && highObstacle.x < screenWidth * 2){
-//             scanningForDanger = false
-//             camera.zoomTo(1.5,1000)
-//             camera.pan(player.x,player.y,1000)
-            
-            
-//             if(player.body.onFloor()) {
-//             player.play({key:'player_Avatar_3_SLIDE',frameRate:4},true)
-//             player.x += 0.5
-//             } else {
-//                 player.play({key:'player_Avatar_3_FALL',frameRate:4},true)
-//                 player.x += 2
-//                 player.setDragY(250) 
-//             }
-            
-//             player.once('animationcomplete', function(){
-//                 player.setDragY(0)
-//                 scanningForDanger = true
-//             },this)
-        
-//         } else if (Math.abs(creep.x - player.x) < Math.abs((lowObstacle.x - player.x)) && Math.abs(creep.x - player.x) < Math.abs((highObstacle.x - player.x)) && creep.x - player.x > -75 && creep.x - player.x < 150 && creep.x > screenWidth && creep.x < screenWidth * 2){
-//             scanningForDanger = false
-            
-            
-//             if(creep.anims.getName() != 'nightBorneMinion_Attack'){
-
-           
-//             if (player.body.onFloor()){
-
-//                 player.x += 3
-//                 creep.x += 5
-                
-                        
-//                 camera.zoomTo(1.5,1000)
-//                 camera.pan(player.x,player.y,1000)
-
-                
-              
-//                         player.play({key:'player_Avatar_3_ACTION_1',frameRate:10},true)
-//                         player.once('animationcomplete',function(){
-//                                 player.play({key:'player_Avatar_3_RUN',repeat:-1,frameRate:6},true)
-//                                 scanningForDanger = true
-                                
-//                         },this)
-                        
-                    
-                   
-                    
-//                } else if (!player.body.onFloor()) {
-                    
-                    
-//                 player.x += 3
-//                 creep.x += 5
-
-//                 camera.zoomTo(1.5,1000)
-//                 camera.pan(player.x,player.y,1000)
-                
-               
-                    
-//                             player.play({key:'player_Avatar_3_SKILL_1',frameRate:12},true)
-//                             player.setDragY(0)
-//                             player.y += 2
-//                             player.once('animationcomplete',function(){
-//                               player.play({key:'player_Avatar_3_RUN',repeat:-1,frameRate:6},true)
-//                               scanningForDanger = true
-//                             },this)
-                    
-//                 } 
-//             } else {
-//                 camera.zoomTo(1.5,1000)
-//                 camera.pan(player.x,player.y,1000)
-//                 if(player.body.onFloor()) {
-//                     player.play({key:'player_Avatar_3_SLIDE',frameRate:4},true)
-//                     player.x += 0.5
-//                     } else {
-//                         player.play({key:'player_Avatar_3_FALL',frameRate:4},true)
-//                         player.x += 2
-//                         player.setDragY(250)
-                        
-//                     }
-                    
-//                     player.once('animationcomplete', function(){
-//                         player.setDragY(0)
-//                         scanningForDanger = true
-//                     },this)
-//             } 
-               
-//         } else {
-            
-//             camera.pan(screenWidth * 1.5,player.y,1000)
-//             player.setDragY(0)
-//             player.play({key:'player_Avatar_3_RUN',frameRate:6},true)
-//             if(player.x > screenWidth * 1.5){
-//                 player.x -= 0.5
-//             } else {
-//                 player.x += 1
-//             }
-//             if (creep.x <= player.x){
-//                 creep.x -= 5
-//             }
-//             scanningForDanger = true
-//         }
-//         }
-
-//     }
-
-    // Battle Moves
-
-    // function playerAction(){
-        
-        
-    //     if(usingPower){
-
-    //         usingPower = false
-
-    //         if(inBattle){
-    //             normalAttack()
-    //         } else if(!inBattle) {
-    //             dashAttack()
-    //         }
-            
-            
-
-    //     }
-
-    // }
-           
-    // function playerSkill(){
-        
-        
-    //     if(usingPower){
-
-    //         usingPower = false
-    //          if(s1IsDown){
-    //             deadlyCombatAssault()
-    //          } else if (s2IsDown){
-    //             thunderStrike()
-    //          }                    
-             
-
-    //     } 
-        
-
-    // }
-        
-   
-
-    // function obstacleCollision(){
-    //     if(!skillTreeOpen){
-    //     if(player.body.checkCollision.right){
-    //     playerIsHit = true
-    //     }
-    //     camera.shake(500, 0.0025);
-    //     if(player.flipX){
-    //         player.flipX = false
-    //     } else {
-    //         player.flipX = true
-    //     }
-    //     player.once('animationstart',function(){
-    //             player.x -= 0.5
-    //     })
-    //     playerVitals.decreaseLife((income * 0.35) / 100)
-    //     }
-    //     //enemyChase(Phaser.Math.FloatBetween(2,4))
-  
-    // }
-
-    // function playerHitAnimation(){
-        
-    //     player.play({key:'player_Avatar_3_TAKE_HIT',frameRate: 12},true)
-    //     player.once('animationcomplete',function(){
-    //         playerIsHit = false
-            
-    //         regenActive = true
-    //     })
-    // }
-
-    // function playerHit(enemy,player){
-
-    // if(!gameOver){
-    //     if (inBattle){
-
-    //         if(enemy != creep){
-
-    //         if(playerBlocking){
-                     
-                    
-    //                 if (player.flipX){
-    //                     fireTowardsTarget(player,player.x + 100,1)
-    //                 } else {
-    //                     fireTowardsTarget(player,player.x - 100,1)
-    //                 }
-                    
-    //                 camera.shake(100, 0.0015);
-                    
-                    
-    //                 playerVitals.decreaseLife((nightBorneMaxLife * 0.1) / 50)
-                    
-    //         } else if (!playerBlocking){
-                
-    //             playerIsHit = true
-
-    //             playerVitals.decreaseLife((nightBorneMaxLife * 0.25) / 50)
-
-    //                 maxEnergy *= 1 - (0.04 / 12 / 50)
-    //                 if(glory - (25/60) < 0){
-    //                     glory = 0
-    //                 } else {
-    //                     glory -= (25 / 60)
-    //                 }
-    //                 player.anims.play({key:'player_Avatar_3_TAKE_HIT',frameRate: 12},true); 
-
-    //                 camera.shake(150, 0.004);
-                    
-
-    //                 player.once('animationcomplete', function () {
-    //                     playerIsHit = false 
-    //                 }, this);
-    //         }
-    //     }
-                
-                
-            
-
-
-    //     } else if (controlsEnabled) {
-    //         if(player.body.checkCollision.right){
-    //         playerIsHit = true
-    //         }
-            
-
-                    
-    //                 playerVitals.decreaseLife((nightBorneMaxLife * 0.2) / 50)
-    //                 player.anims.play({key:'player_Avatar_3_TAKE_HIT',frameRate: 12},true); 
-
-    //                 camera.shake(150, 0.0025);
-                    
-
-    //                 player.once('animationcomplete', function () {
-    //                     playerIsHit = false 
-                     
-    //                 }, this);
-
-    //     }  
-    // }
-    // }
-
-    // function nightBorne_EliteAI(){
-
-    //     if((nightBorneAlive)){
-
-    //     if(Math.abs(nightBorne.x - player.x) > 350){
-    //         nightBorne.setDragX(500)
-    //         var actionChoice = Phaser.Math.Between(1,3)
-        
-    //         if (actionChoice == 1){
-    //             nightBorne.play({key:'nightBorne_Move',frameRate:8},true)
-    //             if(nightBorne.x < player.x){
-                    
-    //                 nightBorne.setVelocityX(1500)
-
-                    
-    //             } else {
-
-    //                 nightBorne.setVelocityX(-1500)
-                   
-    //             }
-
-    //         } else if (actionChoice == 2){
-    //             nightBorne.play({key:'nightBorne_Move',frameRate:10},true)
-    //             if(nightBorne.x < player.x){
-    //                 nightBorne.setVelocityX(1000)
-                    
-    //             } else {
-    //                 nightBorne.setVelocityX(-1000)
-    //             }
-    //         } else if (actionChoice == 3) {
-    //             nightBorne.play('nightBorne_Idle',true)
-    //             nightBorne.setVelocityX(0)
-    //         }
-
-    //     } else {
-    //         var actionChoice = Phaser.Math.Between(1,3)
-            
-    //             nightBorne.setVelocityX(0)
-            
-            
-    //         nightBorne.setDragX(1000)
-    //         if (actionChoice == 1){
-    //             nightBorne.play({key:'nightBorne_Attack',frameRate:12,repeat:Phaser.Math.Between(0,1)},true)
-                
-
-    //             nightBorne.on('animationcomplete', function(){
-    //                 nightBorne.setDragX(500)
-    //                 if(nightBorne.x < player.x){
-    //                 nightBorne.setVelocityX(150)
-                    
-    //                 } else {
-    //                     nightBorne.setVelocityX(-150)
-    //                 }
-
-    //                 nightBorne.play('nightBorne_Idle',true)
-    //             }, nightBorne)
-    //         } else if (actionChoice == 2){
-
-    //             nightBorne.play({key:'nightBorne_Attack',frameRate:16},true)
-    //             if(nightBorne.x < player.x){
-    //                 nightBorne.setVelocityX(300)
-                    
-    //                 } else {
-    //                     nightBorne.setVelocityX(-300)
-    //                 }
-
-    //                 nightBorne.on('animationcomplete', function(){
-    //                     nightBorne.setDragX(500)
-                        
-    //                     }, nightBorne)
-
-
-    //         } else if (actionChoice == 3) {
-    //             nightBorne.play('nightBorne_Idle',true)
-    //         }
-    //     }
-
-    // }
-        
-    // }
-
-
-    function refreshStats(){
-        lifeRegen = lifeRegenAllocation * income
-        energyRegen = energyRegenAllocation * income
-        focusRegen = focusRegenAllocation * income
-        
-    }
-
-    function updateHighScore(){
-        if (highScore < glory){
-            highScore = glory
-        }  
-    } 
-
-    // function hitImpactAnimation(game,sprite,power){
-
-    //     if (sprite.x < player.x){
-    //         var impactDir = -1
-    //     } else {
-    //         var impactDir = 1
-    //     }
-
-    //     power = 1
-        
-    //     sprite.setVelocityX(impactDir * 500 * power)
-    //     sprite.setVelocityY(-150 * power)
-    //     //game.physics.moveTo(sprite,null,sprite.y - Phaser.Math.Between(500,750),1750 * power)
-
-    //     // game.tweens.add({
-    //     //     targets     : sprite,
-    //     //     x       :     sprite.x + (impactDir * (15 * power)),//Phaser.Math.Between(-500,500),                
-    //     //     ease        : 'Power2',
-    //     //     duration    : 50,
-    //     //     yoyo        : 1,
-    //     //     //loop        : -1,
-    //     //     repeat      : 1,
-
-    //     //     onComplete: function(){
-                
-    //     //         //game.physics.moveTo(sprite,sprite.x + (impactDir * width * power),null,1000 * power)
-    //     //         //
-                
-    //     //     }
-    //     // });
-
-        
-
-    //     camera.shake(350 * power, 0.0075);
-
-    //     if(power > 0.75){
-    //         camera.flash(100 * power);
-    //     }
-        
-
-
-    // }
- 
-    // function enemyHit(playerAttackHitBox,enemy){
-    //     if(!enemyIsHit){
-    //         enemyIsHit = true
-    //         var chaos = Phaser.Math.FloatBetween(0.00,1.00)
-            
-    //         var power
-    //         var fDamage = damage
-
-    //         if (chaos < 0.01){
-    //             power = Phaser.Math.FloatBetween(0.75,1.25)
-    //             fDamage *= Phaser.Math.Between(1.5,1.75)
-    //         } else if (chaos < 0.05){
-    //             power = Phaser.Math.FloatBetween(0.25,0.75)
-    //             fDamage *= Phaser.Math.Between(1,1.25)
-    //         } else {
-    //             power = Phaser.Math.FloatBetween(0,0.25)
-    //             fDamage *= Phaser.Math.Between(0.85,1.1)
-    //         }
-
-
-    //         playerHitVFX.x = enemy.x
-    //         playerHitVFX.y = playerAttackHitBox.y
-    //         if(!player.flipX){
-    //             playerHitVFX.flipX = false
-    //         } else {
-    //             playerHitVFX.flipX = true
-    //         }
-    //         playerHitVFX.play(playerAttackHitSmear,true)
-    //         hitImpactAnimation(this,enemy,power)
-    //         playerHitVFX.on('animationcomplete', function (){
-    //             enemyIsHit = false
-    //         },this)
-            
-    //         if(enemy == nightBorne){
-    //             if(enemy.anims.getName() != 'nightBorne_Idle'){
-    //             if(nArmour <= 0){
-    //                 enemy.play({key:'nightBorne_Hurt',frameRate: 8},true);
-    //                 nightBorneVitals.decreaseNightborneLife(fDamage) 
-    //                 nArmour = nightBorneMaxLife * 0.15
-    //             } else {
-    //                 nArmour -= (fDamage)
-    //                 enemy.play({key:'nightBorne_Hurt',frameRate: 12},true);
-    //                     nightBorneVitals.decreaseNightborneLife(fDamage * 0.85) 
-    //             }
-                
-    //             nightBorneVitals.decreaseNightborneLife(fDamage * 0.85)
-                
-    //             } else {
-    //                 if(nArmour <= 0){
-    //                     enemy.play({key:'nightBorne_Hurt',frameRate: 8},true);
-    //                     nightBorneVitals.decreaseNightborneLife(fDamage) 
-    //                     nArmour = nightBorneMaxLife * 0.05
-    //                 } else {
-    //                     nArmour -= (fDamage)
-    //                     enemy.play({key:'nightBorne_Hurt',frameRate: 12},true);
-    //                     nightBorneVitals.decreaseNightborneLife(fDamage * 0.95) 
-    //                 }
-                    
-    //             }
-
-                
-                
-                            
-                
-                        
-    //                 if (nightBorneLife <= 0 && nightBorneAlive){
-    //                     enemy.once('animationcomplete', function () {  
-    //                     enemy.body.enable = false  
-    //                     nightBorneAlive = false
-    //                     enemy.play({key:'nightBorne_Death',frameRate: 23},true);
-                        
-    //                     enemy.once('animationcomplete', function (anim,frame) {
-
-    //                                     enemy.setDragX(0)
-    //                                     enemy.setVelocityX(0)
-    //                                     enemy.flipX = false
-    //                                     enemy.x = 0
-    //                                     enemy.y = 0
-    //                                     nightBorneMaxLife = Phaser.Math.Between(income * 0.8, (income * 0.8) * chaosFactor) 
-    //                                     nightBorneLife = nightBorneMaxLife
-    //                                     nightBorneVitals.p = 38 / nightBorneMaxLife
-                                        
-    //                                     nightBorneAlive = true
-    //                                     enemy.body.enable = true
-    //                                     modeSwitch(0)
-    //                                     toggleSkillTree()
-                                        
-                                        
-    //                     }, enemy)
-    //                 }, this)
-    //                 }
-                                    
-                                    
-    //             ;
-    //         } else if (enemy == creep){
-    //             creepIsHit = true
-    //             glory += level + 1
-    //             gold += (level * 2) + 1
-    //             enemy.play('nightBorneMinion_Hurt',true)
-    //             if(creepIsHit){
-    //                 enemy.x = player.x + 35
-    //             }
-    //             enemy.once('animationcomplete', function(){ 
-    //                 enemy.play('nightBorneMinion_Death',true)
-    //                 enemy.body.enable = false
-    //                 enemy.once('animationcomplete', function(){
-    //                     creepIsHit = false
-    //                     resetCreep(enemy)
-    //                     enemy.body.enable = true
-    //                     enemy.setVelocityX(0)
-                        
-    //                 },enemy)
-    //             },this)
-    //         }
-        
-    //     }
-    // }
-
 class Badlands extends Phaser.Scene {
 
 
@@ -1602,14 +752,14 @@ class Badlands extends Phaser.Scene {
                 this.playerBattleSpeed = 0 // Starting Player Battle Speed in Battle Mode  
             }
 
-            this.rewards = 700
+            this.rewards = 0
             this.level = 1
-            this.glory = 2000
-            this.gold = 5000
+            this.glory = 0
+            this.gold = 0
 
             this.progress = 0
-                this.progressToNextLevel = Phaser.Math.Between(375,425)
-                this.progressToNextCheckPoint = this.progressToNextLevel * 0.25
+            this.progressToNextLevel = Phaser.Math.Between(375,425)
+            this.progressToNextCheckPoint = this.progressToNextLevel * 0.25
 
             // World Initialisation
             
@@ -1623,6 +773,11 @@ class Badlands extends Phaser.Scene {
                 this.camera.setBounds(screenWidth,0,screenWidth * 2,screenHeight)
                 this.camera.centerOnX(screenWidth * 2)
                 this.camera.fadeIn(2000)
+                this.camera.once('camerafadeincomplete',function(){
+                    this.stageProgressEnabled = true
+                },this)
+
+                //this.stageProgressEnabled = true
 
      
                 // Stage (A) - Base Background, Floor, and Base Foreground
@@ -1692,7 +847,7 @@ class Badlands extends Phaser.Scene {
                 this.playerIsHit = false
 
                 this.currentEnergy = 100
-                this.maxEnergy = 100
+                this.maxEnergy = 200
 
                 this.currentFocus = 100
                 this.maxFocus = 100
@@ -2313,1501 +1468,22 @@ class Badlands extends Phaser.Scene {
         
     }
 
-    spawnPlatform(){
-        if (this.gameMode == 0){
-        this.spawningPlatform = true
-        } 
-    }
+    recordScores(){     
+        this.stageScore = this.level
+        this.gloryScore = this.glory
+        this.rewardsScore = this.rewards
+        this.goldScore = this.gold
 
-    platforms(game){
+}
 
-        
 
-        if(game.spawningPlatform){
 
-            for (var i = 0; i < 2; i++){
-            var platform = game.platformGroup.get()
-
-            if(game.speedLevel == 1){
-                
-                this.platformScaleXMin = 2.125
-                this.platformScaleXMax = 2.125
-
-                this.platformPositionYMin = screenHeight * 0.5
-                this.platformPositionYMax = screenHeight * 0.7
-
-            } else
-            // Level 2
-            if(game.speedLevel == 2){
-                this.platformScaleXMin = 2
-                this.platformScaleXMax = 2.25
-
-                this.platformPositionYMin = screenHeight * 0.4
-                this.platformPositionYMax = screenHeight * 0.725
-            } else
-            // Level 3
-            if(game.speedLevel == 3){
-                this.platformScaleXMin = 1.75
-                this.platformScaleXMax = 2.5
-
-                this.platformPositionYMin = screenHeight * 0.3
-                this.platformPositionYMax = screenHeight * 0.75
-            } 
-            
-
-            if(platform){
-                platform.setOrigin(1,0)
-                platform.setTint(this.floorColour)
-                platform.x = Phaser.Math.FloatBetween(screenWidth * 3.25 + (screenWidth * 0.6 * i), screenWidth * 3.35 + (screenWidth * 0.6 * i)) //screenWidth * 2
-                platform.y = Phaser.Math.FloatBetween(this.platformPositionYMin, this.platformPositionYMax)
-                platform.setScale(Phaser.Math.FloatBetween(this.platformScaleXMin,this.platformScaleXMax),Phaser.Math.FloatBetween(1, 1.25))
-                platform.setActive(true)
-                platform.setImmovable(true)
-                platform.body.setAllowGravity(false)
-                platform.body.checkCollision.down = false
-                
-            }
-            }
-
-            game.spawningPlatform = false
-        }
-
-        game.platformGroup.children.each(function(p) {
-
-            p.x -= this.baseSpeed * this.playerSpeed 
-
-            if (p.active) {
-                if (p.x < 0) {
-                    p.setActive(false);
-                }
-            }
-        }.bind(game));
-
-
-    }
-
-    spawnEnemy(){
-        if (this.gameMode == 0){
-        this.spawningEnemy = true
-        //this.enemyTimer.delay = Phaser.Math.Between(1500,3000)
-        } 
-    }
-
-    enemies(game){
-
-       
-
-        game.closestEnemy = game.physics.closest(this.player,game.enemyGroup.getMatching('active',true)) 
-
-        game.enemyGroup.children.each(function(e) {
-            // Lock on Code
-           if (e.active){
-            // Enables enemy to automatically face and move towards player
-            if(Math.abs(e.x - this.player.x) <= screenWidth * 0.15 ){
-                //&& Math.abs(e.y - this.player.y) <= screenHeight * 0.25 
-                //enemyLockedOn = true
-                if(e.x < this.player.x){
-                    if (e.type == 1){
-                        e.flipX = true
-                    } else {
-                        e.flipX = false
-                    }
-                    
-                } else {
-                    if (e.type == 1){
-                        e.flipX = false
-                    } else {
-                        e.flipX = true
-                    }
-                }
-            } else {
-                //enemyLockedOn = false
-            }
-        } 
-
-        }.bind(game));
-
-        if (this.gameMode == 0){
-            
-        // Spawn Code
-        if(game.spawningEnemy){
-
-            this.enemiesSpawned = Phaser.Math.Between(1,2)
-
-            for (var i = 0; i < this.enemiesSpawned; i++){
-            //enemy = game.enemyGroup.get()
-            this.enemy = game.enemyGroup.get()
-            
-                // Scaling
-                this.enemiesType = Phaser.Math.Between(1,2)
-                if(this.enemiesType == 1){
-                    // Common Enemy
-                    this.creepScale = Phaser.Math.FloatBetween(2.5,3) //* (scaleModX) 
-                } else {
-                    // Uncommon Enemy
-                    this.creepScale = Phaser.Math.FloatBetween(7.5,8.5) //* (scaleModX) 
-            
-                }
-                
-                this.enemyOrientation = Phaser.Math.Between(1,2)
-
-                if(this.enemyOrientation == 1){
-                    //enemy.flipX = true 
-                    this.enemy.flipX = true 
-                } else {
-                    //enemy.flipX = false
-                    this.enemy.flipX = false  
-                }
-
-                if(this.enemy){
-                    if(this.enemiesType == 1){
-                        this.enemy.setTexture('doomsayer')
-                        this.enemy.type = 1
-                        this.enemy.play('nightBorneMinion_Idle')
-                        this.enemy.baseSpeedMod = 1
-                        
-                    } else {
-                        this.enemy.setTexture('nightBorne')
-                        this.enemy.type = 2
-                        this.enemy.setOrigin(0.5,1)
-                        this.enemy.body.setSize(25, 25).setOffset(25,37.5)
-                        if (this.enemyOrientation == 1){
-                            this.spawnChance = Phaser.Math.Between(0,100)
-                            if (this.spawnChance < 35){
-                                this.enemy.play({key:'nightBorne_Move',frameRate: 8},true)
-                                this.enemy.baseSpeedMod = 1.5
-                            } else {
-                                this.enemy.play('nightBorne_Idle')
-                                this.enemy.baseSpeedMod = 1
-                            }
-                            
-                        } else {
-                            this.enemy.play('nightBorne_Idle')
-                            this.enemy.baseSpeedMod = 1
-                        }
-                        
-                        
-                    }
-                    this.enemy.x = Phaser.Math.FloatBetween(screenWidth * 3.125 + (screenWidth * 0.3 * i), screenWidth * 3.175 + (screenWidth * 0.3 * i)) //screenWidth * 2
-                    this.enemy.y = Phaser.Math.FloatBetween(0, screenHeight * 0.5)
-                    this.enemy.setScale(this.creepScale)
-                    this.enemy.setVisible(true)
-                    this.enemy.setActive(true)
-                    this.enemy.setDepth(Phaser.Math.Between(0,1))
-                    this.enemy.body.setAllowGravity(true)
-                    this.enemy.isHit = false
-                    this.enemy.hitsTaken = 0
-                    if (this.enemy.type == 1){
-                        this.enemy.hitHP = Phaser.Math.Between(2,4)
-                    } else if (this.enemy.type == 2){
-                        this.enemy.hitHP = Phaser.Math.Between(4,8)
-                    }
-                    
-
-                }
-            }
-
-            game.spawningEnemy = false
-        }
-
-        // Movement  Code
-        game.enemyGroup.children.each(function(e) {
-
-            
-            if(e.x >= this.player.x - screenWidth * 0.1){
-                e.x -= this.baseSpeed * e.baseSpeedMod * this.playerSpeed 
-            } else {
-                if (e.anims.getName() != 'nightBorne_Move'){
-                    e.x -= this.baseSpeed * e.baseSpeedMod * this.playerSpeed
-                } else {
-                    if (this.player.x < (this.camera.scrollX + screenWidth * 0.6)){
-                        e.x += this.baseSpeed * (e.baseSpeedMod/5) / this.playerSpeed
-                    } else {
-                        e.x -= this.baseSpeed * (e.baseSpeedMod/3) * this.playerSpeed 
-                    }
-                }
-                
-            }
-            
-
-            if (e.active) {
-                if (e.x < screenWidth * 0.75 || e.y > screenHeight * 1.25) {
-                    e.setActive(false);
-                    e.setVisible(false)
-                }
-            }
-
-
-        }.bind(game));
-
-        
-
-    } else if (game.gameMode == 1){
-
-      
-
-        game.enemyGroup.children.each(function(e) {
-
-            if (e.active) {
-                if (e.x <= screenWidth * 1.25){
-                    e.x += 10
-                } else if (e.x >= screenWidth * 2.75){
-                    e.x -= 10
-                }
-            }
-
-
-        }.bind(game));
-
-        if (game.enemyGroup.countActive() == 0){
-            game.exitBattle(game)
-        } else if (openMenuIsDown){
-                    openMenuIsDown = false
-                    game.exitBattle(game)      
-        }
-    }
-
-
-    }
-
-    enemyTakeHit(playerAttackHitBox,enemy){
-            if(this.gameMode == 1){
-
-                
-
-            if(!enemy.isHit){
-                enemy.isHit = true
-
-  
-                if(enemy.type == 1){
-                    enemy.play('nightBorneMinion_Hurt',true)
-                    enemy.once('animationcomplete', function (anim,frame) {
-                        enemy.emit('animationcomplete_' + anim.key, frame)
-                    }, enemy)
-                    enemy.once('animationcomplete_nightBorneMinion_Hurt',function(){
-                        enemy.isHit = false
-                        enemy.hitsTaken += 1
-                        if (enemy.hitsTaken >= enemy.hitHP){
-                            enemy.play('nightBorneMinion_Death',true)
-                            this.physics.add.collider(enemy,this.floor); 
-                            this.physics.add.collider(enemy,this.platformGroup); 
-                            this.enemyGroup.remove(enemy)
-                            this.gold += Phaser.Math.Between(0,5)   
-                            
-                            enemy.once('animationcomplete', function (anim,frame) {
-                                enemy.emit('animationcomplete_' + anim.key, frame)
-                            }, enemy)
-                            enemy.once('animationcomplete_nightBorneMinion_Death',function(){
-                                
-                            enemy.setActive(false)
-                            enemy.setVisible(false)
-                            enemy.x = -screenWidth * 0.25
-                            
-                            },this)
-                        } else {
-                            enemy.play('nightBorneMinion_Idle',true)
-                        }
-                        
-                    },this)
-                } else if (enemy.type == 2){
-                    enemy.play('nightBorne_Hurt',true)
-                    enemy.once('animationcomplete', function (anim,frame) {
-                        enemy.emit('animationcomplete_' + anim.key, frame)
-                    }, enemy)
-                    enemy.once('animationcomplete_nightBorne_Hurt',function(){
-                        enemy.isHit = false
-                        enemy.hitsTaken += 1
-                        if (enemy.hitsTaken >= enemy.hitHP){
-                            enemy.play('nightBorne_Death',true)
-                            this.physics.add.collider(enemy,this.floor); 
-                            this.physics.add.collider(enemy,this.platformGroup); 
-                            this.enemyGroup.remove(enemy)
-                            this.gold += Phaser.Math.Between(10,20)   
-                            enemy.once('animationcomplete', function (anim,frame) {
-                                enemy.emit('animationcomplete_' + anim.key, frame)
-                            }, enemy)
-                            enemy.once('animationcomplete_nightBorne_Death',function(){
-                                        
-                            enemy.setActive(false)
-                            enemy.setVisible(false)
-                            enemy.x = -screenWidth * 0.25
-                           
-                            },this)
-                        } else {
-                            enemy.play('nightBorne_Idle',true)
-                        }
-                        
-                    },this)
-                }
-
-                
-            }
-        }
-    }
-
-    cameraModule(){
-
-        if (this.gameMode == 0){
-
-            if (a1IsDown){
-                if (this.camera.zoom < 1.15){
-                    this.camera.zoom += 0.15/60
-                }
-            } else if (a2IsDown){
-                if (this.camera.zoom > 1){
-                    this.camera.zoom -= 0.15/60
-                }
-            } else {
-                if (this.camera.zoom <= 1.053 && this.camera.zoom >= 1.047){
-                    this.camera.zoom = 1.05
-                } else if (this.camera.zoom > 1.05){
-                    this.camera.zoom -= 0.3/60
-                } else if (this.camera.zoom < 1.05) {
-                    this.camera.zoom += 0.3/60
-                }
-            }
-        } else {
-            this.camera.zoom = 1
-            if (this.battleCameraActive){
-                this.camera.centerOnX(this.player.x)
-            }
-        }
-
-        
-
-        
-        
-    }
-
-    uiModule(){
-        this.playerIconBox.x = this.camera.worldView.x + (screenWidth * 0.005)
-            this.playerIconBox.y = this.camera.worldView.y +  (screenHeight * 0.1 )
-
-            this.playerIcon.x = this.playerIconBox.x + (screenWidth * 0.0575)
-            this.playerIcon.y = this.playerIconBox.y
-
-            this.playerVitals.x = this.playerIcon.x + 165
-            this.playerVitals.y = this.playerIcon.y - 65 
-            this.playerVitals.draw()
-
-            this.playerVitalsTextL.x = this.playerVitals.x - 50 
-            this.playerVitalsTextL.y = this.playerVitals.y + 17.5 
-
-            this.playerVitalsTextF.x = this.playerVitalsTextL.x
-            this.playerVitalsTextF.y = this.playerVitals.y + 47.5
-
-            this.playerVitalsTextE.x = this.playerVitalsTextF.x
-            this.playerVitalsTextE.y = this.playerVitals.y + 72.5
-
-            this.storedRewardsIcon.x = this.playerVitals.x + 15
-            this.storedRewardsIcon.y = this.playerIcon.y + 42.5 
-            this.storedRewardsText.x = this.storedRewardsIcon.x + 55
-            this.storedRewardsText.y = this.storedRewardsIcon.y
-            this.storedRewardsText.setText(Math.floor(this.rewards))
-
-            this.goldIcon.x = this.storedRewardsText.x + 60
-            this.goldIcon.y = this.storedRewardsIcon.y
-            this.goldText.x = this.goldIcon.x + 55
-            this.goldText.y = this.goldIcon.y
-            this.goldText.setText(Math.floor(this.gold))
-
-            this.skillABox.x = this.playerIconBox.x + this.playerIconBox.displayWidth * 0.765
-            this.skillABox.y = this.playerIconBox.y + (75 * (scaleModX))
-
-            this.skillAIcon.x = this.skillABox.x
-            this.skillAIcon.y = this.skillABox.y
-
-            this.skillBBox.x = this.skillABox.x + 100
-            this.skillBBox.y = this.skillABox.y
-
-            this.skillBIcon.x = this.skillBBox.x
-            this.skillBIcon.y = this.skillBBox.y
-            
-            this.scoreBox.x = this.camera.scrollX + ((screenWidth * 0.725) - (this.camera.worldView.x - this.camera.scrollX))
-            this.scoreBox.y = this.playerIconBox.y
-
-            this.levelIcon.x = this.scoreBox.x + (screenWidth * 0.0475)
-            this.levelIcon.y = this.playerIcon.y + 5
-            this.levelText.x = this.levelIcon.x + 110
-            this.levelText.y = this.levelIcon.y
-            this.levelText.setText(Math.floor(this.level))
-
-            this.gloryIcon.x = this.levelText.x + 115 
-            this.gloryIcon.y = this.levelIcon.y
-            this.gloryText.x = this.gloryIcon.x + 125
-            this.gloryText.y = this.gloryIcon.y
-            this.gloryText.setText(Math.floor(this.glory))
-
-            this.stageProgress.x = this.scoreBox.x + 30
-            this.stageProgress.y = this.scoreBox.y + 90
-            this.stageProgress.draw()
-    }
-
-    playerModule(){
-
-        // Function Variables
-        this.actionPower = this.currentEnergy / this.maxEnergy
-        this.skillPower = this.currentFocus / this.maxFocus
-
-        // Player Parameters
-        this.baseTopSpeed = 0.005
-        this.baseAttackSpeed = 16
-        this.baseSideAttackSpeed = 12
-        this.baseUpAttackSpeed = 10
-        this.baseJumpHeight = 2000
-        this.baseHangTime = 0.15
-        this.baseMinHangHeight = 0.2
-        this.baseDashDistance = 0.01
-
-        // Energy Efficency Parameters
-        this.baseEmergencyEnergyCostPercent = 0.075
-
-        this.baseActionSpeedPercent = 0.5
-        this.baseTopSpeedPercent = 0.5
-        this.baseJumpHeightPercent = 0.8
-        this.baseDashDistancePercent = 0.7
-
-        if (a1IsDown || a2IsDown || s1IsDown || s2IsDown){
-            regenActive = false
-        } else {
-            regenActive = true
-        }
-
-        // Base Mode Toggles 
-        // Cost
-        if (this.prod == true){
-            this.baseCost = 0.5
-        } else {
-            this.baseCost = 1
-        }
-
-        // Movement
-
-        if (this.prod == true){
-            this.movementMod = 0.5
-        } else {
-            this.movementMod = 1
-        }
-
-        this.playerAttackHitBox.x = this.player.x
-
-        if (this.player.flipX){
-            this.playerAttackHitBox.x = this.player.x - 10
-            this.playerAttackHitBox.y = this.player.y - 15
-        } else {
-            this.playerAttackHitBox.x = this.player.x + 10
-            this.playerAttackHitBox.y = this.player.y - 15
-        }
-
-        this.playerAttackHitBox.body.checkCollision.none = true
-
-        // Add State Machine section (playerDefending, etc)
-
-    
-        // Running
-        if (this.gameMode == 0){
-            this.action1CostModifier = 1.5
-            this.action2CostModifier = 0.25
-            this.skill1CostModifier = 4
-            this.skill2CostModifier = 4
-
-            this.moveUpCostModifier = 1.5
-            this.moveDownCostModifier = 1.5
-            this.moveLeftCostModifier = 0.5
-            this.moveRightCostModifier = 0.5
-        } else     
-        // Battle
-        if (this.gameMode == 1){
-            this.action1CostModifier = 0.6
-            this.action2CostModifier = 0.125
-            this.skill1CostModifier = 2
-            this.skill2CostModifier = 2
-
-            this.moveUpCostModifier = 0.75
-            this.moveDownCostModifier = 0.75
-            this.moveLeftCostModifier = 0.25
-            this.moveRightCostModifier = 0.25
-        }
-        
-        this.player.setTint()
-      
-            if (a1IsDown){
-                if(this.actionPower > 0 ){
-                    this.playerVitals.decreaseEnergy(this.baseCost * this.action1CostModifier)
-                } else {
-                    this.player.setTint(0xff7a7a)
-                    this.playerVitals.decreaseEnergy(this.baseCost * this.action1CostModifier)
-                    this.playerVitals.decreaseLife((this.baseCost * this.baseEmergencyEnergyCostPercent) * this.action1CostModifier)
-                }
-                
-            }
-
-            if (a2IsDown){
-
-
-                if(this.actionPower > 0 ){
-                    this.playerVitals.decreaseEnergy(this.baseCost * this.action2CostModifier)
-                } else {
-                    this.player.setTint(0xff7a7a)
-                    this.playerVitals.decreaseEnergy(this.baseCost * this.action2CostModifier)
-                    this.playerVitals.decreaseLife((this.baseCost * this.baseEmergencyEnergyCostPercent) * this.action2CostModifier)
-                }
-            }
-
-            if (s1IsDown){
-                if(this.actionPower > 0 ){
-                    this.playerVitals.decreaseFocus(this.baseCost * this.skill1CostModifier)
-                } else {
-                    this.player.setTint(0xff7a7a)
-                    this.playerVitals.decreaseFocus(this.baseCost * this.skill1CostModifier)
-                    this.playerVitals.decreaseLife((this.baseCost * this.baseEmergencyEnergyCostPercent) * this.skill1CostModifier)
-                }
-                
-            }
-
-            if (s2IsDown){
-
-
-                if(this.actionPower > 0 ){
-                    this.playerVitals.decreaseFocus(this.baseCost * this.skill2CostModifier)
-                } else {
-                    this.player.setTint(0xff7a7a)
-                    this.playerVitals.decreaseFocus(this.baseCost * this.skill2CostModifier)
-                    this.playerVitals.decreaseLife((this.baseCost * this.baseEmergencyEnergyCostPercent) * this.skill2CostModifier)
-                }
-            }
-   
-            if(upIsDown){
-
-
-                if(this.actionPower > 0 ){
-                    this.playerVitals.decreaseEnergy(this.baseCost * this.moveUpCostModifier)
-                } else {
-                    this.playerVitals.decreaseEnergy(this.baseCost * this.moveUpCostModifier)
-                    this.playerVitals.decreaseLife((this.baseCost * this.baseEmergencyEnergyCostPercent) * this.moveUpCostModifier)
-                }
-            }
-            
-            if(downIsDown){
-
-                if(this.actionPower > 0 ){
-                    this.playerVitals.decreaseEnergy(this.baseCost * this.moveDownCostModifier)
-                } else {
-                    this.playerVitals.decreaseEnergy(this.baseCost * this.moveDownCostModifier)
-                    this.playerVitals.decreaseLife((this.baseCost * this.baseEmergencyEnergyCostPercent) * this.moveDownCostModifier)
-                }
-            }
-            
-            if(leftIsDown){
-    
-
-                if(this.actionPower > 0 ){
-                    this.playerVitals.decreaseEnergy(this.baseCost * this.moveLeftCostModifier)
-                } else {
-                    this.playerVitals.decreaseEnergy(this.baseCost * this.moveLeftCostModifier)
-                    this.playerVitals.decreaseLife((this.baseCost * this.baseEmergencyEnergyCostPercent) * this.moveLeftCostModifier)
-                }
-            }
-
-            if(rightIsDown){
-                
-
-                if(this.actionPower > 0 ){
-                    this.playerVitals.decreaseEnergy(this.baseCost * this.moveRightCostModifier)
-                } else {
-                    this.playerVitals.decreaseEnergy(this.baseCost * this.moveRightCostModifier)
-                    this.playerVitals.decreaseLife((this.baseCost * this.baseEmergencyEnergyCostPercent) * this.moveRightCostModifier)
-                }
-            }
-
-        // Player Sprite 
-            if (this.gameMode == 0){
-
-                
-
-                if(this.playerSpeed > 1){
-                    // Lose more acceleration at higher speed - GAMEPLAY WISE, ALLOWS PLAYER TO BUILD SPEED EASIER, FUNNELS PLAYER TO MAXIMISE REGEN 
-                        //this.playerSpeed -= 0.0075 * (this.playerSpeed / 2) 
-                    // Lose more acceleration at lower speed - NEXT FAV, MOST RELAISTIC PHYSICS WISE (MOMENTUM), PROVIDES REWARD FOR ACHIEVING HIGHER SPEED (LESS INVOVLED AS REWARD), FUNNELS PLAYER TO MAXIMISE MAX ENERGY
-                        //this.playerSpeed -= 0.0075 * (1 / this.playerSpeed) 
-                    // Lose more acceleration at lower energy (100 - 50 %) - FUNNLES PLAYER TO BOTH REGEN & MAX ENERGY
-                        this.playerSpeed -= 0.004 + (0.004 * (1 - this.actionPower)) 
-                } else if (this.playerSpeed < 1 ){
-                    this.playerSpeed += 0.005 + (0.005 * this.actionPower)
-                }
-
-                // A1 Button
-                    // Sprint
-                    if (a1IsDown){
-            
-                        // Animation
-
-                            // Ground / Air
-                                // this.pattern = new RegExp('RUN*')
-                                // this.patternMatch = this.pattern.test(this.player.anims.getFrameName())
-                                // if (this.patternMatch){
-                                //     this.player.play({key:this.player.anims.getName(),frameRate: this.baseRunFrameRate + (6 * Math.abs(this.playerSpeed))},true)
-                                // } else {
-                                //     this.player.play(this.player.anims.getName())
-                                // }
-    
-                        // Positioning
-
-                        // Other
-
-                     
-                            // Ground
-                            if (this.player.body.onFloor()){
-                                if(this.playerSpeed < 2){
-                                    this.playerSpeed += 0.0125  + (0.0125 * this.actionPower)
-                                }
-                            } 
-                            // Air
-                            else  {
-                                if(this.playerSpeed < 2){
-                                    this.playerSpeed += 0.0075  + (0.0075 * this.actionPower)
-                                }
-                            }
-
-
-
-                    } 
-                // A2 Button 
-                    // Slow
-                    if (a2IsDown){
-                        // Animation
-
-                            // Ground / Air
-                                this.player.play({key:'player_Avatar_3_EVADE',frameRate: 3, startFrame: 5},true)
-
-
-                        // Positioning
-
-                        // Other
-
-                            // Ground
-                            if (this.player.body.onFloor()){
-                                if(this.playerSpeed > 0.5){
-                                    this.playerSpeed -= 0.0125  + (0.0125 * this.actionPower)
-                                }
-                            } 
-                            // Air
-                            else  {
-                                if(this.playerSpeed > 0.5){
-                                    this.playerSpeed -= 0.0075  + (0.0075 * this.actionPower)
-                                }
-                            }
-
-                    }
-                // Up Button 
-                    // Jump
-                    if (upIsDown){
-
-                        // Animation
-
-                            this.player.play({key:'player_Avatar_3_JUMP',frameRate: 10},true)
-                            
-                        // Positioning 
-                        
-                            
-                            // Ground
-                                if (this.player.body.onFloor()){ 
-                                    this.player.x += ((screenWidth * 0.0025) * this.actionPower) * this.movementMod 
-                                    this.player.setVelocityY(-1000 - 500 * this.actionPower)
-  
-                                } 
-                            // Air
-                                else  {
-                                    this.player.x += ((screenWidth * 0.00125) * this.actionPower) * this.movementMod
-                                    this.player.setVelocityY(this.player.body.velocity.y - (35  * this.actionPower * this.movementMod))
-                            
-                                }
-            
-                    } 
-                // Down Button
-                    // Slide
-                    if (downIsDown){
-                        // Animation
-                            // Ground
-                            if (this.player.body.onFloor()){
-                                this.player.play({key:'player_Avatar_3_SLIDE',frameRate: 8},true)
-                            } 
-                            // Air
-                            else {
-                                this.player.play({key:'player_Avatar_3_FALL',frameRate: 10},true)    
-                            }
-                        // Positioning
-            
-                            // Ground
-                                if (this.player.body.onFloor()){
-                                    // Forward motion when sliding (toggle and test feel)
-                                    this.player.x += ((screenWidth * 0.00125) * this.actionPower) * this.movementMod
-                                } 
-                            // Air
-                                else {
-                                    // Downward motion when in air (toggle and test feel)
-                                    this.player.y += ((screenHeight * 0.015) * this.actionPower) * this.movementMod
-                                } 
-                    }
-                // Left Button
-                    // Move Left
-                    if (leftIsDown){
-                        // Animation
-            
-                        // Positioning
-
-                            // Ground
-                            if (this.player.body.onFloor()){
-                                this.player.x -= ((screenWidth * 0.003) + (screenWidth * 0.006 * this.actionPower)) * this.movementMod
-                            } 
-                            // Air
-                            else {
-                                this.player.x -= ((screenWidth * 0.0015) + (screenWidth * 0.003 * this.actionPower)) * this.movementMod
-                            }
-                    } 
-                // Right Button
-                    // Move Right
-                    if (rightIsDown){   
-                        // Animation
-            
-                        // Positioning
-                        
-                        // Ground
-                            if (this.player.body.onFloor()){
-                                this.player.x += ((screenWidth * 0.003) + (screenWidth * 0.006 * this.actionPower)) * this.movementMod
-                            } 
-                        // Air
-                            else {
-                                this.player.x += ((screenWidth * 0.0015) + (screenWidth * 0.003 * this.actionPower)) * this.movementMod
-                            }
-                    }
-                // Neutral
-                    // No A2, Up or Down
-                    if (!this.playerIsHit && !a2IsDown && !upIsDown && !downIsDown){
-                        // Animation
-
-                            // Variables
-
-                            // Level 1
-                            if(this.speedLevel == 1){
-                                this.baseRunFrameRate = 4
-                            } else
-                            // Level 2
-                            if(this.speedLevel == 2){
-                                this.baseRunFrameRate = 6
-                            } else
-                            // Level 3
-                            if(this.speedLevel == 3){
-                                this.baseRunFrameRate = 8
-                            } else
-                            // Level 4
-                            if(this.speedLevel == 4){
-                                this.baseRunFrameRate = 10
-                            }
-
-                            // Ground / Air 
-
-                            this.player.flipX = false
-
-                            // Ground
-                            if (this.player.body.onFloor()){
-                                this.player.play({key:'player_Avatar_3_RUN',frameRate: this.baseRunFrameRate + (6 * Math.abs(this.playerSpeed))},true)
-                            } 
-                            // Air
-                            else {
-                                this.player.play({key:'player_Avatar_3_FALL',frameRate: 10},true)
-                            }
-                        
-                    }
-
-            } else if (this.gameMode == 1) {
-
-                // Auto lock - 
-                    //Enables Player to automatically face closest enemy
-                    if(Math.abs(this.player.x - this.closestEnemy.x) <= screenWidth * 0.25){
-                        this.playerLockedOn = true
-                        // Should carve out (w/ rotation) to seperate function, driven by playerLockedOn
-                        if (!leftIsDown && !rightIsDown){
-                            if(this.player.x < this.closestEnemy.x){
-                            
-                                this.player.flipX = false
-                                
-                            } else {
-                                this.player.flipX = true
-                                
-                            }
-                        }
-                        //Enables Player to automatically rotate to closest enemy
-                        if (!this.player.body.onFloor() && !upIsDown && !downIsDown){
-                            if (this.player.flipX){
-                                this.player.setRotation(-Phaser.Math.Angle.Between(this.player.x,this.player.y,this.closestEnemy.x,this.closestEnemy.y) / 4)
-                            } else {
-                                this.player.setRotation(Phaser.Math.Angle.Between(this.player.x,this.player.y,this.closestEnemy.x,this.closestEnemy.y) / 4 )
-                            }
-                        }
-  
-                    } else {
-                        this.playerLockedOn = false
-                    }
-
-                // Set Player default angle 
-                if (this.player.body.onFloor() || !this.playerLockedOn){
-                    this.player.setAngle(0)
-                }
-                
-
-                // Enable player sword collision detection
-                    if (this.player.anims.getName() == 'player_Avatar_3_ACTION_1'){
-                        // playerSwordSwing.play()
-                        
-                        
-
-                        if (this.player.anims.currentFrame.index >= 6 && this.player.anims.currentFrame.index < 12){
-                            
-                            this.playerAttackHitBox.body.checkCollision.none = false
-                            
-                        } else {
-                            this.playerAttackHitBox.body.checkCollision.none = true
-                        }
-
-                    } else if (this.player.anims.getName() == 'player_Avatar_3_ACTION_2'){
-                        // playerSwordSwing.play()
-
-                        if (this.player.anims.currentFrame.index >= 4 && this.player.anims.currentFrame.index < 6 
-                            || this.player.anims.currentFrame.index >= 12 && this.player.anims.currentFrame.index < 14 ){
-                            
-                            this.playerAttackHitBox.body.checkCollision.none = false
-                            
-                        } else {
-                            this.playerAttackHitBox.body.checkCollision.none = true
-                        }
-
-                    } else if (this.player.anims.getName() == 'player_Avatar_3_ACTION_3'){
-                        // playerSwordSwing.play()
-                        
-                        if (this.player.anims.currentFrame.index >= 3 && this.player.anims.currentFrame.index < 5){
-                            
-                            this.playerAttackHitBox.body.checkCollision.none = false
-                            
-                        } else {
-                            this.playerAttackHitBox.body.checkCollision.none = true
-                        }
-
-                    }
-    
-                // A1 Button
-                    // Attack
-                    if (a1IsDown){
-            
-                        // Animation
-
-                            // Ground / Air
-
-                            if (leftIsDown){
-                                this.player.flipX = true
-                            } else if (rightIsDown){
-                                this.player.flipX = false
-                            }
-
-
-                            if (!this.player.body.onFloor()){
-                                if (upIsDown){
-                                    if (this.player.flipX){
-                                        this.player.setAngle(45)
-                                    } else {
-                                        this.player.setAngle(-45)
-                                    }
-                                } else if (downIsDown){
-                                    if (this.player.flipX){
-                                        this.player.setAngle(-45)
-                                    } else {
-                                        this.player.setAngle(45)
-                                    }
-                                } else if (this.playerLockedOn){
-                                if (this.player.flipX){
-                                    this.player.setRotation(-Phaser.Math.Angle.Between(this.player.x,this.player.y,this.closestEnemy.x,this.closestEnemy.y) /2)
-                                } else {
-                                    this.player.setRotation(Phaser.Math.Angle.Between(this.player.x,this.player.y,this.closestEnemy.x,this.closestEnemy.y) /2 )
-                                }
-                                }
-                            } 
-                            
-                            
-                        //}
-                                
-                        
-
-                            // Ground 
-                            if (this.player.body.onFloor()){
-                            if (upIsDown){
-                                this.player.play({key:'player_Avatar_3_ACTION_3',frameRate: (
-                                                                                            (this.baseUpAttackSpeed * this.baseActionSpeedPercent)
-                                                                                            + 
-                                                                                            ((this.baseUpAttackSpeed * (1-this.baseActionSpeedPercent)) * Math.abs(this.actionPower))
-                                                                                            )
-                                                                                            },true)
-                            } else
-                            if (leftIsDown || rightIsDown){
-                                this.player.play({key:'player_Avatar_3_ACTION_2',frameRate: (
-                                                                                            (this.baseSideAttackSpeed * this.baseActionSpeedPercent)
-                                                                                            + 
-                                                                                            ((this.baseSideAttackSpeed * (1-this.baseActionSpeedPercent)) * Math.abs(this.actionPower))
-                                                                                            )
-                                                                                            },true)
-                            } else {
-                                this.player.play({key:'player_Avatar_3_ACTION_1',frameRate: (
-                                                                                            (this.baseAttackSpeed * this.baseActionSpeedPercent)
-                                                                                            + 
-                                                                                            ((this.baseAttackSpeed * (1-this.baseActionSpeedPercent)) * Math.abs(this.actionPower))
-                                                                                            )
-                                                                                            },true)
-                            }
-                        } else {
-                            this.player.play({key:'player_Avatar_3_ACTION_1',frameRate: (
-                                (this.baseAttackSpeed * this.baseActionSpeedPercent)
-                                + 
-                                ((this.baseAttackSpeed * (1-this.baseActionSpeedPercent)) * Math.abs(this.actionPower))
-                                )
-                                },true)
-                        }
-                        
-    
-                        // Positioning
-
-                            // Ground / Air
-
-                                // Snap to Locked on Enemy
-
-                                    if (this.playerLockedOn){
-                                        if(Math.abs(this.player.x - this.closestEnemy.x) <= screenWidth * 0.025 && Math.abs(this.player.x - this.closestEnemy.x) >= screenWidth * 0.001 ){
-                                            if (this.closestEnemy.x > this.player.x){
-                                                this.player.x = this.closestEnemy.x - (screenWidth * 0.0075)
-                                            } else {
-                                                this.player.x = this.closestEnemy.x + (screenWidth * 0.0075)
-                                            }
-                                        
-                                        }
-                                    }
-
-                                
-
-                            // Ground 
-
-                                if (this.player.body.onFloor()){ 
-                                    // Move Forwards with Swings
-                                    if (this.player.anims.getName() == 'player_Avatar_3_ACTION_1'){
-                                        
-
-                                        if (this.player.anims.currentFrame.index >= 6 && this.player.anims.currentFrame.index < 12){
-                                            if (this.player.flipX){
-                                                this.player.x -= (screenWidth * 0.001) * this.movementMod
-                                            } else {
-                                                this.player.x += (screenWidth * 0.001) * this.movementMod
-                                            }  
-                                        } 
-
-                                    } else if (this.player.anims.getName() == 'player_Avatar_3_ACTION_2'){
-                                        
-
-                                        if (this.player.anims.currentFrame.index >= 4 && this.player.anims.currentFrame.index < 6 
-                                            || this.player.anims.currentFrame.index >= 12 && this.player.anims.currentFrame.index < 14 ){
-                                            
-                                                if (this.player.flipX){
-                                                    this.player.x -= (screenWidth * 0.004) * this.movementMod
-                                                } else {
-                                                    this.player.x += (screenWidth * 0.004) * this.movementMod
-                                                }  
-                                        } 
-
-                                    } else if (this.player.anims.getName() == 'player_Avatar_3_ACTION_3'){
-                                        
-                                        
-                                        if (this.player.anims.currentFrame.index >= 3 && this.player.anims.currentFrame.index < 5){
-                                            
-                                            if (this.player.flipX){
-                                                this.player.x -= (screenWidth * 0.0005) * this.movementMod
-                                            } else {
-                                                this.player.x += (screenWidth * 0.0005) * this.movementMod
-                                            }  
-                                            
-                                        } 
-
-                                    }
-                                } 
-                            // Air
-                                else  {
-                                    if (upIsDown){
-                                        if (this.player.body.velocity.y > 0 && this.floor.y - this.player.y > screenHeight * this.baseMinHangHeight ){
-                                            this.player.setVelocityY(this.player.body.velocity.y * 0.125)
-                                        }
-                                    } else if (this.player.body.velocity.y > 0 && this.floor.y - this.player.y > screenHeight * this.baseMinHangHeight) {
-                                        this.player.setVelocityY(this.player.body.velocity.y * 0.25)
-                                    }
-
-                                    // Move Forwards with Swings
-                                    if (this.player.anims.getName() == 'player_Avatar_3_ACTION_1'){
-                                        
-
-                                        if (this.player.anims.currentFrame.index >= 6 && this.player.anims.currentFrame.index < 12){
-                                            if (this.player.flipX){
-                                                this.player.x -= (screenWidth * 0.0005) * this.movementMod
-                                            } else {
-                                                this.player.x += (screenWidth * 0.0005) * this.movementMod
-                                            }  
-                                        } 
-
-                                    } 
-                                    
-                                }   
-
-                        // Other
-
-                            // Ground
-                        
-                            // Air
-                            
-
-                    } else
-                // A2 Button 
-                    // Defend
-                    if (a2IsDown){
-                        // Animation
-
-                            // Ground / Air
-                                
-                                if(leftIsDown || rightIsDown){
-                                    
-
-                                    if (leftIsDown){
-                                        this.player.flipX = true
-                                    } else if (rightIsDown) {
-                                        this.player.flipX = false
-                                    }
-                                    
-                                    
-                                    this.player.play({key:'player_Avatar_3_EVADE',frameRate: 12 + (8 * Math.abs(this.actionPower))},true)
-
-                                    this.player.once('animationcomplete', function (anim,frame) {
-                                        this.player.emit('animationcomplete_' + anim.key, frame)
-                                    }, this)
-                                    
-                                    this.player.once('animationcomplete_player_Avatar_3_EVADE', function(){
-                                        leftIsDown = false
-                                        rightIsDown = false
-                                        this.player.play({key:'player_Avatar_3_BLOCK',frameRate: 8 + (8 * Math.abs(this.actionPower))},true)
-                                    
-                                    },this)
-                                    
-                                } else 
-                                if(!this.a2Held){
-                                    this.player.play({key:'player_Avatar_3_BLOCK',frameRate: 8 + (8 * Math.abs(this.actionPower))},true)
-                                    this.a2Held = true
-                                }
-
-
-                        // Positioning
-
-                                // Ground
-                                if (this.player.body.onFloor()){
-
-                                    if (leftIsDown){
-                                        if (this.playerBattleSpeed > 0){
-                                            this.playerBattleSpeed -= 0.015 + 0.12 * this.actionPower
-                                        }
-                
-                                        if (this.playerBattleSpeed > -0.5){
-                                            this.playerBattleSpeed -= 0.0075 + 0.06 * this.actionPower
-                                        }
-                
-                                        //this.player.x -= (((screenWidth * 0.007) + ((screenWidth * 0.003) * this.actionPower))) * this.movementMod
-                                        this.player.x -= ((screenWidth * (this.baseDashDistance * this.baseDashDistancePercent)) + 
-                                                            ((screenWidth * (this.baseDashDistance * (1-this.baseDashDistancePercent))) * this.actionPower)) * this.movementMod
-                                        
-                                    } else if (rightIsDown){
-                                        if (this.playerBattleSpeed < 0){
-                                            this.playerBattleSpeed += 0.015 + 0.12 * this.actionPower
-                                        }
-                
-                                        if (this.playerBattleSpeed < 0.5){
-                                            this.playerBattleSpeed += 0.0075 + 0.06 * this.actionPower
-                                            
-                                        }
-                
-                                        //this.player.x += (((screenWidth * 0.007) + ((screenWidth * 0.003) * this.actionPower))) * this.movementMod
-                                        this.player.x += ((screenWidth * (this.baseDashDistance * this.baseDashDistancePercent)) + 
-                                                            ((screenWidth * (this.baseDashDistance * (1-this.baseDashDistancePercent))) * this.actionPower)) * this.movementMod
-                                    } else {
-                                        if(this.playerBattleSpeed > 0.5){
-                                            this.playerBattleSpeed -= 0.0125  + (0.0125 * this.actionPower)
-                                        } else if (this.playerBattleSpeed < -0.5){
-                                            this.playerBattleSpeed += 0.0125  + (0.0125 * this.actionPower)
-                                        }
-                                    }
-                                }    
-                                // Air
-                                else {
-                
-                                    if (leftIsDown){
-                
-                                        if (this.playerBattleSpeed > 0){
-                                            this.playerBattleSpeed -= 0.0075 + 0.6 * this.actionPower
-                                        }
-                
-                                        if (this.playerBattleSpeed > -0.5){
-                                            this.playerBattleSpeed -= 0.00375 + 0.03 * this.actionPower
-                                        }
-                
-                                        this.player.x -= (((screenWidth * 0.002) + ((screenWidth * 0.006) * this.actionPower))) * this.movementMod
-                                    } else if (rightIsDown){
-                
-                                        if (this.playerBattleSpeed < 0){
-                                            this.playerBattleSpeed += 0.0075 + 0.06 * this.actionPower
-                                        }
-                
-                                        if (this.playerBattleSpeed < 0.5){
-                                            this.playerBattleSpeed += 0.00375 + 0.03 * this.actionPower
-                                            
-                                        }
-                                        this.player.x += (((screenWidth * 0.002) + ((screenWidth * 0.006) * this.actionPower))) * this.movementMod
-                                    } else {
-                                        if(this.playerBattleSpeed > 0.5){
-                                            this.playerBattleSpeed -= 0.0125  + (0.0125 * this.actionPower)
-                                        } else if (this.playerBattleSpeed < -0.5){
-                                            this.playerBattleSpeed += 0.0125  + (0.0125 * this.actionPower)
-                                        }
-                                    }
-                                }
-                                
-                            
-
-                    } else {
-        
-                    // Up Button 
-                    // Jump
-                        if (upIsDown){
-
-                            // Animation
-
-                                // Ground / Air
-
-                                if (this.player.body.onFloor()){
-
-                                    this.player.play({key:'player_Avatar_3_CROUCH',frameRate: 20 + (8 * Math.abs(this.actionPower))},true)
-                            
-                                        this.player.once('animationcomplete', function (anim,frame) {
-                                            this.player.emit('animationcomplete_' + anim.key, frame)
-                                    },this)
-
-                                } else {
-                                    this.player.play({key:'player_Avatar_3_JUMP',frameRate: 10},true)
-                                }
-                                
-                            // Positioning 
-                            
-                                // Ground / Air
-
-                                    // Forward motion when jumping (toggle and test feel)
-                                    if(this.player.flipX){
-                                        this.player.x -= ((screenWidth * 0.0025) * -this.playerBattleSpeed) * this.movementMod
-                                    } else {
-                                        this.player.x += ((screenWidth * 0.0025) * this.playerBattleSpeed) * this.movementMod
-                                    }
-                
-                                // Ground
-                                    if (this.player.body.onFloor()){
-
-                                        this.player.once('animationcomplete_player_Avatar_3_CROUCH', function (){
-                                            this.player.setVelocityY(
-                                                                    (-this.baseJumpHeight * this.baseJumpHeightPercent) 
-                                                                    - 
-                                                                    ((this.baseJumpHeight * (1-this.baseJumpHeightPercent)) * this.actionPower)
-                                                                    )
-                                           
-                                        },this)
-                                    } 
-                                // Air
-                                    else  {                     
-                                       
-                                        if (this.player.body.velocity.y > 0 && this.floor.y - this.player.y > screenHeight * this.baseMinHangHeight ){
-                                        this.player.setVelocityY(this.player.body.velocity.y * (1 - (this.baseHangTime * this.actionPower)))
-                                        }
-
-                                    }
-
-                        }
-                    // Down Button
-                        // Slide
-                        if (downIsDown){
-                            // Animation
-                                // Ground
-                                if (this.player.body.onFloor()){
-                                    if(!this.downHeld){
-                                        this.player.play({key:'player_Avatar_3_CROUCH',frameRate: 10},true)
-                                        this.downHeld = true
-                                    }
-                                }
-                                // Air
-                                else {
-                                    this.player.play({key:'player_Avatar_3_FALL',frameRate: 10},true)
-                                }
-                            // Positioning
-
-                                // Ground
-                                if (this.player.body.onFloor()){
-                                    
-                                } 
-                                // Air
-                                else {
-                                    // Downward motion when in air (toggle and test feel)
-                                    this.player.y += ((screenHeight * 0.015) * this.actionPower) * this.movementMod
-                                } 
-        
-                        }
-                    // Left Button
-                        // Move Left
-                        if (leftIsDown){
-                            // Animation
-
-                            this.player.flipX = true
-                            // Ground
-                            if (this.player.body.onFloor() && !upIsDown && !downIsDown){
-                                if (this.playerBattleSpeed > 0.01){
-                                    this.player.play({key:'player_Avatar_3_EVADE',frameRate: 2,startFrame:5},true)
-                                }  else {
-                                    this.player.play({key:'player_Avatar_3_RUN',frameRate: 8 + (4 * Math.abs(this.playerBattleSpeed))},true)
-                                }
-
-                            }
-                            // Air 
-                            else {
-
-                            }
-
-                            // Positioning
-                                // Ground
-                                    if (this.player.body.onFloor() && !upIsDown && !downIsDown){
-                                        if (this.playerBattleSpeed > 0){
-                                            this.playerBattleSpeed -= 0.08 + 0.08 * this.actionPower
-                                        } else
-
-                                        if (this.playerBattleSpeed > -1.5){
-                                            this.playerBattleSpeed -= 0.04 + 0.04 * this.actionPower
-                                        }
-
-                                        this.player.x -= ((screenWidth * (this.baseTopSpeed * this.baseTopSpeedPercent)) + 
-                                                        (screenWidth * (this.baseTopSpeed * (1- this.baseTopSpeedPercent)) * this.actionPower)) 
-                                                        * -this.playerBattleSpeed
-                                                        * 
-                                                        this.movementMod
-
-                                        
-                                    } 
-                                // Air
-                                    else {
-                                
-                                     
-                                        this.player.x -= ((screenWidth * 0.0025) + (screenWidth * 0.0025 * -this.playerBattleSpeed))
-                                    
-                                                        // ((screenWidth * (this.baseTopSpeed * this.baseTopSpeedPercent)) + 
-                                                        // (screenWidth * (this.baseTopSpeed * (1- this.baseTopSpeedPercent)) * this.actionPower)) 
-                                                        // * this.playerBattleSpeed
-                                                        * 
-                                                        this.movementMod
-                
-                    
-                                    }  
-                            
-                        } 
-                    // Right Button
-                        // Move Right
-                        if (rightIsDown){   
-                            // Animation
-
-                                this.player.flipX = false
-
-                                // Ground
-                                if (this.player.body.onFloor() && !upIsDown && !downIsDown){
-                                    if (this.playerBattleSpeed < 0.01){
-                                        this.player.play({key:'player_Avatar_3_EVADE',frameRate: 2,startFrame:5},true)
-                                    }  else {
-                                        this.player.play({key:'player_Avatar_3_RUN',frameRate: 8 + (4 * Math.abs(this.playerBattleSpeed))},true)
-                                    }
-
-                                } 
-                                // Air
-                                else {
-
-                                }
-
-                            // Positioning
-                            
-                            // Ground
-                                if (this.player.body.onFloor() && !upIsDown && !downIsDown){
-
-                                    
-                                    if (this.playerBattleSpeed < 0){
-                                        this.playerBattleSpeed += 0.08 + 0.08 * this.actionPower
-                                    } else 
-
-                                    if (this.playerBattleSpeed < 1.5){
-                                        this.playerBattleSpeed += 0.04 + 0.04 * this.actionPower
-                                    }
-                                
-
-                                    this.player.x += ((screenWidth * (this.baseTopSpeed * this.baseTopSpeedPercent)) + 
-                                                    (screenWidth * (this.baseTopSpeed * (1- this.baseTopSpeedPercent)) * this.actionPower)) 
-                                                    * this.playerBattleSpeed
-                                                    * 
-                                                    this.movementMod
-                                } 
-                            // In Air
-                                else if (!this.player.body.onFloor()){
-                                    
-
-                                
-                                    this.player.x += ((screenWidth * 0.0025) + (screenWidth * 0.0025 * this.playerBattleSpeed))
-                                    
-                                                    // ((screenWidth * (this.baseTopSpeed * this.baseTopSpeedPercent)) + 
-                                                    // (screenWidth * (this.baseTopSpeed * (1- this.baseTopSpeedPercent)) * this.actionPower)) 
-                                                    // * this.playerBattleSpeed
-                                                    * 
-                                                    this.movementMod
-
-                                }
-                                
-                        }
-                    // Neutral 
-                        
-                        if (!this.enterBattleAnimation && !upIsDown && !downIsDown && !leftIsDown && !rightIsDown){
-                            if(this.player.body.onFloor()){
-
-                                if (Math.abs(this.playerBattleSpeed) > 1){
-                                    this.player.play({key:'player_Avatar_3_SLIDE',frameRate: 10},true) 
-                                } else {
-                                    this.player.play({key:'player_Avatar_3_IDLE',frameRate: 8 + (4 * (1 - Math.abs(this.actionPower)))},true)
-                                }
-                            } else {
-                                this.player.play({key:'player_Avatar_3_FALL',frameRate: 10},true)
-                            }
-                        }
-                    
-                }
-
-                if (!a2IsDown){
-                    this.a2Held = false
-                }
-
-                if (!downIsDown){
-                    this.downHeld = false
-                }
-
-                if (!leftIsDown && !rightIsDown && Math.abs(this.playerBattleSpeed) < 0.05 ){
-                    this.playerBattleSpeed = 0
-                }
-
-                if (a1IsDown || a2IsDown || downIsDown || upIsDown || (!leftIsDown && !rightIsDown)){
-
-
-                    if (this.player.body.onFloor()){
-                        this.playerBattleSpeedDecelerationStandard = 0.05
-                        this.playerBattleSpeedDecelerationSprint = 0.025
-                    } else {
-                        this.playerBattleSpeedDecelerationStandard = 0.025
-                        this.playerBattleSpeedDecelerationSprint = 0.0125
-                    }
-                    
-
-                    if (this.playerBattleSpeed < 0){
-                        if (this.playerBattleSpeed < -1){
-                            this.playerBattleSpeed += this.playerBattleSpeedDecelerationSprint
-                        } else {
-                            this.playerBattleSpeed += this.playerBattleSpeedDecelerationStandard
-                        }
-                    } else if (this.playerBattleSpeed > 0) {
-                        if (this.playerBattleSpeed > 1){
-                            this.playerBattleSpeed -= this.playerBattleSpeedDecelerationSprint
-                        } else {
-                            this.playerBattleSpeed -= this.playerBattleSpeedDecelerationStandard
-                        }
-                    }
-                    
-                }
-
-                this.player.x += ((screenWidth * 0.00075) * this.playerBattleSpeed) * this.movementMod
-
-                
-                    
-            }
-        
-        
-    }
-
-    enterBattle(){
-        if(this.gameMode == 0){
-
-         if(this.playerSpeed < 0.25){   
-        this.playerSpeed = 0
-        this.playerBattleSpeed = 0
-
-        this.camera.flash()
-        this.gameMode = 1
-        this.enterBattleAnimation = true
-
-        this.enemyGroup.children.each(function(e) {
-            if(e.speedMod == 2){
-                e.play('nightBorne_Idle')
-            } 
-
-        }.bind(this));
-
-        
-        // Pan here has fluid effect of transition into action, carries momentum, but less clear entrance to Battle Phase
-        this.camera.pan(this.player.x,null,1000,'Power2')
-        this.player.play({key:'player_Avatar_3_SLIDE',frameRate: 10},true)
-        this.player.setVelocityX(100)
-        this.player.once('animationcomplete', function (){
-            this.player.setVelocityX(0)
-            this.enemyGroup.setVelocityX(0)
-            this.enterBattleAnimation = false
-            // Pan here has effect of whipping to action and clear entrance to Battle Phase
-            //this.camera.pan(player.x,null,1000,'Power2')
-            this.camera.on('camerapancomplete', function () {
-                this.battleCameraActive = true
-                // Disabled and replaced via camera module due to zoom set up
-                //this.camera.startFollow(this.player,true,0.5,0.5)
-                
-                
-                
-            },this)
-            
-        },this)
-        this.physics.world.setBounds(screenWidth, 0, screenWidth * 2,  screenHeight)
-        } else {
-            this.playerSpeed -= 0.08 
-            this.playerVitals.decreaseLife(0.5)
-            this.playerIsHit = true
-            this.player.flipX = true
-            this.player.play({key:'player_Avatar_3_TAKE_HIT',frameRate: 10 * this.playerSpeed},true)
-            this.player.once('animationcomplete', function (){
-                this.playerIsHit = false
-            },this)
-        }
-    } 
-    }
-
-    exitBattle(game){
-        game.gameMode = 0
-        game.playerBattleSpeed = 0
-        game.playerSpeed = 0
-        game.camera.stopFollow()
-        
-        game.physics.world.setBounds(game.camera.worldView.x,game.camera.worldView.y,screenWidth,screenHeight)
-    }
-
-    update (time,delta)
-    {
-        this.rewards += 2.5/60
-        this.gold += 5/60 * this.playerSpeed
+stageModule(){
+    // Stage Progress
+    console.log(this.stageProgressEnabled)
+    if (this.gameMode == 0 && this.stageProgressEnabled){
+        this.stageProgress.increaseProgress((2.5 / 30))
+        // Glory Modifier
         if (this.player.x > this.camera.scrollX + (screenWidth * 0.6)){
             this.gloryModifier = 1.25
         } else if (this.player.x < this.camera.scrollX + (screenWidth * 0.3)){
@@ -3815,19 +1491,1555 @@ class Badlands extends Phaser.Scene {
         } else {
             this.gloryModifier = 1
         }
-        this.glory += 4/60  * this.playerSpeed * this.gloryModifier
-        if (this.gameMode == 0){
-            this.stageProgress.increaseProgress((4 / 6))
-        }
-        if (this.progress >= this.progressToNextLevel){
-            levelUp(this)
+        // Glory Accumulation
+        this.glory += 4/30  * this.playerSpeed * this.gloryModifier
+    }
+
+    // Next Stage
+    if (this.progress >= this.progressToNextLevel){
+        this.progress = 0
+        this.level += 1
+
+        this.progressToNextLevel *= 1.08
+        this.stageProgress.p = (((screenWidth * 0.25)-2) * (scaleModX)) / this.progressToNextLevel
+        this.progressToNextCheckPoint = this.progressToNextLevel * 0.25
+    }
+
+    // Return To Kianova
+    if (this.currentLife <= 0 && this.stageProgressEnabled){
+        this.stageProgressEnabled = false
+
+        this.recordScores()
+        this.camera.fadeOut(6000)
+        this.camera.on('camerafadeoutcomplete', function () {
+            this.scene.run('Kianova',{regionID:this.stageData.regionID,stage:this.stageScore,glory:Math.round(this.gloryScore),rewards:this.rewardsScore,gold:this.goldScore})
+            this.scene.stop('Badlands')
+       },this);
+    }
+
+}
+
+environmentModule(){
+    if (this.gameMode == 0){
+        for (var i = 1; i < this.bgLayers + 1 ; i++){
+            window['bgL'+i].tilePositionX += (this.baseSpeed* this.playerSpeed)  * window['bgL'+ i + 'ScrollMod'] * (scaleModX / (screenWidth / this.textures.get('bgL' + i).getSourceImage().width))
         }
 
-        if (this.level >= 2){
-            this.level = 0
-            finish(this)
+        for (var i = 1; i < this.fgLayers + 1 ; i++){
+            window['fgL'+i].tilePositionX += (this.baseSpeed  * this.playerSpeed)  * window['fgL'+ i + 'ScrollMod'] * (scaleModX / (screenWidth / this.textures.get('fgL' + i).getSourceImage().width))
         }
-        // Test Code
+    } else {
+
+            for (var i = 1; i < this.bgLayers + 1 ; i++){
+                window['bgL'+i].tilePositionX = this.camera.scrollX * window['bgL'+ i + 'ScrollMod'] * (scaleModX / (screenWidth / this.textures.get('bgL' + i).getSourceImage().width)) 
+            }
+
+            for (var i = 1; i < this.fgLayers + 1 ; i++){
+                window['fgL'+i].tilePositionX = this.camera.scrollX * window['bgL'+ i + 'ScrollMod'] * (scaleModX / (screenWidth / this.textures.get('bgL' + i).getSourceImage().width)) 
+            }
+
+    }
+}
+
+spawnPlatform(){
+    if (this.gameMode == 0){
+    this.spawningPlatform = true
+    } 
+}
+
+platforms(game){
+
+    
+
+    if(game.spawningPlatform){
+
+        for (var i = 0; i < 2; i++){
+        var platform = game.platformGroup.get()
+
+        if(game.speedLevel == 1){
+            
+            this.platformScaleXMin = 2.125
+            this.platformScaleXMax = 2.125
+
+            this.platformPositionYMin = screenHeight * 0.5
+            this.platformPositionYMax = screenHeight * 0.7
+
+        } else
+        // Level 2
+        if(game.speedLevel == 2){
+            this.platformScaleXMin = 2
+            this.platformScaleXMax = 2.25
+
+            this.platformPositionYMin = screenHeight * 0.4
+            this.platformPositionYMax = screenHeight * 0.725
+        } else
+        // Level 3
+        if(game.speedLevel == 3){
+            this.platformScaleXMin = 1.75
+            this.platformScaleXMax = 2.5
+
+            this.platformPositionYMin = screenHeight * 0.3
+            this.platformPositionYMax = screenHeight * 0.75
+        } 
+        
+
+        if(platform){
+            platform.setOrigin(1,0)
+            platform.setTint(this.floorColour)
+            platform.x = Phaser.Math.FloatBetween(screenWidth * 3.25 + (screenWidth * 0.6 * i), screenWidth * 3.35 + (screenWidth * 0.6 * i)) //screenWidth * 2
+            platform.y = Phaser.Math.FloatBetween(this.platformPositionYMin, this.platformPositionYMax)
+            platform.setScale(Phaser.Math.FloatBetween(this.platformScaleXMin,this.platformScaleXMax),Phaser.Math.FloatBetween(1, 1.25))
+            platform.setActive(true)
+            platform.setImmovable(true)
+            platform.body.setAllowGravity(false)
+            platform.body.checkCollision.down = false
+            
+        }
+        }
+
+        game.spawningPlatform = false
+    }
+
+    game.platformGroup.children.each(function(p) {
+
+        p.x -= this.baseSpeed * this.playerSpeed 
+
+        if (p.active) {
+            if (p.x < 0) {
+                p.setActive(false);
+            }
+        }
+    }.bind(game));
+
+
+}
+
+spawnEnemy(){
+    if (this.gameMode == 0){
+    this.spawningEnemy = true
+    //this.enemyTimer.delay = Phaser.Math.Between(1500,3000)
+    } 
+}
+
+enemies(game){
+
+   
+
+    game.closestEnemy = game.physics.closest(this.player,game.enemyGroup.getMatching('active',true)) 
+
+    game.enemyGroup.children.each(function(e) {
+        // Lock on Code
+       if (e.active){
+        // Enables enemy to automatically face and move towards player
+        if(Math.abs(e.x - this.player.x) <= screenWidth * 0.15 ){
+            //&& Math.abs(e.y - this.player.y) <= screenHeight * 0.25 
+            //enemyLockedOn = true
+            if(e.x < this.player.x){
+                if (e.type == 1){
+                    e.flipX = true
+                } else {
+                    e.flipX = false
+                }
+                
+            } else {
+                if (e.type == 1){
+                    e.flipX = false
+                } else {
+                    e.flipX = true
+                }
+            }
+        } else {
+            //enemyLockedOn = false
+        }
+    } 
+
+    }.bind(game));
+
+    if (this.gameMode == 0){
+        
+    // Spawn Code
+    if(game.spawningEnemy){
+
+        this.enemiesSpawned = Phaser.Math.Between(1,2)
+
+        for (var i = 0; i < this.enemiesSpawned; i++){
+        //enemy = game.enemyGroup.get()
+        this.enemy = game.enemyGroup.get()
+        
+            // Scaling
+            this.enemiesType = Phaser.Math.Between(1,2)
+            if(this.enemiesType == 1){
+                // Common Enemy
+                this.creepScale = Phaser.Math.FloatBetween(2.5,3) //* (scaleModX) 
+            } else {
+                // Uncommon Enemy
+                this.creepScale = Phaser.Math.FloatBetween(7.5,8.5) //* (scaleModX) 
+        
+            }
+            
+            this.enemyOrientation = Phaser.Math.Between(1,2)
+
+            if(this.enemyOrientation == 1){
+                //enemy.flipX = true 
+                this.enemy.flipX = true 
+            } else {
+                //enemy.flipX = false
+                this.enemy.flipX = false  
+            }
+
+            if(this.enemy){
+                if(this.enemiesType == 1){
+                    this.enemy.setTexture('doomsayer')
+                    this.enemy.type = 1
+                    this.enemy.play('nightBorneMinion_Idle')
+                    this.enemy.baseSpeedMod = 1
+                    
+                } else {
+                    this.enemy.setTexture('nightBorne')
+                    this.enemy.type = 2
+                    this.enemy.setOrigin(0.5,1)
+                    this.enemy.body.setSize(25, 25).setOffset(25,37.5)
+                    if (this.enemyOrientation == 1){
+                        this.spawnChance = Phaser.Math.Between(0,100)
+                        if (this.spawnChance < 35){
+                            this.enemy.play({key:'nightBorne_Move',frameRate: 8},true)
+                            this.enemy.baseSpeedMod = 1.5
+                        } else {
+                            this.enemy.play('nightBorne_Idle')
+                            this.enemy.baseSpeedMod = 1
+                        }
+                        
+                    } else {
+                        this.enemy.play('nightBorne_Idle')
+                        this.enemy.baseSpeedMod = 1
+                    }
+                    
+                    
+                }
+                this.enemy.x = Phaser.Math.FloatBetween(screenWidth * 3.125 + (screenWidth * 0.3 * i), screenWidth * 3.175 + (screenWidth * 0.3 * i)) //screenWidth * 2
+                this.enemy.y = Phaser.Math.FloatBetween(0, screenHeight * 0.5)
+                this.enemy.setScale(this.creepScale)
+                this.enemy.setVisible(true)
+                this.enemy.setActive(true)
+                this.enemy.setDepth(Phaser.Math.Between(0,1))
+                this.enemy.body.setAllowGravity(true)
+                this.enemy.isHit = false
+                this.enemy.hitsTaken = 0
+                if (this.enemy.type == 1){
+                    this.enemy.hitHP = Phaser.Math.Between(2,4)
+                } else if (this.enemy.type == 2){
+                    this.enemy.hitHP = Phaser.Math.Between(4,8)
+                }
+                
+
+            }
+        }
+
+        game.spawningEnemy = false
+    }
+
+    // Movement  Code
+    game.enemyGroup.children.each(function(e) {
+
+        
+        if(e.x >= this.player.x - screenWidth * 0.1){
+            e.x -= this.baseSpeed * e.baseSpeedMod * this.playerSpeed 
+        } else {
+            if (e.anims.getName() != 'nightBorne_Move'){
+                e.x -= this.baseSpeed * e.baseSpeedMod * this.playerSpeed
+            } else {
+                if (this.player.x < (this.camera.scrollX + screenWidth * 0.6)){
+                    e.x += this.baseSpeed * (e.baseSpeedMod/5) / this.playerSpeed
+                } else {
+                    e.x -= this.baseSpeed * (e.baseSpeedMod/3) * this.playerSpeed 
+                }
+            }
+            
+        }
+        
+
+        if (e.active) {
+            if (e.x < screenWidth * 0.75 || e.y > screenHeight * 1.25) {
+                e.setActive(false);
+                e.setVisible(false)
+            }
+        }
+
+
+    }.bind(game));
+
+    
+
+} else if (game.gameMode == 1){
+
+  
+
+    game.enemyGroup.children.each(function(e) {
+
+        if (e.active) {
+            if (e.x <= screenWidth * 1.25){
+                e.x += 10
+            } else if (e.x >= screenWidth * 2.75){
+                e.x -= 10
+            }
+        }
+
+
+    }.bind(game));
+
+    if (game.enemyGroup.countActive() == 0){
+        game.exitBattle(game)
+    } else if (openMenuIsDown){
+                openMenuIsDown = false
+                game.exitBattle(game)      
+    }
+}
+
+
+}
+
+enemyTakeHit(playerAttackHitBox,enemy){
+        if(this.gameMode == 1){
+
+            
+
+        if(!enemy.isHit){
+            enemy.isHit = true
+
+
+            if(enemy.type == 1){
+                enemy.play('nightBorneMinion_Hurt',true)
+                enemy.once('animationcomplete', function (anim,frame) {
+                    enemy.emit('animationcomplete_' + anim.key, frame)
+                }, enemy)
+                enemy.once('animationcomplete_nightBorneMinion_Hurt',function(){
+                    enemy.isHit = false
+                    enemy.hitsTaken += 1
+                    if (enemy.hitsTaken >= enemy.hitHP){
+                        enemy.play('nightBorneMinion_Death',true)
+                        this.physics.add.collider(enemy,this.floor); 
+                        this.physics.add.collider(enemy,this.platformGroup); 
+                        this.enemyGroup.remove(enemy)
+                        this.gold += Phaser.Math.Between(0,10)
+                          
+                        
+                        enemy.once('animationcomplete', function (anim,frame) {
+                            enemy.emit('animationcomplete_' + anim.key, frame)
+                        }, enemy)
+                        enemy.once('animationcomplete_nightBorneMinion_Death',function(){
+                            
+                        enemy.setActive(false)
+                        enemy.setVisible(false)
+                        enemy.x = -screenWidth * 0.25
+                        
+                        },this)
+                    } else {
+                        enemy.play('nightBorneMinion_Idle',true)
+                    }
+                    
+                },this)
+            } else if (enemy.type == 2){
+                enemy.play('nightBorne_Hurt',true)
+                enemy.once('animationcomplete', function (anim,frame) {
+                    enemy.emit('animationcomplete_' + anim.key, frame)
+                }, enemy)
+                enemy.once('animationcomplete_nightBorne_Hurt',function(){
+                    enemy.isHit = false
+                    enemy.hitsTaken += 1
+                    if (enemy.hitsTaken >= enemy.hitHP){
+                        enemy.play('nightBorne_Death',true)
+                        this.physics.add.collider(enemy,this.floor); 
+                        this.physics.add.collider(enemy,this.platformGroup); 
+                        this.enemyGroup.remove(enemy)
+                        this.gold += Phaser.Math.Between(5,50)  
+                        this.rewards += Phaser.Math.Between(0,5)  
+                        enemy.once('animationcomplete', function (anim,frame) {
+                            enemy.emit('animationcomplete_' + anim.key, frame)
+                        }, enemy)
+                        enemy.once('animationcomplete_nightBorne_Death',function(){
+                                    
+                        enemy.setActive(false)
+                        enemy.setVisible(false)
+                        enemy.x = -screenWidth * 0.25
+                       
+                        },this)
+                    } else {
+                        enemy.play('nightBorne_Idle',true)
+                    }
+                    
+                },this)
+            }
+
+            
+        }
+    }
+}
+
+cameraModule(){
+
+    if (this.gameMode == 0){
+
+        if (a1IsDown){
+            if (this.camera.zoom < 1.15){
+                this.camera.zoom += 0.15/60
+            }
+        } else if (a2IsDown){
+            if (this.camera.zoom > 1){
+                this.camera.zoom -= 0.15/60
+            }
+        } else {
+            if (this.camera.zoom <= 1.053 && this.camera.zoom >= 1.047){
+                this.camera.zoom = 1.05
+            } else if (this.camera.zoom > 1.05){
+                this.camera.zoom -= 0.3/60
+            } else if (this.camera.zoom < 1.05) {
+                this.camera.zoom += 0.3/60
+            }
+        }
+    } else {
+        this.camera.zoom = 1
+        if (this.battleCameraActive){
+            this.camera.centerOnX(this.player.x)
+        }
+    }
+
+    
+
+    
+    
+}
+
+uiModule(){
+    this.playerIconBox.x = this.camera.worldView.x + (screenWidth * 0.005)
+        this.playerIconBox.y = this.camera.worldView.y +  (screenHeight * 0.1 )
+
+        this.playerIcon.x = this.playerIconBox.x + (screenWidth * 0.0575)
+        this.playerIcon.y = this.playerIconBox.y
+
+        this.playerVitals.x = this.playerIcon.x + 165
+        this.playerVitals.y = this.playerIcon.y - 65 
+        this.playerVitals.draw()
+
+        this.playerVitalsTextL.x = this.playerVitals.x - 50 
+        this.playerVitalsTextL.y = this.playerVitals.y + 17.5 
+
+        this.playerVitalsTextF.x = this.playerVitalsTextL.x
+        this.playerVitalsTextF.y = this.playerVitals.y + 47.5
+
+        this.playerVitalsTextE.x = this.playerVitalsTextF.x
+        this.playerVitalsTextE.y = this.playerVitals.y + 72.5
+
+        this.storedRewardsIcon.x = this.playerVitals.x + 15
+        this.storedRewardsIcon.y = this.playerIcon.y + 42.5 
+        this.storedRewardsText.x = this.storedRewardsIcon.x + 55
+        this.storedRewardsText.y = this.storedRewardsIcon.y
+        this.storedRewardsText.setText(Math.floor(this.rewards))
+
+        this.goldIcon.x = this.storedRewardsText.x + 60
+        this.goldIcon.y = this.storedRewardsIcon.y
+        this.goldText.x = this.goldIcon.x + 55
+        this.goldText.y = this.goldIcon.y
+        this.goldText.setText(Math.floor(this.gold))
+
+        this.skillABox.x = this.playerIconBox.x + this.playerIconBox.displayWidth * 0.765
+        this.skillABox.y = this.playerIconBox.y + (75 * (scaleModX))
+
+        this.skillAIcon.x = this.skillABox.x
+        this.skillAIcon.y = this.skillABox.y
+
+        this.skillBBox.x = this.skillABox.x + 100
+        this.skillBBox.y = this.skillABox.y
+
+        this.skillBIcon.x = this.skillBBox.x
+        this.skillBIcon.y = this.skillBBox.y
+        
+        this.scoreBox.x = this.camera.scrollX + ((screenWidth * 0.725) - (this.camera.worldView.x - this.camera.scrollX))
+        this.scoreBox.y = this.playerIconBox.y
+
+        this.levelIcon.x = this.scoreBox.x + (screenWidth * 0.0475)
+        this.levelIcon.y = this.playerIcon.y + 5
+        this.levelText.x = this.levelIcon.x + 110
+        this.levelText.y = this.levelIcon.y
+        this.levelText.setText(Math.floor(this.level))
+
+        this.gloryIcon.x = this.levelText.x + 115 
+        this.gloryIcon.y = this.levelIcon.y
+        this.gloryText.x = this.gloryIcon.x + 125
+        this.gloryText.y = this.gloryIcon.y
+        this.gloryText.setText(Math.floor(this.glory))
+
+        this.stageProgress.x = this.scoreBox.x + 30
+        this.stageProgress.y = this.scoreBox.y + 90
+        this.stageProgress.draw()
+}
+
+playerModule(){
+
+    // Function Variables
+    this.actionPower = this.currentEnergy / this.maxEnergy
+    this.skillPower = this.currentFocus / this.maxFocus
+
+    // Player Parameters
+    this.baseTopSpeed = 0.005
+    this.baseAttackSpeed = 16
+    this.baseSideAttackSpeed = 12
+    this.baseUpAttackSpeed = 10
+    this.baseJumpHeight = 2000
+    this.baseHangTime = 0.15
+    this.baseMinHangHeight = 0.2
+    this.baseDashDistance = 0.01
+
+    // Energy Efficency Parameters
+    this.baseEmergencyEnergyCostPercent = 0.075
+
+    this.baseActionSpeedPercent = 0.5
+    this.baseTopSpeedPercent = 0.5
+    this.baseJumpHeightPercent = 0.8
+    this.baseDashDistancePercent = 0.7
+
+    if (a1IsDown || a2IsDown || s1IsDown || s2IsDown){
+        regenActive = false
+    } else {
+        regenActive = true
+    }
+
+    // Base Mode Toggles 
+    // Cost
+    if (this.prod == true){
+        this.baseCost = 0.5
+    } else {
+        this.baseCost = 1
+    }
+
+    // Movement
+
+    if (this.prod == true){
+        this.movementMod = 0.5
+    } else {
+        this.movementMod = 1
+    }
+
+    this.playerAttackHitBox.x = this.player.x
+
+    if (this.player.flipX){
+        this.playerAttackHitBox.x = this.player.x - 10
+        this.playerAttackHitBox.y = this.player.y - 15
+    } else {
+        this.playerAttackHitBox.x = this.player.x + 10
+        this.playerAttackHitBox.y = this.player.y - 15
+    }
+
+    this.playerAttackHitBox.body.checkCollision.none = true
+
+    // Add State Machine section (playerDefending, etc)
+
+
+    // Running
+    if (this.gameMode == 0){
+        this.action1CostModifier = 1.5
+        this.action2CostModifier = 0.25
+        this.skill1CostModifier = 4
+        this.skill2CostModifier = 4
+
+        this.moveUpCostModifier = 1.5
+        this.moveDownCostModifier = 1.5
+        this.moveLeftCostModifier = 0.5
+        this.moveRightCostModifier = 0.5
+    } else     
+    // Battle
+    if (this.gameMode == 1){
+        this.action1CostModifier = 0.6
+        this.action2CostModifier = 0.125
+        this.skill1CostModifier = 2
+        this.skill2CostModifier = 2
+
+        this.moveUpCostModifier = 0.75
+        this.moveDownCostModifier = 0.75
+        this.moveLeftCostModifier = 0.25
+        this.moveRightCostModifier = 0.25
+    }
+    
+    this.player.setTint()
+  
+        if (a1IsDown){
+            if(this.actionPower > 0 ){
+                this.playerVitals.decreaseEnergy(this.baseCost * this.action1CostModifier)
+            } else {
+                this.player.setTint(0xff7a7a)
+                this.playerVitals.decreaseEnergy(this.baseCost * this.action1CostModifier)
+                this.playerVitals.decreaseLife((this.baseCost * this.baseEmergencyEnergyCostPercent) * this.action1CostModifier)
+            }
+            
+        }
+
+        if (a2IsDown){
+
+
+            if(this.actionPower > 0 ){
+                this.playerVitals.decreaseEnergy(this.baseCost * this.action2CostModifier)
+            } else {
+                this.player.setTint(0xff7a7a)
+                this.playerVitals.decreaseEnergy(this.baseCost * this.action2CostModifier)
+                this.playerVitals.decreaseLife((this.baseCost * this.baseEmergencyEnergyCostPercent) * this.action2CostModifier)
+            }
+        }
+
+        if (s1IsDown){
+            if(this.actionPower > 0 ){
+                this.playerVitals.decreaseFocus(this.baseCost * this.skill1CostModifier)
+            } else {
+                this.player.setTint(0xff7a7a)
+                this.playerVitals.decreaseFocus(this.baseCost * this.skill1CostModifier)
+                this.playerVitals.decreaseLife((this.baseCost * this.baseEmergencyEnergyCostPercent) * this.skill1CostModifier)
+            }
+            
+        }
+
+        if (s2IsDown){
+
+
+            if(this.actionPower > 0 ){
+                this.playerVitals.decreaseFocus(this.baseCost * this.skill2CostModifier)
+            } else {
+                this.player.setTint(0xff7a7a)
+                this.playerVitals.decreaseFocus(this.baseCost * this.skill2CostModifier)
+                this.playerVitals.decreaseLife((this.baseCost * this.baseEmergencyEnergyCostPercent) * this.skill2CostModifier)
+            }
+        }
+
+        if(upIsDown){
+
+
+            if(this.actionPower > 0 ){
+                this.playerVitals.decreaseEnergy(this.baseCost * this.moveUpCostModifier)
+            } else {
+                this.playerVitals.decreaseEnergy(this.baseCost * this.moveUpCostModifier)
+                this.playerVitals.decreaseLife((this.baseCost * this.baseEmergencyEnergyCostPercent) * this.moveUpCostModifier)
+            }
+        }
+        
+        if(downIsDown){
+
+            if(this.actionPower > 0 ){
+                this.playerVitals.decreaseEnergy(this.baseCost * this.moveDownCostModifier)
+            } else {
+                this.playerVitals.decreaseEnergy(this.baseCost * this.moveDownCostModifier)
+                this.playerVitals.decreaseLife((this.baseCost * this.baseEmergencyEnergyCostPercent) * this.moveDownCostModifier)
+            }
+        }
+        
+        if(leftIsDown){
+
+
+            if(this.actionPower > 0 ){
+                this.playerVitals.decreaseEnergy(this.baseCost * this.moveLeftCostModifier)
+            } else {
+                this.playerVitals.decreaseEnergy(this.baseCost * this.moveLeftCostModifier)
+                this.playerVitals.decreaseLife((this.baseCost * this.baseEmergencyEnergyCostPercent) * this.moveLeftCostModifier)
+            }
+        }
+
+        if(rightIsDown){
+            
+
+            if(this.actionPower > 0 ){
+                this.playerVitals.decreaseEnergy(this.baseCost * this.moveRightCostModifier)
+            } else {
+                this.playerVitals.decreaseEnergy(this.baseCost * this.moveRightCostModifier)
+                this.playerVitals.decreaseLife((this.baseCost * this.baseEmergencyEnergyCostPercent) * this.moveRightCostModifier)
+            }
+        }
+
+    // Player Sprite 
+        if (this.gameMode == 0){
+
+            
+
+            if(this.playerSpeed > 1){
+                // Lose more acceleration at higher speed - GAMEPLAY WISE, ALLOWS PLAYER TO BUILD SPEED EASIER, FUNNELS PLAYER TO MAXIMISE REGEN 
+                    //this.playerSpeed -= 0.0075 * (this.playerSpeed / 2) 
+                // Lose more acceleration at lower speed - NEXT FAV, MOST RELAISTIC PHYSICS WISE (MOMENTUM), PROVIDES REWARD FOR ACHIEVING HIGHER SPEED (LESS INVOVLED AS REWARD), FUNNELS PLAYER TO MAXIMISE MAX ENERGY
+                    //this.playerSpeed -= 0.0075 * (1 / this.playerSpeed) 
+                // Lose more acceleration at lower energy (100 - 50 %) - FUNNLES PLAYER TO BOTH REGEN & MAX ENERGY
+                    this.playerSpeed -= 0.004 + (0.004 * (1 - this.actionPower)) 
+            } else if (this.playerSpeed < 1 ){
+                this.playerSpeed += 0.005 + (0.005 * this.actionPower)
+            }
+
+            // A1 Button
+                // Sprint
+                if (a1IsDown){
+        
+                    // Animation
+
+                        // Ground / Air
+                            // this.pattern = new RegExp('RUN*')
+                            // this.patternMatch = this.pattern.test(this.player.anims.getFrameName())
+                            // if (this.patternMatch){
+                            //     this.player.play({key:this.player.anims.getName(),frameRate: this.baseRunFrameRate + (6 * Math.abs(this.playerSpeed))},true)
+                            // } else {
+                            //     this.player.play(this.player.anims.getName())
+                            // }
+
+                    // Positioning
+
+                    // Other
+
+                 
+                        // Ground
+                        if (this.player.body.onFloor()){
+                            if(this.playerSpeed < 2){
+                                this.playerSpeed += 0.0125  + (0.0125 * this.actionPower)
+                            }
+                        } 
+                        // Air
+                        else  {
+                            if(this.playerSpeed < 2){
+                                this.playerSpeed += 0.0075  + (0.0075 * this.actionPower)
+                            }
+                        }
+
+
+
+                } 
+            // A2 Button 
+                // Slow
+                if (a2IsDown){
+                    // Animation
+
+                        // Ground / Air
+                            this.player.play({key:'player_Avatar_3_EVADE',frameRate: 3, startFrame: 5},true)
+
+
+                    // Positioning
+
+                    // Other
+
+                        // Ground
+                        if (this.player.body.onFloor()){
+                            if(this.playerSpeed > 0.5){
+                                this.playerSpeed -= 0.0125  + (0.0125 * this.actionPower)
+                            }
+                        } 
+                        // Air
+                        else  {
+                            if(this.playerSpeed > 0.5){
+                                this.playerSpeed -= 0.0075  + (0.0075 * this.actionPower)
+                            }
+                        }
+
+                }
+            // Up Button 
+                // Jump
+                if (upIsDown){
+
+                    // Animation
+
+                        this.player.play({key:'player_Avatar_3_JUMP',frameRate: 10},true)
+                        
+                    // Positioning 
+                    
+                        
+                        // Ground
+                            if (this.player.body.onFloor()){ 
+                                this.player.x += ((screenWidth * 0.0025) * this.actionPower) * this.movementMod 
+                                this.player.setVelocityY(-1000 - 500 * this.actionPower)
+
+                            } 
+                        // Air
+                            else  {
+                                this.player.x += ((screenWidth * 0.00125) * this.actionPower) * this.movementMod
+                                this.player.setVelocityY(this.player.body.velocity.y - (35  * this.actionPower * this.movementMod))
+                        
+                            }
+        
+                } 
+            // Down Button
+                // Slide
+                if (downIsDown){
+                    // Animation
+                        // Ground
+                        if (this.player.body.onFloor()){
+                            this.player.play({key:'player_Avatar_3_SLIDE',frameRate: 8},true)
+                        } 
+                        // Air
+                        else {
+                            this.player.play({key:'player_Avatar_3_FALL',frameRate: 10},true)    
+                        }
+                    // Positioning
+        
+                        // Ground
+                            if (this.player.body.onFloor()){
+                                // Forward motion when sliding (toggle and test feel)
+                                this.player.x += ((screenWidth * 0.00125) * this.actionPower) * this.movementMod
+                            } 
+                        // Air
+                            else {
+                                // Downward motion when in air (toggle and test feel)
+                                this.player.y += ((screenHeight * 0.015) * this.actionPower) * this.movementMod
+                            } 
+                }
+            // Left Button
+                // Move Left
+                if (leftIsDown){
+                    // Animation
+        
+                    // Positioning
+
+                        // Ground
+                        if (this.player.body.onFloor()){
+                            this.player.x -= ((screenWidth * 0.003) + (screenWidth * 0.006 * this.actionPower)) * this.movementMod
+                        } 
+                        // Air
+                        else {
+                            this.player.x -= ((screenWidth * 0.0015) + (screenWidth * 0.003 * this.actionPower)) * this.movementMod
+                        }
+                } 
+            // Right Button
+                // Move Right
+                if (rightIsDown){   
+                    // Animation
+        
+                    // Positioning
+                    
+                    // Ground
+                        if (this.player.body.onFloor()){
+                            this.player.x += ((screenWidth * 0.003) + (screenWidth * 0.006 * this.actionPower)) * this.movementMod
+                        } 
+                    // Air
+                        else {
+                            this.player.x += ((screenWidth * 0.0015) + (screenWidth * 0.003 * this.actionPower)) * this.movementMod
+                        }
+                }
+            // Neutral
+                // No A2, Up or Down
+                if (!this.playerIsHit && !a2IsDown && !upIsDown && !downIsDown){
+                    // Animation
+
+                        // Variables
+
+                        // Level 1
+                        if(this.speedLevel == 1){
+                            this.baseRunFrameRate = 4
+                        } else
+                        // Level 2
+                        if(this.speedLevel == 2){
+                            this.baseRunFrameRate = 6
+                        } else
+                        // Level 3
+                        if(this.speedLevel == 3){
+                            this.baseRunFrameRate = 8
+                        } else
+                        // Level 4
+                        if(this.speedLevel == 4){
+                            this.baseRunFrameRate = 10
+                        }
+
+                        // Ground / Air 
+
+                        this.player.flipX = false
+
+                        // Ground
+                        if (this.player.body.onFloor()){
+                            this.player.play({key:'player_Avatar_3_RUN',frameRate: this.baseRunFrameRate + (6 * Math.abs(this.playerSpeed))},true)
+                        } 
+                        // Air
+                        else {
+                            this.player.play({key:'player_Avatar_3_FALL',frameRate: 10},true)
+                        }
+                    
+                }
+
+        } else if (this.gameMode == 1) {
+
+            // Auto lock - 
+                //Enables Player to automatically face closest enemy
+                if(Math.abs(this.player.x - this.closestEnemy.x) <= screenWidth * 0.25){
+                    this.playerLockedOn = true
+                    // Should carve out (w/ rotation) to seperate function, driven by playerLockedOn
+                    if (!leftIsDown && !rightIsDown){
+                        if(this.player.x < this.closestEnemy.x){
+                        
+                            this.player.flipX = false
+                            
+                        } else {
+                            this.player.flipX = true
+                            
+                        }
+                    }
+                    //Enables Player to automatically rotate to closest enemy
+                    if (!this.player.body.onFloor() && !upIsDown && !downIsDown){
+                        if (this.player.flipX){
+                            this.player.setRotation(-Phaser.Math.Angle.Between(this.player.x,this.player.y,this.closestEnemy.x,this.closestEnemy.y) / 4)
+                        } else {
+                            this.player.setRotation(Phaser.Math.Angle.Between(this.player.x,this.player.y,this.closestEnemy.x,this.closestEnemy.y) / 4 )
+                        }
+                    }
+
+                } else {
+                    this.playerLockedOn = false
+                }
+
+            // Set Player default angle 
+            if (this.player.body.onFloor() || !this.playerLockedOn){
+                this.player.setAngle(0)
+            }
+            
+
+            // Enable player sword collision detection
+                if (this.player.anims.getName() == 'player_Avatar_3_ACTION_1'){
+                    // playerSwordSwing.play()
+                    
+                    
+
+                    if (this.player.anims.currentFrame.index >= 6 && this.player.anims.currentFrame.index < 12){
+                        
+                        this.playerAttackHitBox.body.checkCollision.none = false
+                        
+                    } else {
+                        this.playerAttackHitBox.body.checkCollision.none = true
+                    }
+
+                } else if (this.player.anims.getName() == 'player_Avatar_3_ACTION_2'){
+                    // playerSwordSwing.play()
+
+                    if (this.player.anims.currentFrame.index >= 4 && this.player.anims.currentFrame.index < 6 
+                        || this.player.anims.currentFrame.index >= 12 && this.player.anims.currentFrame.index < 14 ){
+                        
+                        this.playerAttackHitBox.body.checkCollision.none = false
+                        
+                    } else {
+                        this.playerAttackHitBox.body.checkCollision.none = true
+                    }
+
+                } else if (this.player.anims.getName() == 'player_Avatar_3_ACTION_3'){
+                    // playerSwordSwing.play()
+                    
+                    if (this.player.anims.currentFrame.index >= 3 && this.player.anims.currentFrame.index < 5){
+                        
+                        this.playerAttackHitBox.body.checkCollision.none = false
+                        
+                    } else {
+                        this.playerAttackHitBox.body.checkCollision.none = true
+                    }
+
+                }
+
+            // A1 Button
+                // Attack
+                if (a1IsDown){
+        
+                    // Animation
+
+                        // Ground / Air
+
+                        if (leftIsDown){
+                            this.player.flipX = true
+                        } else if (rightIsDown){
+                            this.player.flipX = false
+                        }
+
+
+                        if (!this.player.body.onFloor()){
+                            if (upIsDown){
+                                if (this.player.flipX){
+                                    this.player.setAngle(45)
+                                } else {
+                                    this.player.setAngle(-45)
+                                }
+                            } else if (downIsDown){
+                                if (this.player.flipX){
+                                    this.player.setAngle(-45)
+                                } else {
+                                    this.player.setAngle(45)
+                                }
+                            } else if (this.playerLockedOn){
+                            if (this.player.flipX){
+                                this.player.setRotation(-Phaser.Math.Angle.Between(this.player.x,this.player.y,this.closestEnemy.x,this.closestEnemy.y) /2)
+                            } else {
+                                this.player.setRotation(Phaser.Math.Angle.Between(this.player.x,this.player.y,this.closestEnemy.x,this.closestEnemy.y) /2 )
+                            }
+                            }
+                        } 
+                        
+                        
+                    //}
+                            
+                    
+
+                        // Ground 
+                        if (this.player.body.onFloor()){
+                        if (upIsDown){
+                            this.player.play({key:'player_Avatar_3_ACTION_3',frameRate: (
+                                                                                        (this.baseUpAttackSpeed * this.baseActionSpeedPercent)
+                                                                                        + 
+                                                                                        ((this.baseUpAttackSpeed * (1-this.baseActionSpeedPercent)) * Math.abs(this.actionPower))
+                                                                                        )
+                                                                                        },true)
+                        } else
+                        if (leftIsDown || rightIsDown){
+                            this.player.play({key:'player_Avatar_3_ACTION_2',frameRate: (
+                                                                                        (this.baseSideAttackSpeed * this.baseActionSpeedPercent)
+                                                                                        + 
+                                                                                        ((this.baseSideAttackSpeed * (1-this.baseActionSpeedPercent)) * Math.abs(this.actionPower))
+                                                                                        )
+                                                                                        },true)
+                        } else {
+                            this.player.play({key:'player_Avatar_3_ACTION_1',frameRate: (
+                                                                                        (this.baseAttackSpeed * this.baseActionSpeedPercent)
+                                                                                        + 
+                                                                                        ((this.baseAttackSpeed * (1-this.baseActionSpeedPercent)) * Math.abs(this.actionPower))
+                                                                                        )
+                                                                                        },true)
+                        }
+                    } else {
+                        this.player.play({key:'player_Avatar_3_ACTION_1',frameRate: (
+                            (this.baseAttackSpeed * this.baseActionSpeedPercent)
+                            + 
+                            ((this.baseAttackSpeed * (1-this.baseActionSpeedPercent)) * Math.abs(this.actionPower))
+                            )
+                            },true)
+                    }
+                    
+
+                    // Positioning
+
+                        // Ground / Air
+
+                            // Snap to Locked on Enemy
+
+                                if (this.playerLockedOn){
+                                    if(Math.abs(this.player.x - this.closestEnemy.x) <= screenWidth * 0.025 && Math.abs(this.player.x - this.closestEnemy.x) >= screenWidth * 0.001 ){
+                                        if (this.closestEnemy.x > this.player.x){
+                                            this.player.x = this.closestEnemy.x - (screenWidth * 0.0075)
+                                        } else {
+                                            this.player.x = this.closestEnemy.x + (screenWidth * 0.0075)
+                                        }
+                                    
+                                    }
+                                }
+
+                            
+
+                        // Ground 
+
+                            if (this.player.body.onFloor()){ 
+                                // Move Forwards with Swings
+                                if (this.player.anims.getName() == 'player_Avatar_3_ACTION_1'){
+                                    
+
+                                    if (this.player.anims.currentFrame.index >= 6 && this.player.anims.currentFrame.index < 12){
+                                        if (this.player.flipX){
+                                            this.player.x -= (screenWidth * 0.001) * this.movementMod
+                                        } else {
+                                            this.player.x += (screenWidth * 0.001) * this.movementMod
+                                        }  
+                                    } 
+
+                                } else if (this.player.anims.getName() == 'player_Avatar_3_ACTION_2'){
+                                    
+
+                                    if (this.player.anims.currentFrame.index >= 4 && this.player.anims.currentFrame.index < 6 
+                                        || this.player.anims.currentFrame.index >= 12 && this.player.anims.currentFrame.index < 14 ){
+                                        
+                                            if (this.player.flipX){
+                                                this.player.x -= (screenWidth * 0.004) * this.movementMod
+                                            } else {
+                                                this.player.x += (screenWidth * 0.004) * this.movementMod
+                                            }  
+                                    } 
+
+                                } else if (this.player.anims.getName() == 'player_Avatar_3_ACTION_3'){
+                                    
+                                    
+                                    if (this.player.anims.currentFrame.index >= 3 && this.player.anims.currentFrame.index < 5){
+                                        
+                                        if (this.player.flipX){
+                                            this.player.x -= (screenWidth * 0.0005) * this.movementMod
+                                        } else {
+                                            this.player.x += (screenWidth * 0.0005) * this.movementMod
+                                        }  
+                                        
+                                    } 
+
+                                }
+                            } 
+                        // Air
+                            else  {
+                                if (upIsDown){
+                                    if (this.player.body.velocity.y > 0 && this.floor.y - this.player.y > screenHeight * this.baseMinHangHeight ){
+                                        this.player.setVelocityY(this.player.body.velocity.y * 0.125)
+                                    }
+                                } else if (this.player.body.velocity.y > 0 && this.floor.y - this.player.y > screenHeight * this.baseMinHangHeight) {
+                                    this.player.setVelocityY(this.player.body.velocity.y * 0.25)
+                                }
+
+                                // Move Forwards with Swings
+                                if (this.player.anims.getName() == 'player_Avatar_3_ACTION_1'){
+                                    
+
+                                    if (this.player.anims.currentFrame.index >= 6 && this.player.anims.currentFrame.index < 12){
+                                        if (this.player.flipX){
+                                            this.player.x -= (screenWidth * 0.0005) * this.movementMod
+                                        } else {
+                                            this.player.x += (screenWidth * 0.0005) * this.movementMod
+                                        }  
+                                    } 
+
+                                } 
+                                
+                            }   
+
+                    // Other
+
+                        // Ground
+                    
+                        // Air
+                        
+
+                } else
+            // A2 Button 
+                // Defend
+                if (a2IsDown){
+                    // Animation
+
+                        // Ground / Air
+                            
+                            if(leftIsDown || rightIsDown){
+                                
+
+                                if (leftIsDown){
+                                    this.player.flipX = true
+                                } else if (rightIsDown) {
+                                    this.player.flipX = false
+                                }
+                                
+                                
+                                this.player.play({key:'player_Avatar_3_EVADE',frameRate: 12 + (8 * Math.abs(this.actionPower))},true)
+
+                                this.player.once('animationcomplete', function (anim,frame) {
+                                    this.player.emit('animationcomplete_' + anim.key, frame)
+                                }, this)
+                                
+                                this.player.once('animationcomplete_player_Avatar_3_EVADE', function(){
+                                    leftIsDown = false
+                                    rightIsDown = false
+                                    this.player.play({key:'player_Avatar_3_BLOCK',frameRate: 8 + (8 * Math.abs(this.actionPower))},true)
+                                
+                                },this)
+                                
+                            } else 
+                            if(!this.a2Held){
+                                this.player.play({key:'player_Avatar_3_BLOCK',frameRate: 8 + (8 * Math.abs(this.actionPower))},true)
+                                this.a2Held = true
+                            }
+
+
+                    // Positioning
+
+                            // Ground
+                            if (this.player.body.onFloor()){
+
+                                if (leftIsDown){
+                                    if (this.playerBattleSpeed > 0){
+                                        this.playerBattleSpeed -= 0.015 + 0.12 * this.actionPower
+                                    }
+            
+                                    if (this.playerBattleSpeed > -0.5){
+                                        this.playerBattleSpeed -= 0.0075 + 0.06 * this.actionPower
+                                    }
+            
+                                    //this.player.x -= (((screenWidth * 0.007) + ((screenWidth * 0.003) * this.actionPower))) * this.movementMod
+                                    this.player.x -= ((screenWidth * (this.baseDashDistance * this.baseDashDistancePercent)) + 
+                                                        ((screenWidth * (this.baseDashDistance * (1-this.baseDashDistancePercent))) * this.actionPower)) * this.movementMod
+                                    
+                                } else if (rightIsDown){
+                                    if (this.playerBattleSpeed < 0){
+                                        this.playerBattleSpeed += 0.015 + 0.12 * this.actionPower
+                                    }
+            
+                                    if (this.playerBattleSpeed < 0.5){
+                                        this.playerBattleSpeed += 0.0075 + 0.06 * this.actionPower
+                                        
+                                    }
+            
+                                    //this.player.x += (((screenWidth * 0.007) + ((screenWidth * 0.003) * this.actionPower))) * this.movementMod
+                                    this.player.x += ((screenWidth * (this.baseDashDistance * this.baseDashDistancePercent)) + 
+                                                        ((screenWidth * (this.baseDashDistance * (1-this.baseDashDistancePercent))) * this.actionPower)) * this.movementMod
+                                } else {
+                                    if(this.playerBattleSpeed > 0.5){
+                                        this.playerBattleSpeed -= 0.0125  + (0.0125 * this.actionPower)
+                                    } else if (this.playerBattleSpeed < -0.5){
+                                        this.playerBattleSpeed += 0.0125  + (0.0125 * this.actionPower)
+                                    }
+                                }
+                            }    
+                            // Air
+                            else {
+            
+                                if (leftIsDown){
+            
+                                    if (this.playerBattleSpeed > 0){
+                                        this.playerBattleSpeed -= 0.0075 + 0.6 * this.actionPower
+                                    }
+            
+                                    if (this.playerBattleSpeed > -0.5){
+                                        this.playerBattleSpeed -= 0.00375 + 0.03 * this.actionPower
+                                    }
+            
+                                    this.player.x -= (((screenWidth * 0.002) + ((screenWidth * 0.006) * this.actionPower))) * this.movementMod
+                                } else if (rightIsDown){
+            
+                                    if (this.playerBattleSpeed < 0){
+                                        this.playerBattleSpeed += 0.0075 + 0.06 * this.actionPower
+                                    }
+            
+                                    if (this.playerBattleSpeed < 0.5){
+                                        this.playerBattleSpeed += 0.00375 + 0.03 * this.actionPower
+                                        
+                                    }
+                                    this.player.x += (((screenWidth * 0.002) + ((screenWidth * 0.006) * this.actionPower))) * this.movementMod
+                                } else {
+                                    if(this.playerBattleSpeed > 0.5){
+                                        this.playerBattleSpeed -= 0.0125  + (0.0125 * this.actionPower)
+                                    } else if (this.playerBattleSpeed < -0.5){
+                                        this.playerBattleSpeed += 0.0125  + (0.0125 * this.actionPower)
+                                    }
+                                }
+                            }
+                            
+                        
+
+                } else {
+    
+                // Up Button 
+                // Jump
+                    if (upIsDown){
+
+                        // Animation
+
+                            // Ground / Air
+
+                            if (this.player.body.onFloor()){
+
+                                this.player.play({key:'player_Avatar_3_CROUCH',frameRate: 20 + (8 * Math.abs(this.actionPower))},true)
+                        
+                                    this.player.once('animationcomplete', function (anim,frame) {
+                                        this.player.emit('animationcomplete_' + anim.key, frame)
+                                },this)
+
+                            } else {
+                                this.player.play({key:'player_Avatar_3_JUMP',frameRate: 10},true)
+                            }
+                            
+                        // Positioning 
+                        
+                            // Ground / Air
+
+                                // Forward motion when jumping (toggle and test feel)
+                                if(this.player.flipX){
+                                    this.player.x -= ((screenWidth * 0.0025) * -this.playerBattleSpeed) * this.movementMod
+                                } else {
+                                    this.player.x += ((screenWidth * 0.0025) * this.playerBattleSpeed) * this.movementMod
+                                }
+            
+                            // Ground
+                                if (this.player.body.onFloor()){
+
+                                    this.player.once('animationcomplete_player_Avatar_3_CROUCH', function (){
+                                        this.player.setVelocityY(
+                                                                (-this.baseJumpHeight * this.baseJumpHeightPercent) 
+                                                                - 
+                                                                ((this.baseJumpHeight * (1-this.baseJumpHeightPercent)) * this.actionPower)
+                                                                )
+                                       
+                                    },this)
+                                } 
+                            // Air
+                                else  {                     
+                                   
+                                    if (this.player.body.velocity.y > 0 && this.floor.y - this.player.y > screenHeight * this.baseMinHangHeight ){
+                                    this.player.setVelocityY(this.player.body.velocity.y * (1 - (this.baseHangTime * this.actionPower)))
+                                    }
+
+                                }
+
+                    }
+                // Down Button
+                    // Slide
+                    if (downIsDown){
+                        // Animation
+                            // Ground
+                            if (this.player.body.onFloor()){
+                                if(!this.downHeld){
+                                    this.player.play({key:'player_Avatar_3_CROUCH',frameRate: 10},true)
+                                    this.downHeld = true
+                                }
+                            }
+                            // Air
+                            else {
+                                this.player.play({key:'player_Avatar_3_FALL',frameRate: 10},true)
+                            }
+                        // Positioning
+
+                            // Ground
+                            if (this.player.body.onFloor()){
+                                
+                            } 
+                            // Air
+                            else {
+                                // Downward motion when in air (toggle and test feel)
+                                this.player.y += ((screenHeight * 0.015) * this.actionPower) * this.movementMod
+                            } 
+    
+                    }
+                // Left Button
+                    // Move Left
+                    if (leftIsDown){
+                        // Animation
+
+                        this.player.flipX = true
+                        // Ground
+                        if (this.player.body.onFloor() && !upIsDown && !downIsDown){
+                            if (this.playerBattleSpeed > 0.01){
+                                this.player.play({key:'player_Avatar_3_EVADE',frameRate: 2,startFrame:5},true)
+                            }  else {
+                                this.player.play({key:'player_Avatar_3_RUN',frameRate: 8 + (4 * Math.abs(this.playerBattleSpeed))},true)
+                            }
+
+                        }
+                        // Air 
+                        else {
+
+                        }
+
+                        // Positioning
+                            // Ground
+                                if (this.player.body.onFloor() && !upIsDown && !downIsDown){
+                                    if (this.playerBattleSpeed > 0){
+                                        this.playerBattleSpeed -= 0.08 + 0.08 * this.actionPower
+                                    } else
+
+                                    if (this.playerBattleSpeed > -1.5){
+                                        this.playerBattleSpeed -= 0.04 + 0.04 * this.actionPower
+                                    }
+
+                                    this.player.x -= ((screenWidth * (this.baseTopSpeed * this.baseTopSpeedPercent)) + 
+                                                    (screenWidth * (this.baseTopSpeed * (1- this.baseTopSpeedPercent)) * this.actionPower)) 
+                                                    * -this.playerBattleSpeed
+                                                    * 
+                                                    this.movementMod
+
+                                    
+                                } 
+                            // Air
+                                else {
+                            
+                                 
+                                    this.player.x -= ((screenWidth * 0.0025) + (screenWidth * 0.0025 * -this.playerBattleSpeed))
+                                
+                                                    // ((screenWidth * (this.baseTopSpeed * this.baseTopSpeedPercent)) + 
+                                                    // (screenWidth * (this.baseTopSpeed * (1- this.baseTopSpeedPercent)) * this.actionPower)) 
+                                                    // * this.playerBattleSpeed
+                                                    * 
+                                                    this.movementMod
+            
+                
+                                }  
+                        
+                    } 
+                // Right Button
+                    // Move Right
+                    if (rightIsDown){   
+                        // Animation
+
+                            this.player.flipX = false
+
+                            // Ground
+                            if (this.player.body.onFloor() && !upIsDown && !downIsDown){
+                                if (this.playerBattleSpeed < 0.01){
+                                    this.player.play({key:'player_Avatar_3_EVADE',frameRate: 2,startFrame:5},true)
+                                }  else {
+                                    this.player.play({key:'player_Avatar_3_RUN',frameRate: 8 + (4 * Math.abs(this.playerBattleSpeed))},true)
+                                }
+
+                            } 
+                            // Air
+                            else {
+
+                            }
+
+                        // Positioning
+                        
+                        // Ground
+                            if (this.player.body.onFloor() && !upIsDown && !downIsDown){
+
+                                
+                                if (this.playerBattleSpeed < 0){
+                                    this.playerBattleSpeed += 0.08 + 0.08 * this.actionPower
+                                } else 
+
+                                if (this.playerBattleSpeed < 1.5){
+                                    this.playerBattleSpeed += 0.04 + 0.04 * this.actionPower
+                                }
+                            
+
+                                this.player.x += ((screenWidth * (this.baseTopSpeed * this.baseTopSpeedPercent)) + 
+                                                (screenWidth * (this.baseTopSpeed * (1- this.baseTopSpeedPercent)) * this.actionPower)) 
+                                                * this.playerBattleSpeed
+                                                * 
+                                                this.movementMod
+                            } 
+                        // In Air
+                            else if (!this.player.body.onFloor()){
+                                
+
+                            
+                                this.player.x += ((screenWidth * 0.0025) + (screenWidth * 0.0025 * this.playerBattleSpeed))
+                                
+                                                // ((screenWidth * (this.baseTopSpeed * this.baseTopSpeedPercent)) + 
+                                                // (screenWidth * (this.baseTopSpeed * (1- this.baseTopSpeedPercent)) * this.actionPower)) 
+                                                // * this.playerBattleSpeed
+                                                * 
+                                                this.movementMod
+
+                            }
+                            
+                    }
+                // Neutral 
+                    
+                    if (!this.enterBattleAnimation && !upIsDown && !downIsDown && !leftIsDown && !rightIsDown){
+                        if(this.player.body.onFloor()){
+
+                            if (Math.abs(this.playerBattleSpeed) > 1){
+                                this.player.play({key:'player_Avatar_3_SLIDE',frameRate: 10},true) 
+                            } else {
+                                this.player.play({key:'player_Avatar_3_IDLE',frameRate: 8 + (4 * (1 - Math.abs(this.actionPower)))},true)
+                            }
+                        } else {
+                            this.player.play({key:'player_Avatar_3_FALL',frameRate: 10},true)
+                        }
+                    }
+                
+            }
+
+            if (!a2IsDown){
+                this.a2Held = false
+            }
+
+            if (!downIsDown){
+                this.downHeld = false
+            }
+
+            if (!leftIsDown && !rightIsDown && Math.abs(this.playerBattleSpeed) < 0.05 ){
+                this.playerBattleSpeed = 0
+            }
+
+            if (a1IsDown || a2IsDown || downIsDown || upIsDown || (!leftIsDown && !rightIsDown)){
+
+
+                if (this.player.body.onFloor()){
+                    this.playerBattleSpeedDecelerationStandard = 0.05
+                    this.playerBattleSpeedDecelerationSprint = 0.025
+                } else {
+                    this.playerBattleSpeedDecelerationStandard = 0.025
+                    this.playerBattleSpeedDecelerationSprint = 0.0125
+                }
+                
+
+                if (this.playerBattleSpeed < 0){
+                    if (this.playerBattleSpeed < -1){
+                        this.playerBattleSpeed += this.playerBattleSpeedDecelerationSprint
+                    } else {
+                        this.playerBattleSpeed += this.playerBattleSpeedDecelerationStandard
+                    }
+                } else if (this.playerBattleSpeed > 0) {
+                    if (this.playerBattleSpeed > 1){
+                        this.playerBattleSpeed -= this.playerBattleSpeedDecelerationSprint
+                    } else {
+                        this.playerBattleSpeed -= this.playerBattleSpeedDecelerationStandard
+                    }
+                }
+                
+            }
+
+            this.player.x += ((screenWidth * 0.00075) * this.playerBattleSpeed) * this.movementMod
+
+            
+                
+        }
+    
+    
+}
+
+enterBattle(){
+    if(this.gameMode == 0){
+
+     if(this.playerSpeed < 0.25){   
+    this.playerSpeed = 0
+    this.playerBattleSpeed = 0
+
+    this.camera.flash()
+    this.gameMode = 1
+    this.enterBattleAnimation = true
+
+    this.enemyGroup.children.each(function(e) {
+        if(e.speedMod == 2){
+            e.play('nightBorne_Idle')
+        } 
+
+    }.bind(this));
+
+    
+    // Pan here has fluid effect of transition into action, carries momentum, but less clear entrance to Battle Phase
+    //this.camera.pan(this.player.x,null,1000,'Power2')
+    playerInputActive = false
+    this.player.play({key:'player_Avatar_3_SLIDE',frameRate: 10},true)
+    //this.player.setVelocityX(100)
+    this.player.once('animationcomplete', function (){
+        //this.player.setVelocityX(0)
+        //this.enemyGroup.setVelocityX(0)
+        this.enterBattleAnimation = false
+        // Pan here has effect of whipping to action and clear entrance to Battle Phase
+        //this.camera.pan(player.x,null,1000,'Power2')
+        //this.camera.on('camerapancomplete', function () {
+            this.battleCameraActive = true
+            playerInputActive = true
+            // Disabled and replaced via camera module due to zoom set up
+            //this.camera.startFollow(this.player,true,0.5,0.5)
+            
+            
+            
+       // },this)
+        
+    },this)
+    this.physics.world.setBounds(screenWidth, 0, screenWidth * 2,  screenHeight)
+    } else {
+        this.playerSpeed -= 0.08 
+        this.playerVitals.decreaseLife(0.5)
+        this.playerIsHit = true
+        this.player.flipX = true
+        this.player.play({key:'player_Avatar_3_TAKE_HIT',frameRate: 10 * this.playerSpeed},true)
+        this.player.once('animationcomplete', function (){
+            this.playerIsHit = false
+        },this)
+    }
+} 
+}
+
+exitBattle(game){
+    game.gameMode = 0
+    game.playerBattleSpeed = 0
+    game.playerSpeed = 0
+    game.camera.stopFollow()
+    
+    game.physics.world.setBounds(game.camera.worldView.x,game.camera.worldView.y,screenWidth,screenHeight)
+}
+
+    update (time,delta)
+    {
+
+        // V1 Code
 
         // UI Module
         this.uiModule()            
@@ -3839,32 +3051,30 @@ class Badlands extends Phaser.Scene {
         this.playerModule()
 
         // Environment
-        // Add to BG function (maybe combine with BG objects? and terrain?)
-        if (this.gameMode == 0){
-            for (var i = 1; i < this.bgLayers + 1 ; i++){
-                window['bgL'+i].tilePositionX += (this.baseSpeed* this.playerSpeed)  * window['bgL'+ i + 'ScrollMod'] * (scaleModX / (screenWidth / this.textures.get('bgL' + i).getSourceImage().width))
-            }
-
-            for (var i = 1; i < this.fgLayers + 1 ; i++){
-                window['fgL'+i].tilePositionX += (this.baseSpeed  * this.playerSpeed)  * window['fgL'+ i + 'ScrollMod'] * (scaleModX / (screenWidth / this.textures.get('fgL' + i).getSourceImage().width))
-            }
-        } else {
-
-                for (var i = 1; i < this.bgLayers + 1 ; i++){
-                    window['bgL'+i].tilePositionX = this.camera.scrollX * window['bgL'+ i + 'ScrollMod'] * (scaleModX / (screenWidth / this.textures.get('bgL' + i).getSourceImage().width)) 
-                }
-
-                for (var i = 1; i < this.fgLayers + 1 ; i++){
-                    window['fgL'+i].tilePositionX = this.camera.scrollX * window['bgL'+ i + 'ScrollMod'] * (scaleModX / (screenWidth / this.textures.get('bgL' + i).getSourceImage().width)) 
-                }
- 
-        }
+        this.environmentModule()
+        
         this.platforms(this)
 
         // Enemies
         this.enemies(this)
 
-        // End of Test Code
+        // Stage
+        this.stageModule()
+
+        // Regen
+        this.regenMod = 1
+        if (regenActive){
+            if(this.skillPower < 1){
+                this.playerVitals.decreaseFocus(-0.5 * this.regenMod)  
+            }
+            
+            if(this.actionPower < 1){
+                this.playerVitals.decreaseEnergy(-1 * this.regenMod)    
+            }
+   
+        }
+
+        // End of V1 Code
 
 
             // NightBorne outline copies current playing animation of  sprite, with optional delay
@@ -3889,68 +3099,6 @@ class Badlands extends Phaser.Scene {
         // General / Universal
 
             // UI 
-
-                // if(this.camera.zoom != 1){
-                //     //hideHUD()
-                // } else if (!skillTreeOpen) {
-                //     //showHUD()
-                // }
-
-                // playerIconBox.x = this.camera.scrollX + (screenWidth * 0.075)
-                // playerIconBox.y = this.camera.scrollY +  (screenHeight * 0.15 )
-
-                // playerIcon.x = playerIconBox.x
-                // playerIcon.y = playerIconBox.y
-
-                // playerVitalsBox.x = playerIconBox.x + (125 * (scaleModX))
-                // playerVitalsBox.y = playerIcon.y
-
-                // this.playerVitals.x = playerIconBox.x + (242.5 * (scaleModX))
-                // this.playerVitals.y = playerIconBox.y - (75 * (scaleModX))
-                // this.playerVitals.draw()
-
-                // playerVitalsTextL.x = this.playerVitals.x - (50 * (scaleModX))
-                // playerVitalsTextL.y = this.playerVitals.y + (17.5 * (scaleModX))
-
-                // playerVitalsTextF.x = this.playerVitals.x - (50 * (scaleModX))
-                // playerVitalsTextF.y = this.playerVitals.y + (47.5 * (scaleModX))
-
-                // playerVitalsTextE.x = this.playerVitals.x - (50 * (scaleModX))
-                // playerVitalsTextE.y = this.playerVitals.y + (72.5 * (scaleModX))
-
-                // levelIcon.x = playerIconBox.x + (185 * (scaleModX))
-                // levelIcon.y = playerIcon.y + (50 * (scaleModX))
-                // levelText.x = levelIcon.x + (55 * (scaleModX))
-                // levelText.y = levelIcon.y
-                // levelText.setText(Math.floor(level))
-
-                // gloryIcon.x = levelIcon.x + (120 * (scaleModX))
-                // gloryIcon.y = levelIcon.y
-                // gloryText.x = gloryIcon.x + (75 * (scaleModX))
-                // gloryText.y = gloryIcon.y
-                // gloryText.setText(Math.floor(glory))
-
-                // goldIcon.x = gloryIcon.x + (150 * (scaleModX))
-                // goldIcon.y = gloryIcon.y
-                // goldText.x = goldIcon.x + (75 * (scaleModX))
-                // goldText.y = goldIcon.y
-                // goldText.setText(Math.floor(gold))
-
-                // levelProgress.x = this.camera.scrollX + (screenWidth * 0.3)
-                // levelProgress.y = (screenHeight * 0.975)
-                // levelProgress.draw()
-
-                // skillABox.x = playerVitalsBox.x + (515 * (scaleModX))
-                // skillABox.y = playerVitalsBox.y + (75 * (scaleModX))
-
-                // skillAIcon.x = skillABox.x
-                // skillAIcon.y = skillABox.y
-
-                // skillBBox.x = skillABox.x + (125 * (scaleModX))
-                // skillBBox.y = skillABox.y
-
-                // skillBIcon.x = skillBBox.x
-                // skillBIcon.y = skillBBox.y
 
                 inspirationPlayerIconBox.x = this.camera.scrollX + (screenWidth * 0.125)
                 inspirationPlayerIcon.x = inspirationPlayerIconBox.x
@@ -4349,33 +3497,6 @@ class Badlands extends Phaser.Scene {
                 }
                 
 
-   
-
-            // Run Mode progression
-
-            if (this.progress >= this.progressToNextLevel){
-            this.glory += ((100 / 60) * 100) * (this.playerSpeed)
-            this.progress = 0
-
-            this.camera.fadeOut(6000)
-
-            this.camera.once('camerafadeoutcomplete',function(){
-                updateHighScore()
-                returnToKianova = true
-                
-            })
-
-            }
-
-            if (returnToKianova){
-                this.scene.start("Kianova")
-            }
-
-            // if (this.progress >= this.progressToNextCheckPoint){
-            //     this.player.flipX = false
-                
-                
-            // }
 
             // Background 
 
@@ -4417,35 +3538,12 @@ class Badlands extends Phaser.Scene {
             //     })
             // }
 
-        
 
-        if (gameRestart){
-            reset()
-            this.scene.restart()
-            gameRestart = false
-            gameOver = false
-        }
 
-        //refreshStats()
-        // Regen
-        this.regenMod = 2
-        if (regenActive){
-            if(this.actionPower < 1){
-                this.playerVitals.decreaseEnergy(-1 * this.regenMod)
-                
-            }
-   
-        }
-
-            if (this.currentLife <= 0 && gameOver == false){
+            if (this.currentLife <= 0){
                     
-                    player.anims.play({key:'player_Avatar_3_DOWNED',frameRate: 12},true); 
-                    gameOver = true
-                    controlsEnabled = false
-                    player.once('animationcomplete', function () {
-                        updateHighScore()
-                        finish(this);
-                    }, this);
+                    this.player.anims.play({key:'player_Avatar_3_DOWNED',frameRate: 12},true); 
+                    
             } 
 
         }

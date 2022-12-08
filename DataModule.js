@@ -8,6 +8,8 @@
     var gamePad
     var gamePadEnabled = false
 
+
+    var playerInputActive = true
     var leftIsDown
     var rightIsDown
     var upIsDown = false

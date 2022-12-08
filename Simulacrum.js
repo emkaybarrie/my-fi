@@ -135,7 +135,7 @@ class Simulacrum extends Phaser.Scene {
             
         }
     }
-    
+
     create(){
 
         // V1 Code
@@ -158,14 +158,14 @@ class Simulacrum extends Phaser.Scene {
                 this.playerBattleSpeed = 0 // Starting Player Battle Speed in Battle Mode  
             }
 
-            this.rewards = 700
+            this.rewards = 0
             this.level = 1
-            this.glory = 2000
-            this.gold = 5000
+            this.glory = 0
+            this.gold = 0
 
             this.progress = 0
-                this.progressToNextLevel = Phaser.Math.Between(375,425)
-                this.progressToNextCheckPoint = this.progressToNextLevel * 0.25
+            this.progressToNextLevel = Phaser.Math.Between(375,425)
+            this.progressToNextCheckPoint = this.progressToNextLevel * 0.25
 
             // World Initialisation
             
@@ -179,6 +179,11 @@ class Simulacrum extends Phaser.Scene {
                 this.camera.setBounds(screenWidth,0,screenWidth * 2,screenHeight)
                 this.camera.centerOnX(screenWidth * 2)
                 this.camera.fadeIn(2000)
+                this.camera.once('camerafadeincomplete',function(){
+                    this.stageProgressEnabled = true
+                },this)
+
+                //this.stageProgressEnabled = true
 
      
                 // Stage (A) - Base Background, Floor, and Base Foreground
@@ -248,7 +253,7 @@ class Simulacrum extends Phaser.Scene {
                 this.playerIsHit = false
 
                 this.currentEnergy = 100
-                this.maxEnergy = 100
+                this.maxEnergy = 200
 
                 this.currentFocus = 100
                 this.maxFocus = 100
@@ -413,6 +418,79 @@ class Simulacrum extends Phaser.Scene {
         this.playerBattleSpeedText = this.add.text(this.playerSpeedText.x + screenWidth * 0.3, screenHeight * 0.1, this.playerSpeed, { fontFamily: 'Gothic', fontStyle: 'bold' ,align: 'left'});
         this.playerBattleSpeedText.setFontSize(32).setDepth(1).setColor('#803421')
         
+    }
+
+    recordScores(){     
+            this.stageScore = this.level
+            this.gloryScore = this.glory
+            this.rewardsScore = this.rewards
+            this.goldScore = this.gold
+  
+    }
+
+    
+
+    stageModule(){
+        // Stage Progress
+        console.log(this.stageProgressEnabled)
+        if (this.gameMode == 0 && this.stageProgressEnabled){
+            this.stageProgress.increaseProgress((2.5 / 30))
+            // Glory Modifier
+            if (this.player.x > this.camera.scrollX + (screenWidth * 0.6)){
+                this.gloryModifier = 1.25
+            } else if (this.player.x < this.camera.scrollX + (screenWidth * 0.3)){
+                this.gloryModifier = 0.75
+            } else {
+                this.gloryModifier = 1
+            }
+            // Glory Accumulation
+            this.glory += 4/30  * this.playerSpeed * this.gloryModifier
+        }
+
+        // Next Stage
+        if (this.progress >= this.progressToNextLevel){
+            this.progress = 0
+            this.level += 1
+
+            this.progressToNextLevel *= 1.08
+            this.stageProgress.p = (((screenWidth * 0.25)-2) * (scaleModX)) / this.progressToNextLevel
+            this.progressToNextCheckPoint = this.progressToNextLevel * 0.25
+        }
+
+        // Return To Kianova
+        if (this.currentLife <= 0 && this.stageProgressEnabled){
+            this.stageProgressEnabled = false
+
+            this.recordScores()
+            this.camera.fadeOut(6000)
+            this.camera.on('camerafadeoutcomplete', function () {
+                this.scene.run('Kianova',{regionID:this.stageData.regionID,stage:this.stageScore,glory:Math.round(this.gloryScore),rewards:this.rewardsScore,gold:this.goldScore})
+                this.scene.stop('Badlands')
+           },this);
+        }
+   
+    }
+
+    environmentModule(){
+        if (this.gameMode == 0){
+            for (var i = 1; i < this.bgLayers + 1 ; i++){
+                window['bgL'+i].tilePositionX += (this.baseSpeed* this.playerSpeed)  * window['bgL'+ i + 'ScrollMod'] * (scaleModX / (screenWidth / this.textures.get('bgL' + i).getSourceImage().width))
+            }
+
+            for (var i = 1; i < this.fgLayers + 1 ; i++){
+                window['fgL'+i].tilePositionX += (this.baseSpeed  * this.playerSpeed)  * window['fgL'+ i + 'ScrollMod'] * (scaleModX / (screenWidth / this.textures.get('fgL' + i).getSourceImage().width))
+            }
+        } else {
+
+                for (var i = 1; i < this.bgLayers + 1 ; i++){
+                    window['bgL'+i].tilePositionX = this.camera.scrollX * window['bgL'+ i + 'ScrollMod'] * (scaleModX / (screenWidth / this.textures.get('bgL' + i).getSourceImage().width)) 
+                }
+
+                for (var i = 1; i < this.fgLayers + 1 ; i++){
+                    window['fgL'+i].tilePositionX = this.camera.scrollX * window['bgL'+ i + 'ScrollMod'] * (scaleModX / (screenWidth / this.textures.get('bgL' + i).getSourceImage().width)) 
+                }
+ 
+        }
     }
 
     spawnPlatform(){
@@ -694,7 +772,8 @@ class Simulacrum extends Phaser.Scene {
                             this.physics.add.collider(enemy,this.floor); 
                             this.physics.add.collider(enemy,this.platformGroup); 
                             this.enemyGroup.remove(enemy)
-                            this.gold += Phaser.Math.Between(0,5)   
+                            this.gold += Phaser.Math.Between(0,10)
+                              
                             
                             enemy.once('animationcomplete', function (anim,frame) {
                                 enemy.emit('animationcomplete_' + anim.key, frame)
@@ -724,7 +803,8 @@ class Simulacrum extends Phaser.Scene {
                             this.physics.add.collider(enemy,this.floor); 
                             this.physics.add.collider(enemy,this.platformGroup); 
                             this.enemyGroup.remove(enemy)
-                            this.gold += Phaser.Math.Between(10,20)   
+                            this.gold += Phaser.Math.Between(5,50)  
+                            this.rewards += Phaser.Math.Between(0,5)  
                             enemy.once('animationcomplete', function (anim,frame) {
                                 enemy.emit('animationcomplete_' + anim.key, frame)
                             }, enemy)
@@ -1864,23 +1944,25 @@ class Simulacrum extends Phaser.Scene {
 
         
         // Pan here has fluid effect of transition into action, carries momentum, but less clear entrance to Battle Phase
-        this.camera.pan(this.player.x,null,1000,'Power2')
+        //this.camera.pan(this.player.x,null,1000,'Power2')
+        playerInputActive = false
         this.player.play({key:'player_Avatar_3_SLIDE',frameRate: 10},true)
-        this.player.setVelocityX(100)
+        //this.player.setVelocityX(100)
         this.player.once('animationcomplete', function (){
-            this.player.setVelocityX(0)
-            this.enemyGroup.setVelocityX(0)
+            //this.player.setVelocityX(0)
+            //this.enemyGroup.setVelocityX(0)
             this.enterBattleAnimation = false
             // Pan here has effect of whipping to action and clear entrance to Battle Phase
             //this.camera.pan(player.x,null,1000,'Power2')
-            this.camera.on('camerapancomplete', function () {
+            //this.camera.on('camerapancomplete', function () {
                 this.battleCameraActive = true
+                playerInputActive = true
                 // Disabled and replaced via camera module due to zoom set up
                 //this.camera.startFollow(this.player,true,0.5,0.5)
                 
                 
                 
-            },this)
+           // },this)
             
         },this)
         this.physics.world.setBounds(screenWidth, 0, screenWidth * 2,  screenHeight)
@@ -1908,24 +1990,8 @@ class Simulacrum extends Phaser.Scene {
 
     update(time,delta){
 
-        this.rewards += 2.5/60
-        this.gold += 5/60 * this.playerSpeed
-        if (this.player.x > this.camera.scrollX + (screenWidth * 0.6)){
-            this.gloryModifier = 1.25
-        } else if (this.player.x < this.camera.scrollX + (screenWidth * 0.3)){
-            this.gloryModifier = 0.75
-        } else {
-            this.gloryModifier = 1
-        }
-        this.glory += 4/60  * this.playerSpeed * this.gloryModifier
-        if (this.gameMode == 0){
-            this.stageProgress.increaseProgress((2.5 / 6))
-        }
-        if (this.progress >= this.progressToNextLevel){
-            this.progress = 0
-            this.level += 1
-        }
-        // Test Code
+
+        // V1 Code
 
         // UI Module
         this.uiModule()            
@@ -1937,43 +2003,15 @@ class Simulacrum extends Phaser.Scene {
         this.playerModule()
 
         // Environment
-        // Add to BG function (maybe combine with BG objects? and terrain?)
-        if (this.gameMode == 0){
-            for (var i = 1; i < this.bgLayers + 1 ; i++){
-                window['bgL'+i].tilePositionX += (this.baseSpeed* this.playerSpeed)  * window['bgL'+ i + 'ScrollMod'] * (scaleModX / (screenWidth / this.textures.get('bgL' + i).getSourceImage().width))
-            }
-
-            for (var i = 1; i < this.fgLayers + 1 ; i++){
-                window['fgL'+i].tilePositionX += (this.baseSpeed  * this.playerSpeed)  * window['fgL'+ i + 'ScrollMod'] * (scaleModX / (screenWidth / this.textures.get('fgL' + i).getSourceImage().width))
-            }
-        } else {
-
-                for (var i = 1; i < this.bgLayers + 1 ; i++){
-                    window['bgL'+i].tilePositionX = this.camera.scrollX * window['bgL'+ i + 'ScrollMod'] * (scaleModX / (screenWidth / this.textures.get('bgL' + i).getSourceImage().width)) 
-                }
-
-                for (var i = 1; i < this.fgLayers + 1 ; i++){
-                    window['fgL'+i].tilePositionX = this.camera.scrollX * window['bgL'+ i + 'ScrollMod'] * (scaleModX / (screenWidth / this.textures.get('bgL' + i).getSourceImage().width)) 
-                }
- 
-        }
+        this.environmentModule()
+        
         this.platforms(this)
 
         // Enemies
         this.enemies(this)
 
-        // End of Test Code
-
-        // Test Env Only Code
-
-        // Debug UI
-        this.playerSpeedText.x = this.camera.scrollX + screenWidth * 0.05
-        this.playerSpeedText.y = screenHeight * 0.25
-        this.playerBattleSpeedText.x = this.playerSpeedText.x
-        this.playerBattleSpeedText.y = this.playerSpeedText.y + 75
-
-        this.playerSpeedText.setText('Player Speed: ' + Math.round(this.playerSpeed * 100) + '%' )
-        this.playerBattleSpeedText.setText('Player Battle Speed: ' + Math.round(Math.abs(this.playerBattleSpeed * 100)) + '%' + '\nEnemies: ' + this.enemyGroup.countActive())
+        // Stage
+        this.stageModule()
 
         // Regen
         this.regenMod = 1
@@ -1987,6 +2025,21 @@ class Simulacrum extends Phaser.Scene {
             }
    
         }
+
+        // End of V1 Code
+
+        // Test Env Only Code
+
+        // Debug UI
+        this.playerSpeedText.x = this.camera.scrollX + screenWidth * 0.05
+        this.playerSpeedText.y = screenHeight * 0.25
+        this.playerBattleSpeedText.x = this.playerSpeedText.x
+        this.playerBattleSpeedText.y = this.playerSpeedText.y + 75
+
+        this.playerSpeedText.setText('Player Speed: ' + Math.round(this.playerSpeed * 100) + '%' )
+        this.playerBattleSpeedText.setText('Player Battle Speed: ' + Math.round(Math.abs(this.playerBattleSpeed * 100)) + '%' + '\nEnemies: ' + this.enemyGroup.countActive())
+
+        
 
         // Speed Level
         // if(s1IsDown){
@@ -2026,7 +2079,9 @@ class Simulacrum extends Phaser.Scene {
         
     }
 
-    
+    // resetStage(){
+    //     this.highScore = parseInt(localStorage.getItem('highScore')) || 0;
+    // }
     
 }
 
