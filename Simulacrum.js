@@ -51,7 +51,8 @@ class Simulacrum extends Phaser.Scene {
 
         // Not need - test env only
         this.load.atlas('avatar3', ['assets/Avatars/3/avatar3.png','assets/Avatars/3/avatar3_n.png'],'assets/Avatars/3/avatar3.json');
-
+        this.load.spritesheet('whiteHitSmear', 'assets/whiteHitSmear.png', { frameWidth: 1024, frameHeight: 1024});
+         this.load.spritesheet('whiteHitSmear2', 'assets/whiteHitSmear2.png', { frameWidth: 1048, frameHeight: 1048}); 
         this.load.image('playerIconBox', 'assets/vFX/textBox3a.png');
         this.load.image('playerVitalsBox', 'assets/vFX/playerHUDBox.png');
         this.load.image('playerIcon', 'assets/icons/playerIcon1.png');
@@ -229,6 +230,7 @@ class Simulacrum extends Phaser.Scene {
                     maxSize: 20
                 });
 
+
                 this.spawningEnemy = false  
                 this.enemyTimer = this.time.addEvent({delay: this.baseEnemySpawnTime * (60/this.musicBPM) * 1000, callback: this.spawnEnemy, args: [], callbackScope: this, loop: true});
 
@@ -251,6 +253,8 @@ class Simulacrum extends Phaser.Scene {
                 this.playerAttackHitBox.body.setAllowGravity(false).setSize(175, 100)
                 this.playerAttackHitBox.body.checkCollision.none = true
                 this.physics.add.overlap(this.playerAttackHitBox,this.enemyGroup,this.enemyTakeHit,null,this)
+                this.playerAttackHitBoxVFX = this.add.sprite(this.playerAttackHitBox.x, this.playerAttackHitBox.y)
+                this.playerAttackHitBoxVFX.setSize(175, 100).setDepth(2)
                 this.playerIsHit = false
 
                 this.currentEnergy = 100
@@ -382,6 +386,15 @@ class Simulacrum extends Phaser.Scene {
             frames: this.anims.generateFrameNumbers('nightBorne', { start:91, end: 115}),
             frameRate: 23,
             repeat:0,
+            hideOnComplete: 1
+        });
+
+        this.anims.create({
+            key: 'whiteHitSmear',
+            frames: this.anims.generateFrameNumbers('whiteHitSmear', { start:0, end: 16}),
+            frameRate: 40,
+            repeat: 0,
+            showOnStart: 1,
             hideOnComplete: 1
         });
 
@@ -643,6 +656,7 @@ class Simulacrum extends Phaser.Scene {
                 }
 
                 if(this.enemy){
+
                     if(this.enemiesType == 1){
                         this.enemy.setTexture('doomsayer')
                         this.enemy.type = 1
@@ -676,7 +690,11 @@ class Simulacrum extends Phaser.Scene {
                     this.enemy.setScale(this.creepScale)
                     this.enemy.setVisible(true)
                     this.enemy.setActive(true)
-                    this.enemy.setDepth(Phaser.Math.Between(0,1))
+                    if (Phaser.Math.Between(0,100) < 25){
+                        this.enemy.setDepth(0)
+                    } else {
+                        this.enemy.setDepth(1)
+                    }
                     this.enemy.body.setAllowGravity(true)
                     this.enemy.isHit = false
                     this.enemy.hitsTaken = 0
@@ -754,84 +772,129 @@ class Simulacrum extends Phaser.Scene {
     }
 
     enemyTakeHit(playerAttackHitBox,enemy){
-            if(this.gameMode == 1){
+        if(this.gameMode == 1){
+    
+            
+    
+        if(!enemy.isHit){
+            enemy.isHit = true
 
-                
+            if (Phaser.Math.Between(0,100)<=this.critChance){
+                this.playerAttackCrit = this.critDamage
+            } else {
+                this.playerAttackCrit = 1
+            }
+            
+            this.playerAttackHitBoxVFX.play('whiteHitSmear',true)
+            
 
-            if(!enemy.isHit){
-                enemy.isHit = true
-                if (enemy.x >= this.player.x){
-                    enemy.x += 20
+            if (!enemy.body.onFloor()){
+                //enemy.setVelocityY(enemy.body.velocity.y * 0.25)
+                //enemy.setVelocityY(enemy.body.velocity.y - (enemy.body.velocity.y * 1.5)) 
+                enemy.setVelocity(0)               
+
+            }
+
+            if (enemy.x >= this.player.x){
+                enemy.x += Phaser.Math.Between(0,25)
+            } else {
+                enemy.x -= Phaser.Math.Between(0,25)
+            }
+
+            enemy.setVelocityY(enemy.body.velocity.y + (this.playerAttackStrengthY * (Math.max(1,this.playerAttackCrit/2))))
+
+
+            if (enemy.x >= this.player.x){
+                enemy.setVelocityX(enemy.body.velocity.x + (this.playerAttackStrengthX * this.playerAttackCrit))
+             } else {
+                enemy.setVelocityX(enemy.body.velocity.x - (this.playerAttackStrengthX * this.playerAttackCrit))
+            }
+
+            if (Math.abs(this.playerAttackStrengthY > 1000)){
+                this.camera.shake(250,0.02)
+            }
+
+            if (Math.abs(this.playerAttackStrengthX > 100)){
+                this.camera.shake(250,0.02)
+            }
+
+            if(this.playerAttackCrit > 1){
+                this.camera.flash()
+                if (Phaser.Math.Between(0,1) == 0){
+                    this.sound.play('ashaATK1',{volume:75})
                 } else {
-                    enemy.x -= 20
+                    this.sound.play('ashaATK2',{volume:100})
                 }
-  
-                if(enemy.type == 1){
-                    enemy.play('nightBorneMinion_Hurt',true)
-                    enemy.once('animationcomplete', function (anim,frame) {
-                        enemy.emit('animationcomplete_' + anim.key, frame)
-                    }, enemy)
-                    enemy.once('animationcomplete_nightBorneMinion_Hurt',function(){
-                        enemy.isHit = false
-                        enemy.hitsTaken += 1
-                        if (enemy.hitsTaken >= enemy.hitHP){
-                            enemy.play('nightBorneMinion_Death',true)
-                            this.physics.add.collider(enemy,this.floor); 
-                            this.physics.add.collider(enemy,this.platformGroup); 
-                            this.enemyGroup.remove(enemy)
-                            this.gold += Phaser.Math.Between(0,10)
-                              
-                            
-                            enemy.once('animationcomplete', function (anim,frame) {
-                                enemy.emit('animationcomplete_' + anim.key, frame)
-                            }, enemy)
-                            enemy.once('animationcomplete_nightBorneMinion_Death',function(){
-                                
-                            enemy.setActive(false)
-                            enemy.setVisible(false)
-                            enemy.x = -screenWidth * 0.25
-                            
-                            },this)
-                        } else {
-                            enemy.play('nightBorneMinion_Idle',true)
-                        }
-                        
-                    },this)
-                } else if (enemy.type == 2){
-                    enemy.play('nightBorne_Hurt',true)
-                    enemy.once('animationcomplete', function (anim,frame) {
-                        enemy.emit('animationcomplete_' + anim.key, frame)
-                    }, enemy)
-                    enemy.once('animationcomplete_nightBorne_Hurt',function(){
-                        enemy.isHit = false
-                        enemy.hitsTaken += 1
-                        if (enemy.hitsTaken >= enemy.hitHP){
-                            enemy.play('nightBorne_Death',true)
-                            this.physics.add.collider(enemy,this.floor); 
-                            this.physics.add.collider(enemy,this.platformGroup); 
-                            this.enemyGroup.remove(enemy)
-                            this.gold += Phaser.Math.Between(5,50)  
-                            this.rewards += Phaser.Math.Between(0,5)  
-                            enemy.once('animationcomplete', function (anim,frame) {
-                                enemy.emit('animationcomplete_' + anim.key, frame)
-                            }, enemy)
-                            enemy.once('animationcomplete_nightBorne_Death',function(){
-                                        
-                            enemy.setActive(false)
-                            enemy.setVisible(false)
-                            enemy.x = -screenWidth * 0.25
-                           
-                            },this)
-                        } else {
-                            enemy.play('nightBorne_Idle',true)
-                        }
-                        
-                    },this)
-                }
-
                 
             }
+
+            if(enemy.type == 1){
+                enemy.play('nightBorneMinion_Hurt',true)
+                enemy.once('animationcomplete', function (anim,frame) {
+                    enemy.emit('animationcomplete_' + anim.key, frame)
+                }, enemy)
+                enemy.once('animationcomplete_nightBorneMinion_Hurt',function(){
+                    enemy.isHit = false
+                    enemy.setVelocityX(0)
+                    //enemy.hitsTaken += 1
+                    if (enemy.hitsTaken >= enemy.hitHP){
+                        enemy.play('nightBorneMinion_Death',true)
+                        this.physics.add.collider(enemy,this.floor); 
+                        this.physics.add.collider(enemy,this.platformGroup); 
+                        this.enemyGroup.remove(enemy)
+                        this.gold += Phaser.Math.Between(0,10)
+                          
+                        
+                        enemy.once('animationcomplete', function (anim,frame) {
+                            enemy.emit('animationcomplete_' + anim.key, frame)
+                        }, enemy)
+                        enemy.once('animationcomplete_nightBorneMinion_Death',function(){
+                            
+                        enemy.setActive(false)
+                        enemy.setVisible(false)
+                        enemy.x = -screenWidth * 0.25
+                        
+                        },this)
+                    } else {
+                        enemy.play('nightBorneMinion_Idle',true)
+                    }
+                    
+                },this)
+            } else if (enemy.type == 2){
+                enemy.play('nightBorne_Hurt',true)
+                enemy.once('animationcomplete', function (anim,frame) {
+                    enemy.emit('animationcomplete_' + anim.key, frame)
+                }, enemy)
+                enemy.once('animationcomplete_nightBorne_Hurt',function(){
+                    enemy.isHit = false
+                    enemy.setVelocityX(0)
+                    //enemy.hitsTaken += 1
+                    if (enemy.hitsTaken >= enemy.hitHP){
+                        enemy.play('nightBorne_Death',true)
+                        this.physics.add.collider(enemy,this.floor); 
+                        this.physics.add.collider(enemy,this.platformGroup); 
+                        this.enemyGroup.remove(enemy)
+                        this.gold += Phaser.Math.Between(5,50)  
+                        this.rewards += Phaser.Math.Between(0,5)  
+                        enemy.once('animationcomplete', function (anim,frame) {
+                            enemy.emit('animationcomplete_' + anim.key, frame)
+                        }, enemy)
+                        enemy.once('animationcomplete_nightBorne_Death',function(){
+                                    
+                        enemy.setActive(false)
+                        enemy.setVisible(false)
+                        enemy.x = -screenWidth * 0.25
+                       
+                        },this)
+                    } else {
+                        enemy.play('nightBorne_Idle',true)
+                    }
+                    
+                },this)
+            }
+ 
         }
+    }
     }
 
     cameraModule(){
@@ -967,7 +1030,7 @@ class Simulacrum extends Phaser.Scene {
         if (this.prod == true){
             this.baseCost = 0.5
         } else {
-            this.baseCost = 1
+            this.baseCost = 0.25
         }
 
         // Movement
@@ -978,14 +1041,19 @@ class Simulacrum extends Phaser.Scene {
             this.movementMod = 1
         }
 
-        this.playerAttackHitBox.x = this.player.x
+        //this.playerAttackHitBox.x = this.player.x
+        this.playerAttackHitBox.y = this.player.y - 15
+        this.playerAttackHitBoxVFX.y = this.playerAttackHitBox.y
+        
 
         if (this.player.flipX){
             this.playerAttackHitBox.x = this.player.x - 10
-            this.playerAttackHitBox.y = this.player.y - 15
+            this.playerAttackHitBoxVFX.x = this.playerAttackHitBox.x - 50
+            
         } else {
             this.playerAttackHitBox.x = this.player.x + 10
-            this.playerAttackHitBox.y = this.player.y - 15
+            this.playerAttackHitBoxVFX.x = this.playerAttackHitBox.x + 50
+     
         }
 
         this.playerAttackHitBox.body.checkCollision.none = true
@@ -1112,7 +1180,7 @@ class Simulacrum extends Phaser.Scene {
         // Player Sprite 
             if (this.gameMode == 0 && !this.endRun){
 
-                
+                this.player.setAngle(0)
 
                 if(this.playerSpeed > 1){
                     // Lose more acceleration at higher speed - GAMEPLAY WISE, ALLOWS PLAYER TO BUILD SPEED EASIER, FUNNELS PLAYER TO MAXIMISE REGEN 
@@ -1326,24 +1394,16 @@ class Simulacrum extends Phaser.Scene {
                                 
                             }
                         }
-                        //Enables Player to automatically rotate to closest enemy
-                        if (!this.player.body.onFloor() && !upIsDown && !downIsDown){
-                            if (this.player.flipX){
-                                this.player.setRotation(-Phaser.Math.Angle.Between(this.player.x,this.player.y,this.closestEnemy.x,this.closestEnemy.y) / 4)
-                            } else {
-                                this.player.setRotation(Phaser.Math.Angle.Between(this.player.x,this.player.y,this.closestEnemy.x,this.closestEnemy.y) / 4 )
-                            }
-                        }
+  
   
                     } else {
                         this.playerLockedOn = false
                     }
 
                 // Set Player default angle 
-                if (this.player.body.onFloor() || !this.playerLockedOn){
+                //if (this.player.body.onFloor()){ //|| !this.playerLockedOn){
                     this.player.setAngle(0)
-                }
-                
+                //}
 
                 // Enable player sword collision detection
                     if (this.player.anims.getName() == 'player_Avatar_3_ACTION_1'){
@@ -1387,174 +1447,247 @@ class Simulacrum extends Phaser.Scene {
                 // A1 Button
                     // Attack
                     if (a1IsDown){
-            
-                        // Animation
 
-                            // Ground / Air
+                            // Base
 
+                            this.critChance = 25
+                            this.critDamage = 2.5
+
+                            // if (Phaser.Math.Between(0,100)<=this.critChance){
+                            //     this.playerAttackCrit = this.critDamage
+                            // } else {
+                            //     this.playerAttackCrit = 1
+                            // }
+
+                            // Left/Right Facing
                             if (leftIsDown){
                                 this.player.flipX = true
                             } else if (rightIsDown){
                                 this.player.flipX = false
                             }
 
+                            // Snap to Locked on Enemy
 
-                            if (!this.player.body.onFloor()){
-                                if (upIsDown){
-                                    if (this.player.flipX){
-                                        this.player.setAngle(45)
+                            if (this.playerLockedOn){
+                                if(Math.abs(this.player.x - this.closestEnemy.x) <= screenWidth * 0.025 && Math.abs(this.player.x - this.closestEnemy.x) >= screenWidth * 0.001 ){
+                                    if (this.closestEnemy.x > this.player.x){
+                                        this.player.x = this.closestEnemy.x - (screenWidth * 0.0075)
                                     } else {
-                                        this.player.setAngle(-45)
+                                        this.player.x = this.closestEnemy.x + (screenWidth * 0.0075)
                                     }
-                                } else if (downIsDown){
-                                    if (this.player.flipX){
-                                        this.player.setAngle(-45)
-                                    } else {
-                                        this.player.setAngle(45)
-                                    }
-                                } else if (this.playerLockedOn){
-                                if (this.player.flipX){
-                                    this.player.setRotation(-Phaser.Math.Angle.Between(this.player.x,this.player.y,this.closestEnemy.x,this.closestEnemy.y) /2)
-                                } else {
-                                    this.player.setRotation(Phaser.Math.Angle.Between(this.player.x,this.player.y,this.closestEnemy.x,this.closestEnemy.y) /2 )
-                                }
-                                }
-                            } 
-                            
-                            
-                        //}
                                 
-                        
+                                }
+                            }
 
                             // Ground 
                             if (this.player.body.onFloor()){
+
+                            // Launch Attack    
                             if (upIsDown){
+                                // Stats
+
+                                this.playerAttackStrengthX = Phaser.Math.Between(0,0) * this.actionPower
+                                this.playerAttackStrengthY = Phaser.Math.Between(-1500,-2000) * this.actionPower
+
+                                // Animations
                                 this.player.play({key:'player_Avatar_3_ACTION_3',frameRate: (
                                                                                             (this.baseUpAttackSpeed * this.baseActionSpeedPercent)
                                                                                             + 
                                                                                             ((this.baseUpAttackSpeed * (1-this.baseActionSpeedPercent)) * Math.abs(this.actionPower))
                                                                                             )
                                                                                             },true)
-                            } else
-                            if (leftIsDown || rightIsDown){
+                                
+                                if (this.player.anims.getName() == 'player_Avatar_3_ACTION_3'){
+
+                                    if (this.player.anims.currentFrame.index >= 3 && this.player.anims.currentFrame.index < 5){   
+                                        if (this.player.flipX){
+                                            this.player.x -= (screenWidth * 0.0005) * this.movementMod
+                                        } else {
+                                            this.player.x += (screenWidth * 0.0005) * this.movementMod
+                                        }                                               
+                                    } 
+
+                                    if (this.player.anims.currentFrame.index > 4 && this.player.anims.currentFrame.index <= 5){
+
+                                            this.player.setVelocityY(this.playerAttackStrengthY)
+  
+                                    }
+
+                                }
+                            // Left / Right Attack
+                            } else if (leftIsDown || rightIsDown){
+
+                                // Stats
+
+                                this.playerAttackStrengthX = Phaser.Math.Between(300,400) * this.actionPower
+                                this.playerAttackStrengthY = Phaser.Math.Between(0,0) * this.actionPower
+
                                 this.player.play({key:'player_Avatar_3_ACTION_2',frameRate: (
                                                                                             (this.baseSideAttackSpeed * this.baseActionSpeedPercent)
                                                                                             + 
                                                                                             ((this.baseSideAttackSpeed * (1-this.baseActionSpeedPercent)) * Math.abs(this.actionPower))
                                                                                             )
                                                                                             },true)
+
+                                if (this.player.anims.getName() == 'player_Avatar_3_ACTION_2'){
+
+
+                                    if (this.player.anims.currentFrame.index >= 4 && this.player.anims.currentFrame.index < 6 
+                                        || this.player.anims.currentFrame.index >= 12 && this.player.anims.currentFrame.index < 14 ){
+                                        
+                                            if (this.player.flipX){
+                                                this.player.x -= (screenWidth * 0.004) * this.movementMod
+                                            } else {
+                                                this.player.x += (screenWidth * 0.004) * this.movementMod
+                                            }  
+                                    } 
+
+                                    if (this.player.anims.currentFrame.index >= 4 && this.player.anims.currentFrame.index < 6){                                           
+                                        this.playerAttackStrengthY = Phaser.Math.Between(750,1500) * this.actionPower
+                                    } else if (this.player.anims.currentFrame.index >= 12 && this.player.anims.currentFrame.index < 14 ){
+                                        this.playerAttackStrengthY = Phaser.Math.Between(-750,-1500) * this.actionPower  
+                                    } 
+
+                                }
+                            // Neutral                                                                    
                             } else {
+
+                                // Stats
+
+                                this.playerAttackStrengthX = Phaser.Math.Between(0,0) * this.actionPower
+                                this.playerAttackStrengthY = Phaser.Math.Between(0,0) * this.actionPower
+
                                 this.player.play({key:'player_Avatar_3_ACTION_1',frameRate: (
                                                                                             (this.baseAttackSpeed * this.baseActionSpeedPercent)
                                                                                             + 
                                                                                             ((this.baseAttackSpeed * (1-this.baseActionSpeedPercent)) * Math.abs(this.actionPower))
                                                                                             )
                                                                                             },true)
+                                if (this.player.anims.getName() == 'player_Avatar_3_ACTION_1'){
+                                    if (this.player.anims.currentFrame.index >= 6 && this.player.anims.currentFrame.index < 12){
+                                        if (this.player.flipX){
+                                            this.player.x -= (screenWidth * 0.001) * this.movementMod
+                                        } else {
+                                            this.player.x += (screenWidth * 0.001) * this.movementMod
+                                        }  
+                                    }  
+                                }                                                           
                             }
-                        } else {
-                            this.player.play({key:'player_Avatar_3_ACTION_1',frameRate: (
-                                (this.baseAttackSpeed * this.baseActionSpeedPercent)
-                                + 
-                                ((this.baseAttackSpeed * (1-this.baseActionSpeedPercent)) * Math.abs(this.actionPower))
-                                )
-                                },true)
-                        }
-                        
-    
-                        // Positioning
-
-                            // Ground / Air
-
-                                // Snap to Locked on Enemy
-
-                                    if (this.playerLockedOn){
-                                        if(Math.abs(this.player.x - this.closestEnemy.x) <= screenWidth * 0.025 && Math.abs(this.player.x - this.closestEnemy.x) >= screenWidth * 0.001 ){
-                                            if (this.closestEnemy.x > this.player.x){
-                                                this.player.x = this.closestEnemy.x - (screenWidth * 0.0075)
-                                            } else {
-                                                this.player.x = this.closestEnemy.x + (screenWidth * 0.0075)
-                                            }
-                                        
-                                        }
-                                    }
-
-                                
-
-                            // Ground 
-
-                                if (this.player.body.onFloor()){ 
-                                    // Move Forwards with Swings
-                                    if (this.player.anims.getName() == 'player_Avatar_3_ACTION_1'){
-                                        
-
-                                        if (this.player.anims.currentFrame.index >= 6 && this.player.anims.currentFrame.index < 12){
-                                            if (this.player.flipX){
-                                                this.player.x -= (screenWidth * 0.001) * this.movementMod
-                                            } else {
-                                                this.player.x += (screenWidth * 0.001) * this.movementMod
-                                            }  
-                                        } 
-
-                                    } else if (this.player.anims.getName() == 'player_Avatar_3_ACTION_2'){
-                                        
-
-                                        if (this.player.anims.currentFrame.index >= 4 && this.player.anims.currentFrame.index < 6 
-                                            || this.player.anims.currentFrame.index >= 12 && this.player.anims.currentFrame.index < 14 ){
-                                            
-                                                if (this.player.flipX){
-                                                    this.player.x -= (screenWidth * 0.004) * this.movementMod
-                                                } else {
-                                                    this.player.x += (screenWidth * 0.004) * this.movementMod
-                                                }  
-                                        } 
-
-                                    } else if (this.player.anims.getName() == 'player_Avatar_3_ACTION_3'){
-                                        
-                                        
-                                        if (this.player.anims.currentFrame.index >= 3 && this.player.anims.currentFrame.index < 5){
-                                            
-                                            if (this.player.flipX){
-                                                this.player.x -= (screenWidth * 0.0005) * this.movementMod
-                                            } else {
-                                                this.player.x += (screenWidth * 0.0005) * this.movementMod
-                                            }  
-                                            
-                                        } 
-
-                                    }
-                                } 
                             // Air
-                                else  {
-                                    if (upIsDown){
-                                        if (this.player.body.velocity.y > 0 && this.floor.y - this.player.y > screenHeight * this.baseMinHangHeight ){
-                                            this.player.setVelocityY(this.player.body.velocity.y * 0.125)
-                                        }
-                                    } else if (this.player.body.velocity.y > 0 && this.floor.y - this.player.y > screenHeight * this.baseMinHangHeight) {
-                                        this.player.setVelocityY(this.player.body.velocity.y * 0.25)
-                                    }
+                            } else if (!this.player.body.onFloor()) {
 
-                                    // Move Forwards with Swings
-                                    if (this.player.anims.getName() == 'player_Avatar_3_ACTION_1'){
-                                        
+                            // Base                        
 
-                                        if (this.player.anims.currentFrame.index >= 6 && this.player.anims.currentFrame.index < 12){
-                                            if (this.player.flipX){
-                                                this.player.x -= (screenWidth * 0.0005) * this.movementMod
-                                            } else {
-                                                this.player.x += (screenWidth * 0.0005) * this.movementMod
-                                            }  
-                                        } 
+                            // Air Attack Hang Time
+                            if (this.player.body.velocity.y > 0 && this.floor.y - this.player.y > screenHeight * this.baseMinHangHeight) {
+                                this.player.setVelocityY(this.player.body.velocity.y * 0.25)
+                            }  
 
-                                    } 
-                                    
-                                }   
-
-                        // Other
-
-                            // Ground
-                        
-                            // Air
+                            // Directional Variations
                             
+
+                            // Aim Up
+                            if (upIsDown){
+
+                                // Stats
+                                this.playerAttackStrengthX = Phaser.Math.Between(0,0) * this.actionPower
+                                this.playerAttackStrengthY = Phaser.Math.Between(-750,-1000) * this.actionPower
+
+                                // Animation
+
+                                // Air Attack Animation
+                                this.player.play({key:'player_Avatar_3_ACTION_1',frameRate: (
+                                    (this.baseAttackSpeed * this.baseActionSpeedPercent)
+                                    + 
+                                    ((this.baseAttackSpeed * (1-this.baseActionSpeedPercent)) * Math.abs(this.actionPower))
+                                    )
+                                    },true)
+
+                                if (this.player.flipX){
+                                    this.player.setAngle(45)
+                                } else {
+                                    this.player.setAngle(-45)
+                                }
+
+                                if (this.player.anims.getName() == 'player_Avatar_3_ACTION_1'){
+                                    if (this.player.anims.currentFrame.index >= 6 && this.player.anims.currentFrame.index < 12){
+                                            this.player.y -= (screenHeight * 0.001) * this.movementMod   
+                                    } 
+                                } 
+
+                            } else  
+                            
+                            // Aim Down
+                            if (downIsDown){
+                                // Stats
+                                this.playerAttackStrengthX = Phaser.Math.Between(0,0) * this.actionPower
+                                this.playerAttackStrengthY = Phaser.Math.Between(500,1000) * this.actionPower
+
+                                // Animation
+
+                                // Air Attack Animation
+                                this.player.play({key:'player_Avatar_3_ACTION_1',frameRate: (
+                                    (this.baseAttackSpeed * this.baseActionSpeedPercent)
+                                    + 
+                                    ((this.baseAttackSpeed * (1-this.baseActionSpeedPercent)) * Math.abs(this.actionPower))
+                                    )
+                                    },true)
+
+                                if (this.player.flipX){
+                                    this.player.setAngle(-45)
+                                } else {
+                                    this.player.setAngle(45)
+                                }
+
+                                if (this.player.anims.getName() == 'player_Avatar_3_ACTION_1'){
+                                    if (this.player.anims.currentFrame.index >= 6 && this.player.anims.currentFrame.index < 12){
+                                            this.player.y += (screenHeight * 0.001) * this.movementMod   
+                                    } 
+                                } 
+                            } else 
+
+                            // Aim Left/Right
+                            if (leftIsDown || rightIsDown){
+
+                                // Stats
+                                this.playerAttackStrengthX = Phaser.Math.Between(150,200) * this.actionPower
+                                this.playerAttackStrengthY = Phaser.Math.Between(0,0) * this.actionPower
+
+                                // Animation
+
+                                // Air Attack Animation
+                                this.player.play({key:'player_Avatar_3_ACTION_1',frameRate: (
+                                    (this.baseAttackSpeed * this.baseActionSpeedPercent)
+                                    + 
+                                    ((this.baseAttackSpeed * (1-this.baseActionSpeedPercent)) * Math.abs(this.actionPower))
+                                    )
+                                    },true)
+
+                                if (this.player.anims.getName() == 'player_Avatar_3_ACTION_1'){
+                                    if (this.player.anims.currentFrame.index >= 6 && this.player.anims.currentFrame.index < 12){
+                                        if (this.player.flipX){
+                                            this.player.x -= (screenWidth * 0.001) * this.movementMod
+                                        } else {
+                                            this.player.x += (screenWidth * 0.001) * this.movementMod
+                                        }  
+                                    } 
+                                } 
+                            } else {
+                                // Neutral Attack Animation
+
+                                // Stats
+                                this.playerAttackStrengthX = Phaser.Math.Between(0,0) * this.actionPower
+                                this.playerAttackStrengthY = Phaser.Math.Between(0,0) * this.actionPower
+
+                                // Animation
+                                this.player.play({key:'player_Avatar_3_ACTION_1',frameRate: (
+                                    (this.baseAttackSpeed * this.baseActionSpeedPercent)
+                                    + 
+                                    ((this.baseAttackSpeed * (1-this.baseActionSpeedPercent)) * Math.abs(this.actionPower))
+                                    )
+                                    },true)
+                            }
+                        }
 
                     } else
                 // A2 Button 
@@ -2044,7 +2177,10 @@ class Simulacrum extends Phaser.Scene {
         this.playerBattleSpeedText.y = this.playerSpeedText.y + 75
 
         this.playerSpeedText.setText('Player Speed: ' + Math.round(this.playerSpeed * 100) + '%' )
-        this.playerBattleSpeedText.setText('Player Battle Speed: ' + Math.round(Math.abs(this.playerBattleSpeed * 100)) + '%' + '\nEnemies: ' + this.enemyGroup.countActive())
+        this.playerBattleSpeedText.setText('Player Battle Speed: ' + Math.round(Math.abs(this.playerBattleSpeed * 100)) + '%' + '\nEnemies: ' + this.enemyGroup.countActive()
+                                           + '\nPlayer Attack Strength X: ' + Math.round(this.playerAttackStrengthX) + '\nPlayer Attack Strength Y: ' + Math.round(this.playerAttackStrengthY) 
+                                           + '\nPlayer Crit Roll: ' + this.playerAttackCrit 
+                                            )
 
         
 

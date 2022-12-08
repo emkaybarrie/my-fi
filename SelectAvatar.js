@@ -605,7 +605,7 @@ class SelectAvatar extends Phaser.Scene {
                 this.scene.start('Kianova')
             } else {
                 //this.scene.start(this.redirect)
-                this.scene.start('Region' + String(Phaser.Math.Between(1,4)), {targetScene:'Simulacrum',targetZone: 0, currentTimePeriod: Phaser.Math.Between(1,4),rarityOverride:null})
+                this.scene.start('Region' + String(Phaser.Math.Between(2,2)), {targetScene:'Simulacrum',targetZone: 0, currentTimePeriod: Phaser.Math.Between(1,4),rarityOverride:null})
             }
             
 
