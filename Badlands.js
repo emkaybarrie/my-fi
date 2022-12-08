@@ -1746,9 +1746,9 @@ enemies(game){
                 this.enemy.isHit = false
                 this.enemy.hitsTaken = 0
                 if (this.enemy.type == 1){
-                    this.enemy.hitHP = Phaser.Math.Between(5,8)
+                    this.enemy.hitHP = Phaser.Math.Between(4,7)
                 } else if (this.enemy.type == 2){
-                    this.enemy.hitHP = Phaser.Math.Between(7,12)
+                    this.enemy.hitHP = Phaser.Math.Between(6,10)
                 }
                 
 
@@ -1915,7 +1915,7 @@ enemyTakeHit(playerAttackHitBox,enemy){
             enemy.once('animationcomplete_nightBorne_Hurt',function(){
                 enemy.isHit = false
                 enemy.setVelocityX(0)
-                //enemy.hitsTaken += 1
+                enemy.hitsTaken += 1
                 if (enemy.hitsTaken >= enemy.hitHP){
                     enemy.play('nightBorne_Death',true)
                     this.physics.add.collider(enemy,this.floor); 
