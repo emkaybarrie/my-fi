@@ -2738,7 +2738,7 @@ playerModule(){
                             if (this.player.anims.getName() == 'player_Avatar_3_ACTION_1'){
                                 if (this.player.anims.currentFrame.index >= 6 && this.player.anims.currentFrame.index < 12){
                                     if (this.player.flipX){
-                                        this.player.x -= (screenWidth * 0.0075) * this.movementMod
+                                        this.player.x -= (screenWidth * 0.00325) * this.movementMod
                                     } else {
                                         this.player.x += (screenWidth * 0.00325) * this.movementMod
                                     }  
