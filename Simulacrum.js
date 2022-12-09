@@ -258,7 +258,7 @@ class Simulacrum extends Phaser.Scene {
                 this.playerIsHit = false
 
                 this.currentEnergy = 100
-                this.maxEnergy = 200
+                this.maxEnergy = 100
 
                 this.currentFocus = 100
                 this.maxFocus = 100
@@ -582,16 +582,7 @@ class Simulacrum extends Phaser.Scene {
 
     }
 
-    spawnEnemy(){
-        if (this.gameMode == 0){
-        this.spawningEnemy = true
-        //this.enemyTimer.delay = Phaser.Math.Between(1500,3000)
-        } 
-    }
-
-    enemies(game){
-
-       
+    enemyModule(game){
 
         game.closestEnemy = game.physics.closest(this.player,game.enemyGroup.getMatching('active',true)) 
 
@@ -691,9 +682,9 @@ class Simulacrum extends Phaser.Scene {
                     this.enemy.setVisible(true)
                     this.enemy.setActive(true)
                     if (Phaser.Math.Between(0,100) < 25){
-                        this.enemy.setDepth(0)
-                    } else {
                         this.enemy.setDepth(1)
+                    } else {
+                        this.enemy.setDepth(0)
                     }
                     this.enemy.body.setAllowGravity(true)
                     this.enemy.isHit = false
@@ -771,6 +762,13 @@ class Simulacrum extends Phaser.Scene {
 
     }
 
+    spawnEnemy(){
+        if (this.gameMode == 0){
+        this.spawningEnemy = true
+        this.enemyTimer.delay = Phaser.Math.Between((this.baseEnemySpawnTime * (60/this.musicBPM) * 1000) * 0.8,(this.baseEnemySpawnTime * (60/this.musicBPM) * 1000) * 1.2)
+        } 
+    }
+
     enemyTakeHit(playerAttackHitBox,enemy){
         if(this.gameMode == 1){
     
@@ -779,6 +777,20 @@ class Simulacrum extends Phaser.Scene {
         if(!enemy.isHit){
             enemy.isHit = true
 
+            // Dodge Check Test
+            if(Phaser.Math.Between(0,100)<= 50){
+
+                if (enemy.x >= this.player.x){
+                    enemy.x += Phaser.Math.Between(25,75)
+                    enemy.isHit = false
+                } else {
+                    enemy.x -= Phaser.Math.Between(25,75)
+                    enemy.isHit = false
+                }
+
+            } else {
+            
+            // Crit Check
             if (Phaser.Math.Between(0,100)<=this.critChance){
                 this.playerAttackCrit = this.critDamage
             } else {
@@ -789,8 +801,7 @@ class Simulacrum extends Phaser.Scene {
             
 
             if (!enemy.body.onFloor()){
-                //enemy.setVelocityY(enemy.body.velocity.y * 0.25)
-                //enemy.setVelocityY(enemy.body.velocity.y - (enemy.body.velocity.y * 1.5)) 
+ 
                 enemy.setVelocity(0)               
 
             }
@@ -836,7 +847,7 @@ class Simulacrum extends Phaser.Scene {
                 enemy.once('animationcomplete_nightBorneMinion_Hurt',function(){
                     enemy.isHit = false
                     enemy.setVelocityX(0)
-                    //enemy.hitsTaken += 1
+                    enemy.hitsTaken += 1
                     if (enemy.hitsTaken >= enemy.hitHP){
                         enemy.play('nightBorneMinion_Death',true)
                         this.physics.add.collider(enemy,this.floor); 
@@ -868,7 +879,7 @@ class Simulacrum extends Phaser.Scene {
                 enemy.once('animationcomplete_nightBorne_Hurt',function(){
                     enemy.isHit = false
                     enemy.setVelocityX(0)
-                    //enemy.hitsTaken += 1
+                    enemy.hitsTaken += 1
                     if (enemy.hitsTaken >= enemy.hitHP){
                         enemy.play('nightBorne_Death',true)
                         this.physics.add.collider(enemy,this.floor); 
@@ -894,6 +905,7 @@ class Simulacrum extends Phaser.Scene {
             }
  
         }
+    }
     }
     }
 
@@ -1002,11 +1014,13 @@ class Simulacrum extends Phaser.Scene {
         this.skillPower = this.currentFocus / this.maxFocus
 
         // Player Parameters
+
+        // Base Stats
         this.baseTopSpeed = 0.005
         this.baseAttackSpeed = 16
         this.baseSideAttackSpeed = 12
         this.baseUpAttackSpeed = 10
-        this.baseJumpHeight = 2000
+        this.baseJumpHeight = 1500
         this.baseHangTime = 0.15
         this.baseMinHangHeight = 0.2
         this.baseDashDistance = 0.01
@@ -1030,7 +1044,7 @@ class Simulacrum extends Phaser.Scene {
         if (this.prod == true){
             this.baseCost = 0.5
         } else {
-            this.baseCost = 0.25
+            this.baseCost = 1
         }
 
         // Movement
@@ -1080,13 +1094,23 @@ class Simulacrum extends Phaser.Scene {
             this.skill1CostModifier = 2
             this.skill2CostModifier = 2
 
-            this.moveUpCostModifier = 0.75
-            this.moveDownCostModifier = 0.75
-            this.moveLeftCostModifier = 0.25
-            this.moveRightCostModifier = 0.25
+            if (regenActive){
+                this.moveUpCostModifier = 1.5
+                this.moveDownCostModifier = 1
+                this.moveLeftCostModifier = 0.5
+                this.moveRightCostModifier = 0.5
+            } else {
+                this.moveUpCostModifier = 0.75
+                this.moveDownCostModifier = 0.5
+                this.moveLeftCostModifier = 0.25
+                this.moveRightCostModifier = 0.25
+            }
+            
         }
         
+        if (!this.playerIsHit || this.gameMode == 1){
         this.player.setTint()
+        }
       
             if (a1IsDown){
                 if(this.actionPower > 0 ){
@@ -1400,55 +1424,55 @@ class Simulacrum extends Phaser.Scene {
                         this.playerLockedOn = false
                     }
 
-                // Set Player default angle 
-                //if (this.player.body.onFloor()){ //|| !this.playerLockedOn){
+                // Return Player to Default angle 
                     this.player.setAngle(0)
-                //}
+                
+                // Return Player to Default Gravity
+                    this.player.body.setGravityY(0)
+                    this.player.body.setAllowGravity(1)
 
-                // Enable player sword collision detection
-                    if (this.player.anims.getName() == 'player_Avatar_3_ACTION_1'){
-                        // playerSwordSwing.play()
-                        
-                        
-
-                        if (this.player.anims.currentFrame.index >= 6 && this.player.anims.currentFrame.index < 12){
-                            
-                            this.playerAttackHitBox.body.checkCollision.none = false
-                            
-                        } else {
-                            this.playerAttackHitBox.body.checkCollision.none = true
-                        }
-
-                    } else if (this.player.anims.getName() == 'player_Avatar_3_ACTION_2'){
-                        // playerSwordSwing.play()
-
-                        if (this.player.anims.currentFrame.index >= 4 && this.player.anims.currentFrame.index < 6 
-                            || this.player.anims.currentFrame.index >= 12 && this.player.anims.currentFrame.index < 14 ){
-                            
-                            this.playerAttackHitBox.body.checkCollision.none = false
-                            
-                        } else {
-                            this.playerAttackHitBox.body.checkCollision.none = true
-                        }
-
-                    } else if (this.player.anims.getName() == 'player_Avatar_3_ACTION_3'){
-                        // playerSwordSwing.play()
-                        
-                        if (this.player.anims.currentFrame.index >= 3 && this.player.anims.currentFrame.index < 5){
-                            
-                            this.playerAttackHitBox.body.checkCollision.none = false
-                            
-                        } else {
-                            this.playerAttackHitBox.body.checkCollision.none = true
-                        }
-
-                    }
     
                 // A1 Button
                     // Attack
                     if (a1IsDown){
 
-                            // Base
+
+
+                            // Collision Detection
+
+                                // Enable player sword collision detection
+                                    if (this.player.anims.getName() == 'player_Avatar_3_ACTION_1'){
+                                        if (this.player.anims.currentFrame.index >= 6 && this.player.anims.currentFrame.index < 12){
+                                            
+                                            this.playerAttackHitBox.body.checkCollision.none = false
+                                            
+                                        } else {
+                                            this.playerAttackHitBox.body.checkCollision.none = true
+                                        }
+
+                                    } else if (this.player.anims.getName() == 'player_Avatar_3_ACTION_2'){
+                        
+
+                                        if (this.player.anims.currentFrame.index >= 4 && this.player.anims.currentFrame.index < 6 
+                                            || this.player.anims.currentFrame.index >= 12 && this.player.anims.currentFrame.index < 14 ){
+                                            
+                                            this.playerAttackHitBox.body.checkCollision.none = false
+                                            
+                                        } else {
+                                            this.playerAttackHitBox.body.checkCollision.none = true
+                                        }
+
+                                    } else if (this.player.anims.getName() == 'player_Avatar_3_ACTION_3'){
+                                        
+                                        if (this.player.anims.currentFrame.index >= 3 && this.player.anims.currentFrame.index < 5){
+                                            
+                                            this.playerAttackHitBox.body.checkCollision.none = false
+                                            
+                                        } else {
+                                            this.playerAttackHitBox.body.checkCollision.none = true
+                                        }
+
+                                    }
 
                             this.critChance = 25
                             this.critDamage = 2.5
@@ -1481,107 +1505,106 @@ class Simulacrum extends Phaser.Scene {
 
                             // Ground 
                             if (this.player.body.onFloor()){
+                                if (upIsDown){ // Launch Attack 
 
-                            // Launch Attack    
-                            if (upIsDown){
-                                // Stats
+                                    // Stats
 
-                                this.playerAttackStrengthX = Phaser.Math.Between(0,0) * this.actionPower
-                                this.playerAttackStrengthY = Phaser.Math.Between(-1500,-2000) * this.actionPower
+                                    this.playerAttackStrengthX = Phaser.Math.Between(0,0) * this.actionPower
+                                    this.playerAttackStrengthY = Phaser.Math.Between(-1500,-2000) * this.actionPower
 
-                                // Animations
-                                this.player.play({key:'player_Avatar_3_ACTION_3',frameRate: (
-                                                                                            (this.baseUpAttackSpeed * this.baseActionSpeedPercent)
-                                                                                            + 
-                                                                                            ((this.baseUpAttackSpeed * (1-this.baseActionSpeedPercent)) * Math.abs(this.actionPower))
-                                                                                            )
-                                                                                            },true)
-                                
-                                if (this.player.anims.getName() == 'player_Avatar_3_ACTION_3'){
+                                    // Animations
+                                    this.player.play({key:'player_Avatar_3_ACTION_3',frameRate: (
+                                                                                                (this.baseUpAttackSpeed * this.baseActionSpeedPercent)
+                                                                                                + 
+                                                                                                ((this.baseUpAttackSpeed * (1-this.baseActionSpeedPercent)) * Math.abs(this.actionPower))
+                                                                                                )
+                                                                                                },true)
+                                    
+                                    if (this.player.anims.getName() == 'player_Avatar_3_ACTION_3'){
 
-                                    if (this.player.anims.currentFrame.index >= 3 && this.player.anims.currentFrame.index < 5){   
-                                        if (this.player.flipX){
-                                            this.player.x -= (screenWidth * 0.0005) * this.movementMod
-                                        } else {
-                                            this.player.x += (screenWidth * 0.0005) * this.movementMod
-                                        }                                               
-                                    } 
-
-                                    if (this.player.anims.currentFrame.index > 4 && this.player.anims.currentFrame.index <= 5){
-
-                                            this.player.setVelocityY(this.playerAttackStrengthY)
-  
-                                    }
-
-                                }
-                            // Left / Right Attack
-                            } else if (leftIsDown || rightIsDown){
-
-                                // Stats
-
-                                this.playerAttackStrengthX = Phaser.Math.Between(300,400) * this.actionPower
-                                this.playerAttackStrengthY = Phaser.Math.Between(0,0) * this.actionPower
-
-                                this.player.play({key:'player_Avatar_3_ACTION_2',frameRate: (
-                                                                                            (this.baseSideAttackSpeed * this.baseActionSpeedPercent)
-                                                                                            + 
-                                                                                            ((this.baseSideAttackSpeed * (1-this.baseActionSpeedPercent)) * Math.abs(this.actionPower))
-                                                                                            )
-                                                                                            },true)
-
-                                if (this.player.anims.getName() == 'player_Avatar_3_ACTION_2'){
-
-
-                                    if (this.player.anims.currentFrame.index >= 4 && this.player.anims.currentFrame.index < 6 
-                                        || this.player.anims.currentFrame.index >= 12 && this.player.anims.currentFrame.index < 14 ){
-                                        
+                                        if (this.player.anims.currentFrame.index >= 3 && this.player.anims.currentFrame.index < 5){   
                                             if (this.player.flipX){
-                                                this.player.x -= (screenWidth * 0.004) * this.movementMod
+                                                this.player.x -= (screenWidth * 0.0005) * this.movementMod
                                             } else {
-                                                this.player.x += (screenWidth * 0.004) * this.movementMod
+                                                this.player.x += (screenWidth * 0.0005) * this.movementMod
+                                            }                                               
+                                        } 
+
+                                        if (this.player.anims.currentFrame.index > 4 && this.player.anims.currentFrame.index <= 5){
+
+                                                this.player.setVelocityY(this.playerAttackStrengthY)
+    
+                                        }
+
+                                    }
+                                
+                                
+                                } else if (leftIsDown || rightIsDown){ // Side Attack
+
+                                    // Stats
+
+                                    this.playerAttackStrengthX = Phaser.Math.Between(300,400) * this.actionPower
+                                    this.playerAttackStrengthY = Phaser.Math.Between(0,0) * this.actionPower
+
+                                    this.player.play({key:'player_Avatar_3_ACTION_2',frameRate: (
+                                                                                                (this.baseSideAttackSpeed * this.baseActionSpeedPercent)
+                                                                                                + 
+                                                                                                ((this.baseSideAttackSpeed * (1-this.baseActionSpeedPercent)) * Math.abs(this.actionPower))
+                                                                                                )
+                                                                                                },true)
+
+                                    if (this.player.anims.getName() == 'player_Avatar_3_ACTION_2'){
+
+
+                                        if (this.player.anims.currentFrame.index >= 4 && this.player.anims.currentFrame.index < 6 
+                                            || this.player.anims.currentFrame.index >= 12 && this.player.anims.currentFrame.index < 14 ){
+                                            
+                                                if (this.player.flipX){
+                                                    this.player.x -= (screenWidth * 0.004) * this.movementMod
+                                                } else {
+                                                    this.player.x += (screenWidth * 0.004) * this.movementMod
+                                                }  
+                                        } 
+
+                                        if (this.player.anims.currentFrame.index >= 4 && this.player.anims.currentFrame.index < 6){                                           
+                                            this.playerAttackStrengthY = Phaser.Math.Between(750,1500) * this.actionPower
+                                        } else if (this.player.anims.currentFrame.index >= 12 && this.player.anims.currentFrame.index < 14 ){
+                                            this.playerAttackStrengthY = Phaser.Math.Between(-750,-1500) * this.actionPower  
+                                        } 
+
+                                    }
+                                                                                                    
+                                } else { // Neutral Attack
+
+                                    // Stats
+
+                                    this.playerAttackStrengthX = Phaser.Math.Between(0,0) * this.actionPower
+                                    this.playerAttackStrengthY = Phaser.Math.Between(0,0) * this.actionPower
+
+                                    this.player.play({key:'player_Avatar_3_ACTION_1',frameRate: (
+                                                                                                (this.baseAttackSpeed * this.baseActionSpeedPercent)
+                                                                                                + 
+                                                                                                ((this.baseAttackSpeed * (1-this.baseActionSpeedPercent)) * Math.abs(this.actionPower))
+                                                                                                )
+                                                                                                },true)
+                                    if (this.player.anims.getName() == 'player_Avatar_3_ACTION_1'){
+                                        if (this.player.anims.currentFrame.index >= 6 && this.player.anims.currentFrame.index < 12){
+                                            if (this.player.flipX){
+                                                this.player.x -= (screenWidth * 0.001) * this.movementMod
+                                            } else {
+                                                this.player.x += (screenWidth * 0.001) * this.movementMod
                                             }  
-                                    } 
-
-                                    if (this.player.anims.currentFrame.index >= 4 && this.player.anims.currentFrame.index < 6){                                           
-                                        this.playerAttackStrengthY = Phaser.Math.Between(750,1500) * this.actionPower
-                                    } else if (this.player.anims.currentFrame.index >= 12 && this.player.anims.currentFrame.index < 14 ){
-                                        this.playerAttackStrengthY = Phaser.Math.Between(-750,-1500) * this.actionPower  
-                                    } 
-
-                                }
-                            // Neutral                                                                    
-                            } else {
-
-                                // Stats
-
-                                this.playerAttackStrengthX = Phaser.Math.Between(0,0) * this.actionPower
-                                this.playerAttackStrengthY = Phaser.Math.Between(0,0) * this.actionPower
-
-                                this.player.play({key:'player_Avatar_3_ACTION_1',frameRate: (
-                                                                                            (this.baseAttackSpeed * this.baseActionSpeedPercent)
-                                                                                            + 
-                                                                                            ((this.baseAttackSpeed * (1-this.baseActionSpeedPercent)) * Math.abs(this.actionPower))
-                                                                                            )
-                                                                                            },true)
-                                if (this.player.anims.getName() == 'player_Avatar_3_ACTION_1'){
-                                    if (this.player.anims.currentFrame.index >= 6 && this.player.anims.currentFrame.index < 12){
-                                        if (this.player.flipX){
-                                            this.player.x -= (screenWidth * 0.001) * this.movementMod
-                                        } else {
-                                            this.player.x += (screenWidth * 0.001) * this.movementMod
                                         }  
-                                    }  
-                                }                                                           
-                            }
+                                    }                                                           
+                                }
                             // Air
                             } else if (!this.player.body.onFloor()) {
 
                             // Base                        
 
-                            // Air Attack Hang Time
-                            if (this.player.body.velocity.y > 0 && this.floor.y - this.player.y > screenHeight * this.baseMinHangHeight) {
-                                this.player.setVelocityY(this.player.body.velocity.y * 0.25)
-                            }  
+                            // Air Attack Hang Time    
+                            this.playerSubModule_AirTime(0,this.actionPower,0.85)            
+                          
 
                             // Directional Variations
                             
@@ -1593,27 +1616,31 @@ class Simulacrum extends Phaser.Scene {
                                 this.playerAttackStrengthX = Phaser.Math.Between(0,0) * this.actionPower
                                 this.playerAttackStrengthY = Phaser.Math.Between(-750,-1000) * this.actionPower
 
-                                // Animation
+                                // Hang Time
+                                this.playerSubModule_AirTime(0,this.actionPower,0.5)   
 
-                                // Air Attack Animation
-                                this.player.play({key:'player_Avatar_3_ACTION_1',frameRate: (
-                                    (this.baseAttackSpeed * this.baseActionSpeedPercent)
-                                    + 
-                                    ((this.baseAttackSpeed * (1-this.baseActionSpeedPercent)) * Math.abs(this.actionPower))
-                                    )
-                                    },true)
+                                    // Animation
+                                    this.player.play({key:'player_Avatar_3_ACTION_1',frameRate: (
+                                        (this.baseAttackSpeed * this.baseActionSpeedPercent)
+                                        + 
+                                        ((this.baseAttackSpeed * (1-this.baseActionSpeedPercent)) * Math.abs(this.actionPower))
+                                        )
+                                        },true)
+                                    
+                                    // Position & Movement
+                                    if (this.player.flipX){
+                                        this.player.setAngle(45)
+                                    } else {
+                                        this.player.setAngle(-45)
+                                    }
 
-                                if (this.player.flipX){
-                                    this.player.setAngle(45)
-                                } else {
-                                    this.player.setAngle(-45)
-                                }
-
-                                if (this.player.anims.getName() == 'player_Avatar_3_ACTION_1'){
-                                    if (this.player.anims.currentFrame.index >= 6 && this.player.anims.currentFrame.index < 12){
-                                            this.player.y -= (screenHeight * 0.001) * this.movementMod   
+                                    if (this.player.anims.getName() == 'player_Avatar_3_ACTION_1'){
+                                        if (this.player.anims.currentFrame.index >= 6 && this.player.anims.currentFrame.index < 12){
+                                                this.player.y -= (screenHeight * 0.0075) * this.actionPower * this.movementMod   
+                                        } 
                                     } 
-                                } 
+
+                                
 
                             } else  
                             
@@ -1621,29 +1648,28 @@ class Simulacrum extends Phaser.Scene {
                             if (downIsDown){
                                 // Stats
                                 this.playerAttackStrengthX = Phaser.Math.Between(0,0) * this.actionPower
-                                this.playerAttackStrengthY = Phaser.Math.Between(500,1000) * this.actionPower
+                                this.playerAttackStrengthY = Phaser.Math.Between(750,1000) * this.actionPower
 
-                                // Animation
+                                    // Animation
+                                    this.player.play({key:'player_Avatar_3_ACTION_1',frameRate: (
+                                        (this.baseAttackSpeed * this.baseActionSpeedPercent)
+                                        + 
+                                        ((this.baseAttackSpeed * (1-this.baseActionSpeedPercent)) * Math.abs(this.actionPower))
+                                        )
+                                        },true)
+                                        
+                                    // Position & Movement
+                                    if (this.player.flipX){
+                                        this.player.setAngle(-45)
+                                    } else {
+                                        this.player.setAngle(45)
+                                    }
 
-                                // Air Attack Animation
-                                this.player.play({key:'player_Avatar_3_ACTION_1',frameRate: (
-                                    (this.baseAttackSpeed * this.baseActionSpeedPercent)
-                                    + 
-                                    ((this.baseAttackSpeed * (1-this.baseActionSpeedPercent)) * Math.abs(this.actionPower))
-                                    )
-                                    },true)
-
-                                if (this.player.flipX){
-                                    this.player.setAngle(-45)
-                                } else {
-                                    this.player.setAngle(45)
-                                }
-
-                                if (this.player.anims.getName() == 'player_Avatar_3_ACTION_1'){
-                                    if (this.player.anims.currentFrame.index >= 6 && this.player.anims.currentFrame.index < 12){
-                                            this.player.y += (screenHeight * 0.001) * this.movementMod   
+                                    if (this.player.anims.getName() == 'player_Avatar_3_ACTION_1'){
+                                        if (this.player.anims.currentFrame.index >= 6 && this.player.anims.currentFrame.index < 12){
+                                                this.player.y += (screenHeight * 0.00325) * this.actionPower * this.movementMod
+                                        } 
                                     } 
-                                } 
                             } else 
 
                             // Aim Left/Right
@@ -1654,21 +1680,19 @@ class Simulacrum extends Phaser.Scene {
                                 this.playerAttackStrengthY = Phaser.Math.Between(0,0) * this.actionPower
 
                                 // Animation
-
-                                // Air Attack Animation
                                 this.player.play({key:'player_Avatar_3_ACTION_1',frameRate: (
                                     (this.baseAttackSpeed * this.baseActionSpeedPercent)
                                     + 
                                     ((this.baseAttackSpeed * (1-this.baseActionSpeedPercent)) * Math.abs(this.actionPower))
                                     )
                                     },true)
-
+                                // Position & Movement    
                                 if (this.player.anims.getName() == 'player_Avatar_3_ACTION_1'){
                                     if (this.player.anims.currentFrame.index >= 6 && this.player.anims.currentFrame.index < 12){
                                         if (this.player.flipX){
-                                            this.player.x -= (screenWidth * 0.001) * this.movementMod
+                                            this.player.x -= (screenWidth * 0.0075) * this.movementMod
                                         } else {
-                                            this.player.x += (screenWidth * 0.001) * this.movementMod
+                                            this.player.x += (screenWidth * 0.00325) * this.movementMod
                                         }  
                                     } 
                                 } 
@@ -1687,7 +1711,7 @@ class Simulacrum extends Phaser.Scene {
                                     )
                                     },true)
                             }
-                        }
+                            }
 
                     } else
                 // A2 Button 
@@ -1807,7 +1831,7 @@ class Simulacrum extends Phaser.Scene {
                     // Up Button 
                     // Jump
                         if (upIsDown){
-
+                            
                             // Animation
 
                                 // Ground / Air
@@ -1816,9 +1840,9 @@ class Simulacrum extends Phaser.Scene {
 
                                     this.player.play({key:'player_Avatar_3_CROUCH',frameRate: 20 + (8 * Math.abs(this.actionPower))},true)
                             
-                                        this.player.once('animationcomplete', function (anim,frame) {
-                                            this.player.emit('animationcomplete_' + anim.key, frame)
-                                    },this)
+                                    //     this.player.once('animationcomplete', function (anim,frame) {
+                                    //         this.player.emit('animationcomplete_' + anim.key, frame)
+                                    // },this)
 
                                 } else {
                                     this.player.play({key:'player_Avatar_3_JUMP',frameRate: 10},true)
@@ -1838,21 +1862,23 @@ class Simulacrum extends Phaser.Scene {
                                 // Ground
                                     if (this.player.body.onFloor()){
 
-                                        this.player.once('animationcomplete_player_Avatar_3_CROUCH', function (){
+                                        //this.player.once('animationcomplete_player_Avatar_3_CROUCH', function (){
                                             this.player.setVelocityY(
-                                                                    (-this.baseJumpHeight * this.baseJumpHeightPercent) 
+                                                                    (-this.baseJumpHeight * this.baseJumpHeightPercent ) 
                                                                     - 
                                                                     ((this.baseJumpHeight * (1-this.baseJumpHeightPercent)) * this.actionPower)
                                                                     )
                                            
-                                        },this)
+                                       // },this)
                                     } 
                                 // Air
-                                    else  {                     
-                                       
-                                        if (this.player.body.velocity.y > 0 && this.floor.y - this.player.y > screenHeight * this.baseMinHangHeight ){
-                                        this.player.setVelocityY(this.player.body.velocity.y * (1 - (this.baseHangTime * this.actionPower)))
+                                    else  {  
+          
+                                        if (this.player.body.velocity.y < 0){ // Not needed for Velocity approach but doesnt seem to affect
+                                            this.player.setVelocityY(this.player.body.velocity.y * 1.025)   // Effectively slows rate of deceleration, i.e time to reach 0 velocity 
+                                            //this.player.y -= screenHeight * 0.005 // Moves player up at given rate until velocity = 0, i.e max height to reach at 0 velocity
                                         }
+                                        this.playerSubModule_AirTime(0,this.actionPower,0.95)  
 
                                     }
 
@@ -2064,6 +2090,16 @@ class Simulacrum extends Phaser.Scene {
         
     }
 
+    playerSubModule_AirTime(triggerVelocity,powerSource,powerSourceMin){
+        if (this.player.body.velocity.y > triggerVelocity ) {
+            if (powerSource >= powerSourceMin){
+                this.player.body.setGravityY(-this.physics.world.gravity.y).setVelocityY(0)
+            } else if (this.floor.y - this.player.y > screenHeight * this.baseMinHangHeight) {
+                this.player.body.setGravityY(-this.physics.world.gravity.y * this.actionPower)
+            }
+        } 
+    }
+
     enterBattle(){
         if(this.gameMode == 0){
 
@@ -2111,6 +2147,8 @@ class Simulacrum extends Phaser.Scene {
             this.playerVitals.decreaseLife(0.5)
             this.playerIsHit = true
             this.player.flipX = true
+            this.camera.flash(175,204,0,0)
+            this.player.setTint(0xff7a7a)
             this.player.play({key:'player_Avatar_3_TAKE_HIT',frameRate: 10 * this.playerSpeed},true)
             this.player.once('animationcomplete', function (){
                 this.playerIsHit = false
@@ -2148,7 +2186,7 @@ class Simulacrum extends Phaser.Scene {
         this.platforms(this)
 
         // Enemies
-        this.enemies(this)
+        this.enemyModule(this)
 
         // Stage
         this.stageModule()
