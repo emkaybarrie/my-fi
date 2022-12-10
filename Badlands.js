@@ -856,7 +856,7 @@ class Badlands extends Phaser.Scene {
                 this.player.setCollideWorldBounds(true);
                 this.physics.add.collider(this.player,this.floor);
                 this.physics.add.collider(this.player,this.platformGroup)
-                aathis.physics.add.overlap(this.player,this.enemyGroup,this.enterBattle,null,this)
+                this.physics.add.overlap(this.player,this.enemyGroup,this.enterBattle,null,this)
 
                 this.playerAttackHitBox = this.add.sprite(this.player.x, this.player.y)
                 this.physics.add.existing(this.playerAttackHitBox, false)
