@@ -2229,7 +2229,7 @@ class Badlands extends Phaser.Scene {
             // Base Mode Toggles 
                 // Base Energy Cost
                     if (this.prod == true){
-                        this.baseCost = 0.5
+                        this.baseCost = 1
                     } else {
                         this.baseCost = 1
                     }
@@ -2237,7 +2237,7 @@ class Badlands extends Phaser.Scene {
                 // Base Mode Movement Modifier
 
                     if (this.prod == true){
-                        this.movementMod = 0.5
+                        this.movementMod = 1
                     } else {
                         this.movementMod = 1
                     }
