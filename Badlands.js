@@ -3415,6 +3415,7 @@ class Badlands extends Phaser.Scene {
 
             if (abortStageIsDown){
                 abortStageIsDown = false
+                this.recordScores()
                 this.scene.start('Kianova',{regionID:this.stageData.regionID,glory:Math.round(glory)})
                 //reset()
                 this.scene.stop('Badlands')
