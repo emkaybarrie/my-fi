@@ -856,7 +856,7 @@ class Badlands extends Phaser.Scene {
                 this.player.setCollideWorldBounds(true);
                 this.physics.add.collider(this.player,this.floor);
                 this.physics.add.collider(this.player,this.platformGroup)
-                //this.physics.add.overlap(this.player,this.enemyGroup,this.enterBattle,null,this)
+                aathis.physics.add.overlap(this.player,this.enemyGroup,this.enterBattle,null,this)
 
                 this.playerAttackHitBox = this.add.sprite(this.player.x, this.player.y)
                 this.physics.add.existing(this.playerAttackHitBox, false)
@@ -1684,7 +1684,7 @@ class Badlands extends Phaser.Scene {
             this.camera.on('camerafadeoutcomplete', function () {
                 this.scene.run('Kianova',{regionID:this.stageData.regionID,stage:this.stageScore,glory:Math.round(this.gloryScore),rewards:this.rewardsScore,gold:this.goldScore})
                 this.scene.stop('Badlands')
-        },this);
+            },this);
         }
 
     }
@@ -3406,7 +3406,6 @@ class Badlands extends Phaser.Scene {
 
         // End of V1 Code
       
-
             spotlightPlayerHealth.intensity =  0.5 * (this.currentLife / this.maxLife)
             spotlightPlayerPower.intensity =  0.5 * (this.currentFocus / this.maxFocus)
 
@@ -3416,9 +3415,15 @@ class Badlands extends Phaser.Scene {
             if (abortStageIsDown){
                 abortStageIsDown = false
                 this.recordScores()
-                this.scene.start('Kianova',{regionID:this.stageData.regionID,glory:Math.round(glory)})
-                //reset()
+                this.scene.run('Kianova',{regionID:this.stageData.regionID,stage:this.stageScore,glory:Math.round(this.gloryScore),rewards:this.rewardsScore,gold:this.goldScore})
                 this.scene.stop('Badlands')
+
+ 
+                // this.camera.fadeOut(6000)
+                // this.camera.on('camerafadeoutcomplete', function () {
+                    // this.scene.run('Kianova',{regionID:this.stageData.regionID,stage:this.stageScore,glory:Math.round(this.gloryScore),rewards:this.rewardsScore,gold:this.goldScore})
+                    // this.scene.stop('Badlands')
+                // },this);
             }
 
         // General / Universal
