@@ -60,9 +60,8 @@ var config = {
         // Region Scenes act as repositories for stage data, by Region (via functions), exports stage data to Badlands when queried (after health checks)
         Region1,
         Region2,
-        //Region3,
+        Region3,
         Region4,
-        Region5,
         // Test Environment for Latest Region Scene & Test Stage
         RegionTestEnvironment,
         

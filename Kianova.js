@@ -21,15 +21,15 @@ var sectorName
 
 var sector1Icon
 var sector2Icon
+var sector0Icon
 var sector3Icon
 var sector4Icon
-var sector5Icon
 
 var sector1MapIcon
 var sector2MapIcon
+var sector0MapIcon
 var sector3MapIcon
 var sector4MapIcon
-var sector5MapIcon
 
 
 var chosenSectorArrayIcon = 2
@@ -63,7 +63,7 @@ class Kianova extends Phaser.Scene {
 
         // Sector Variables
 
-        this.sectorIconArray = [1,2,3,4,5]
+        this.sectorIconArray = [1,2,0,3,4]
 
         this.selectedSectorIcon
 
@@ -125,7 +125,7 @@ class Kianova extends Phaser.Scene {
 
         this.load.image('load', 'assets/KianovaLoadScreen.png');
         this.load.image('map', 'assets/KianovaMap.png');
-        for(var i = 1; i < 6; i++){
+        for(var i = 0; i < 5; i++){
             this.load.image('r' + i + 'Icon', ['assets/region' + i +'Icon.png','assets/region' + i +'Icon_n.png']);
         }
         this.load.image('textBox', 'assets/vFX/textBox2a.png');
@@ -147,9 +147,9 @@ class Kianova extends Phaser.Scene {
 
         this.load.image('region1Image', 'assets/icons/kianova/region1_A.png');
         this.load.image('region2Image', 'assets/icons/kianova/region2_A.png');
+        this.load.image('region0Image', 'assets/icons/kianova/region0_A.png');
         this.load.image('region3Image', 'assets/icons/kianova/region3_A.png');
         this.load.image('region4Image', 'assets/icons/kianova/region4_A.png');
-        this.load.image('region5Image', 'assets/icons/kianova/region5_A.png');
 
     }
 
@@ -478,25 +478,14 @@ class Kianova extends Phaser.Scene {
         this.patronNameText.y = this.patronIcon.y
         this.patronNameText.setFontSize(20)
         this.patronNameText.setText('Omnia')
-       
-        
-        
 
-
-        
-       
-        
-       
-
-        
         this.sectorDefaultMapIconScale = 0.16
-        
 
         sector1MapIcon = this.add.image(this.wSectorPosX, this.wSectorPosY, 'r1Icon').setScale(this.sectorDefaultMapIconScale * (scaleModX))
         sector2MapIcon = this.add.image(this.nSectorPosX, this.nSectorPosY, 'r2Icon').setScale(this.sectorDefaultMapIconScale * (scaleModX))
-        sector3MapIcon = this.add.image(this.kSectorPosX, this.kSectorPosY, 'r3Icon').setScale(this.sectorDefaultMapIconScale * (scaleModX))
-        sector4MapIcon = this.add.image(this.sSectorPosX, this.sSectorPosY, 'r4Icon').setScale(this.sectorDefaultMapIconScale * (scaleModX))
-        sector5MapIcon = this.add.image(this.eSectorPosX, this.eSectorPosY, 'r5Icon').setScale(this.sectorDefaultMapIconScale * (scaleModX))
+        sector0MapIcon = this.add.image(this.kSectorPosX, this.kSectorPosY, 'r0Icon').setScale(this.sectorDefaultMapIconScale * (scaleModX))
+        sector3MapIcon = this.add.image(this.sSectorPosX, this.sSectorPosY, 'r3Icon').setScale(this.sectorDefaultMapIconScale * (scaleModX))
+        sector4MapIcon = this.add.image(this.eSectorPosX, this.eSectorPosY, 'r4Icon').setScale(this.sectorDefaultMapIconScale * (scaleModX))
 
         sector1MapIcon.setVisible()
         this.selectedSectorIcon  = this.add.tileSprite(this.kSectorPosX,this.kSectorPosY,sector1MapIcon.displayWidth,sector1MapIcon.displayHeight,'menuSelectionTexture').setAlpha(0.3);
@@ -516,9 +505,9 @@ class Kianova extends Phaser.Scene {
 
         sector1Icon = this.add.image(screenWidth * 0.315, screenHeight * 0.89, 'r1Icon').setScale(0.5 * (scaleModX))
         sector2Icon = this.add.image(screenWidth * 0.4, screenHeight * 0.89, 'r2Icon').setScale(0.5 * (scaleModX))
-        sector3Icon = this.add.image(screenWidth * 0.5, screenHeight * 0.89, 'r3Icon').setScale(0.75 * (scaleModX))
-        sector4Icon = this.add.image(screenWidth * 0.6, screenHeight * 0.89, 'r4Icon').setScale(0.5 * (scaleModX))
-        sector5Icon = this.add.image(screenWidth * 0.685, screenHeight * 0.89, 'r5Icon').setScale(0.5 * (scaleModX))
+        sector0Icon = this.add.image(screenWidth * 0.5, screenHeight * 0.89, 'r0Icon').setScale(0.75 * (scaleModX))
+        sector3Icon = this.add.image(screenWidth * 0.6, screenHeight * 0.89, 'r3Icon').setScale(0.5 * (scaleModX))
+        sector4Icon = this.add.image(screenWidth * 0.685, screenHeight * 0.89, 'r4Icon').setScale(0.5 * (scaleModX))
 
         sectorInfo = this.add.group()
         sectorInfo.addMultiple([this.textBox,this.text,this.sectorGloryScoreIcon,this.sectorGloryScoreText,this.patronIcon,this.patronNameText
@@ -530,9 +519,9 @@ class Kianova extends Phaser.Scene {
         this.sectorUI.addMultiple([playerIconBox,playerIcon,playerLoginName,avatarName,resilienceIcon,resilienceStars,focusIcon,focusStars,staminaIcon,
                                     staminaStars,this.storedRewardsIcon,this.storedRewardsText,
                                     this.cityIconBox,this.sectorImage,this.sectorNameText,this.sectorGloryScoreText,this.votingPowerIcon,this.votingPowerGrowthIcon,regionRewardsIcon,
-                                    regionPowerGrowthIcon,this.gloryScoreIcon,this.gloryScoreText,this.loginNameBox,sector1Icon,sector2Icon,sector3Icon,
-                                    sector4Icon,sector5Icon,this.sectorIconBox,
-                                    sector1MapIcon,sector2MapIcon,sector3MapIcon,sector4MapIcon,sector5MapIcon,this.selectedSectorIcon
+                                    regionPowerGrowthIcon,this.gloryScoreIcon,this.gloryScoreText,this.loginNameBox,sector1Icon,sector2Icon,sector0Icon,
+                                    sector3Icon,sector4Icon,this.sectorIconBox,
+                                    sector1MapIcon,sector2MapIcon,sector0MapIcon,sector3MapIcon,sector4MapIcon,this.selectedSectorIcon
                                 ]) 
         this.sectorUI.setVisible(0)
         
@@ -583,6 +572,7 @@ class Kianova extends Phaser.Scene {
             } 
 
             this.refreshUI()
+            console.log(selectedSector)
             
             
         } else if (rightIsDown && this.controlsEnabled){
@@ -596,6 +586,8 @@ class Kianova extends Phaser.Scene {
                 } 
 
                 this.refreshUI()
+
+                console.log(selectedSector)
     
                 
         }
@@ -606,13 +598,14 @@ class Kianova extends Phaser.Scene {
             camera.fadeOut(250)
             
             camera.once('camerafadeoutcomplete',function(){
-                if(selectedSector == 3){
-                    activeRegion = 'RegionTestEnvironment'
+                if(selectedSector == 0){
+                    activeRegion = 'Region' + String(Phaser.Math.Between(1,4))
                 } else {
                     activeRegion = 'Region'+ String(selectedSector)
                 }
                 
                 console.log('Selected Region: ' + activeRegion)
+                console.log('Target Scene: ' + this.targetS)
                 
                 nextScene = true
             
@@ -624,104 +617,102 @@ class Kianova extends Phaser.Scene {
             this.scene.start('MainMenu')
         }
 
-            // Change to pointerdown listener and get gameovject to set region
-            sector1Icon.on('pointerdown', function(){
+            // // Change to pointerdown listener and get gameovject to set region
+            // sector1Icon.on('pointerdown', function(){
 
-                activeRegion = 'Region0'
+            //     activeRegion = 'Region0'
             
-                console.log('Selected Region: ' + activeRegion)
+            //     console.log('Selected Region: ' + activeRegion)
                 
                 
             
         
-                chosenSectorArrayIcon = 2
-                this.refreshUI()
+            //     chosenSectorArrayIcon = 2
+            //     this.refreshUI()
 
-            },this)
+            // },this)
 
-            sector1Icon.on('pointerdown', function(){
+            // sector1Icon.on('pointerdown', function(){
 
-                    activeRegion = 'Region1'
+            //         activeRegion = 'Region1'
                 
-                console.log('Selected Region: ' + activeRegion)
+            //     console.log('Selected Region: ' + activeRegion)
                 
                 
                 
                 
             
-                    chosenSectorArrayIcon = 0
-                    this.refreshUI()
+            //         chosenSectorArrayIcon = 0
+            //         this.refreshUI()
                 
 
-            },this)
+            // },this)
 
-            sector2Icon.on('pointerdown', function(){
+            // sector2Icon.on('pointerdown', function(){
 
-                activeRegion = 'Region2'
+            //     activeRegion = 'Region2'
             
-            console.log('Selected Region: ' + activeRegion)
+            // console.log('Selected Region: ' + activeRegion)
             
                 
             
             
-                chosenSectorArrayIcon = 1
-                this.refreshUI()
+            //     chosenSectorArrayIcon = 1
+            //     this.refreshUI()
             
 
-            },this)
+            // },this)
 
-            sector4Icon.on('pointerdown', function(){
+            // sector3Icon.on('pointerdown', function(){
 
-                activeRegion = 'Region3'
+            //     activeRegion = 'Region3'
             
-            console.log('Selected Region: ' + activeRegion)
+            // console.log('Selected Region: ' + activeRegion)
             
                 
                 
                 
-                    chosenSectorArrayIcon = 3
-                    this.refreshUI()
+            //         chosenSectorArrayIcon = 3
+            //         this.refreshUI()
                 
         
 
-            },this)
+            // },this)
 
-            sector5Icon.on('pointerdown', function(){
+            // sector4Icon.on('pointerdown', function(){
 
-                activeRegion = 'Region4'
+            //     activeRegion = 'Region4'
             
-            console.log('Selected Region: ' + activeRegion)
-            
-            
+            // console.log('Selected Region: ' + activeRegion)
             
             
-                chosenSectorArrayIcon = 4
             
-                this.refreshUI()
-            },this)
+            
+            //     chosenSectorArrayIcon = 4
+            
+            //     this.refreshUI()
+            // },this)
 
-            this.textBox.on('pointerdown', function(){
+            // this.textBox.on('pointerdown', function(){
 
-                if(selectedSector == 0){
-                    activeRegion = 'Region' + String(Phaser.Math.Between(1,4))
-                } else {
-                    activeRegion = 'Region'+ String(selectedSector)
-                }
+            //     if(selectedSector == 0){
+            //         activeRegion = 'Region' + String(Phaser.Math.Between(1,4))
+            //     } else {
+            //         activeRegion = 'Region'+ String(selectedSector)
+            //     }
 
-                console.log('Selected Region: ' + activeRegion)
+            //     console.log('Selected Region: ' + activeRegion)
                 
-                nextScene = true
+            //     nextScene = true
 
-            },this) 
+            // },this) 
 
            
 
         if (nextScene && this.controlsEnabled){
             this.scene.start(activeRegion, {targetScene: 'Badlands',targetZone: 0, currentTimePeriod: Phaser.Math.Between(1,4),rarityOverride:null})
             nextScene = false
-            //setTimeout(() => {
             this.scene.stop('Kianova')
-            //},50)
             
         }
 
@@ -750,7 +741,7 @@ class Kianova extends Phaser.Scene {
 
         // Move UI Cursor, Move Sector Cursor, and Update Data
             
-            for (var i = 1; i < 6; i++){
+            for (var i = 0; i < 5; i++){
                 window['sector' + i + 'Icon'].setTint(0x333333)
                 window['sector' + i + 'MapIcon'].setVisible()
             }
@@ -791,9 +782,6 @@ class Kianova extends Phaser.Scene {
                 this.selectedSectorIcon.y = this.nSectorPosY
 
                 tint = 'ec9706'
-                              
-                              
-                
 
                 sectorName = 'North Sector'
                 this.votingPower = '575 (5%)'
@@ -808,17 +796,13 @@ class Kianova extends Phaser.Scene {
 
            
     
-            } else if (selectedSector == 3){
-         
+            } else if (selectedSector == 0){
 
-
-                this.selectedSectorIcon.setDisplaySize(sector2MapIcon.displayWidth,sector2MapIcon.displayHeight)
+                this.selectedSectorIcon.setDisplaySize(sector0MapIcon.displayWidth,sector0MapIcon.displayHeight)
                 this.selectedSectorIcon.x = this.kSectorPosX
                 this.selectedSectorIcon.y = this.kSectorPosY
 
                 tint = '7851a9'
-                              
-                
 
                 sectorName = 'Grand Square' 
                 this.votingPower = '1475 (2%)'               
@@ -830,15 +814,13 @@ class Kianova extends Phaser.Scene {
                 sectorAffinity = 'Omnia'
 
 
-            } else if (selectedSector == 4){
+            } else if (selectedSector == 3){
       
-                this.selectedSectorIcon.setDisplaySize(sector4MapIcon.displayWidth,sector4MapIcon.displayHeight)
+                this.selectedSectorIcon.setDisplaySize(sector3MapIcon.displayWidth,sector3MapIcon.displayHeight)
                 this.selectedSectorIcon.x = this.sSectorPosX
                 this.selectedSectorIcon.y = this.sSectorPosY
 
                 tint = 'c6f5ff'
-                              
-              
 
                 sectorName = 'South Sector'
                 this.votingPower = '2546 (23%)'
@@ -851,17 +833,15 @@ class Kianova extends Phaser.Scene {
                 sectorAffinity = 'Lucarus'
 
 
-            } else if (selectedSector == 5){
+            } else if (selectedSector == 4){
 
 
 
-                this.selectedSectorIcon.setDisplaySize(sector5MapIcon.displayWidth,sector5MapIcon.displayHeight)
+                this.selectedSectorIcon.setDisplaySize(sector4MapIcon.displayWidth,sector4MapIcon.displayHeight)
                 this.selectedSectorIcon.x = this.eSectorPosX
                 this.selectedSectorIcon.y = this.eSectorPosY
 
                 tint = 'FF0400'
-                              
-               
 
                 sectorName = 'East Sector'
                 this.votingPower = '4655 (41%)'
@@ -876,9 +856,7 @@ class Kianova extends Phaser.Scene {
             }
             
 
-            //playerIconBox.setTint('0x' + tint)
             this.cityIconBox.setTint('0x' + tint)
-            //this.loginNameBox.setTint('0x' + tint)
             this.sectorGloryScoreText.setColor('#' + tint)
             this.textBox.setTint('0x' + tint)
             this.sectorIconBox.setTint('0x' + tint)
@@ -886,7 +864,6 @@ class Kianova extends Phaser.Scene {
             this.sectorNameText.setText(sectorName)
             this.votingPowerText.setText(this.votingPower)
             this.regionRewardsText.setText(this.regionRewards)
-            
             
             this.sectorGloryScoreText.setText(this.sectorGloryScore)
             this.patronNameText.setText(sectorAffinity)
@@ -898,29 +875,22 @@ class Kianova extends Phaser.Scene {
                 // Reposition Elements
                 if(selectedSector == 1){
                     this.textBox.setPosition(this.selectedSectorIcon.x + (this.selectedSectorIcon.displayHeight * 0) , this.selectedSectorIcon.y - (this.selectedSectorIcon.displayHeight * -3))
-  
                 } else if(selectedSector == 2){
                     this.textBox.setPosition(this.selectedSectorIcon.x + (this.selectedSectorIcon.displayHeight * -4) , this.selectedSectorIcon.y - (this.selectedSectorIcon.displayHeight * 3))
-                    //this.textBox.setPosition(this.selectedSectorIcon.x + (this.selectedSectorIcon.displayHeight * 6) , this.selectedSectorIcon.y - (this.selectedSectorIcon.displayHeight * 2))
+                } else if (selectedSector == 0){
+                    this.textBox.setPosition(this.selectedSectorIcon.x + (this.selectedSectorIcon.displayHeight * -5), this.selectedSectorIcon.y - (this.selectedSectorIcon.displayHeight * -2))    
                 } else if (selectedSector == 3){
-                    this.textBox.setPosition(this.selectedSectorIcon.x + (this.selectedSectorIcon.displayHeight * -5), this.selectedSectorIcon.y - (this.selectedSectorIcon.displayHeight * -2))
-     
-                } else if (selectedSector == 4){
                     this.textBox.setPosition(this.selectedSectorIcon.x + (this.selectedSectorIcon.displayHeight * 6) , this.selectedSectorIcon.y - (this.selectedSectorIcon.displayHeight * 0))
-     
-                } else if (selectedSector == 5){
+                } else if (selectedSector == 4){
                     this.textBox.setPosition(this.selectedSectorIcon.x + (this.selectedSectorIcon.displayHeight * 6) , this.selectedSectorIcon.y - (this.selectedSectorIcon.displayHeight * 1))
  
                 } 
-                    
-                
-                    
 
                     this.sectorGloryScoreIcon.setPosition(this.textBox.x - 60,this.textBox.y - 45)
                     this.sectorGloryScoreText.setPosition(this.sectorGloryScoreIcon.x,this.sectorGloryScoreIcon.y + 35)
                     this.sectorGloryScoreText.setFontSize(20)
 
-                    if(selectedSector == 3){
+                    if(selectedSector == 0){
                         this.patronIcon.setPosition(this.textBox.x,this.sectorGloryScoreIcon.y)
                     } else {
                         this.patronIcon.setPosition(this.textBox.x + 60,this.sectorGloryScoreIcon.y) 
@@ -928,19 +898,8 @@ class Kianova extends Phaser.Scene {
                     this.patronNameText.setPosition(this.patronIcon.x,this.patronIcon.y + 35)
                     this.patronNameText.setFontSize(20)
                     
-                   
                     this.text.setPosition(this.textBox.x,this.textBox.y + 40)
                     
-                    
-                
-                    
-                    
-                    
-
-                    
-                    
-
-
                     votingPowerGrowthStars.setX(this.votingPowerGrowthIcon.x + (this.starToIconSpacing * (scaleModX)) , 30 * (scaleModX))
                     votingPowerGrowthStars.setY(this.votingPowerGrowthIcon.y)
 
@@ -986,7 +945,7 @@ class Kianova extends Phaser.Scene {
 
         
                 sectorInfo.setVisible(1)
-                if(selectedSector == 3){
+                if(selectedSector == 0){
                     this.sectorGloryScoreIcon.setVisible()
                     this.sectorGloryScoreText.setVisible()
                 } else {

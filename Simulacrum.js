@@ -82,61 +82,6 @@ class Simulacrum extends Phaser.Scene {
             this.load.audio("bgMusic7", ["assets/music/Talk_Like_Thunder.mp3"]);
     }
 
-    // Stage Functions
-    loadStageBG(stageAssetName,bgLayers,fgLayers){
-
-        console.log('bgL'+ i, this.stageData.stageAssetPathRoot + 'BG' + this.stageData.stageAssetName + i + '.png')
-        console.log('fgL'+ i, this.stageData.stageAssetPathRoot + 'FG' + this.stageData.stageAssetName + i+ '.png')
-
-        for (var i = 1; i < bgLayers + 1; i++){
-
-            this.load.image('bgL'+ i, this.stageData.stageAssetPathRoot + 'BG' + stageAssetName + i + '.png');
-
-        }
-
-        for (var i = 1; i < fgLayers + 1; i++){
-
-            this.load.image('fgL'+ i, this.stageData.stageAssetPathRoot + 'FG' + stageAssetName + i + '.png');
-
-        }
-
-    }
-
-    renderStageBG(bgLayers,bgScroll,floorMin,floorMax,floorColour ,fgLayers,fgScroll){
-        for (var i = bgLayers; i > 0; i--){
-                
-            this.textureToApply = this.textures.get('bgL' + i).getSourceImage()
-        
-            this.textureWidthScaleMod = screenWidth / this.textureToApply.width
-            this.textureHeightScaleMod = screenHeight / this.textureToApply.height     
-
-            window['bgL'+i] =  this.add.tileSprite(0,0,screenWidth,screenHeight).setScrollFactor(0).setOrigin(0)
-            window['bgL'+i].setTexture('bgL'+i).setTileScale(this.textureWidthScaleMod,this.textureHeightScaleMod)
-            window['bgL'+i+'ScrollMod'] = + bgScroll[i - 1]
-
-        }
-
-        this.floorHeight = Phaser.Math.FloatBetween(floorMin,floorMax)
-        
-        this.floor = this.physics.add.image(0, screenHeight * this.floorHeight,'floor').setScale((screenWidth * 5)/400, 2).setImmovable(true).refreshBody().setOrigin(0)
-        this.floor.body.setAllowGravity(false)
-        this.floor.setTint(floorColour)
-        this.floor.setVisible()
-
-        for (var i = fgLayers; i > 0; i--){
-
-            this.textureToApply = this.textures.get('fgL' + i).getSourceImage()
-        
-            this.textureWidthScaleMod = screenWidth / this.textureToApply.width
-            this.textureHeightScaleMod = screenHeight / this.textureToApply.height
-           
-            window['fgL'+i] =  this.add.tileSprite(0,0,screenWidth,screenHeight).setScrollFactor(0).setOrigin(0).setDepth(2)//.setAlpha(this.fgAlpha[i-1])
-            window['fgL'+i].setTexture('fgL'+i).setTileScale(this.textureWidthScaleMod,this.textureHeightScaleMod)
-            window['fgL'+i+'ScrollMod'] = + fgScroll[i - 1]
-            
-        }
-    }
-
     create(){
 
         // V1 Code
@@ -184,9 +129,8 @@ class Simulacrum extends Phaser.Scene {
                     this.stageProgressEnabled = true
                 },this)
 
-                //this.stageProgressEnabled = true
+                
 
-     
                 // Stage (A) - Base Background, Floor, and Base Foreground
 
                     // Import Stage Parameters to local active stage variables - redundant? Use stageData directly?
@@ -201,11 +145,17 @@ class Simulacrum extends Phaser.Scene {
                     this.floorMin = this.stageData.floorMin
                     this.floorMax = this.stageData.floorMax
                     this.floorColour = this.stageData.floorColour
+                    this.floorVisible = this.stageData.floorVisible
 
                     // Render Stage
                     
-                    this.renderStageBG(this.bgLayers,this.bgScroll,this.floorMin,this.floorMax,this.floorColour,this.fgLayers,this.fgScroll)
+                    this.renderStageBG(this.bgLayers,this.bgScroll,this.floorMin,this.floorMax,this.floorColour,this.floorVisible,this.fgLayers,this.fgScroll)
 
+                   // Day/Night System
+
+                   this.initialise_DayNightSystem() 
+                   console.log(this.lightSource.x)  
+                   
                 // Stage (B) - Background Objects & Obstacles
 
                 // Platforms
@@ -229,6 +179,9 @@ class Simulacrum extends Phaser.Scene {
                     maxSize: 20
                 });
 
+                this.closestEnemyOutline = this.add.sprite()
+                this.closestEnemyOutline.setTintFill(0x7851a9).setAlpha(0.75)
+
 
                 this.spawningEnemy = false  
                 this.enemyTimer = this.time.addEvent({delay: this.baseEnemySpawnTime * (60/this.musicBPM) * 1000, callback: this.spawnEnemy, args: [], callbackScope: this, loop: true});
@@ -245,7 +198,7 @@ class Simulacrum extends Phaser.Scene {
                 this.player.setCollideWorldBounds(true);
                 this.physics.add.collider(this.player,this.floor);
                 this.physics.add.collider(this.player,this.platformGroup)
-                this.physics.add.overlap(this.player,this.enemyGroup,this.enterBattle,null,this)
+                //this.physics.add.overlap(this.player,this.enemyGroup,this.enterBattle,null,this)
 
                 this.playerAttackHitBox = this.add.sprite(this.player.x, this.player.y)
                 this.physics.add.existing(this.playerAttackHitBox, false)
@@ -426,13 +379,284 @@ class Simulacrum extends Phaser.Scene {
                 bgMusic.play()
             },this)  
 
-        this.playerSpeedText = this.add.text(this.playerVitals.x + screenWidth * 0.3, screenHeight * 0.1, this.actionPower, { fontFamily: 'Gothic', fontStyle: 'bold' ,align: 'left'});
-        this.playerSpeedText.setFontSize(32).setDepth(1).setColor('#708421')
+  
+        this.debugText = this.add.text(this.playerVitals.x + screenWidth * 0.3, screenHeight * 0.1, this.actionPower, { fontFamily: 'Gothic', fontStyle: 'bold' ,align: 'left'});
+        this.debugText.setFontSize(32).setDepth(5).setColor('#708421')
 
-        this.playerBattleSpeedText = this.add.text(this.playerSpeedText.x + screenWidth * 0.3, screenHeight * 0.1, this.playerSpeed, { fontFamily: 'Gothic', fontStyle: 'bold' ,align: 'left'});
-        this.playerBattleSpeedText.setFontSize(32).setDepth(1).setColor('#803421')
         
     }
+
+        // Initialisation Functions
+            loadStageBG(stageAssetName,bgLayers,fgLayers){
+
+                
+                
+
+                for (var i = 1; i < bgLayers + 1; i++){
+                    console.log('bgL'+ i, this.stageData.stageAssetPathRoot + 'BG' + this.stageData.stageAssetName + i + '.png')
+                    this.load.image('bgL'+ i, this.stageData.stageAssetPathRoot + 'BG' + stageAssetName + i + '.png');
+
+                }
+
+                for (var i = 1; i < fgLayers + 1; i++){
+                    console.log('fgL'+ i, this.stageData.stageAssetPathRoot + 'FG' + this.stageData.stageAssetName + i+ '.png')
+                    this.load.image('fgL'+ i, this.stageData.stageAssetPathRoot + 'FG' + stageAssetName + i + '.png');
+
+                }
+
+            }
+
+            renderStageBG(bgLayers,bgScroll,floorMin,floorMax,floorColour,floorVisible,fgLayers,fgScroll){
+                for (var i = bgLayers; i > 0; i--){
+                        
+                    this.textureToApply = this.textures.get('bgL' + i).getSourceImage()
+                
+                    this.textureWidthScaleMod = screenWidth / this.textureToApply.width
+                    this.textureHeightScaleMod = screenHeight / this.textureToApply.height     
+
+                    window['bgL'+i] =  this.add.tileSprite(0,0,screenWidth,screenHeight).setScrollFactor(0).setOrigin(0).setPipeline('Light2D')
+                    window['bgL'+i].setTexture('bgL'+i).setTileScale(this.textureWidthScaleMod,this.textureHeightScaleMod)
+                    window['bgL'+i+'ScrollMod'] = + bgScroll[i - 1]
+
+                }
+
+                this.floorHeight = Phaser.Math.FloatBetween(floorMin,floorMax)
+                
+                this.floor = this.physics.add.image(0, screenHeight * this.floorHeight,'floor').setScale((screenWidth * 5)/400, 4).setImmovable(true).refreshBody().setOrigin(0)
+                this.floor.body.setAllowGravity(false)
+                this.floor.setTint(floorColour)
+                this.floor.setVisible(floorVisible)
+
+                for (var i = fgLayers; i > 0; i--){
+
+                    this.textureToApply = this.textures.get('fgL' + i).getSourceImage()
+                
+                    this.textureWidthScaleMod = screenWidth / this.textureToApply.width
+                    this.textureHeightScaleMod = screenHeight / this.textureToApply.height
+                
+                    window['fgL'+i] =  this.add.tileSprite(0,0,screenWidth,screenHeight).setScrollFactor(0).setOrigin(0).setPipeline('Light2D').setDepth(2)//.setAlpha(this.fgAlpha[i-1])
+                    window['fgL'+i].setTexture('fgL'+i).setTileScale(this.textureWidthScaleMod,this.textureHeightScaleMod)
+                    window['fgL'+i+'ScrollMod'] = + fgScroll[i - 1]
+                    
+                }
+            }
+
+            initialise_DayNightSystem(game){
+                // Day Night System Function
+                    console.log('Initialising Day/Night System')
+                    // Default Settings
+
+                        this.morningAmbientLightColourDefault = 0xE49759
+                        this.morningLightSourceColourDefault = 0xE49759
+                        this.morningLightSourceMinXDefault = 0.75
+                        this.morningLightSourceMaxXDefault = 1
+                        this.morningLightSourceMinYDefault = 0.25
+                        this.morningLightSourceMaxYDefault = 0.5
+
+                        this.dayAmbientLightColourDefault = 0xfdfbd3
+                        this.dayLightSourceColourDefault = 0xfdfbd3
+                        this.dayLightSourceMinXDefault = 0.5
+                        this.dayLightSourceMaxXDefault = 0.75
+                        this.dayLightSourceMinYDefault = 0
+                        this.dayLightSourceMaxYDefault = 0.25
+
+                        this.eveningAmbientLightColourDefault = 0xFF8866
+                        this.eveningLightSourceColourDefault = 0xFF8866
+                        this.eveningLightSourceMinXDefault = 0.25
+                        this.eveningLightSourceMaxXDefault = 0.5
+                        this.eveningLightSourceMinYDefault = 0.25
+                        this.eveningLightSourceMaxYDefault = 0.5
+
+                        this.nightAmbientLightColourDefault = 0x131862
+                        this.nightLightSourceColourDefault = 0x131862
+                        this.nightLightSourceMinXDefault = 0
+                        this.nightLightSourceMaxXDefault = 1
+                        this.nightLightSourceMinYDefault = 0
+                        this.nightLightSourceMaxYDefault = 0.25
+
+                // Store import stage parameters
+
+                    // Morning Arrays
+                    
+                        this.morningParametersArray = [this.morningAmbientLightColour,
+                                                        this.morningLightSourceColour,
+                                                        this.morningLightSourceMinX,
+                                                        this.morningLightSourceMaxX,
+                                                        this.morningLightSourceMinY,
+                                                        this.morningLightSourceMaxY]
+
+
+                        this.morningDefaultParametersArray = [this.morningAmbientLightColourDefault,
+                                                            this.morningLightSourceColourDefault,
+                                                            this.morningLightSourceMinXDefault,
+                                                            this.morningLightSourceMaxXDefault,
+                                                            this.morningLightSourceMinYDefault,
+                                                            this.morningLightSourceMaxYDefault]
+
+                        this.morningSettingsArray = [this.stageData.morningAmbientLightColour,
+                                                    this.stageData.morningLightSourceColour,
+                                                    this.stageData.morningLightSourceMinX,
+                                                    this.stageData.morningLightSourceMaxX,
+                                                    this.stageData.morningLightSourceMinY,
+                                                    this.stageData.morningLightSourceMaxY]
+                                          
+                    
+                    // Day Arrays
+
+                        this.dayParametersArray = [this.dayAmbientLightColour,
+                                                    this.dayLightSourceColour,
+                                                    this.dayLightSourceMinX,
+                                                    this.dayLightSourceMaxX,
+                                                    this.dayLightSourceMinY,
+                                                    this.dayLightSourceMaxY]
+
+                        this.dayDefaultParametersArray = [this.dayAmbientLightColourDefault,
+                                                            this.dayLightSourceColourDefault,
+                                                            this.dayLightSourceMinXDefault,
+                                                            this.dayLightSourceMaxXDefault,
+                                                            this.dayLightSourceMinYDefault,
+                                                            this.dayLightSourceMaxYDefault]   
+                                                            
+                        this.daySettingsArray = [this.stageData.dayAmbientLightColour,
+                            this.stageData.dayLightSourceColour,
+                            this.stageData.dayLightSourceMinX,
+                            this.stageData.dayLightSourceMaxX,
+                            this.stageData.dayLightSourceMinY,
+                            this.stageData.dayLightSourceMaxY]
+                    // Evening Arrays
+
+                        this.eveningParametersArray = [this.eveningAmbientLightColour,
+                                                    this.eveningLightSourceColour,
+                                                    this.eveningLightSourceMinX,
+                                                    this.eveningLightSourceMaxX,
+                                                    this.eveningLightSourceMinY,
+                                                    this.eveningLightSourceMaxY]
+
+                        this.eveningDefaultParametersArray = [this.eveningAmbientLightColourDefault,
+                                                            this.eveningLightSourceColourDefault,
+                                                            this.eveningLightSourceMinXDefault,
+                                                            this.eveningLightSourceMaxXDefault,
+                                                            this.eveningLightSourceMinYDefault,
+                                                            this.eveningLightSourceMaxYDefault]
+
+                        this.eveningSettingsArray = [this.stageData.eveningAmbientLightColour,
+                            this.stageData.eveningLightSourceColour,
+                            this.stageData.eveningLightSourceMinX,
+                            this.stageData.eveningLightSourceMaxX,
+                            this.stageData.eveningLightSourceMinY,
+                            this.stageData.eveningLightSourceMaxY]
+                    // Night Arrays
+
+                        this.nightParametersArray = [this.nightAmbientLightColour,
+                                                    this.nightLightSourceColour,
+                                                    this.nightLightSourceMinX,
+                                                    this.nightLightSourceMaxX,
+                                                    this.nightLightSourceMinY,
+                                                    this.nightLightSourceMaxY]
+
+                        this.nightDefaultParametersArray = [this.nightAmbientLightColourDefault,
+                                                            this.nightLightSourceColourDefault,
+                                                            this.nightLightSourceMinXDefault,
+                                                            this.nightLightSourceMaxXDefault,
+                                                            this.nightLightSourceMinYDefault,
+                                                            this.nightLightSourceMaxYDefault]
+                                                            
+                        this.nightSettingsArray = [this.stageData.nightAmbientLightColour,
+                            this.stageData.nightLightSourceColour,
+                            this.stageData.nightLightSourceMinX,
+                            this.stageData.nightLightSourceMaxX,
+                            this.stageData.nightLightSourceMinY,
+                            this.stageData.nightLightSourceMaxY]
+
+                    //  Load Parameters      
+                        for (var i = 0; i < this.morningParametersArray.length;i++){
+                            if(this.morningSettingsArray[i] == null){
+                                this.morningParametersArray[i] = this.morningDefaultParametersArray[i]
+                            } else {
+                                this.morningParametersArray[i] = this.morningSettingsArray[i]
+                            } 
+                            
+                        }
+
+                        for (var i = 0; i < this.dayParametersArray.length;i++){
+                            if(this.daySettingsArray[i] == null){
+                                this.dayParametersArray[i] = this.dayDefaultParametersArray[i]
+                            } else {
+                                this.dayParametersArray[i] = this.daySettingsArray[i]
+                            }   
+                        }
+
+                        for (var i = 0; i < this.eveningParametersArray.length;i++){
+                            if(this.eveningSettingsArray[i] == null){
+                                this.eveningParametersArray[i] = this.eveningDefaultParametersArray[i]
+                            } else {
+                                this.eveningParametersArray[i] = this.eveningSettingsArray[i]
+                            }   
+                        }
+
+                        for (var i = 0; i < this.nightParametersArray.length;i++){
+                            if(this.nightSettingsArray[i] == null){
+                                this.nightParametersArray[i] = this.nightDefaultParametersArray[i]
+                            } else {
+                                this.nightParametersArray[i] = this.nightSettingsArray[i]
+                            }   
+                        }
+                    
+                    // Parameter Arrays
+
+                            this.ambientLightColourArray = [this.morningParametersArray[0],
+                                                            this.dayParametersArray[0],
+                                                            this.eveningParametersArray[0],
+                                                            this.nightParametersArray[0]]
+                            
+                            this.lightSourceColourArray = [this.morningParametersArray[1],
+                                                            this.dayParametersArray[1],
+                                                            this.eveningParametersArray[1],
+                                                            this.nightParametersArray[1]]
+
+                            this.lightSourceMinXArray = [this.morningParametersArray[2],
+                                                        this.dayParametersArray[2],
+                                                        this.eveningParametersArray[2],
+                                                        this.nightParametersArray[2]]
+
+                            this.lightSourceMaxXArray = [this.morningParametersArray[3],
+                                                        this.dayParametersArray[3],
+                                                        this.eveningParametersArray[3],
+                                                        this.nightParametersArray[3]]                                                
+
+                            this.lightSourceMinYArray = [this.morningParametersArray[4],
+                                                            this.dayParametersArray[4],
+                                                            this.eveningParametersArray[4],
+                                                            this.nightParametersArray[4]]
+            
+                            this.lightSourceMaxYArray = [this.morningParametersArray[5],
+                                                            this.dayParametersArray[5],
+                                                            this.eveningParametersArray[5],
+                                                            this.nightParametersArray[5]]  
+
+                    // Apply Parameter Arrays
+
+                        // Ambient Light
+                            this.ambientLightColour = this.ambientLightColourArray[this.stageData.timeCode - 1]
+                        // Light Source
+                            this.lightSourceColour = this.lightSourceColourArray[this.stageData.timeCode - 1]
+                            this.lightSourcePositionX = Phaser.Math.Between((screenWidth * this.lightSourceMinXArray[this.stageData.timeCode - 1]),
+                                                                            (screenWidth * this.lightSourceMaxXArray[this.stageData.timeCode - 1]))
+                            this.lightSourcePositionY = Phaser.Math.Between((screenHeight * this.lightSourceMinYArray[this.stageData.timeCode - 1]),
+                                                                            (screenHeight * this.lightSourceMaxYArray[this.stageData.timeCode - 1]))
+
+                        console.log('Time Period: ' + this.stageData.timeCode)
+                        console.log('Ambient Colour: ' + this.ambientLightColour)
+                        console.log('Light Source Colour: ' + this.lightSourceColour)
+                        console.log(this.camera.scrollY)
+                        console.log('Light Position X: ' + this.lightSourcePositionX + '\nLight Position Y: ' + this.lightSourcePositionY +' (' + this.lightSourceMinYArray[this.stageData.timeCode - 1]*100 + '% - ' + this.lightSourceMaxYArray[this.stageData.timeCode - 1]*100 + '%)')
+                    
+                    // Initialise Day/Night System 
+                        
+                    this.lights.enable().setAmbientColor(this.ambientLightColour);
+                    this.lightSource = this.lights.addLight(this.camera.scrollX + this.lightSourcePositionX, this.camera.scrollY + this.lightSourcePositionY, screenWidth,this.lightSourceColour, 1);    
+                
+            }
 
     recordScores(){     
             this.stageScore = this.level
@@ -496,7 +720,12 @@ class Simulacrum extends Phaser.Scene {
             for (var i = 1; i < this.fgLayers + 1 ; i++){
                 window['fgL'+i].tilePositionX += (this.baseSpeed  * this.playerSpeed)  * window['fgL'+ i + 'ScrollMod'] * (scaleModX / (screenWidth / this.textures.get('fgL' + i).getSourceImage().width))
             }
-        } else {
+
+            this.lightSource.x -= (screenWidth * 0.00000003) * this.playerSpeed * 1000
+            this.lightSourceCameraXOffset = this.lightSource.x - this.camera.scrollX
+            this.cameraScrollAnchor = this.camera.scrollX
+
+        } else if (this.gameMode == 1) {
 
                 for (var i = 1; i < this.bgLayers + 1 ; i++){
                     window['bgL'+i].tilePositionX = this.camera.scrollX * window['bgL'+ i + 'ScrollMod'] * (scaleModX / (screenWidth / this.textures.get('bgL' + i).getSourceImage().width)) 
@@ -505,6 +734,13 @@ class Simulacrum extends Phaser.Scene {
                 for (var i = 1; i < this.fgLayers + 1 ; i++){
                     window['fgL'+i].tilePositionX = this.camera.scrollX * window['bgL'+ i + 'ScrollMod'] * (scaleModX / (screenWidth / this.textures.get('bgL' + i).getSourceImage().width)) 
                 }
+
+                console.log(this.camera.scrollX)
+                console.log(this.lightSource.x)
+
+                // less offset = moving right
+                // more offset = moving left
+                this.lightSource.x = this.camera.scrollX + ((this.lightSourceCameraXOffset * 0.9)  + (this.lightSourceCameraXOffset * (0.1 * (this.cameraScrollAnchor/this.camera.scrollX))))
  
         }
     }
@@ -584,7 +820,9 @@ class Simulacrum extends Phaser.Scene {
 
     enemyModule(game){
 
-        game.closestEnemy = game.physics.closest(this.player,game.enemyGroup.getMatching('active',true)) 
+        // game.closestEnemy = game.physics.closest(this.player,game.enemyGroup.getMatching('active',true)) 
+
+        
 
         game.enemyGroup.children.each(function(e) {
             // Lock on Code
@@ -753,10 +991,7 @@ class Simulacrum extends Phaser.Scene {
 
         if (game.enemyGroup.countActive() == 0){
             game.exitBattle(game)
-        } else if (openMenuIsDown){
-                    openMenuIsDown = false
-                    game.exitBattle(game)      
-        }
+        } 
     }
 
 
@@ -771,14 +1006,14 @@ class Simulacrum extends Phaser.Scene {
 
     enemyTakeHit(playerAttackHitBox,enemy){
         if(this.gameMode == 1){
-    
-            
-    
+
+            this.camera.flash()
+
         if(!enemy.isHit){
             enemy.isHit = true
 
             // Dodge Check Test
-            if(Phaser.Math.Between(0,100)<= 50){
+            if(Phaser.Math.Between(0,100)<= 30){
 
                 if (enemy.x >= this.player.x){
                     enemy.x += Phaser.Math.Between(25,75)
@@ -1270,7 +1505,11 @@ class Simulacrum extends Phaser.Scene {
             // Recovery animation
                 if (this.playerInAir && this.player.body.onFloor()){
                     if(this.gameMode == 0){
+                        if(this.player.body.bottom > this.floor.y - screenHeight * 0.01){
                         this.player.play({key:'player_Avatar_3_SLIDE',frameRate:24},true);
+                        } else {
+                            this.player.play({key:'player_Avatar_3_RUN',frameRate:this.baseRunFrameRate + (Phaser.Math.Between(14,20) * Math.abs(this.playerSpeed)),repeat:0},true); 
+                        }
                         this.player.x += screenWidth * 0.001 * this.playerSpeed
                     } else if(this.gameMode == 1) {
                         if(Math.abs(this.playerBattleSpeed) > 1){
@@ -1329,7 +1568,7 @@ class Simulacrum extends Phaser.Scene {
 
                             } else if (this.gameMode == 1){
                                 // Collision Detection
-
+                                    
                                     // Enable player sword collision detection
                                     if (this.player.anims.getName() == 'player_Avatar_3_ACTION_1'){
                                         if (this.player.anims.currentFrame.index >= 6 && this.player.anims.currentFrame.index < 12){
@@ -1362,6 +1601,8 @@ class Simulacrum extends Phaser.Scene {
                                             this.playerAttackHitBox.body.checkCollision.none = true
                                         }
 
+                                    } else {
+                                        this.playerAttackHitBox.body.checkCollision.none = true
                                     }
 
                             this.critChance = 25
@@ -1486,7 +1727,7 @@ class Simulacrum extends Phaser.Scene {
 
                             // Base                        
 
-                            // Air Attack Hang Time    
+                            // Air Attack Air Time    
                             this.playerSubModule_AirTime(0,this.actionPower,0.85)            
                         
 
@@ -1500,7 +1741,7 @@ class Simulacrum extends Phaser.Scene {
                                 this.playerAttackStrengthX = Phaser.Math.Between(0,0) * this.actionPower
                                 this.playerAttackStrengthY = Phaser.Math.Between(-750,-1000) * this.actionPower
 
-                                // Hang Time
+                                // Air Time
                                 this.playerSubModule_AirTime(0,this.actionPower,0.5)   
 
                                     // Animation
@@ -1562,6 +1803,9 @@ class Simulacrum extends Phaser.Scene {
                                 // Stats
                                 this.playerAttackStrengthX = Phaser.Math.Between(150,200) * this.actionPower
                                 this.playerAttackStrengthY = Phaser.Math.Between(0,0) * this.actionPower
+
+                                // Air Time
+                                this.playerSubModule_AirTime(0,this.actionPower,0.5) 
 
                                 // Animation
                                 this.player.play({key:'player_Avatar_3_ACTION_1',frameRate: (
@@ -1856,6 +2100,35 @@ class Simulacrum extends Phaser.Scene {
 
         // State Machine
 
+            // Closest Enemy
+
+                this.closestEnemy = this.physics.closest(this.player,this.enemyGroup.getMatching('active',true)) 
+
+                
+                if(this.closestEnemy && this.gameMode == 1){
+
+                    
+                    this.closestEnemyOutline.setOrigin(this.closestEnemy.originX,this.closestEnemy.originY)
+                    this.closestEnemyOutline.setScale(this.closestEnemy.scale * 1.05)
+                    this.closestEnemyOutline.setPosition(this.closestEnemy.x,this.closestEnemy.y)
+                    this.closestEnemyOutline.flipX = this.closestEnemy.flipX
+
+                    if(this.closestEnemyOutline.anims.getName() == this.closestEnemy.anims.getName()){
+                        if (this.closestEnemy.anims.currentFrame.isFirst){
+                            this.closestEnemyOutline.play({key:this.closestEnemy.anims.getName(),frameRate:this.closestEnemy.anims.frameRate},false)
+                        } else {
+                            this.closestEnemyOutline.play({key:this.closestEnemy.anims.getName(),frameRate:this.closestEnemy.anims.frameRate},true)
+                        }
+                    } else {
+                        this.closestEnemyOutline.play({key:this.closestEnemy.anims.getName(),frameRate:this.closestEnemy.anims.frameRate},true)
+                    }
+
+
+                } else {
+                    this.closestEnemyOutline.setTexture()
+                }
+
+
             // Regen
                 if (a1IsDown || a2IsDown || s1IsDown || s2IsDown){
                     regenActive = false
@@ -1870,7 +2143,9 @@ class Simulacrum extends Phaser.Scene {
         // Return To Default Functions
 
             // Return Player to Default angle 
+                if(!upIsDown && !downIsDown || this.player.body.onFloor()){
                 this.player.setAngle(0)
+                }
                     
             // Return Player to Default Gravity
                 this.player.body.setGravityY(0)
@@ -1893,8 +2168,11 @@ class Simulacrum extends Phaser.Scene {
                     this.playerAttackHitBoxVFX.x = this.playerAttackHitBox.x + 50
             
                 }
-        
-                this.playerAttackHitBox.body.checkCollision.none = true
+                
+                if (!a1IsDown){
+                    this.playerAttackHitBox.body.checkCollision.none = true
+                }
+                
 
     }
 
@@ -2056,43 +2334,49 @@ class Simulacrum extends Phaser.Scene {
             }
         }
 
-    enterBattle(){
+    enterBattle(Override){
         if(this.gameMode == 0){
 
-         if(this.playerSpeed < 0.25){   
-        this.playerSpeed = 0
-        this.playerBattleSpeed = 0
+            if(Override){
+                this.speedCheckThreshold = 3
+            } else {
+                this.speedCheckThreshold = 0.25
+            }
 
-        this.camera.flash()
-        this.gameMode = 1
-        this.enterBattleAnimation = true
+            if(this.playerSpeed < this.speedCheckThreshold){   
+                this.playerSpeed = 0
+                this.playerBattleSpeed = 0
 
-        this.enemyGroup.children.each(function(e) {
-            if(e.speedMod == 2){
-                e.play('nightBorne_Idle')
-            } 
+                this.camera.flash()
+                this.gameMode = 1
+                this.enterBattleAnimation = true
 
-        }.bind(this));
+                this.enemyGroup.children.each(function(e) {
+                    if(e.speedMod == 2){
+                        e.play('nightBorne_Idle')
+                    } 
+
+                }.bind(this));
 
 
-        playerInputActive = false
-        this.player.play({key:'player_Avatar_3_SLIDE',frameRate: 10},true)
+                playerInputActive = false
+                this.player.play({key:'player_Avatar_3_SLIDE',frameRate: 10},true)
 
-        this.player.once('animationcomplete', function (){
-            this.enterBattleAnimation = false
-            this.battleCameraActive = true
-            playerInputActive = true
-            
-        },this)
-        this.physics.world.setBounds(screenWidth, 0, screenWidth * 2,  screenHeight)
-        } else {
-            this.playerSpeed -= 0.06 
-            this.playerVitals.decreaseLife(0.5)
-            this.playerIsHit = true
-            //this.camera.flash(175,204,0,0)
+                this.player.once('animationcomplete', function (){
+                    this.enterBattleAnimation = false
+                    this.battleCameraActive = true
+                    playerInputActive = true
+                    
+                },this)
+                this.physics.world.setBounds(screenWidth, 0, screenWidth * 2,  screenHeight)
+            } else {
+                this.playerSpeed -= 0.06 
+                this.playerVitals.decreaseLife(0.5)
+                this.playerIsHit = true
+                //this.camera.flash(175,204,0,0)
 
-        }
-    } 
+            }
+        } 
     }
 
     exitBattle(game){
@@ -2147,17 +2431,30 @@ class Simulacrum extends Phaser.Scene {
         // Test Env Only Code
 
         // Debug UI
-        this.playerSpeedText.x = this.camera.scrollX + screenWidth * 0.05
-        this.playerSpeedText.y = screenHeight * 0.25
-        this.playerBattleSpeedText.x = this.playerSpeedText.x
-        this.playerBattleSpeedText.y = this.playerSpeedText.y + 75
+        this.debugText.x = this.camera.scrollX + screenWidth * 0.05
+        this.debugText.y = screenHeight * 0.25
 
-        this.playerSpeedText.setText('Player Speed: ' + Math.round(this.playerSpeed * 100) + '%' )
-        this.playerBattleSpeedText.setText('Player Battle Speed: ' + Math.round(this.playerBattleSpeed * 100) + '%' + '\nEnemies: ' + this.enemyGroup.countActive()
-                                           + '\nPlayer Attack Strength X: ' + Math.round(this.playerAttackStrengthX) + '\nPlayer Attack Strength Y: ' + Math.round(this.playerAttackStrengthY) 
-                                           + '\nPlayer Crit Roll: ' + this.playerAttackCrit 
-                                            )
+        this.debugText.setText('Stage Name: ' + this.stageData.stageName
+                                + '\nTime Period: ' + this.stageData.timeText
+                                + '\nPlayer Speed: ' + Math.round(this.playerSpeed * 100) + '%' 
+                                +'\nPlayer Battle Speed: ' + Math.round(this.playerBattleSpeed * 100) + '%' 
+                                + '\nEnemies: ' + this.enemyGroup.countActive()
+                                + '\nPlayer Attack Strength X: ' + Math.round(this.playerAttackStrengthX) 
+                                + '\nPlayer Attack Strength Y: ' + Math.round(this.playerAttackStrengthY) 
+                                + '\nPlayer Crit Roll: ' + this.playerAttackCrit)
 
+
+        // Toggle Mode
+
+        if(openMenuIsDown){
+            openMenuIsDown = false
+            if (this.gameMode == 0 && this.closestEnemy){
+                this.enterBattle(1)
+            } else {
+                this.exitBattle()
+            }
+            
+        }
         
 
         // Speed Level

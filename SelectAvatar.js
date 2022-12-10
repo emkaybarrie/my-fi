@@ -42,7 +42,7 @@ class SelectAvatar extends Phaser.Scene {
         this.load.image('leftSelectionArrow', 'assets/vFX/ArrowsLeft.png');
         this.load.image('rightSelectionArrow', 'assets/vFX/ArrowsRight.png');
         this.load.image('freePlaySelectionTexture', 'assets/menuTexture.png');
-         for(var i = 1; i < 6; i++){
+         for(var i = 0; i < 5; i++){
                 this.load.image('r' + i + 'Icon', ['assets/r' + i +'Icon.png','assets/r' + i +'Icon_n.png']);
    
          }
@@ -604,8 +604,7 @@ class SelectAvatar extends Phaser.Scene {
             if (this.redirect == 'Kianova' || null || undefined || '') {
                 this.scene.start('Kianova')
             } else {
-                //this.scene.start(this.redirect)
-                this.scene.start('Region' + String(Phaser.Math.Between(2,2)), {targetScene:'Simulacrum',targetZone: 0, currentTimePeriod: Phaser.Math.Between(1,4),rarityOverride:null})
+                this.scene.start('Region' + String(Phaser.Math.Between(1,4)), {targetScene:'Simulacrum',targetZone: 0, currentTimePeriod: Phaser.Math.Between(1,4),rarityOverride:null})
             }
             
 

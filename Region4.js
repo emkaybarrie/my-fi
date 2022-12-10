@@ -27,8 +27,8 @@ class Region4 extends Phaser.Scene {
 
         // Region Data
         this.regionID = 4
-        this.region = 'South'
-        this.regionPatron = 'Lucarus'
+        this.region = 'East'
+        this.regionPatron = 'Illuvik'
         this.regionAffinity = 'Risk Band 4'
 
         // Sector Data 
@@ -37,7 +37,7 @@ class Region4 extends Phaser.Scene {
         
         console.log('Refreshing Region Sector Array Lists...')
         // Sector Lists
-        this.zone0 = [this.cliffsOfLucarus,this.lucarianPlains]
+        this.zone0 = [this.illuviumForest,this.silkwoodForest,this.oakmourne]
         // Sector Root Array
         this.zones = [
                         this.zone0
@@ -119,51 +119,7 @@ class Region4 extends Phaser.Scene {
             
     }
 
-    cliffsOfLucarus(game){
-     // Stage Function  
-        // Writes Stage Data to Region Scene Data 
-        
-            // Stage Code
-        
-               // Set Stage Sector & Rarity Data
-               game.zone = 0
-               game.rarity = 0
-
-               // Set Stage Details
-
-               game.id = 'R4-Z0-S0-R0'
-               game.stageName = 'Cliffs of Lucarus'
-               game.stageAssetPathRoot = 'assets/'
-               game.stageMusicFilePath = 'music/Katana.mp3'
-
-               // Set Background (BG) & Foregorund (FG) Layers
-               game.stageAssetName = 'dawn'
-               game.stageBackgroundLayers = 8
-               game.stageForegroundLayers = 0
-               game.stageBGScrollSpeedModifierSettings = [1,1,0.5,0.25,0.1,0.05,0,0]
-               game.stageFGScrollSpeedModifierSettings = []
-               game.stageNormalMaps = []
-
-               // Day/Night Settings
-                // Enable/Disable Times
-        
-                var dawn = true
-                var day = true
-                var dusk = true
-                var night = true
-
-                game.timeAvailabilityArray = [dawn,day,dusk,night]
-
-                // Floor Settings
-        
-                game.floorMin = 0.95
-                game.floorMax = 0.85 
-                game.floorColour = 0x375971 
-       
-         
-    }
-
-    lucarianPlains(game){
+    illuviumForest(game){
         // Stage Function  
         // Writes Stage Data to Region Scene Data 
         
@@ -175,16 +131,60 @@ class Region4 extends Phaser.Scene {
 
                // Set Stage Details
 
-               game.id = 'R4-Z0-S0-R1'
-               game.stageName = 'Lucarian Plains'
+               game.id = 'R4-Z0-S0-R0'
+               game.stageName = 'Illuvium Forest'
                game.stageAssetPathRoot = 'assets/'
                game.stageMusicFilePath = 'music/Katana.mp3'
 
                // Set Background (BG) & Foregorund (FG) Layers
-               game.stageAssetName = 'mountains'
-               game.stageBackgroundLayers = 5
+               game.stageAssetName = 'forest'
+               game.stageBackgroundLayers = 7
+               game.stageForegroundLayers = 3
+               game.stageBGScrollSpeedModifierSettings = [1,0.95,0.75,0.65,0.45,0.2,0,0]
+               game.stageFGScrollSpeedModifierSettings = [0.25,1,1.05]
+               game.stageNormalMaps = []
+
+               // Day/Night Settings
+                // Enable/Disable Times
+        
+                var dawn = true
+                var day = true
+                var dusk = true
+                var night = true
+
+                game.timeAvailabilityArray = [dawn,day,dusk,night]
+
+                // Floor Settings
+        
+                game.floorMin = 0.95
+                game.floorMax = 0.85
+                game.floorColour = 0x375971   
+                game.floorVisible = false 
+
+    }
+
+    silkwoodForest(game){
+        // Stage Function  
+        // Writes Stage Data to Region Scene Data 
+        
+            // Stage Code
+        
+               // Set Stage Sector & Rarity Data
+               game.zone = 0
+               game.rarity = 0
+
+               // Set Stage Details
+
+               game.id = 'R4-Z0-S1-R0'
+               game.stageName = 'Silkwood Forest'
+               game.stageAssetPathRoot = 'assets/'
+               game.stageMusicFilePath = 'music/Katana.mp3'
+
+               // Set Background (BG) & Foregorund (FG) Layers
+               game.stageAssetName = 'bForest'
+               game.stageBackgroundLayers = 4
                game.stageForegroundLayers = 0
-               game.stageBGScrollSpeedModifierSettings = [0.35,0.15,0.075,0.05,0.01]
+               game.stageBGScrollSpeedModifierSettings = [0.75,0.25,0.05,0.05]
                game.stageFGScrollSpeedModifierSettings = []
                game.stageNormalMaps = []
 
@@ -201,9 +201,54 @@ class Region4 extends Phaser.Scene {
                 // Floor Settings
         
                 game.floorMin = 0.95
-                game.floorMax = 0.85 
+                game.floorMax = 0.875 
                 game.floorColour = 0x375971 
+                game.floorVisible = false 
 
+    }
+
+    oakmourne(game){
+        // Stage Function  
+        // Writes Stage Data to Region Scene Data 
+        
+            // Stage Code
+        
+               // Set Stage Sector & Rarity Data
+               game.zone = 0
+               game.rarity = 0
+
+               // Set Stage Details
+
+               game.id = 'R4-Z0-S2-R0'
+               game.stageName = 'Oakmourne'
+               game.stageAssetPathRoot = 'assets/'
+               game.stageMusicFilePath = 'music/Katana.mp3'
+
+               // Set Background (BG) & Foregorund (FG) Layers
+               game.stageAssetName = 'oForest'
+               game.stageBackgroundLayers = 2
+               game.stageForegroundLayers = 1
+               game.stageBGScrollSpeedModifierSettings = [0.85,0.25]
+               game.stageFGScrollSpeedModifierSettings = [1.1]
+               game.stageNormalMaps = []
+
+               // Day/Night Settings
+                // Enable/Disable Times
+        
+                var dawn = true
+                var day = true
+                var dusk = true
+                var night = true
+
+                game.timeAvailabilityArray = [dawn,day,dusk,night]
+
+                // Floor Settings
+        
+                game.floorMin = 0.9
+                game.floorMax = 0.85 
+                game.floorColour = 0x390801 
+                game.floorVisible = true 
+    
     }
 
     // Region Functions
@@ -277,6 +322,7 @@ class Region4 extends Phaser.Scene {
             }
         }
 
+ 
       
        
         // Selects Stage to load
@@ -339,18 +385,34 @@ class Region4 extends Phaser.Scene {
          // Time Availability
          this.data.set('timeAvailability',this.timeAvailabilityArray)
  
-         // Dawn
-         this.data.set('dawnAmbientLightOverride',null)
-         this.data.set('dawnSunLightOverride',null)
-         // Day
-         this.data.set('dayAmbientLightOverride',null)
-         this.data.set('daySunLightOverride',null)
-         // Dusk
-         this.data.set('duskAmbientLightOverride',null)
-         this.data.set('duskSunLightOverride',null)
-         // Night
-         this.data.set('nightAmbientLightOverride',null)
-         this.data.set('nightSunLightOverride',null)
+         // Morning
+            this.data.set('morningAmbientLightColour',null)
+            this.data.set('morningLightSourceColour',null)
+            this.data.set('morningLightSourceMinX',null)
+            this.data.set('morningLightSourceMaxX',null)
+            this.data.set('morningLightSourceMinY',null)
+            this.data.set('morningLightSourceMaxY',null)
+        // Day
+            this.data.set('dayAmbientLightColour',null)
+            this.data.set('dayLightSourceColour',null)
+            this.data.set('dayLightSourceMinX',null)
+            this.data.set('dayLightSourceMaxX',null)
+            this.data.set('dayLightSourceMinY',null)
+            this.data.set('dayLightSourceMaxY',null)
+        // Evening
+            this.data.set('eveningAmbientLightColour',null)
+            this.data.set('eveningLightSourceColour',null)
+            this.data.set('eveningLightSourceMinX',null)
+            this.data.set('eveningLightSourceMaxX',null)
+            this.data.set('eveningLightSourceMinY',null)
+            this.data.set('eveningLightSourceMaxY',null)
+        // Night
+            this.data.set('nightAmbientLightColour',null)
+            this.data.set('nightLightSourceColour',null)
+            this.data.set('nightLightSourceMinX',null)
+            this.data.set('nightLightSourceMaxX',null)
+            this.data.set('nightLightSourceMinY',null)
+            this.data.set('nightLightSourceMaxY',null)
          // Sun Position
          this.data.set('sunPositionXOverride',null)
          this.data.set('sunPositionYOverride',null)
@@ -362,6 +424,7 @@ class Region4 extends Phaser.Scene {
      this.data.set('floorMin',  this.floorMin)
      this.data.set('floorMax', this.floorMax)
      this.data.set('floorColour', this.floorColour)
+     this.data.set('floorVisible', this.floorVisible)
  
      // Platform Settings
  
@@ -428,11 +491,11 @@ class Region4 extends Phaser.Scene {
         // Store Region & Time Data
         this.data.set('timeCode',timePeriod)
         if (timePeriod == 1){
-            this.data.set('timeText','Dawn')
+            this.data.set('timeText','Morning')
         } else if (timePeriod == 2){
             this.data.set('timeText','Day')
         } else if (timePeriod == 3){
-            this.data.set('timeText','Dusk')
+            this.data.set('timeText','Evening')
         } else if (timePeriod == 4){
             this.data.set('timeText','Night')
         } 
