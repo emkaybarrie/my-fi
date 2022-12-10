@@ -170,7 +170,7 @@ class Kianova extends Phaser.Scene {
 
     updateGlory(badlandsData){
 
-        if (badlandsData.regionID == 3){
+        if (badlandsData.regionID == 0){
             if(this.freePlayGloryOmnia < badlandsData.glory){
                 this.freePlayGloryOmnia = badlandsData.glory
             }
@@ -178,7 +178,7 @@ class Kianova extends Phaser.Scene {
             if(this.freePlayGloryMundo < badlandsData.glory){
                 this.freePlayGloryMundo = badlandsData.glory
             }
-        } else if (badlandsData.regionID == 4){
+        } else if (badlandsData.regionID == 3){
             if(this.freePlayGlorylucarus < badlandsData.glory){
                 this.freePlayGlorylucarus = badlandsData.glory
             }
@@ -186,7 +186,7 @@ class Kianova extends Phaser.Scene {
             if(this.freePlayGloryAmara < badlandsData.glory){
                 this.freePlayGloryAmara = badlandsData.glory
             }
-        } else if (badlandsData.regionID == 5){
+        } else if (badlandsData.regionID == 4){
             if(this.freePlayGloryIlluvik < badlandsData.glory){
                 this.freePlayGloryIlluvik = badlandsData.glory
             }
