@@ -500,7 +500,7 @@ class Simulacrum extends Phaser.Scene {
                         this.eveningLightSourceMinYDefault = 0.25
                         this.eveningLightSourceMaxYDefault = 0.5
 
-                        this.nightAmbientLightColourDefault = 0x131862
+                        this.nightAmbientLightColourDefault = 0x252fc1//0x212aab//0x181f81//0x141a6b//0x131862
                         this.nightLightSourceColourDefault = 0x131862
                         this.nightLightSourceMinXDefault = 0
                         this.nightLightSourceMaxXDefault = 1
