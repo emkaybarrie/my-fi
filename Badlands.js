@@ -606,6 +606,42 @@ class Badlands extends Phaser.Scene {
 
     preload ()
     {   
+        // Vitals Bars
+            // Life
+            this.load.image('life-icon-holder', 'assets/UI/playerVitals/red/meter_icon_holder_red.png')
+            this.load.image('life-icon', 'assets/UI/playerVitals/icons/health.png')
+
+            this.load.image('life-left-cap-holder', 'assets/UI/playerVitals/red/meter_bar_holder_left_red.png')
+            this.load.image('life-middle-holder', 'assets/UI/playerVitals/red/meter_bar_holder_center_red.png')
+            this.load.image('life-right-cap-holder', 'assets/UI/playerVitals/red/meter_bar_holder_right_red.png')
+
+            this.load.image('life-left-cap', 'assets/UI/playerVitals/red/meter_bar_left_red.png')
+            this.load.image('life-middle', 'assets/UI/playerVitals/red/meter_bar_center_red.png')
+            this.load.image('life-right-cap', 'assets/UI/playerVitals/red/meter_bar_right_red.png')
+
+        // Focus
+            this.load.image('focus-icon-holder', 'assets/UI/playerVitals/yellow/meter_icon_holder_yellow.png')
+            this.load.image('focus-icon', 'assets/UI/playerVitals/icons/magic.png')
+
+            this.load.image('focus-left-cap-holder', 'assets/UI/playerVitals/yellow/meter_bar_holder_left_yellow.png')
+            this.load.image('focus-middle-holder', 'assets/UI/playerVitals/yellow/meter_bar_holder_center_yellow.png')
+            this.load.image('focus-right-cap-holder', 'assets/UI/playerVitals/yellow/meter_bar_holder_right_yellow.png')
+
+            this.load.image('focus-left-cap', 'assets/UI/playerVitals/yellow/meter_bar_left_yellow.png')
+            this.load.image('focus-middle', 'assets/UI/playerVitals/yellow/meter_bar_center_yellow.png')
+            this.load.image('focus-right-cap', 'assets/UI/playerVitals/yellow/meter_bar_right_yellow.png')
+
+        // Stamina
+            this.load.image('stamina-icon-holder', 'assets/UI/playerVitals/green/meter_icon_holder_green.png')
+            this.load.image('stamina-icon', 'assets/UI/playerVitals/icons/stamina.png')
+
+            this.load.image('stamina-left-cap-holder', 'assets/UI/playerVitals/green/meter_bar_holder_left_green.png')
+            this.load.image('stamina-middle-holder', 'assets/UI/playerVitals/green/meter_bar_holder_center_green.png')
+            this.load.image('stamina-right-cap-holder', 'assets/UI/playerVitals/green/meter_bar_holder_right_green.png')
+
+            this.load.image('stamina-left-cap', 'assets/UI/playerVitals/green/meter_bar_left_green.png')
+            this.load.image('stamina-middle', 'assets/UI/playerVitals/green/meter_bar_center_green.png')
+            this.load.image('stamina-right-cap', 'assets/UI/playerVitals/green/meter_bar_right_green.png')
 
         this.load.audio("bgMusic0a", ["assets/music/Riptide.mp3"]);
         this.load.audio("bgMusic0b", ["assets/music/Landslide.mp3"]);
@@ -815,7 +851,7 @@ class Badlands extends Phaser.Scene {
                 this.camera.zoom = 1.05
                 this.camera.setBounds(screenWidth,0,screenWidth * 2,screenHeight)
                 this.camera.centerOnX(screenWidth * 2)
-                this.camera.fadeIn(2000)
+                this.camera.fadeIn(0)
                 this.camera.once('camerafadeincomplete',function(){
                     this.stageProgressEnabled = true
                 },this)
@@ -902,7 +938,7 @@ class Badlands extends Phaser.Scene {
                 this.playerInAir = false
 
                 this.currentEnergy = 100
-                this.maxEnergy = 100
+                this.maxEnergy = 200
 
                 this.currentFocus = 100
                 this.maxFocus = 100
@@ -919,13 +955,13 @@ class Badlands extends Phaser.Scene {
 
                 this.hudDepth = 2
                 // Player
-                this.playerIconBoxScaleX = 1.05
+                this.playerIconBoxScaleX = 0.925
                 this.playerIconBoxScaleY = 0.4
                 this.playerIconBox = this.add.image(0,0,'playerIconBox').setDepth(3).setScale(this.playerIconBoxScaleX,this.playerIconBoxScaleY).setOrigin(0,0.5).setAlpha(0.75)
                 this.playerIconScale = 0.0825    
                 this.playerIcon = this.add.image(0,0,'playerIcon').setDepth(3).setScale(this.playerIconScale).setOrigin(0.5,0.5)
             
-                this.iconScale = 0.4
+                this.iconScale = 0.5
                 this.textSize = 24
                 
 
@@ -935,11 +971,114 @@ class Badlands extends Phaser.Scene {
                 this.goldIcon = this.add.image(0,0,'goldIcon').setDepth(4).setScale(this.iconScale * (scaleModX)).setOrigin(0.5,0.5)
                 this.goldText = this.add.text(0, 0, Math.floor(gold)).setFontFamily('Arial').setFontSize(this.textSize * (scaleModX)).setColor('#ffd700').setDepth(4).setOrigin(0.5,0.5);
 
-                this.playerVitals = new HealthBar(this,this.currentLife, this.storedRewardsIcon.x + (30 * (scaleModX)), this.playerIcon.y + (20 * (scaleModX)),this.hudDepth)
+                // Old Vitals Bars
+                // this.playerVitals = new HealthBar(this,this.currentLife, this.storedRewardsIcon.x + (30 * (scaleModX)), this.playerIcon.y + (20 * (scaleModX)),this.hudDepth)
             
-                this.playerVitalsTextL = this.add.text(0, 0, 'Life').setFontFamily('Arial').setFontSize(18 * (scaleModX)).setColor('#cc0000').setDepth(4).setOrigin(0.5,0.5);
-                this.playerVitalsTextF = this.add.text(0, 0, 'Focus').setFontFamily('Arial').setFontSize(18 * (scaleModX)).setColor('#f1c232').setDepth(4).setOrigin(0.5,0.5);
-                this.playerVitalsTextE = this.add.text(0, 0, 'Energy').setFontFamily('Arial').setFontSize(18 * (scaleModX)).setColor('#00a86b').setDepth(4).setOrigin(0.5,0.5);       
+                // this.playerVitalsTextL = this.add.text(0, 0, 'Life').setFontFamily('Arial').setFontSize(18 * (scaleModX)).setColor('#cc0000').setDepth(4).setOrigin(0.5,0.5);
+                // this.playerVitalsTextF = this.add.text(0, 0, 'Focus').setFontFamily('Arial').setFontSize(18 * (scaleModX)).setColor('#f1c232').setDepth(4).setOrigin(0.5,0.5);
+                // this.playerVitalsTextE = this.add.text(0, 0, 'Energy').setFontFamily('Arial').setFontSize(18 * (scaleModX)).setColor('#00a86b').setDepth(4).setOrigin(0.5,0.5);       
+
+                // New Vitals Bars
+
+                    this.vitalsAnchorX = this.camera.scrollX + (screenWidth * 0.005) + (screenWidth * 0.0575) + 165
+                    this.vitalsAnchorY = this.camera.scrollY + screenHeight * 0.25
+                    this.vitalsfullWidth = this.playerIconBox.displayWidth * 0.3
+                    this.vitalsScale = 0.075
+                // Life
+
+                    // Icon Holder
+
+                    this.lifeIconHolder = this.add.image(this.vitalsAnchorX, this.vitalsAnchorY, 'life-icon-holder').setDepth(6).setScale(this.vitalsScale)
+                    this.lifeIcon = this.add.image(this.lifeIconHolder.x, this.lifeIconHolder.y, 'life-icon').setDepth(6).setScale(this.vitalsScale)
+                    // Holder
+                        // this.lifeLeftCapHolder = this.add.image(this.lifeIconHolder.x, this.lifeBarY, 'life-left-cap-holder')
+                        //     .setOrigin(0, 0.5).setDepth(5).setScale(this.lifeBarScale)
+
+                        this.lifeMiddleHolder = this.add.image(this.lifeIconHolder.x , this.vitalsAnchorY, 'life-middle-holder')
+                            .setOrigin(0, 0.5).setDepth(5).setScale(this.vitalsScale)
+
+                        this.lifeMiddleHolder.displayWidth = this.vitalsfullWidth
+
+                        this.lifeRightCapHolder = this.add.image(this.lifeMiddleHolder.x + this.lifeMiddleHolder.displayWidth, this.vitalsAnchorY, 'life-right-cap-holder')
+                            .setOrigin(0, 0.5).setDepth(5).setScale(this.vitalsScale)
+                    // Bar
+                        // this.lifeLeftCap = this.add.image(this.lifeIconHolder.x, this.lifeBarY, 'life-left-cap')
+                        // .setOrigin(0, 0.5).setDepth(5).setScale(this.lifeBarScale)
+
+                        this.lifeMiddle = this.add.image(this.lifeIconHolder.x, this.vitalsAnchorY, 'life-middle')
+                            .setOrigin(0, 0.5).setDepth(5).setScale(this.vitalsScale)
+
+                        this.lifeMiddle.displayWidth = this.vitalsfullWidth
+
+                        this.lifeRightCap = this.add.image(this.lifeMiddle.x + this.lifeMiddle.displayWidth, this.vitalsAnchorY, 'life-right-cap')
+                            .setOrigin(0, 0.5).setDepth(5).setScale(this.vitalsScale)
+                
+                        this.uiSubModule_setLifePercentage(this.currentLife/this.maxLife)
+
+                // Focus
+
+                    // Icon Holder
+
+                    this.focusIconHolder = this.add.image(this.vitalsAnchorX, this.vitalsAnchorY, 'focus-icon-holder').setDepth(6).setScale(this.vitalsScale).setVisible(1).setOrigin(0.5)
+                    this.focusIcon = this.add.image(this.focusIconHolder.x, this.focusIconHolder.y, 'focus-icon').setDepth(6).setScale(this.vitalsScale)
+                    // Holder
+                        // this.lifeLeftCapHolder = this.add.image(this.lifeIconHolder.x, this.lifeBarY, 'life-left-cap-holder')
+                        //     .setOrigin(0, 0.5).setDepth(5).setScale(this.lifeBarScale)
+
+                        this.focusMiddleHolder = this.add.image(this.focusIconHolder.x , this.vitalsAnchorY, 'focus-middle-holder')
+                            .setOrigin(0, 0.5).setDepth(5).setScale(this.vitalsScale)
+
+                        this.focusMiddleHolder.displayWidth = this.vitalsfullWidth
+
+                        this.focusRightCapHolder = this.add.image(this.focusMiddleHolder.x + this.focusMiddleHolder.displayWidth, this.vitalsAnchorY, 'focus-right-cap-holder')
+                            .setOrigin(0, 0.5).setDepth(5).setScale(this.vitalsScale)
+                    // Bar
+                        // this.lifeLeftCap = this.add.image(this.lifeIconHolder.x, this.lifeBarY, 'life-left-cap')
+                        // .setOrigin(0, 0.5).setDepth(5).setScale(this.lifeBarScale)
+
+                        this.focusMiddle = this.add.image(this.focusIconHolder.x, this.vitalsAnchorY, 'focus-middle')
+                            .setOrigin(0, 0.5).setDepth(5).setScale(this.vitalsScale)
+
+                        this.focusMiddle.displayWidth = this.vitalsfullWidth
+
+                        this.focusRightCap = this.add.image(this.focusMiddle.x + this.focusMiddle.displayWidth, this.vitalsAnchorY, 'focus-right-cap')
+                            .setOrigin(0, 0.5).setDepth(5).setScale(this.vitalsScale)
+                
+                        this.uiSubModule_setFocusPercentage(this.currentFocus/this.maxFocus)
+
+                // Stamina
+
+                    // Icon Holder
+
+                    this.staminaIconHolder = this.add.image(this.vitalsAnchorX, this.vitalsAnchorY, 'stamina-icon-holder').setDepth(6).setScale(this.vitalsScale).setVisible(1).setOrigin(0.5)
+                    this.staminaIcon = this.add.image(this.staminaIconHolder.x, this.staminaIconHolder.y, 'stamina-icon').setDepth(6).setScale(this.vitalsScale)
+                    // Holder
+                        // this.lifeLeftCapHolder = this.add.image(this.lifeIconHolder.x, this.lifeBarY, 'life-left-cap-holder')
+                        //     .setOrigin(0, 0.5).setDepth(5).setScale(this.lifeBarScale)
+
+                        this.staminaMiddleHolder = this.add.image(this.staminaIconHolder.x , this.vitalsAnchorY, 'stamina-middle-holder')
+                            .setOrigin(0, 0.5).setDepth(5).setScale(this.vitalsScale)
+
+                        this.staminaMiddleHolder.displayWidth = this.vitalsfullWidth
+
+                        this.staminaRightCapHolder = this.add.image(this.staminaMiddleHolder.x + this.staminaMiddleHolder.displayWidth, this.vitalsAnchorY, 'focus-right-cap-holder')
+                            .setOrigin(0, 0.5).setDepth(5).setScale(this.vitalsScale)
+                    // Bar
+                        // this.lifeLeftCap = this.add.image(this.lifeIconHolder.x, this.lifeBarY, 'life-left-cap')
+                        // .setOrigin(0, 0.5).setDepth(5).setScale(this.lifeBarScale)
+
+                        this.staminaMiddle = this.add.image(this.staminaIconHolder.x, this.vitalsAnchorY, 'stamina-middle')
+                            .setOrigin(0, 0.5).setDepth(5).setScale(this.vitalsScale)
+
+                        this.staminaMiddle.displayWidth = this.vitalsfullWidth
+
+                        this.staminaRightCap = this.add.image(this.staminaMiddle.x + this.staminaMiddle.displayWidth, this.vitalsAnchorY, 'stamina-right-cap')
+                            .setOrigin(0, 0.5).setDepth(5).setScale(this.vitalsScale)
+                
+                        this.uiSubModule_setStaminaPercentage(this.currentEnergy/this.maxEnergy)
+                    
+
+                   
 
                 this.skillBoxScale = 0.25
                 this.skillIconScale = 0.3
@@ -967,7 +1106,7 @@ class Badlands extends Phaser.Scene {
                     this.playerIconBox,this.playerIcon,this.storedRewardsIcon,this.storedRewardsText,this.goldIcon,
                     this.goldText,this.skillABox,this.skillAIcon,this.skillBBox, this.skillBIcon, this.scoreBox,this.levelIcon,
                     this.levelText,this.gloryIcon, this.gloryText,
-                    this.playerVitalsTextL, this.playerVitalsTextF,this.playerVitalsTextE,
+                    //this.playerVitalsTextL, this.playerVitalsTextF,this.playerVitalsTextE,
                     //this.playerVitals
                 ]
                 )
@@ -1669,13 +1808,14 @@ class Badlands extends Phaser.Scene {
                 
         }
 
-    recordScores(){     
+        recordScores(){     
             this.stageScore = this.level
             this.gloryScore = this.glory
             this.rewardsScore = this.rewards
             this.goldScore = this.gold
   
     }
+
 
     stageModule(){
         // Stage Progress
@@ -1948,9 +2088,9 @@ class Badlands extends Phaser.Scene {
                     this.enemy.isHit = false
                     this.enemy.hitsTaken = 0
                     if (this.enemy.type == 1){
-                        this.enemy.hitHP = Phaser.Math.Between(2,4)
+                        this.enemy.hitHP = Phaser.Math.Between(2,4) * (1 + (0.1 * this.level))
                     } else if (this.enemy.type == 2){
-                        this.enemy.hitHP = Phaser.Math.Between(4,8)
+                        this.enemy.hitHP = Phaser.Math.Between(4,8) * (1 + (0.1 * this.level))
                     }
                     
 
@@ -2235,38 +2375,78 @@ class Badlands extends Phaser.Scene {
     }
 
     uiModule(){
-        this.playerIconBox.x = this.camera.worldView.x + (screenWidth * 0.005)
+            this.playerIconBox.x = this.camera.worldView.x + (screenWidth * 0.005)
             this.playerIconBox.y = this.camera.worldView.y +  (screenHeight * 0.1 )
 
             this.playerIcon.x = this.playerIconBox.x + (screenWidth * 0.0575)
             this.playerIcon.y = this.playerIconBox.y
 
-            this.playerVitals.x = this.playerIcon.x + 165
-            this.playerVitals.y = this.playerIcon.y - 65 
-            this.playerVitals.draw()
+            // Life
 
-            this.playerVitalsTextL.x = this.playerVitals.x - 50 
-            this.playerVitalsTextL.y = this.playerVitals.y + 17.5 
+                this.lifeIconHolder.x = this.playerIcon.x + screenWidth * 0.0525
+                this.lifeIconHolder.y = this.playerIcon.y - screenHeight * 0.05
+                this.lifeIcon.x = this.lifeIconHolder.x
+                this.lifeIcon.y = this.lifeIconHolder.y
 
-            this.playerVitalsTextF.x = this.playerVitalsTextL.x
-            this.playerVitalsTextF.y = this.playerVitals.y + 47.5
+                this.lifeMiddleHolder.x = this.lifeIconHolder.x
+                this.lifeMiddleHolder.y = this.lifeIconHolder.y
+                this.lifeMiddle.x = this.lifeIconHolder.x
+                this.lifeMiddle.y = this.lifeIconHolder.y
 
-            this.playerVitalsTextE.x = this.playerVitalsTextF.x
-            this.playerVitalsTextE.y = this.playerVitals.y + 72.5
+                this.lifeRightCapHolder.x = this.lifeMiddleHolder.x + this.lifeMiddleHolder.displayWidth
+                this.lifeRightCapHolder.y = this.lifeMiddleHolder.y 
+                this.lifeRightCap.y = this.lifeMiddle.y
+                
+                this.uiSubModule_setLifePercentageAnimated(this.currentLife/this.maxLife)
 
-            this.storedRewardsIcon.x = this.playerVitals.x + 15
-            this.storedRewardsIcon.y = this.playerIcon.y + 42.5 
-            this.storedRewardsText.x = this.storedRewardsIcon.x + 55
+            // Focus
+                this.focusIconHolder.x = this.lifeIconHolder.x
+                this.focusIconHolder.y = this.lifeIconHolder.y + this.lifeIconHolder.displayHeight
+                this.focusIcon.x = this.focusIconHolder.x
+                this.focusIcon.y = this.focusIconHolder.y
+
+                this.focusMiddleHolder.x = this.focusIconHolder.x
+                this.focusMiddleHolder.y = this.focusIconHolder.y
+                this.focusMiddle.x = this.focusIconHolder.x
+                this.focusMiddle.y = this.focusIconHolder.y
+
+                this.focusRightCapHolder.x = this.focusMiddleHolder.x + this.focusMiddleHolder.displayWidth
+                this.focusRightCapHolder.y = this.focusMiddleHolder.y 
+                this.focusRightCap.y = this.focusMiddle.y
+                
+                this.uiSubModule_setFocusPercentageAnimated(this.currentFocus/this.maxFocus)
+
+            // Stamina
+                this.staminaIconHolder.x = this.lifeIconHolder.x
+                this.staminaIconHolder.y = this.focusIconHolder.y + this.focusIconHolder.displayHeight
+                this.staminaIcon.x = this.staminaIconHolder.x
+                this.staminaIcon.y = this.staminaIconHolder.y
+
+                this.staminaMiddleHolder.x = this.staminaIconHolder.x
+                this.staminaMiddleHolder.y = this.staminaIconHolder.y
+                this.staminaMiddle.x = this.staminaIconHolder.x
+                this.staminaMiddle.y = this.staminaIconHolder.y
+
+                this.staminaRightCapHolder.x = this.staminaMiddleHolder.x + this.staminaMiddleHolder.displayWidth
+                this.staminaRightCapHolder.y = this.staminaMiddleHolder.y 
+                this.staminaRightCap.y = this.staminaMiddle.y
+                
+                this.uiSubModule_setStaminaPercentageAnimated(this.currentEnergy/this.maxEnergy)
+
+
+            this.storedRewardsIcon.x = this.lifeRightCapHolder.x + (screenWidth * 0.035)
+            this.storedRewardsIcon.y = this.lifeRightCapHolder.y 
+            this.storedRewardsText.x = this.storedRewardsIcon.x + (screenWidth * 0.045)
             this.storedRewardsText.y = this.storedRewardsIcon.y
             this.storedRewardsText.setText(Math.floor(this.rewards))
 
-            this.goldIcon.x = this.storedRewardsText.x + 60
-            this.goldIcon.y = this.storedRewardsIcon.y
-            this.goldText.x = this.goldIcon.x + 55
+            this.goldIcon.x = this.storedRewardsIcon.x
+            this.goldIcon.y = this.storedRewardsIcon.y + this.storedRewardsIcon.displayHeight * 1.1
+            this.goldText.x = this.goldIcon.x + (screenWidth * 0.045)
             this.goldText.y = this.goldIcon.y
             this.goldText.setText(Math.floor(this.gold))
 
-            this.skillABox.x = this.playerIconBox.x + this.playerIconBox.displayWidth * 0.765
+            this.skillABox.x = this.playerIconBox.x + this.playerIconBox.displayWidth * 0.75
             this.skillABox.y = this.playerIconBox.y + (75 * (scaleModX))
 
             this.skillAIcon.x = this.skillABox.x
@@ -2297,6 +2477,90 @@ class Badlands extends Phaser.Scene {
             this.stageProgress.y = this.scoreBox.y + 90
             this.stageProgress.draw()
     }
+
+        uiSubModule_setLifePercentage(percent = 1){
+                this.width = this.vitalsfullWidth * percent
+
+                this.lifeMiddle.displayWidth = this.width
+                this.lifeRightCap.x = this.lifeMiddle.x + this.lifeMiddle.displayWidth
+            
+        }
+
+        uiSubModule_setLifePercentageAnimated(percent = 1, duration = 500){
+            this.width = this.vitalsfullWidth * percent
+
+            this.lifeRightCap.x = this.lifeMiddle.x + this.lifeMiddle.displayWidth
+
+            this.tweens.add({
+                targets: this.lifeMiddle,
+                displayWidth: this.width,
+                duration,
+                ease: Phaser.Math.Easing.Sine.Out,
+                onUpdate: () => {
+                    this.lifeRightCap.x = this.lifeMiddle.x + this.lifeMiddle.displayWidth
+        
+                    //this.lifeLeftCap.visible = this.lifeMiddle.displayWidth > 0
+                    this.lifeMiddle.visible = this.lifeMiddle.displayWidth > 0
+                    this.lifeRightCap.visible = this.lifeMiddle.displayWidth > 0
+                }
+            })
+        }
+
+        uiSubModule_setFocusPercentage(percent = 1){
+            this.width = this.vitalsfullWidth * percent
+
+            this.focusMiddle.displayWidth = this.width
+            this.focusRightCap.x = this.focusMiddle.x + this.focusMiddle.displayWidth
+        
+        }
+
+        uiSubModule_setFocusPercentageAnimated(percent = 1, duration = 500){
+            this.width = this.vitalsfullWidth * percent
+
+            this.focusRightCap.x = this.focusMiddle.x + this.focusMiddle.displayWidth
+
+            this.tweens.add({
+                targets: this.focusMiddle,
+                displayWidth: this.width,
+                duration,
+                ease: Phaser.Math.Easing.Sine.Out,
+                onUpdate: () => {
+                    this.focusRightCap.x = this.focusMiddle.x + this.focusMiddle.displayWidth
+        
+                    //this.lifeLeftCap.visible = this.lifeMiddle.displayWidth > 0
+                    this.focusMiddle.visible = this.focusMiddle.displayWidth > 0
+                    this.focusRightCap.visible = this.focusMiddle.displayWidth > 0
+                }
+            })
+        }
+
+        uiSubModule_setStaminaPercentage(percent = 1){
+            this.width = this.vitalsfullWidth * percent
+
+            this.staminaMiddle.displayWidth = this.width
+            this.staminaRightCap.x = this.staminaMiddle.x + this.staminaMiddle.displayWidth
+        
+        }
+
+        uiSubModule_setStaminaPercentageAnimated(percent = 1, duration = 500){
+            this.width = this.vitalsfullWidth * percent
+
+            this.staminaRightCap.x = this.staminaMiddle.x + this.staminaMiddle.displayWidth
+
+            this.tweens.add({
+                targets: this.staminaMiddle,
+                displayWidth: this.width,
+                duration,
+                ease: Phaser.Math.Easing.Sine.Out,
+                onUpdate: () => {
+                    this.staminaRightCap.x = this.staminaMiddle.x + this.staminaMiddle.displayWidth
+
+                    //this.lifeLeftCap.visible = this.lifeMiddle.displayWidth > 0
+                    this.staminaMiddle.visible = this.staminaMiddle.displayWidth > 0
+                    this.staminaRightCap.visible = this.staminaMiddle.displayWidth > 0
+                }
+            })
+        }
 
     playerModule(){
 
@@ -2451,16 +2715,30 @@ class Badlands extends Phaser.Scene {
                     this.player.x += ((screenWidth * 0.00075) * this.playerBattleSpeed) * this.movementMod
                 }
 
-            // Energy Costs
+            // Regen & Energy Costs
+
+                // Regen
+                    // Regen
+                        this.regenMod = 3
+                        if (regenActive){
+                            if(this.skillPower < 1){
+                                this.currentFocus += 1 * this.regenMod  
+                            }
+                            
+                            if(this.actionPower < 1){
+                                this.currentEnergy += 1 * this.regenMod 
+                            }
+                
+                        }
 
                 if (playerInputActive){    
                     if (a1IsDown){
                         if(this.actionPower > 0){
-                            this.playerVitals.decreaseEnergy(this.baseCost * this.action1CostModifier)
+                            this.currentEnergy -= this.baseCost * this.action1CostModifier
                         } else {
                             this.player.setTint(0xff7a7a)
-                            this.playerVitals.decreaseEnergy(this.baseCost * this.action1CostModifier)
-                            this.playerVitals.decreaseLife((this.baseCost * this.baseEmergencyEnergyCostPercent) * this.action1CostModifier)
+                            this.currentEnergy -= this.baseCost * this.action1CostModifier
+                            this.currentLife -=(this.baseCost * this.baseEmergencyEnergyCostPercent) * this.action1CostModifier
                         }
                         
                     }
@@ -2469,21 +2747,21 @@ class Badlands extends Phaser.Scene {
 
 
                         if(this.actionPower > 0 ){
-                            this.playerVitals.decreaseEnergy(this.baseCost * this.action2CostModifier)
+                            this.currentEnergy -= this.baseCost * this.action2CostModifier
                         } else {
                             this.player.setTint(0xff7a7a)
-                            this.playerVitals.decreaseEnergy(this.baseCost * this.action2CostModifier)
-                            this.playerVitals.decreaseLife((this.baseCost * this.baseEmergencyEnergyCostPercent) * this.action2CostModifier)
+                            this.currentEnergy -= this.baseCost * this.action2CostModifier
+                            this.currentLife -=(this.baseCost * this.baseEmergencyEnergyCostPercent) ** this.action2CostModifier
                         }
                     }
 
                     if (s1IsDown){
                         if(this.actionPower > 0 ){
-                            this.playerVitals.decreaseFocus(this.baseCost * this.skill1CostModifier)
+                            this.currentFocus -= this.baseCost * this.skill1CostModifier
                         } else {
                             this.player.setTint(0xff7a7a)
-                            this.playerVitals.decreaseFocus(this.baseCost * this.skill1CostModifier)
-                            this.playerVitals.decreaseLife((this.baseCost * this.baseEmergencyEnergyCostPercent) * this.skill1CostModifier)
+                            this.currentFocus -= this.baseCost * this.skill1CostModifier
+                            this.currentLife -=(this.baseCost * this.baseEmergencyEnergyCostPercent) ** this.skill1CostModifier
                         }
                         
                     }
@@ -2492,11 +2770,11 @@ class Badlands extends Phaser.Scene {
 
 
                         if(this.actionPower > 0 ){
-                            this.playerVitals.decreaseFocus(this.baseCost * this.skill2CostModifier)
+                            this.currentFocus -= this.baseCost * this.skill2CostModifier
                         } else {
                             this.player.setTint(0xff7a7a)
-                            this.playerVitals.decreaseFocus(this.baseCost * this.skill2CostModifier)
-                            this.playerVitals.decreaseLife((this.baseCost * this.baseEmergencyEnergyCostPercent) * this.skill2CostModifier)
+                            this.currentFocus -= this.baseCost * this.skill2CostModifier
+                            this.currentLife -=(this.baseCost * this.baseEmergencyEnergyCostPercent) * this.skill2CostModifier
                         }
                     }
         
@@ -2504,20 +2782,20 @@ class Badlands extends Phaser.Scene {
 
 
                         if(this.actionPower > 0 ){
-                            this.playerVitals.decreaseEnergy(this.baseCost * this.moveUpCostModifier)
+                            this.currentEnergy -= this.baseCost * this.moveUpCostModifier
                         } else {
-                            this.playerVitals.decreaseEnergy(this.baseCost * this.moveUpCostModifier)
-                            this.playerVitals.decreaseLife((this.baseCost * this.baseEmergencyEnergyCostPercent) * this.moveUpCostModifier)
+                            this.currentEnergy -= this.baseCost * this.moveUpCostModifier
+                            this.currentLife -=(this.baseCost * this.baseEmergencyEnergyCostPercent) * this.moveUpCostModifier
                         }
                     }
                     
                     if(downIsDown){
 
                         if(this.actionPower > 0 ){
-                            this.playerVitals.decreaseEnergy(this.baseCost * this.moveDownCostModifier)
+                            this.currentEnergy -= this.baseCost * this.moveDownCostModifier
                         } else {
-                            this.playerVitals.decreaseEnergy(this.baseCost * this.moveDownCostModifier)
-                            this.playerVitals.decreaseLife((this.baseCost * this.baseEmergencyEnergyCostPercent) * this.moveDownCostModifier)
+                            this.currentEnergy -= this.baseCost * this.moveDownCostModifier
+                            this.currentLife -=(this.baseCost * this.baseEmergencyEnergyCostPercent) * this.moveDownCostModifier
                         }
                     }
                     
@@ -2525,10 +2803,10 @@ class Badlands extends Phaser.Scene {
             
 
                         if(this.actionPower > 0 ){
-                            this.playerVitals.decreaseEnergy(this.baseCost * this.moveLeftCostModifier)
+                            this.currentEnergy -= this.baseCost * this.moveLeftCostModifier
                         } else {
-                            this.playerVitals.decreaseEnergy(this.baseCost * this.moveLeftCostModifier)
-                            this.playerVitals.decreaseLife((this.baseCost * this.baseEmergencyEnergyCostPercent) * this.moveLeftCostModifier)
+                            this.currentEnergy -= this.baseCost * this.moveLeftCostModifier
+                            this.currentLife -=(this.baseCost * this.baseEmergencyEnergyCostPercent) * this.moveLeftCostModifier
                         }
                     }
 
@@ -2536,10 +2814,10 @@ class Badlands extends Phaser.Scene {
                         
 
                         if(this.actionPower > 0 ){
-                            this.playerVitals.decreaseEnergy(this.baseCost * this.moveRightCostModifier)
+                            this.currentEnergy -= this.baseCost * this.moveRightCostModifier
                         } else {
-                            this.playerVitals.decreaseEnergy(this.baseCost * this.moveRightCostModifier)
-                            this.playerVitals.decreaseLife((this.baseCost * this.baseEmergencyEnergyCostPercent) * this.moveRightCostModifier)
+                            this.currentEnergy -= this.baseCost * this.moveRightCostModifier
+                            this.currentLife -=(this.baseCost * this.baseEmergencyEnergyCostPercent) * this.moveRightCostModifier
                         }
                     }
                 }
@@ -3576,7 +3854,7 @@ class Badlands extends Phaser.Scene {
                 this.physics.world.setBounds(screenWidth, 0, screenWidth * 2,  screenHeight)
             } else {
                 this.playerSpeed -= 0.06 
-                this.playerVitals.decreaseLife(0.5)
+                this.currentLife -= 0.5
                 this.playerIsHit = true
                 //this.camera.flash(175,204,0,0)
 
@@ -3618,18 +3896,7 @@ class Badlands extends Phaser.Scene {
         // Stage
         this.stageModule()
 
-        // Regen
-        this.regenMod = 1
-        if (regenActive){
-            if(this.skillPower < 1){
-                this.playerVitals.decreaseFocus(-0.5 * this.regenMod)  
-            }
-            
-            if(this.actionPower < 1){
-                this.playerVitals.decreaseEnergy(-1 * this.regenMod)    
-            }
-   
-        }
+    
 
         // End of V1 Code
       

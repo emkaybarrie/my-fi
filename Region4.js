@@ -226,10 +226,10 @@ class Region4 extends Phaser.Scene {
 
                // Set Background (BG) & Foregorund (FG) Layers
                game.stageAssetName = 'oForest'
-               game.stageBackgroundLayers = 2
-               game.stageForegroundLayers = 1
-               game.stageBGScrollSpeedModifierSettings = [0.85,0.25]
-               game.stageFGScrollSpeedModifierSettings = [1.1]
+               game.stageBackgroundLayers = 3
+               game.stageForegroundLayers = 0
+               game.stageBGScrollSpeedModifierSettings = [1,0.85,0.25]
+               game.stageFGScrollSpeedModifierSettings = []
                game.stageNormalMaps = []
 
                // Day/Night Settings
