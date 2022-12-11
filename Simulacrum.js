@@ -827,6 +827,7 @@ class Simulacrum extends Phaser.Scene {
                 platform.y = Phaser.Math.FloatBetween(this.platformPositionYMin, this.platformPositionYMax)
                 platform.setScale(Phaser.Math.FloatBetween(this.platformScaleXMin,this.platformScaleXMax),Phaser.Math.FloatBetween(1, 1.25))
                 platform.setActive(true)
+                platform.setPipeline('Light2D')
                 platform.setImmovable(true)
                 platform.body.setAllowGravity(false)
                 platform.body.checkCollision.down = false
