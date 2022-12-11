@@ -407,7 +407,7 @@ class Simulacrum extends Phaser.Scene {
 
                         this.staminaMiddleHolder.displayWidth = this.vitalsfullWidth
 
-                        this.staminaRightCapHolder = this.add.image(this.staminaMiddleHolder.x + this.staminaMiddleHolder.displayWidth, this.vitalsAnchorY, 'focus-right-cap-holder')
+                        this.staminaRightCapHolder = this.add.image(this.staminaMiddleHolder.x + this.staminaMiddleHolder.displayWidth, this.vitalsAnchorY, 'stamina-right-cap-holder')
                             .setOrigin(0, 0.5).setDepth(5).setScale(this.vitalsScale)
                     // Bar
                         // this.lifeLeftCap = this.add.image(this.lifeIconHolder.x, this.lifeBarY, 'life-left-cap')
