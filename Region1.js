@@ -68,7 +68,11 @@ class Region1 extends Phaser.Scene {
 
         console.log('Data Packaged: \n', dataExport)
 
-        this.scene.run("Badlands", dataExport)
+        if (this.targetScene == 'Badlands'){
+            this.scene.run("Badlands", dataExport)
+        } else {
+            this.scene.run("Simulacrum", dataExport)
+        }
 
         console.log('Exporting Data to Badlands....')
      

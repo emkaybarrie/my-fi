@@ -50,6 +50,39 @@ class Simulacrum extends Phaser.Scene {
         this.loadStageBG(this.stageData.stageAssetName,this.stageData.bgLayers,this.stageData.fgLayers)
 
         // Not need - test env only
+        // Sound Effects
+        this.load.audio("enemyTakeMeleeHit", ["assets/sFX/sliceFlesh.wav"]);
+        this.load.audio("nightBorneTakeLightDamage1", ["assets/sFX/Enemy/nightBorneTakeLightDamage1.wav"]);
+        this.load.audio("nightBorneTakeLightDamage2", ["assets/sFX/Enemy/nightBorneTakeLightDamage2.wav"]);
+        this.load.audio("nightBorneTakeLightDamage3", ["assets/sFX/Enemy/nightBorneTakeLightDamage3.wav"]);
+        this.load.audio("nightBorneTakeHeavyDamage1", ["assets/sFX/Enemy/nightBorneTakeHeavyDamage1.wav"]);
+        this.load.audio("nightBorneTakeHeavyDamage2", ["assets/sFX/Enemy/nightBorneTakeHeavyDamage2.wav"]);
+        this.load.audio("nightBorneTakeHeavyDamage3", ["assets/sFX/Enemy/nightBorneTakeHeavyDamage3.wav"]);
+        this.load.audio("nightBorneEvade1", ["assets/sFX/Enemy/nightBorneEvade1.wav"]);
+        this.load.audio("nightBorneEvade2", ["assets/sFX/Enemy/nightBorneEvade2.wav"]);
+
+        this.load.audio("swordSwing1", ["assets/sFX/swordSwing1.wav"]);
+        this.load.audio("swordSwing2", ["assets/sFX/swordSwing2.mp3"]);
+        this.load.audio("swordSwing3", ["assets/sFX/swordSwing3.mp3"]);
+        this.load.audio("swordSwing4", ["assets/sFX/swordSwing4.mp3"]);
+        this.load.audio("playerAttack1", ["assets/sFX/Player/playerAttack1.wav"]);
+        this.load.audio("playerAttack2", ["assets/sFX/Player/playerAttack2.wav"]);
+        this.load.audio("playerAttack3", ["assets/sFX/Player/playerAttack3.wav"]);
+        this.load.audio("playerAttack4", ["assets/sFX/Player/playerAttack4.wav"]);
+        this.load.audio("playerAttack5", ["assets/sFX/Player/playerAttack5.wav"]);
+        this.load.audio("playerCriticalStrike1", ["assets/sFX/Player/playerCriticalStrike1.wav"]);
+        this.load.audio("playerCriticalStrike2", ["assets/sFX/Player/playerCriticalStrike2.wav"]);
+
+        this.load.audio("playerEvade1", ["assets/sFX/Player/playerEvade1.wav"]);
+        this.load.audio("playerEvade2", ["assets/sFX/Player/playerEvade2.wav"]);
+        this.load.audio("playerHit1", ["assets/sFX/Player/playerHit1.wav"]);
+        this.load.audio("playerHit2", ["assets/sFX/Player/playerHit2.wav"]);
+        this.load.audio("playerHit3", ["assets/sFX/Player/playerHit3.wav"]);
+        this.load.audio("playerHit4", ["assets/sFX/Player/playerHit4.wav"]);
+        this.load.audio("playerHit5", ["assets/sFX/Player/playerHit5.wav"]);
+        this.load.audio("playerHit6", ["assets/sFX/Player/playerHit6.wav"]);
+        this.load.audio("playerHit7", ["assets/sFX/Player/playerHit7.wav"]);
+
         this.load.atlas('avatar3', ['assets/Avatars/3/avatar3.png','assets/Avatars/3/avatar3_n.png'],'assets/Avatars/3/avatar3.json');
         this.load.spritesheet('whiteHitSmear', 'assets/whiteHitSmear.png', { frameWidth: 1024, frameHeight: 1024});
          this.load.spritesheet('whiteHitSmear2', 'assets/whiteHitSmear2.png', { frameWidth: 1048, frameHeight: 1048}); 
@@ -192,13 +225,13 @@ class Simulacrum extends Phaser.Scene {
                 // Player - To be updated
        
                 this.playerScale = 4 * (scaleModX) 
-                this.player = this.physics.add.sprite(screenWidth * 1.75, screenHeight * 0.5 ,'avatar3').setScale(this.playerScale).setDepth(1)
+                this.player = this.physics.add.sprite(screenWidth * 1.75, screenHeight * 0.5 ,'avatar3').setScale(this.playerScale).setDepth(1).setPipeline('Light2D')
                 this.player.body.setSize(10, 30).setOffset(25,15).setAllowDrag(true)
                 this.player.setBounce(0.05)
                 this.player.setCollideWorldBounds(true);
                 this.physics.add.collider(this.player,this.floor);
                 this.physics.add.collider(this.player,this.platformGroup)
-                //this.physics.add.overlap(this.player,this.enemyGroup,this.enterBattle,null,this)
+                this.physics.add.overlap(this.player,this.enemyGroup,this.enterBattle,null,this)
 
                 this.playerAttackHitBox = this.add.sprite(this.player.x, this.player.y)
                 this.physics.add.existing(this.playerAttackHitBox, false)
@@ -367,7 +400,7 @@ class Simulacrum extends Phaser.Scene {
             //songDatabaseSize = 7
 
             bgMusic = this.sound.add(Phaser.Utils.Array.GetRandom(bgMusicArray))
-            bgMusic.play()
+           //bgMusic.play()
 
             // Background Music
 
@@ -381,7 +414,7 @@ class Simulacrum extends Phaser.Scene {
 
   
         this.debugText = this.add.text(this.playerVitals.x + screenWidth * 0.3, screenHeight * 0.1, this.actionPower, { fontFamily: 'Gothic', fontStyle: 'bold' ,align: 'left'});
-        this.debugText.setFontSize(32).setDepth(5).setColor('#708421')
+        this.debugText.setFontSize(32).setDepth(5)//.setColor('#708421')
 
         
     }
@@ -820,11 +853,20 @@ class Simulacrum extends Phaser.Scene {
 
     enemyModule(game){
 
-        // game.closestEnemy = game.physics.closest(this.player,game.enemyGroup.getMatching('active',true)) 
-
-        
 
         game.enemyGroup.children.each(function(e) {
+
+            // Alternate Depth
+
+            if (e.active){
+                if (e.x > this.player.x + screenWidth * 0.1){
+                    e.setDepth(0)
+                } else if (e.x < this.player.x - screenWidth * 0.1){
+                    e.setDepth(2)
+                }
+            }
+
+
             // Lock on Code
            if (e.active){
             // Enables enemy to automatically face and move towards player
@@ -918,7 +960,7 @@ class Simulacrum extends Phaser.Scene {
                     this.enemy.y = Phaser.Math.FloatBetween(0, screenHeight * 0.5)
                     this.enemy.setScale(this.creepScale)
                     this.enemy.setVisible(true)
-                    this.enemy.setActive(true)
+                    this.enemy.setActive(true).setPipeline('Light2D')
                     if (Phaser.Math.Between(0,100) < 25){
                         this.enemy.setDepth(1)
                     } else {
@@ -990,7 +1032,7 @@ class Simulacrum extends Phaser.Scene {
         }.bind(game));
 
         if (game.enemyGroup.countActive() == 0){
-            game.exitBattle(game)
+            game.exitBattle()
         } 
     }
 
@@ -1007,7 +1049,7 @@ class Simulacrum extends Phaser.Scene {
     enemyTakeHit(playerAttackHitBox,enemy){
         if(this.gameMode == 1){
 
-            this.camera.flash()
+            
 
         if(!enemy.isHit){
             enemy.isHit = true
@@ -1015,15 +1057,28 @@ class Simulacrum extends Phaser.Scene {
             // Dodge Check Test
             if(Phaser.Math.Between(0,100)<= 30){
 
+                if (enemy.type == 2){
+                    if(Phaser.Math.Between(0,100) <= 20){
+                        this.sound.play('nightBorneEvade2')
+                    } else {
+                        this.sound.play('nightBorneEvade1')
+                    }
+                }
+
+
                 if (enemy.x >= this.player.x){
-                    enemy.x += Phaser.Math.Between(25,75)
+                    enemy.x += Phaser.Math.Between(100,125)
                     enemy.isHit = false
                 } else {
-                    enemy.x -= Phaser.Math.Between(25,75)
+                    enemy.x -= Phaser.Math.Between(100,125)
                     enemy.isHit = false
                 }
 
             } else {
+
+            // Sound Effect of Hit
+                // Hit connected
+                this.sound.play('enemyTakeMeleeHit')
             
             // Crit Check
             if (Phaser.Math.Between(0,100)<=this.critChance){
@@ -1056,22 +1111,24 @@ class Simulacrum extends Phaser.Scene {
                 enemy.setVelocityX(enemy.body.velocity.x - (this.playerAttackStrengthX * this.playerAttackCrit))
             }
 
-            if (Math.abs(this.playerAttackStrengthY > 1000)){
-                this.camera.shake(250,0.02)
+            if (Math.abs(this.playerAttackStrengthY) > this.baseJumpHeight * 1.5){
+                this.camera.shake(250,0.01)
             }
 
-            if (Math.abs(this.playerAttackStrengthX > 100)){
-                this.camera.shake(250,0.02)
+            if (Math.abs(this.playerAttackStrengthX) > 300){
+                this.camera.shake(250,0.01)
             }
 
             if(this.playerAttackCrit > 1){
                 this.camera.flash()
-                if (Phaser.Math.Between(0,1) == 0){
-                    this.sound.play('ashaATK1',{volume:75})
-                } else {
-                    this.sound.play('ashaATK2',{volume:100})
-                }
-                
+                this.camera.shake(250,0.03)  
+                this.sound.stopByKey('playerAttack1')
+                this.sound.stopByKey('playerAttack2')
+                this.sound.stopByKey('playerAttack3')
+                this.sound.stopByKey('playerAttack4')
+                this.sound.stopByKey('playerAttack5')  
+                this.sound.play('playerCriticalStrike' + Phaser.Math.Between(1,2))
+                                    
             }
 
             if(enemy.type == 1){
@@ -1108,6 +1165,25 @@ class Simulacrum extends Phaser.Scene {
                 },this)
             } else if (enemy.type == 2){
                 enemy.play('nightBorne_Hurt',true)
+               
+                if (this.playerAttackCrit > 1){
+                    if(Phaser.Math.Between(0,100) <= 10){
+                        this.sound.play('nightBorneTakeHeavyDamage3')
+                    } else if (Phaser.Math.Between(0,100) <= 25){
+                        this.sound.play('nightBorneTakeHeavyDamage2')
+                    } else {
+                        this.sound.play('nightBorneTakeHeavyDamage1')
+                    }
+                } else {
+                    if(Phaser.Math.Between(0,100) <= 10){
+                        this.sound.play('nightBorneTakeLightDamage3')
+                    } else if (Phaser.Math.Between(0,100) <= 25){
+                        this.sound.play('nightBorneTakeLightDamage2')
+                    } else {
+                        this.sound.play('nightBorneTakeLightDamage1')
+                    }
+                }
+                
                 enemy.once('animationcomplete', function (anim,frame) {
                     enemy.emit('animationcomplete_' + anim.key, frame)
                 }, enemy)
@@ -1117,6 +1193,8 @@ class Simulacrum extends Phaser.Scene {
                     enemy.hitsTaken += 1
                     if (enemy.hitsTaken >= enemy.hitHP){
                         enemy.play('nightBorne_Death',true)
+
+                        this.sound.play('nightBorneTakeHeavyDamage2')
                         this.physics.add.collider(enemy,this.floor); 
                         this.physics.add.collider(enemy,this.platformGroup); 
                         this.enemyGroup.remove(enemy)
@@ -1492,12 +1570,41 @@ class Simulacrum extends Phaser.Scene {
 
             // Hit Animation
                 if (this.playerIsHit){
+
+                    
+
                     if (this.gameMode == 0){
                     this.player.setTint(0xff7a7a)
                     this.player.flipX = true
                     }
-
                     this.player.play({key:'player_Avatar_3_TAKE_HIT',frameRate: 10},true)
+
+                    // Sound Effects
+                    
+
+                    if (this.player.anims.getName() == 'player_Avatar_3_TAKE_HIT'){
+                        if (this.player.anims.currentFrame.index == 1 ){
+                            this.sound.stopByKey('playerAttack1')
+                            this.sound.stopByKey('playerAttack2')
+                            this.sound.stopByKey('playerAttack3')
+                            this.sound.stopByKey('playerAttack4')
+                            this.sound.stopByKey('playerAttack5')
+                            this.sound.stopByKey('playerCriticalStrike1')
+                            this.sound.stopByKey('playerCriticalStrike2')
+                            this.sound.stopByKey('playerEvade1')
+                            this.sound.stopByKey('playerEvade2')
+                            this.sound.stopByKey('playerHit1')
+                            this.sound.stopByKey('playerHit2')
+                            this.sound.stopByKey('playerHit3')
+                            this.sound.stopByKey('playerHit4')
+                            this.sound.stopByKey('playerHit5')
+                            this.sound.stopByKey('playerHit6')
+                            this.sound.stopByKey('playerHit7')
+
+                            this.sound.play('playerHit' + Phaser.Math.Between(1,7))
+                        }
+                    }
+
                     this.player.once('animationcomplete', function (){
                         this.playerIsHit = false
                     },this)
@@ -1604,6 +1711,109 @@ class Simulacrum extends Phaser.Scene {
                                     } else {
                                         this.playerAttackHitBox.body.checkCollision.none = true
                                     }
+                            
+                                // Sound Effects - Swing Sword
+                                if (this.player.anims.getName() == 'player_Avatar_3_ACTION_1'){
+                                    
+                                    if (this.player.anims.currentFrame.index == 2){
+                                        this.sound.stopByKey('swordSwing1')
+                                        this.sound.stopByKey('swordSwing2')
+                                        this.sound.stopByKey('swordSwing3')
+                                        this.sound.stopByKey('swordSwing4')
+
+                                        this.sound.play('swordSwing1')
+                                    } else if(this.player.anims.currentFrame.index == 8) {
+                                        this.sound.stopByKey('swordSwing1')
+
+                                        this.sound.play('swordSwing1')
+                                    }
+
+                                } else if (this.player.anims.getName() == 'player_Avatar_3_ACTION_2'){
+                    
+
+                                    if (this.player.anims.currentFrame.index == 2 ){
+                                        this.sound.stopByKey('swordSwing1')
+                                        this.sound.stopByKey('swordSwing2')
+                                        this.sound.stopByKey('swordSwing3')
+                                        this.sound.stopByKey('swordSwing4')
+
+                                        this.sound.play('swordSwing2')
+                                    } else if (this.player.anims.currentFrame.index == 8){
+                                        this.sound.stopByKey('swordSwing2')
+                                        this.sound.stopByKey('swordSwing3')
+
+                                        this.sound.play('swordSwing3')
+                                    }
+
+                                } else if (this.player.anims.getName() == 'player_Avatar_3_ACTION_3'){
+                                    
+                                    if (this.player.anims.currentFrame.index == 1){   
+                                        this.sound.stopByKey('swordSwing1')
+                                        this.sound.stopByKey('swordSwing2')
+                                        this.sound.stopByKey('swordSwing3')
+                                        this.sound.stopByKey('swordSwing4')
+
+                                        this.sound.play('swordSwing4')
+                                    } 
+
+                                } 
+
+                                // Sound Effects - Grunt
+                                if (this.player.anims.getName() == 'player_Avatar_3_ACTION_1'){
+                                    
+                                    if (this.player.anims.currentFrame.index == 1){
+                                        this.sound.stopByKey('playerAttack1')
+                                        this.sound.stopByKey('playerAttack2')
+                                        this.sound.stopByKey('playerAttack3')
+                                        this.sound.stopByKey('playerAttack4')
+                                        this.sound.stopByKey('playerAttack5')
+
+                                        this.sound.play('playerAttack1')
+                                    } else if(this.player.anims.currentFrame.index == 7) {
+                                        this.sound.stopByKey('playerAttack1')
+                                        this.sound.stopByKey('playerAttack2')
+                                        this.sound.stopByKey('playerAttack3')
+                                        this.sound.stopByKey('playerAttack4')
+                                        this.sound.stopByKey('playerAttack5')
+
+                                        this.sound.play('playerAttack3')
+                                    }
+
+                                } else if (this.player.anims.getName() == 'player_Avatar_3_ACTION_2'){
+                    
+
+                                    if (this.player.anims.currentFrame.index == 1 ){
+                                        this.sound.stopByKey('playerAttack1')
+                                        this.sound.stopByKey('playerAttack2')
+                                        this.sound.stopByKey('playerAttack3')
+                                        this.sound.stopByKey('playerAttack4')
+                                        this.sound.stopByKey('playerAttack5')
+
+                                        this.sound.play('playerAttack5')
+                                    } else if (this.player.anims.currentFrame.index == 7){
+                                        this.sound.stopByKey('playerAttack1')
+                                        this.sound.stopByKey('playerAttack2')
+                                        this.sound.stopByKey('playerAttack3')
+                                        this.sound.stopByKey('playerAttack4')
+                                        this.sound.stopByKey('playerAttack5')
+
+                                        this.sound.play('playerAttack4')
+                                    }
+
+                                } else if (this.player.anims.getName() == 'player_Avatar_3_ACTION_3'){
+                                    
+                                    if (this.player.anims.currentFrame.index == 1){   
+                                        this.sound.stopByKey('playerAttack1')
+                                        this.sound.stopByKey('playerAttack2')
+                                        this.sound.stopByKey('playerAttack3')
+                                        this.sound.stopByKey('playerAttack4')
+                                        this.sound.stopByKey('playerAttack5')
+
+                                        this.sound.play('playerAttack2')
+                                    } 
+
+                                } 
+                                
 
                             this.critChance = 25
                             this.critDamage = 2.5
@@ -1870,6 +2080,22 @@ class Simulacrum extends Phaser.Scene {
                                     }
                                 }
                             } else if (this.gameMode == 1){
+
+                                // Sound Effects - Grunt
+                                if (this.player.anims.getName() == 'player_Avatar_3_EVADE'){
+                                    
+                                    if (this.player.anims.currentFrame.index == 1){
+                                        this.sound.stopByKey('playerAttack1')
+                                        this.sound.stopByKey('playerAttack2')
+                                        this.sound.stopByKey('playerAttack3')
+                                        this.sound.stopByKey('playerAttack4')
+                                        this.sound.stopByKey('playerAttack5')
+                                        this.sound.stopByKey('playerEvade1')
+                                        this.sound.stopByKey('playerEvade2')
+
+                                        this.sound.play('playerEvade' + Phaser.Math.Between(1,2))
+                                    }
+                                }
                                 // Animation
 
                                 // Ground / Air
@@ -2334,10 +2560,10 @@ class Simulacrum extends Phaser.Scene {
             }
         }
 
-    enterBattle(Override){
+    enterBattle(){
         if(this.gameMode == 0){
 
-            if(Override){
+            if(this.speedCheckOverride == 1){
                 this.speedCheckThreshold = 3
             } else {
                 this.speedCheckThreshold = 0.25
@@ -2366,6 +2592,7 @@ class Simulacrum extends Phaser.Scene {
                     this.enterBattleAnimation = false
                     this.battleCameraActive = true
                     playerInputActive = true
+                    this.speedCheckOverride = 0
                     
                 },this)
                 this.physics.world.setBounds(screenWidth, 0, screenWidth * 2,  screenHeight)
@@ -2379,13 +2606,13 @@ class Simulacrum extends Phaser.Scene {
         } 
     }
 
-    exitBattle(game){
-        game.gameMode = 0
-        game.playerBattleSpeed = 0
-        game.playerSpeed = 0
-        game.camera.stopFollow()
+    exitBattle(){
+        this.gameMode = 0
+        this.playerBattleSpeed = 0
+        this.playerSpeed = 0
+        this.camera.stopFollow()
         
-        game.physics.world.setBounds(game.camera.worldView.x,game.camera.worldView.y,screenWidth,screenHeight)
+        this.physics.world.setBounds(this.camera.worldView.x,this.camera.worldView.y,screenWidth,screenHeight)
     }
 
     update(time,delta){
@@ -2449,8 +2676,9 @@ class Simulacrum extends Phaser.Scene {
         if(openMenuIsDown){
             openMenuIsDown = false
             if (this.gameMode == 0 && this.closestEnemy){
-                this.enterBattle(1)
-            } else {
+                this.speedCheckOverride = 1
+                this.enterBattle()
+            } else if (this.gameMode == 1) {
                 this.exitBattle()
             }
             
