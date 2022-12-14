@@ -50,7 +50,8 @@ class Simulacrum extends Phaser.Scene {
         this.loadStageBG(this.stageData.stageAssetName,this.stageData.bgLayers,this.stageData.fgLayers)
 
         // Not need - test env only
-
+        // HUD/UI
+        
         // Vitals Bars
             // Life
                 this.load.image('life-icon-holder', 'assets/UI/playerVitals/red/meter_icon_holder_red.png')
@@ -87,8 +88,51 @@ class Simulacrum extends Phaser.Scene {
                 this.load.image('stamina-left-cap', 'assets/UI/playerVitals/green/meter_bar_left_green.png')
                 this.load.image('stamina-middle', 'assets/UI/playerVitals/green/meter_bar_center_green.png')
                 this.load.image('stamina-right-cap', 'assets/UI/playerVitals/green/meter_bar_right_green.png')
+            
+            // Player Speed
 
-        
+                this.playerSpeedUIType = 2
+
+                if(this.playerSpeedUIType == 1){
+                    this.load.image('playerSpeed-holder', 'assets/UI/playerVitals/powerBars/curved_bar/curver_bar_holder.png')
+
+                    this.load.image('playerSpeed-bottom', 'assets/UI/playerVitals/powerBars/curved_bar/curver_bar_bottom.png')
+                    this.load.image('playerSpeed-middle', 'assets/UI/playerVitals/powerBars/curved_bar/curver_bar_middle.png')
+                    this.load.image('playerSpeed-top', 'assets/UI/playerVitals/powerBars/curved_bar/curver_bar_top.png')
+                } else if (this.playerSpeedUIType == 2){
+                    this.load.image('playerSpeed-holder', 'assets/UI/playerVitals/powerBars/straight_bar/straight_bar_holder.png')
+
+                    this.load.image('playerSpeed-bottom', 'assets/UI/playerVitals/powerBars/straight_bar/straight_bar_bottom.png')
+                    this.load.image('playerSpeed-middle', 'assets/UI/playerVitals/powerBars/straight_bar/straight_bar_middle.png')
+                    this.load.image('playerSpeed-top', 'assets/UI/playerVitals/powerBars/straight_bar/straight_bar_top.png')
+                } else if (this.playerSpeedUIType == 3) {
+                    this.load.image('playerSpeed-holder', 'assets/UI/playerVitals/powerBars/triangle_bar/triangle_bar_holder.png')
+
+                    this.load.image('playerSpeed-bottom', 'assets/UI/playerVitals/powerBars/triangle_bar/triangle_bar_bottom.png')
+                    this.load.image('playerSpeed-middle', 'assets/UI/playerVitals/powerBars/triangle_bar/triangle_bar_middle.png')
+                    this.load.image('playerSpeed-top', 'assets/UI/playerVitals/powerBars/triangle_bar/triangle_bar_top.png')
+                }
+                
+
+                this.load.image('playerSpeed-mask', 'assets/UI/playerVitals/powerBars/mask.png')
+
+        // Stage Progress
+                this.load.image('stageProgress-icon-holder', 'assets/UI/playerVitals/purple/meter_icon_holder_purple.png')
+                this.load.image('stageProgress-icon', 'assets/UI/playerVitals/icons/shield.png')
+
+                this.load.image('horde-checkpoint-icon', 'assets/UI/playerVitals/icons/timer.png')
+                this.load.image('chaser-checkpoint-icon', 'assets/UI/playerVitals/icons/stamina.png')
+                this.load.image('miniBoss-checkpoint-icon', 'assets/UI/playerVitals/icons/shield.png')
+                this.load.image('landmark-checkpoint-icon', 'assets/UI/playerVitals/icons/shield.png')
+                this.load.image('shop-checkpoint-icon', 'assets/UI/playerVitals/icons/shield.png')
+
+                this.load.image('stageProgress-left-cap-holder', 'assets/UI/playerVitals/purple/meter_bar_holder_left_purple.png')
+                this.load.image('stageProgress-middle-holder', 'assets/UI/playerVitals/purple/meter_bar_holder_center_purple.png')
+                this.load.image('stageProgress-right-cap-holder', 'assets/UI/playerVitals/purple/meter_bar_holder_right_purple.png')
+
+                this.load.image('stageProgress-left-cap', 'assets/UI/playerVitals/purple/meter_bar_left_purple.png')
+                this.load.image('stageProgress-middle', 'assets/UI/playerVitals/purple/meter_bar_center_purple.png')
+                this.load.image('stageProgress-right-cap', 'assets/UI/playerVitals/purple/meter_bar_right_purple.png')
 
         // Sound Effects
         this.load.audio("enemyTakeMeleeHit", ["assets/sFX/sliceFlesh.wav"]);
@@ -142,15 +186,17 @@ class Simulacrum extends Phaser.Scene {
         this.load.spritesheet('nightBorne', ['assets/nightBorne.png','assets/nightBorne.png'], { frameWidth: 80, frameHeight: 80});
 
         this.load.audio("bgMusic0a", ["assets/music/Riptide.mp3"]);
-        this.load.audio("bgMusic0b", ["assets/music/Landslide.mp3"]);
+        this.load.audio("bgMusic0b", ["assets/music/Legend_Has_It.mp3"]);
         this.load.audio("bgMusic0c", ["assets/music/Gumshield.mp3"]);
         this.load.audio("bgMusic0d", ["assets/music/Throw_Me_To_The_Wolves.mp3"]);
+        this.load.audio("bgMusic0e", ["assets/music/Wide_Eyes.mp3"]);
+        
 
         this.load.audio("bgMusic1", ["assets/music/The_Apartment.mp3"]);
             this.load.audio("bgMusic2", ["assets/music/Arbol.mp3"]);
             this.load.audio("bgMusic3", ["assets/music/Nine_Levels.mp3"]);
             this.load.audio("bgMusic4", ["assets/music/Katana.mp3"]);
-            this.load.audio("bgMusic5", ["assets/music/Legend_Has_It.mp3"]);
+            this.load.audio("bgMusic5", ["assets/music/Landslide.mp3"]);
             this.load.audio("bgMusic6", ["assets/music/Fate_I.mp3"]);
             this.load.audio("bgMusic7", ["assets/music/Talk_Like_Thunder.mp3"]);
     }
@@ -160,6 +206,19 @@ class Simulacrum extends Phaser.Scene {
         // V1 Code
 
         // Initialisation & Setup
+
+            // Load Music
+
+                    // Music
+                    this.sound.stopByKey('mainTheme');
+                    this.sound.stopAll();
+                    bgMusicArray = []
+
+                    Phaser.Utils.Array.Add(bgMusicArray,["bgMusic0a","bgMusic0b","bgMusic0c","bgMusic0d","bgMusic0e",
+                                                        //'bgMusic1','bgMusic2','bgMusic3','bgMusic4','bgMusic5','bgMusic6','bgMusic7'
+                                                    ])
+
+                    bgMusic = this.sound.add(Phaser.Utils.Array.GetRandom(bgMusicArray))
 
             // Base Variables
 
@@ -172,9 +231,8 @@ class Simulacrum extends Phaser.Scene {
             this.speedLevel = 2 // Starting Speed Level in Run Mode (rename to Intensity Level)
             this.endRun = false
 
-        
-                this.playerSpeed = 0 // Starting Player Speed in Run Mode  
-                this.playerBattleSpeed = 0 // Starting Player Battle Speed in Battle Mode  
+            this.playerSpeed = 0
+            this.playerBattleSpeed = 0 
            
 
             this.rewards = 0
@@ -182,8 +240,14 @@ class Simulacrum extends Phaser.Scene {
             this.glory = 0
             this.gold = 0
 
+
+            this.baseGoldDrop = 100
+
+            this.baseZoneLength = 1000
+            this.baseZoneClearTime =  (Math.floor(bgMusic.duration / 60) * 60) + (((bgMusic.duration / 60) - Math.floor(bgMusic.duration / 60)) * 60)
             this.progress = 0
-            this.progressToNextLevel = Phaser.Math.Between(375,425)
+            this.stage = {nextCheckPoint:1,checkPointType:0}
+            this.progressToNextLevel = this.baseZoneLength//Phaser.Math.Between(this.baseZoneLength * 0.75,this.baseZoneLength * 1.25)
             this.progressToNextCheckPoint = this.progressToNextLevel * 0.25
 
             // World Initialisation
@@ -191,15 +255,27 @@ class Simulacrum extends Phaser.Scene {
                 // World Bounds (effective Player Bounds)
                 this.physics.world.setBounds(screenWidth * 1.5, 0 - (screenHeight * 0.1), screenWidth * 1,  screenHeight * 1.1);
 
-                // Camera
+                // Camera and Music
                 
                 this.camera = this.cameras.main
                 this.camera.zoom = 1.05
                 this.camera.setBounds(screenWidth,0,screenWidth * 2,screenHeight)
                 this.camera.centerOnX(screenWidth * 2)
-                this.camera.fadeIn(0)
+                this.camera.fadeIn(1000)
+                bgMusic.play()
                 this.camera.once('camerafadeincomplete',function(){
                     this.stageProgressEnabled = true
+
+                    // Background Music
+
+                    bgMusic.on('complete', function(){
+                        //     songChoice = Math.floor(Phaser.Math.Between(1,songDatabaseSize))
+                        //     Phaser.Utils.Array.Add(bgMusicArray,"bgMusic" + songChoice)
+                        bgMusic.destroy()
+                        bgMusic = this.sound.add(Phaser.Utils.Array.GetRandom(bgMusicArray))
+                        bgMusic.play()
+                    },this) 
+
                 },this)
 
                 
@@ -252,6 +328,16 @@ class Simulacrum extends Phaser.Scene {
                     maxSize: 20
                 });
 
+                this.enemyHordeGroup = this.physics.add.group({
+                    defaultKey: 'doomsayer',
+                    maxSize: 20
+                });
+
+                this.enemyChaserGroup = this.physics.add.group({
+                    defaultKey: 'doomsayer',
+                    maxSize: 20
+                });
+
                 this.closestEnemyOutline = this.add.sprite()
                 this.closestEnemyOutline.setTintFill(0x7851a9).setAlpha(0.75)
 
@@ -283,14 +369,9 @@ class Simulacrum extends Phaser.Scene {
                 this.playerIsHit = false
                 this.playerInAir = false
 
-                this.currentEnergy = 100
-                this.maxEnergy = 300
+                this.playerTopSpeed = 2
 
-                this.currentFocus = 100
-                this.maxFocus = 100
-
-                this.currentLife = 100
-                this.maxLife = 100
+                this.renderAvatarStats()
 
                 // Stage 
 
@@ -301,14 +382,127 @@ class Simulacrum extends Phaser.Scene {
 
                 this.hudDepth = 2
                 // Player
-                this.playerIconBoxScaleX = 0.925
-                this.playerIconBoxScaleY = 0.4
+                this.playerIconBoxScaleX = 0.85
+                this.playerIconBoxScaleY = 0.3
                 this.playerIconBox = this.add.image(0,0,'playerIconBox').setDepth(3).setScale(this.playerIconBoxScaleX,this.playerIconBoxScaleY).setOrigin(0,0.5).setAlpha(0.75)
-                this.playerIconScale = 0.0825    
+                this.playerIconScale = 0.06    
                 this.playerIcon = this.add.image(0,0,'playerIcon').setDepth(3).setScale(this.playerIconScale).setOrigin(0.5,0.5)
             
-                this.iconScale = 0.5
+               
+                // Vitals Bars
+                    this.playerVitalsPosition = 2
+                    this.lowVitalsTintColour = 0xE10600
+                    this.lowVitalsPercent = 0.2
+
+                    if (this.playerVitalsPosition == 1){
+                        this.vitalsfullWidth = this.playerIconBox.displayWidth * 0.4
+                        this.vitalsScale = 0.0575//0.075
+                    } else {
+                        this.vitalsfullWidth = this.player.displayWidth * 0.5
+                        this.vitalsScale = 0.025//0.075
+                    }
+                    
+
+                    
+                // Life
+
+                    
+                    // Holder
+
+                        this.lifeMiddleHolder = this.add.image(0 ,0, 'life-middle-holder')
+                            .setOrigin(0, 0.5).setDepth(5).setScale(this.vitalsScale)
+
+                        this.lifeMiddleHolder.displayWidth = this.vitalsfullWidth
+
+                        this.lifeRightCapHolder = this.add.image(0, 0, 'life-right-cap-holder')
+                            .setOrigin(0, 0.5).setDepth(5).setScale(this.vitalsScale)
+                    // Bar
+
+                        this.lifeMiddle = this.add.image(0, 0, 'life-middle')
+                            .setOrigin(0, 0.5).setDepth(5).setScale(this.vitalsScale)
+
+                        this.lifeMiddle.displayWidth = this.vitalsfullWidth
+
+                        this.lifeRightCap = this.add.image(0,0, 'life-right-cap')
+                            .setOrigin(0, 0.5).setDepth(5).setScale(this.vitalsScale)
+                
+                        this.uiSubModule_setLifePercentage(this.player.lifeCurrent/this.player.lifeMax)
+                    // Icon Holder
+
+                    this.lifeIconHolder = this.add.image(0,0, 'life-icon-holder').setDepth(6).setScale(this.vitalsScale)
+                    this.lifeIcon = this.add.image(0,0, 'life-icon').setDepth(6).setScale(this.vitalsScale)
+
+                // Focus
+
+                    
+                    // Holder
+
+                        this.focusMiddleHolder = this.add.image(0,0, 'focus-middle-holder')
+                            .setOrigin(0, 0.5).setDepth(5).setScale(this.vitalsScale)
+
+                        this.focusMiddleHolder.displayWidth = this.vitalsfullWidth
+
+                        this.focusRightCapHolder = this.add.image(0,0, 'focus-right-cap-holder')
+                            .setOrigin(0, 0.5).setDepth(5).setScale(this.vitalsScale)
+                    // Bar
+
+
+                        this.focusMiddle = this.add.image(0,0, 'focus-middle')
+                            .setOrigin(0, 0.5).setDepth(5).setScale(this.vitalsScale)
+
+                        this.focusMiddle.displayWidth = this.vitalsfullWidth
+
+                        this.focusRightCap = this.add.image(0,0, 'focus-right-cap')
+                            .setOrigin(0, 0.5).setDepth(5).setScale(this.vitalsScale)
+
+                        this.uiSubModule_setFocusPercentage(this.player.focusCurrent/this.player.focusMax)
+                    // Icon Holder
+                        this.focusIconHolder = this.add.image(0,0, 'focus-icon-holder').setDepth(6).setScale(this.vitalsScale).setVisible(1).setOrigin(0.5)
+                        this.focusIcon = this.add.image(0,0, 'focus-icon').setDepth(6).setScale(this.vitalsScale)
+                
+                        
+
+                // Stamina
+
+                    // Holder
+
+                        this.staminaMiddleHolder = this.add.image(0,0,'stamina-middle-holder')
+                            .setOrigin(0, 0.5).setDepth(5).setScale(this.vitalsScale)
+
+                        this.staminaMiddleHolder.displayWidth = this.vitalsfullWidth
+
+                        this.staminaRightCapHolder = this.add.image(0,0, 'stamina-right-cap-holder')
+                            .setOrigin(0, 0.5).setDepth(5).setScale(this.vitalsScale)
+                    // Bar
+
+                        this.staminaMiddle = this.add.image(0,0, 'stamina-middle')
+                            .setOrigin(0, 0.5).setDepth(5).setScale(this.vitalsScale)
+
+                        this.staminaMiddle.displayWidth = this.vitalsfullWidth
+
+                        this.staminaRightCap = this.add.image(0,0, 'stamina-right-cap')
+                            .setOrigin(0, 0.5).setDepth(5).setScale(this.vitalsScale)
+                
+                        this.uiSubModule_setStaminaPercentage(this.player.staminaCurrent/this.player.staminaMax)
+
+                    // Icon Holder
+
+                        this.staminaIconHolder = this.add.image(0,0, 'stamina-icon-holder').setDepth(6).setScale(this.vitalsScale).setVisible(1).setOrigin(0.5)
+                        this.staminaIcon = this.add.image(0,0, 'stamina-icon').setDepth(6).setScale(this.vitalsScale)
+
+                
+
+                this.resourcesPosition = 1
+
+
+                this.bigIconScale = 0.85
+                this.bigTextSize = 42
+
+                this.iconScale = 0.45
                 this.textSize = 24
+                
+                this.gloryIcon = this.add.image(0,0,'gloryIcon').setDepth(4).setScale(this.bigIconScale * (scaleModX))
+                this.gloryText = this.add.text(0, 0, Math.floor(this.glory)).setFontFamily('Arial').setFontSize(this.bigTextSize * (scaleModX)).setColor('#BC3823').setDepth(4).setOrigin(0.5,0.5);
                 
 
                 this.storedRewardsIcon = this.add.image(0,0,'storedRewardsIcon').setDepth(4).setScale(this.iconScale * (scaleModX)).setOrigin(0.5,0.5)
@@ -316,115 +510,6 @@ class Simulacrum extends Phaser.Scene {
                 
                 this.goldIcon = this.add.image(0,0,'goldIcon').setDepth(4).setScale(this.iconScale * (scaleModX)).setOrigin(0.5,0.5)
                 this.goldText = this.add.text(0, 0, Math.floor(gold)).setFontFamily('Arial').setFontSize(this.textSize * (scaleModX)).setColor('#ffd700').setDepth(4).setOrigin(0.5,0.5);
-
-                // Old Vitals Bars
-                // this.playerVitals = new HealthBar(this,this.currentLife, this.storedRewardsIcon.x + (30 * (scaleModX)), this.playerIcon.y + (20 * (scaleModX)),this.hudDepth)
-            
-                // this.playerVitalsTextL = this.add.text(0, 0, 'Life').setFontFamily('Arial').setFontSize(18 * (scaleModX)).setColor('#cc0000').setDepth(4).setOrigin(0.5,0.5);
-                // this.playerVitalsTextF = this.add.text(0, 0, 'Focus').setFontFamily('Arial').setFontSize(18 * (scaleModX)).setColor('#f1c232').setDepth(4).setOrigin(0.5,0.5);
-                // this.playerVitalsTextE = this.add.text(0, 0, 'Energy').setFontFamily('Arial').setFontSize(18 * (scaleModX)).setColor('#00a86b').setDepth(4).setOrigin(0.5,0.5);       
-
-                // New Vitals Bars
-
-                    this.vitalsAnchorX = this.camera.scrollX + (screenWidth * 0.005) + (screenWidth * 0.0575) + 165
-                    this.vitalsAnchorY = this.camera.scrollY + screenHeight * 0.25
-                    this.vitalsfullWidth = this.playerIconBox.displayWidth * 0.3
-                    this.vitalsScale = 0.075
-                // Life
-
-                    // Icon Holder
-
-                    this.lifeIconHolder = this.add.image(this.vitalsAnchorX, this.vitalsAnchorY, 'life-icon-holder').setDepth(6).setScale(this.vitalsScale)
-                    this.lifeIcon = this.add.image(this.lifeIconHolder.x, this.lifeIconHolder.y, 'life-icon').setDepth(6).setScale(this.vitalsScale)
-                    // Holder
-                        // this.lifeLeftCapHolder = this.add.image(this.lifeIconHolder.x, this.lifeBarY, 'life-left-cap-holder')
-                        //     .setOrigin(0, 0.5).setDepth(5).setScale(this.lifeBarScale)
-
-                        this.lifeMiddleHolder = this.add.image(this.lifeIconHolder.x , this.vitalsAnchorY, 'life-middle-holder')
-                            .setOrigin(0, 0.5).setDepth(5).setScale(this.vitalsScale)
-
-                        this.lifeMiddleHolder.displayWidth = this.vitalsfullWidth
-
-                        this.lifeRightCapHolder = this.add.image(this.lifeMiddleHolder.x + this.lifeMiddleHolder.displayWidth, this.vitalsAnchorY, 'life-right-cap-holder')
-                            .setOrigin(0, 0.5).setDepth(5).setScale(this.vitalsScale)
-                    // Bar
-                        // this.lifeLeftCap = this.add.image(this.lifeIconHolder.x, this.lifeBarY, 'life-left-cap')
-                        // .setOrigin(0, 0.5).setDepth(5).setScale(this.lifeBarScale)
-
-                        this.lifeMiddle = this.add.image(this.lifeIconHolder.x, this.vitalsAnchorY, 'life-middle')
-                            .setOrigin(0, 0.5).setDepth(5).setScale(this.vitalsScale)
-
-                        this.lifeMiddle.displayWidth = this.vitalsfullWidth
-
-                        this.lifeRightCap = this.add.image(this.lifeMiddle.x + this.lifeMiddle.displayWidth, this.vitalsAnchorY, 'life-right-cap')
-                            .setOrigin(0, 0.5).setDepth(5).setScale(this.vitalsScale)
-                
-                        this.uiSubModule_setLifePercentage(this.currentLife/this.maxLife)
-
-                // Focus
-
-                    // Icon Holder
-
-                    this.focusIconHolder = this.add.image(this.vitalsAnchorX, this.vitalsAnchorY, 'focus-icon-holder').setDepth(6).setScale(this.vitalsScale).setVisible(1).setOrigin(0.5)
-                    this.focusIcon = this.add.image(this.focusIconHolder.x, this.focusIconHolder.y, 'focus-icon').setDepth(6).setScale(this.vitalsScale)
-                    // Holder
-                        // this.lifeLeftCapHolder = this.add.image(this.lifeIconHolder.x, this.lifeBarY, 'life-left-cap-holder')
-                        //     .setOrigin(0, 0.5).setDepth(5).setScale(this.lifeBarScale)
-
-                        this.focusMiddleHolder = this.add.image(this.focusIconHolder.x , this.vitalsAnchorY, 'focus-middle-holder')
-                            .setOrigin(0, 0.5).setDepth(5).setScale(this.vitalsScale)
-
-                        this.focusMiddleHolder.displayWidth = this.vitalsfullWidth
-
-                        this.focusRightCapHolder = this.add.image(this.focusMiddleHolder.x + this.focusMiddleHolder.displayWidth, this.vitalsAnchorY, 'focus-right-cap-holder')
-                            .setOrigin(0, 0.5).setDepth(5).setScale(this.vitalsScale)
-                    // Bar
-                        // this.lifeLeftCap = this.add.image(this.lifeIconHolder.x, this.lifeBarY, 'life-left-cap')
-                        // .setOrigin(0, 0.5).setDepth(5).setScale(this.lifeBarScale)
-
-                        this.focusMiddle = this.add.image(this.focusIconHolder.x, this.vitalsAnchorY, 'focus-middle')
-                            .setOrigin(0, 0.5).setDepth(5).setScale(this.vitalsScale)
-
-                        this.focusMiddle.displayWidth = this.vitalsfullWidth
-
-                        this.focusRightCap = this.add.image(this.focusMiddle.x + this.focusMiddle.displayWidth, this.vitalsAnchorY, 'focus-right-cap')
-                            .setOrigin(0, 0.5).setDepth(5).setScale(this.vitalsScale)
-                
-                        this.uiSubModule_setFocusPercentage(this.currentFocus/this.maxFocus)
-
-                // Stamina
-
-                    // Icon Holder
-
-                    this.staminaIconHolder = this.add.image(this.vitalsAnchorX, this.vitalsAnchorY, 'stamina-icon-holder').setDepth(6).setScale(this.vitalsScale).setVisible(1).setOrigin(0.5)
-                    this.staminaIcon = this.add.image(this.staminaIconHolder.x, this.staminaIconHolder.y, 'stamina-icon').setDepth(6).setScale(this.vitalsScale)
-                    // Holder
-                        // this.lifeLeftCapHolder = this.add.image(this.lifeIconHolder.x, this.lifeBarY, 'life-left-cap-holder')
-                        //     .setOrigin(0, 0.5).setDepth(5).setScale(this.lifeBarScale)
-
-                        this.staminaMiddleHolder = this.add.image(this.staminaIconHolder.x , this.vitalsAnchorY, 'stamina-middle-holder')
-                            .setOrigin(0, 0.5).setDepth(5).setScale(this.vitalsScale)
-
-                        this.staminaMiddleHolder.displayWidth = this.vitalsfullWidth
-
-                        this.staminaRightCapHolder = this.add.image(this.staminaMiddleHolder.x + this.staminaMiddleHolder.displayWidth, this.vitalsAnchorY, 'stamina-right-cap-holder')
-                            .setOrigin(0, 0.5).setDepth(5).setScale(this.vitalsScale)
-                    // Bar
-                        // this.lifeLeftCap = this.add.image(this.lifeIconHolder.x, this.lifeBarY, 'life-left-cap')
-                        // .setOrigin(0, 0.5).setDepth(5).setScale(this.lifeBarScale)
-
-                        this.staminaMiddle = this.add.image(this.staminaIconHolder.x, this.vitalsAnchorY, 'stamina-middle')
-                            .setOrigin(0, 0.5).setDepth(5).setScale(this.vitalsScale)
-
-                        this.staminaMiddle.displayWidth = this.vitalsfullWidth
-
-                        this.staminaRightCap = this.add.image(this.staminaMiddle.x + this.staminaMiddle.displayWidth, this.vitalsAnchorY, 'stamina-right-cap')
-                            .setOrigin(0, 0.5).setDepth(5).setScale(this.vitalsScale)
-                
-                        this.uiSubModule_setStaminaPercentage(this.currentEnergy/this.maxEnergy)
-                    
-
-                   
 
                 this.skillBoxScale = 0.25
                 this.skillIconScale = 0.3
@@ -434,30 +519,163 @@ class Simulacrum extends Phaser.Scene {
                 this.skillBBox = this.add.image(0,0,'skillIconBox').setDepth(3).setScale(this.skillBoxScale).setOrigin(0.5,0.5)
                 this.skillBIcon = this.add.image(0,0,'thunderStrikeIcon').setDepth(3).setScale(this.skillIconScale).setOrigin(0.5,0.5)
 
-                this.scoreBoxScaleX = 0.75
-                this.scoreBoxScaleY = this.playerIconBoxScaleY
-                this.scoreBox = this.add.image(0,0,'playerIconBox').setDepth(3).setScale(this.scoreBoxScaleX,this.scoreBoxScaleY).setOrigin(0,0.5).setAlpha(0.75)
+                // Player Speed
+ 
+                this.playerSpeedPosition = 2
 
-                this.bigIconScale = 1.25
-                this.bigTextSize = 48
-                this.levelIcon = this.add.image(0,0,'levelIcon').setDepth(4).setScale(this.bigIconScale * (scaleModX)).setOrigin(0.5,0.5)
-                this.levelText = this.add.text(0, 0, Math.floor(this.level)).setFontFamily('Arial').setFontSize(this.bigTextSize * (scaleModX)).setColor('#674EA7').setDepth(4).setOrigin(0.5,0.5)
-
-                this.gloryIcon = this.add.image(0,0,'gloryIcon').setDepth(4).setScale(this.bigIconScale * (scaleModX)).setOrigin(0.5,0.5)
-                this.gloryText = this.add.text(0, 0, Math.floor(this.glory)).setFontFamily('Arial').setFontSize(this.bigTextSize * (scaleModX)).setColor('#BC3823').setDepth(4).setOrigin(0.5,0.5);
+                    this.playerSpeedfullWidth = this.vitalsfullWidth
+                    this.playerSpeedScaleX = 0.05
+                    this.playerSpeedScaleY = 0.05
                 
-                this.stageProgress = new StageProgressBar(this,this.progress, this.scoreBox.x, this.scoreBox.y + (screenHeight * 0.05),this.hudDepth)
+                
+
+                // Holder
+
+                    this.playerSpeedHolder = this.add.image(0,0,'playerSpeed-holder')
+                        .setOrigin(0, 0.5).setScale(this.playerSpeedScaleX,this.playerSpeedScaleY).setVisible(1)
+
+                    this.playerSpeedHolder.displayWidth = this.playerSpeedfullWidth
+
+                // Bar
+
+                    this.playerSpeedBottom = this.add.image(0,0, 'playerSpeed-bottom')
+                        .setOrigin(0, 0.5).setScale(this.playerSpeedScaleX,this.playerSpeedScaleY)
+
+
+                    this.playerSpeedBottom.displayWidth = this.playerSpeedfullWidth
+
+                    this.playerSpeedMiddle = this.add.image(0,0, 'playerSpeed-middle')
+                        .setOrigin(0, 0.5).setScale(this.playerSpeedScaleX,this.playerSpeedScaleY)
+
+
+                    this.playerSpeedMiddle.displayWidth = this.playerSpeedfullWidth
+
+                    this.playerSpeedTop = this.add.image(0,0, 'playerSpeed-top')
+                        .setOrigin(0, 0.5).setScale(this.playerSpeedScaleX,this.playerSpeedScaleY).setVisible(1)
+
+
+                    this.playerSpeedTop.displayWidth = this.playerSpeedfullWidth
+
+                    this.playerSpeedMask = this.add.image(0,0, 'playerSpeed-mask')
+                    .setOrigin(0, 0.5).setScale(this.playerSpeedScaleX,this.playerSpeedScaleY)
+                    .setVisible(0)
+
+                    this.playerSpeedMask.displayWidth = this.playerSpeedfullWidth
+                    this.playerSpeedMask.displayHeight = this.playerSpeedHolder.displayHeight
+
+                    this.playerSpeedMiddle.mask = new Phaser.Display.Masks.BitmapMask(this, this.playerSpeedMask);
+            
+                    this.uiSubModule_setPlayerSpeedPercentage(0.5)
+
+              
+                // Stage Progress
+ 
+                    this.stageProgressPosition = 2
+
+                    
+                        this.stageProgressfullWidth = this.playerIconBox.displayWidth * 0.8
+                        this.StageProgressScale = 0.075
+                        this.stageProgressTextSize = 24
+                    
+                    
+
+                    // Holder
+
+                        this.stageProgressMiddleHolder = this.add.image(0,0,'stageProgress-middle-holder')
+                            .setOrigin(0, 0.5).setScale(this.StageProgressScale)
+
+                        this.stageProgressMiddleHolder.displayWidth = this.stageProgressfullWidth
+
+                        this.stageProgressRightCapHolder = this.add.image(0,0, 'stageProgress-right-cap-holder')
+                            .setOrigin(0, 0.5).setScale(this.StageProgressScale)
+                    // Bar
+
+                        this.stageProgressMiddle = this.add.image(0,0, 'stageProgress-middle')
+                            .setOrigin(0, 0.5).setScale(this.StageProgressScale)
+
+                        this.stageProgressMiddle.displayWidth = this.stageProgressfullWidth
+
+                        this.stageProgressRightCap = this.add.image(0,0, 'stageProgress-right-cap')
+                            .setOrigin(0, 0.5).setScale(this.StageProgressScale)
+                
+                        this.uiSubModule_setStageProgressPercentage(this.progress/this.progressToNextLevel)
+
+                    // Icon Holders
+
+                        this.stageProgressIconHolder = this.add.image(0,0, 'stageProgress-icon-holder').setScale(this.StageProgressScale).setOrigin(0.5)
+                        this.levelText = this.add.text(0, 0, Math.floor(this.level)).setFontFamily('Arial').setFontSize(this.stageProgressTextSize * (scaleModX)).setOrigin(0.5)
+                        
+                        this.stageProgressIconHolderC1 = this.add.image(0,0, 'stageProgress-icon-holder').setScale(this.StageProgressScale).setOrigin(0.5)
+                        if (Phaser.Math.Between(0,100)<=30){
+                            this.stageProgressIconC1 = this.add.image(0,0, 'chaser-checkpoint-icon').setScale(this.StageProgressScale)
+                        } else {
+                            this.stageProgressIconC1 = this.add.image(0,0, 'horde-checkpoint-icon').setScale(this.StageProgressScale)
+                        }
+                        
+                        this.stageProgressIconHolderC2 = this.add.image(0,0, 'stageProgress-icon-holder').setScale(this.StageProgressScale).setOrigin(0.5)
+                        if (Phaser.Math.Between(0,100)<=60){
+                            this.stageProgressIconC2 = this.add.image(0,0, 'chaser-checkpoint-icon').setScale(this.StageProgressScale)
+                        } else {
+                            this.stageProgressIconC2 = this.add.image(0,0, 'horde-checkpoint-icon').setScale(this.StageProgressScale)
+                        }
+
+                        this.stageProgressIconHolderC3 = this.add.image(0,0, 'stageProgress-icon-holder').setScale(this.StageProgressScale).setOrigin(0.5)
+                        if (Phaser.Math.Between(0,100)<=30){
+                            this.stageProgressIconC3 = this.add.image(0,0, 'chaser-checkpoint-icon').setScale(this.StageProgressScale)
+                        } else {
+                            this.stageProgressIconC3 = this.add.image(0,0, 'horde-checkpoint-icon').setScale(this.StageProgressScale)
+                        }
+
+
+                        this.stageProgressIconHolderFinalCheckPoint = this.add.image(0,0, 'stageProgress-icon-holder').setScale(this.StageProgressScale).setOrigin(0.5)
+                        this.stageProgressIconFinalCheckPoint = this.add.image(0,0, 'stageProgress-icon').setScale(this.StageProgressScale)
+
 
                 this.hudGroup = this.add.group([
                     this.playerIconBox,this.playerIcon,this.storedRewardsIcon,this.storedRewardsText,this.goldIcon,
-                    this.goldText,this.skillABox,this.skillAIcon,this.skillBBox, this.skillBIcon, this.scoreBox,this.levelIcon,
-                    this.levelText,this.gloryIcon, this.gloryText,
-                    //this.playerVitalsTextL, this.playerVitalsTextF,this.playerVitalsTextE,
-                    //this.playerVitals
+                    this.goldText,this.skillABox,this.skillAIcon,this.skillBBox, this.skillBIcon,
+                    this.gloryIcon, this.gloryText,
+                    this.lifeIconHolder,this.lifeIcon,this.lifeMiddleHolder,this.lifeRightCapHolder,this.lifeMiddle,this.lifeRightCap,
+                    this.focusIconHolder,this.focusIcon,this.focusMiddleHolder,this.focusRightCapHolder,this.focusMiddle,this.focusRightCap,
+                    this.staminaIconHolder,this.staminaIcon,this.staminaMiddleHolder,this.staminaRightCapHolder,this.staminaMiddle,this.staminaRightCap,
+                    this.playerSpeedHolder,this.playerSpeedBottom,this.playerSpeedMiddle,this.playerSpeedTop,
+                    this.stageProgressIconHolder,this.levelText,this.stageProgressIconHolderC1,this.stageProgressIconC1,
+                    this.stageProgressIconHolderC2,this.stageProgressIconC2,this.stageProgressIconHolderC3,this.stageProgressIconC3,
+                    this.stageProgressMiddleHolder,this.stageProgressRightCapHolder,this.stageProgressMiddle,this.stageProgressRightCap,
+                    this.stageProgressIconHolderFinalCheckPoint,this.stageProgressIconFinalCheckPoint
                 ]
                 )
 
                 this.hudGroup.setDepth(this.hudDepth)
+                if(this.playerVitalsPosition == 2){
+                    this.lifeIconHolder.depth = this.player.depth - 1
+                    this.lifeIcon.depth = this.player.depth - 1
+                    this.lifeMiddleHolder.depth = this.player.depth - 1
+                    this.lifeRightCapHolder.depth = this.player.depth - 1  
+                    this.lifeMiddle.depth = this.player.depth - 1
+                    this.lifeRightCap.depth = this.player.depth - 1   
+                    
+                    this.focusIconHolder.depth = this.player.depth - 1
+                    this.focusIcon.depth = this.player.depth - 1
+                    this.focusMiddleHolder.depth = this.player.depth - 1
+                    this.focusRightCapHolder.depth = this.player.depth - 1  
+                    this.focusMiddle.depth = this.player.depth - 1
+                    this.focusRightCap.depth = this.player.depth - 1  
+
+                    this.staminaIconHolder.depth = this.player.depth - 1
+                    this.staminaIcon.depth = this.player.depth - 1
+                    this.staminaMiddleHolder.depth = this.player.depth - 1
+                    this.staminaRightCapHolder.depth = this.player.depth - 1  
+                    this.staminaMiddle.depth = this.player.depth - 1
+                    this.staminaRightCap.depth = this.player.depth - 1  
+                }
+
+                if (this.playerSpeedPosition == 2){
+                    this.playerSpeedHolder.depth = this.player.depth - 1
+                    this.playerSpeedBottom.depth = this.player.depth - 1
+                    this.playerSpeedMiddle.depth = this.player.depth - 1
+                    this.playerSpeedTop.depth = this.player.depth - 1
+                }
 
 
         // V1 Code End
@@ -527,33 +745,7 @@ class Simulacrum extends Phaser.Scene {
             hideOnComplete: 1
         });
 
-        // Music
-        this.sound.stopByKey('mainTheme');
-        this.sound.stopAll();
-        bgMusicArray = []
-        
-            
-           
-
-            Phaser.Utils.Array.Add(bgMusicArray,["bgMusic0a","bgMusic0b","bgMusic0c","bgMusic0d",'bgMusic1'
-                                                ,'bgMusic2','bgMusic3','bgMusic4','bgMusic5','bgMusic6','bgMusic7'])
-            
-            
-
-            //songDatabaseSize = 7
-
-            bgMusic = this.sound.add(Phaser.Utils.Array.GetRandom(bgMusicArray))
-           //bgMusic.play()
-
-            // Background Music
-
-            bgMusic.on('complete', function(){
-                //     songChoice = Math.floor(Phaser.Math.Between(1,songDatabaseSize))
-                //     Phaser.Utils.Array.Add(bgMusicArray,"bgMusic" + songChoice)
-                bgMusic.destroy()
-                bgMusic = this.sound.add(Phaser.Utils.Array.GetRandom(bgMusicArray))
-                bgMusic.play()
-            },this)  
+         
 
   
         this.debugText = this.add.text(this.lifeIconHolder.x + screenWidth * 0.3, screenHeight * 0.1, this.actionPower, { fontFamily: 'Gothic', fontStyle: 'bold' ,align: 'left'});
@@ -834,6 +1026,45 @@ class Simulacrum extends Phaser.Scene {
                 
             }
 
+
+    renderAvatarStats() {
+
+        // Get the base data and avatar data from the DataModule Scene
+        var baseData = this.scene.get('DataModule').baseData;
+        var avatarData = this.scene.get('DataModule').avatarData;
+
+        
+        // Render Avatar with final stats ahead of run
+
+        // Life
+            this.player.lifeMax = baseData.lifeMax + (baseData.lifeCapacityBonusMax * avatarData.lifeCapacityBonus);
+
+            this.player.lifeCurrent = this.player.lifeMax * avatarData.lifeStartModifier;
+            
+            this.player.lifeRegen = baseData.lifeRegen * avatarData.lifeRegenModifier;
+        // Focus
+            this.player.focusMax = baseData.focusMax + (baseData.focusCapacityBonusMax * avatarData.focusCapacityBonus);
+
+            this.player.focusCurrent = this.player.focusMax * Phaser.Math.FloatBetween(0,1)
+            
+            this.player.focusRegen = baseData.focusRegen * avatarData.focusRegenModifier;
+        // Stamina
+            this.player.staminaMax = baseData.staminaMax + (baseData.staminaCapacityBonusMax * avatarData.staminaCapacityBonus);
+
+            this.player.staminaCurrent = this.player.staminaMax * Phaser.Math.FloatBetween(0,1)
+            
+            this.player.staminaRegen = baseData.focusRegen * avatarData.focusRegenModifier;
+        
+        this.player.travelSpeedMaxModifier = avatarData.travelSpeedMaxModifier;
+        
+        this.player.gloryGenerationModifier = avatarData.gloryGenerationModifier;
+
+        this.player.goldGenerationModifier = avatarData.goldGenerationModifier;
+
+        console.log(this.player)
+
+    }
+
     recordScores(){     
             this.stageScore = this.level
             this.gloryScore = this.glory
@@ -845,9 +1076,12 @@ class Simulacrum extends Phaser.Scene {
 
     stageModule(){
         // Stage Progress
-        console.log(this.stageProgressEnabled)
+   
         if (this.gameMode == 0 && this.stageProgressEnabled){
-            this.stageProgress.increaseProgress((2.5 / 15))
+
+            this.baseProgressRate = (this.baseZoneLength / this.baseZoneClearTime) / 60
+            this.progress += this.baseProgressRate * this.playerSpeed
+
             // Glory Modifier
             if (this.player.x > this.camera.scrollX + (screenWidth * 0.6)){
                 this.gloryModifier = 1.25
@@ -857,7 +1091,27 @@ class Simulacrum extends Phaser.Scene {
                 this.gloryModifier = 1
             }
             // Glory Accumulation
-            this.glory += 4/30  * this.playerSpeed * this.gloryModifier
+            this.glory += this.baseProgressRate  * this.playerSpeed * this.gloryModifier
+        }
+
+        if(this.progress >= this.stage.nextCheckPoint * this.progressToNextCheckPoint && this.stageProgressEnabled){
+            //this.stageProgressEnabled = false
+
+            // Trigger loadCheckpoint function
+            // Rolls for checkpoint type based on this.stageData.availableCheckpoints array (containing valid types for stage)
+            // Sets this.stage.checkpointType to rolled type 
+            // Sets gameMode based on checkpoint type
+            // Run checkpointSubModule that activates timer based on checkpoint type
+             // Type  1
+                 // Timer delay set based on this.stage.chaserTimer.  Repeat set to 0 
+                 // Timer delay set based on this.stage.hordeTimer. Repeat set to -1
+
+                 // Timer triggers checkPoint Function that:
+                 // Type 1 - Switches stage.checkpointType back to 0, +1 to this.stage.nextCheckPoint and this.stageProgressEnabled to true
+                 // Type 2 - Checks active enemies against stage.maxHordeSize.  If maxHordzise > 0 and active >= X% of maxHordeSize then increases stage.hordeDifficultyModifier (X%, eg inflation)
+                //           else if active == 0, then reset diffuclity mod, switches mode back to 0 (mode and checkpointtype) and repeat to 0 
+                
+
         }
 
         // Next Stage
@@ -866,12 +1120,11 @@ class Simulacrum extends Phaser.Scene {
             this.level += 1
 
             this.progressToNextLevel *= 1.08
-            this.stageProgress.p = (((screenWidth * 0.25)-2) * (scaleModX)) / this.progressToNextLevel
-            this.progressToNextCheckPoint = this.progressToNextLevel * 0.25
+            this.progressToNextCheckPoint = this.progressToNextLevel * 0.25 
         }
 
         // Return To Kianova
-        if (this.currentLife <= 0 && this.stageProgressEnabled){
+        if (this.player.lifeCurrent <= 0 && this.stageProgressEnabled){
             this.stageProgressEnabled = false
             this.endRun = true
             this.playerSpeed = 0
@@ -886,6 +1139,73 @@ class Simulacrum extends Phaser.Scene {
         }
    
     }
+
+    loadCheckPoint() {
+        // Set stageProgressEnabled to false
+        this.stageProgressEnabled = false;
+      
+        // Choose a random entry from this.stageData.availableCheckPoints
+        const randomIndex = Math.floor(Math.random() * this.stageData.availableCheckPoints.length);
+        const checkPointType = this.stageData.availableCheckPoints[randomIndex];
+      
+        // Store the value of the checkpoint in this.stage.checkPointType
+        this.stage.checkPointType = checkpointType;
+      
+        // Set this.gameMode based on the value of this.stage.checkPointType
+        if (this.stage.checkPointType === 1) {
+          this.gameMode = 0;
+        } else if (this.stage.checkPointType === 2) {
+          this.gameMode = 1;
+        }
+      
+        // Update the delay and repeat properties of this.checkPointTimer
+        if (this.stage.checkPointType === 1) {
+          this.checkPointTimer.delay = this.stage.chaserTimer;
+          this.checkPointTimer.repeat = 0;
+        } else if (this.stage.checkPointType === 2) {
+          this.checkPointTimer.delay = this.stage.hordeTimer;
+          this.checkPointTimer.repeat = -1;
+        }
+      
+        // Start this.checkPointTimer
+        this.checkPointTimer.start();
+      }
+      
+    updateCheckPointStatus() {
+        if (this.stage.checkPointType === 1) {
+          // If this.stage.checkPointType = 1, change this.stage.checkPointType to 0,
+          // add 1 to this.stage.nextCheckPoint (if it is less than 4),
+          // and set this.stageProgressEnabled to true
+          this.stage.checkPointType = 0;
+          if (this.stage.nextCheckPoint < 4) {
+            this.stage.nextCheckPoint += 1;
+          }
+          this.stageProgressEnabled = true;
+        } else if (this.stage.checkPointType === 2) {
+          if (this.stage.maxHordeSize > 0 && this.enemyHordeGroup.active > 0.6 * this.stage.maxHordeSize) {
+            // If this.stage.checkPointType = 2, and this.stage.maxHordeSize > 0 and
+            // this.enemyHordeGroup.active > 60% of this.stage.maxHordeSize,
+            // increase this.stage.hordeDifficultyModifier by 4%
+            this.stage.hordeDifficultyModifier += 0.04;
+          } else if (this.enemyHordeGroup.active === 0) {
+            // If this.stage.checkPointType = 2 and this.enemyHordeGroup.active = 0,
+            // reset this.stage.hordeDifficultyModifier to 1,
+            // change this.stage.checkPointType to 0,
+            // change this.gameMode to 0, and
+            // set the repeat property of this.checkPointTimer to 0
+            // updates this.stage.nextCheckPoint and enables progression
+            this.stage.hordeDifficultyModifier = 1;
+            this.stage.checkPointType = 0;
+            this.gameMode = 0;
+            this.checkPointTimer.repeat = 0;
+            if (this.stage.nextCheckPoint < 4) {
+                this.stage.nextCheckPoint += 1;
+              }
+              this.stageProgressEnabled = true;
+          }
+        }
+      }
+        
 
     environmentModule(){
         if (this.gameMode == 0 && !this.endRun){
@@ -911,20 +1231,13 @@ class Simulacrum extends Phaser.Scene {
                     window['fgL'+i].tilePositionX = this.camera.scrollX * window['bgL'+ i + 'ScrollMod'] * (scaleModX / (screenWidth / this.textures.get('bgL' + i).getSourceImage().width)) 
                 }
 
-                console.log(this.camera.scrollX)
-                console.log(this.lightSource.x)
+        
 
                 // less offset = moving right
                 // more offset = moving left
                 this.lightSource.x = this.camera.scrollX + ((this.lightSourceCameraXOffset * 0.9)  + (this.lightSourceCameraXOffset * (0.1 * (this.cameraScrollAnchor/this.camera.scrollX))))
  
         }
-    }
-
-    spawnPlatform(){
-        if (this.gameMode == 0){
-        this.spawningPlatform = true
-        } 
     }
 
     platforms(game){
@@ -995,6 +1308,12 @@ class Simulacrum extends Phaser.Scene {
 
     }
 
+        spawnPlatform(){
+            if (this.gameMode == 0){
+            this.spawningPlatform = true
+            } 
+        }
+
     enemyModule(game){
 
 
@@ -1043,7 +1362,7 @@ class Simulacrum extends Phaser.Scene {
         // Spawn Code
         if(game.spawningEnemy){
 
-            this.enemiesSpawned = Phaser.Math.Between(1,2)
+            this.enemiesSpawned = Phaser.Math.Between(1,Math.min(this.enemyGroup.getTotalFree(),3))
 
             for (var i = 0; i < this.enemiesSpawned; i++){
             //enemy = game.enemyGroup.get()
@@ -1136,7 +1455,7 @@ class Simulacrum extends Phaser.Scene {
                 if (e.anims.getName() != 'nightBorne_Move'){
                     e.x -= this.baseSpeed * e.baseSpeedMod * this.playerSpeed
                 } else {
-                    if (this.player.x < (this.camera.scrollX + screenWidth * 0.6)){
+                    if (this.player.x < (this.camera.scrollX + screenWidth * 0.6) && this.progress <= this.progressToNextLevel * 0.96){
                         e.x += this.baseSpeed * (e.baseSpeedMod/5) / this.playerSpeed
                     } else {
                         e.x -= this.baseSpeed * (e.baseSpeedMod/3) * this.playerSpeed 
@@ -1183,12 +1502,62 @@ class Simulacrum extends Phaser.Scene {
 
     }
 
-    spawnEnemy(){
-        if (this.gameMode == 0){
-        this.spawningEnemy = true
-        this.enemyTimer.delay = Phaser.Math.Between((this.baseEnemySpawnTime * (60/this.musicBPM) * 1000) * 0.8,(this.baseEnemySpawnTime * (60/this.musicBPM) * 1000) * 1.2)
-        } 
-    }
+        spawnEnemy(){
+            // Standard Enemies
+            if (this.gameMode == 0 && this.enemyGroup.getTotalFree() > 0 && this.stage.checkPointType == 0){
+                if(this.progress >= this.progressToNextLevel * 0.225 && this.progress <= this.progressToNextLevel * 0.275
+                    || this.progress >= this.progressToNextLevel * 0.475 && this.progress <= this.progressToNextLevel * 0.525
+                    || this.progress >= this.progressToNextLevel * 0.725 && this.progress <= this.progressToNextLevel * 0.775
+                    || this.progress >= this.progressToNextLevel * 0.95){
+
+                        this.rewards += 0.5 // Stub for gaining Rewards in checkpoint
+
+                    this.spawningEnemy = false    
+                } else {
+                    this.spawningEnemy = true
+                    this.enemyTimer.delay = Phaser.Math.Between((this.baseEnemySpawnTime * (60/this.musicBPM) * 1000) * 0.8,(this.baseEnemySpawnTime * (60/this.musicBPM) * 1000) * 1.2)
+                }    
+            
+            } 
+            // Checkpoint - Chaser Enemies
+            if (this.gameMode == 0 && this.enemyChaserGroup.getTotalFree() > 0 && this.stage.checkPointType == 1){
+                // Potentially redundant
+                if(this.progress >= this.progressToNextLevel * 0.225 && this.progress <= this.progressToNextLevel * 0.275
+                    || this.progress >= this.progressToNextLevel * 0.475 && this.progress <= this.progressToNextLevel * 0.525
+                    || this.progress >= this.progressToNextLevel * 0.725 && this.progress <= this.progressToNextLevel * 0.775
+                    || this.progress >= this.progressToNextLevel * 0.95){
+
+                    this.spawningChaserEnemy = true  
+                    this.enemyTimer.delay = Phaser.Math.Between((this.baseEnemySpawnTime * (60/this.musicBPM) * 2000) * 0.8,(this.baseEnemySpawnTime * (60/this.musicBPM) * 2000) * 1.2)  
+                } else {
+                    this.spawningChaserEnemy = false
+                    
+                }   
+                
+               
+            
+            } 
+            // Checkpoint - Horde Enemies
+            if (this.gameMode == 1 && this.enemyHordeGroup.getTotalFree() > 0 && this.stage.checkPointType == 2){
+                // Potentially redundant
+                if(this.progress >= this.progressToNextLevel * 0.225 && this.progress <= this.progressToNextLevel * 0.275
+                    || this.progress >= this.progressToNextLevel * 0.475 && this.progress <= this.progressToNextLevel * 0.525
+                    || this.progress >= this.progressToNextLevel * 0.725 && this.progress <= this.progressToNextLevel * 0.775
+                    || this.progress >= this.progressToNextLevel * 0.95){
+
+                    this.spawningChaserEnemy = true  
+                    this.enemyTimer.delay = Phaser.Math.Between((this.baseEnemySpawnTime * (60/this.musicBPM) * 2000) * 0.8,(this.baseEnemySpawnTime * (60/this.musicBPM) * 2000) * 1.2)  
+                } else {
+                    this.spawningChaserEnemy = false
+                    
+                }    
+                
+                // Enemies defeated reduce maxHordeSize.  If maxHordeSize = 0  then timer set to 0 delay (i.e repeat instantly)
+                
+            } 
+        }
+
+        
 
     enemyTakeHit(playerAttackHitBox,enemy){
         if(this.gameMode == 1){
@@ -1246,26 +1615,26 @@ class Simulacrum extends Phaser.Scene {
                 enemy.x -= Phaser.Math.Between(0,25)
             }
 
-            enemy.setVelocityY(enemy.body.velocity.y + (this.playerAttackStrengthY * (Math.max(1,this.playerAttackCrit/2))))
+            enemy.setVelocityY(enemy.body.velocity.y + (Math.max(this.playerAttackStrengthY,-5000) * (Math.max(1,this.playerAttackCrit/2))))
 
 
             if (enemy.x >= this.player.x){
-                enemy.setVelocityX(enemy.body.velocity.x + (this.playerAttackStrengthX * this.playerAttackCrit))
+                enemy.setVelocityX(enemy.body.velocity.x + (Math.min(this.playerAttackStrengthX,2500) * this.playerAttackCrit))
              } else {
-                enemy.setVelocityX(enemy.body.velocity.x - (this.playerAttackStrengthX * this.playerAttackCrit))
+                enemy.setVelocityX(enemy.body.velocity.x - (Math.min(this.playerAttackStrengthX,2500) * this.playerAttackCrit))
             }
 
-            if (Math.abs(this.playerAttackStrengthY) > this.baseJumpHeight * 1.5){
-                this.camera.shake(250,0.01)
+            if (Math.abs(this.playerAttackStrengthY) > this.baseJumpHeight * 2){
+                //this.camera.shake(250,0.005)
             }
 
-            if (Math.abs(this.playerAttackStrengthX) > 300){
-                this.camera.shake(250,0.01)
+            if (Math.abs(this.playerAttackStrengthX) > 750){
+                //this.camera.shake(250,0.005)
             }
 
-            if(this.playerAttackCrit > 1){
+            if(this.playerAttackCrit > 1.5){
                 this.camera.flash()
-                this.camera.shake(250,0.03)  
+                this.camera.shake(250,0.02)  
                 this.sound.stopByKey('playerAttack1')
                 this.sound.stopByKey('playerAttack2')
                 this.sound.stopByKey('playerAttack3')
@@ -1289,9 +1658,8 @@ class Simulacrum extends Phaser.Scene {
                         this.physics.add.collider(enemy,this.floor); 
                         this.physics.add.collider(enemy,this.platformGroup); 
                         this.enemyGroup.remove(enemy)
-                        this.gold += Phaser.Math.Between(0,10)
+                        this.gold += Phaser.Math.Between(0,this.baseGoldDrop * 0.075 * this.level)
                           
-                        
                         enemy.once('animationcomplete', function (anim,frame) {
                             enemy.emit('animationcomplete_' + anim.key, frame)
                         }, enemy)
@@ -1342,8 +1710,7 @@ class Simulacrum extends Phaser.Scene {
                         this.physics.add.collider(enemy,this.floor); 
                         this.physics.add.collider(enemy,this.platformGroup); 
                         this.enemyGroup.remove(enemy)
-                        this.gold += Phaser.Math.Between(5,50)  
-                        this.rewards += Phaser.Math.Between(0,5)  
+                        this.gold += Phaser.Math.Between(this.baseGoldDrop * 0.05 * this.level,this.baseGoldDrop * 0.15 * this.level)   
                         enemy.once('animationcomplete', function (anim,frame) {
                             enemy.emit('animationcomplete_' + anim.key, frame)
                         }, enemy)
@@ -1401,107 +1768,194 @@ class Simulacrum extends Phaser.Scene {
     }
 
     uiModule(){
+        
             this.playerIconBox.x = this.camera.worldView.x + (screenWidth * 0.005)
             this.playerIconBox.y = this.camera.worldView.y +  (screenHeight * 0.1 )
 
-            this.playerIcon.x = this.playerIconBox.x + (screenWidth * 0.0575)
+            this.playerIcon.x = this.playerIconBox.x + (screenWidth * 0.0375)
             this.playerIcon.y = this.playerIconBox.y
 
             // Life
 
-                this.lifeIconHolder.x = this.playerIcon.x + screenWidth * 0.0525
-                this.lifeIconHolder.y = this.playerIcon.y - screenHeight * 0.05
-                this.lifeIcon.x = this.lifeIconHolder.x
-                this.lifeIcon.y = this.lifeIconHolder.y
+                if(this.playerVitalsPosition == 1){
+                    this.lifeIconHolder.x = this.playerIcon.x + screenWidth * 0.0375
+                    this.lifeIconHolder.y = this.playerIcon.y - this.lifeIconHolder.displayWidth
+                } else {
+                    this.lifeIconHolder.x = this.player.x + (this.player.displayWidth * 0.1) 
+                    this.lifeIconHolder.y = this.player.y - (this.player.displayHeight * 0.25) 
+                }
 
-                this.lifeMiddleHolder.x = this.lifeIconHolder.x
-                this.lifeMiddleHolder.y = this.lifeIconHolder.y
-                this.lifeMiddle.x = this.lifeIconHolder.x
-                this.lifeMiddle.y = this.lifeIconHolder.y
+                    this.lifeIcon.x = this.lifeIconHolder.x
+                    this.lifeIcon.y = this.lifeIconHolder.y
 
-                this.lifeRightCapHolder.x = this.lifeMiddleHolder.x + this.lifeMiddleHolder.displayWidth
-                this.lifeRightCapHolder.y = this.lifeMiddleHolder.y 
-                this.lifeRightCap.y = this.lifeMiddle.y
-                
-                this.uiSubModule_setLifePercentageAnimated(this.currentLife/this.maxLife)
+                    this.lifeMiddleHolder.x = this.lifeIconHolder.x
+                    this.lifeMiddleHolder.y = this.lifeIconHolder.y
+                    this.lifeMiddle.x = this.lifeIconHolder.x
+                    this.lifeMiddle.y = this.lifeIconHolder.y
 
-            // Focus
-                this.focusIconHolder.x = this.lifeIconHolder.x
-                this.focusIconHolder.y = this.lifeIconHolder.y + this.lifeIconHolder.displayHeight
-                this.focusIcon.x = this.focusIconHolder.x
-                this.focusIcon.y = this.focusIconHolder.y
+                    this.lifeRightCapHolder.x = this.lifeMiddleHolder.x + this.lifeMiddleHolder.displayWidth
+                    this.lifeRightCapHolder.y = this.lifeMiddleHolder.y 
+                    this.lifeRightCap.y = this.lifeMiddle.y
+                    
+                    this.uiSubModule_setLifePercentageAnimated(this.player.lifeCurrent/this.player.lifeMax)
 
-                this.focusMiddleHolder.x = this.focusIconHolder.x
-                this.focusMiddleHolder.y = this.focusIconHolder.y
-                this.focusMiddle.x = this.focusIconHolder.x
-                this.focusMiddle.y = this.focusIconHolder.y
+                // Focus
+                    this.focusIconHolder.x = this.lifeIconHolder.x
+                    this.focusIconHolder.y = this.lifeIconHolder.y + this.lifeIconHolder.displayHeight
+                    this.focusIcon.x = this.focusIconHolder.x
+                    this.focusIcon.y = this.focusIconHolder.y
 
-                this.focusRightCapHolder.x = this.focusMiddleHolder.x + this.focusMiddleHolder.displayWidth
-                this.focusRightCapHolder.y = this.focusMiddleHolder.y 
-                this.focusRightCap.y = this.focusMiddle.y
-                
-                this.uiSubModule_setFocusPercentageAnimated(this.currentFocus/this.maxFocus)
+                    this.focusMiddleHolder.x = this.focusIconHolder.x
+                    this.focusMiddleHolder.y = this.focusIconHolder.y
+                    this.focusMiddle.x = this.focusIconHolder.x
+                    this.focusMiddle.y = this.focusIconHolder.y
 
-            // Stamina
-                this.staminaIconHolder.x = this.lifeIconHolder.x
-                this.staminaIconHolder.y = this.focusIconHolder.y + this.focusIconHolder.displayHeight
-                this.staminaIcon.x = this.staminaIconHolder.x
-                this.staminaIcon.y = this.staminaIconHolder.y
+                    this.focusRightCapHolder.x = this.focusMiddleHolder.x + this.focusMiddleHolder.displayWidth
+                    this.focusRightCapHolder.y = this.focusMiddleHolder.y 
+                    this.focusRightCap.y = this.focusMiddle.y
+                    
+                    this.uiSubModule_setFocusPercentageAnimated(this.skillPower)
 
-                this.staminaMiddleHolder.x = this.staminaIconHolder.x
-                this.staminaMiddleHolder.y = this.staminaIconHolder.y
-                this.staminaMiddle.x = this.staminaIconHolder.x
-                this.staminaMiddle.y = this.staminaIconHolder.y
+                // Stamina
+                    this.staminaIconHolder.x = this.lifeIconHolder.x
+                    this.staminaIconHolder.y = this.focusIconHolder.y + this.focusIconHolder.displayHeight
+                    this.staminaIcon.x = this.staminaIconHolder.x
+                    this.staminaIcon.y = this.staminaIconHolder.y
 
-                this.staminaRightCapHolder.x = this.staminaMiddleHolder.x + this.staminaMiddleHolder.displayWidth
-                this.staminaRightCapHolder.y = this.staminaMiddleHolder.y 
-                this.staminaRightCap.y = this.staminaMiddle.y
-                
-                this.uiSubModule_setStaminaPercentageAnimated(this.currentEnergy/this.maxEnergy)
+                    this.staminaMiddleHolder.x = this.staminaIconHolder.x
+                    this.staminaMiddleHolder.y = this.staminaIconHolder.y
+                    this.staminaMiddle.x = this.staminaIconHolder.x
+                    this.staminaMiddle.y = this.staminaIconHolder.y
 
+                    this.staminaRightCapHolder.x = this.staminaMiddleHolder.x + this.staminaMiddleHolder.displayWidth
+                    this.staminaRightCapHolder.y = this.staminaMiddleHolder.y 
+                    this.staminaRightCap.y = this.staminaMiddle.y
+                    
+                    this.uiSubModule_setStaminaPercentageAnimated(this.actionPower)
 
-            this.storedRewardsIcon.x = this.lifeRightCapHolder.x + (screenWidth * 0.035)
-            this.storedRewardsIcon.y = this.lifeRightCapHolder.y 
-            this.storedRewardsText.x = this.storedRewardsIcon.x + (screenWidth * 0.045)
-            this.storedRewardsText.y = this.storedRewardsIcon.y
-            this.storedRewardsText.setText(Math.floor(this.rewards))
+           
+                this.gloryIcon.x = this.playerIcon.x + this.playerIcon.displayWidth  
 
-            this.goldIcon.x = this.storedRewardsIcon.x
-            this.goldIcon.y = this.storedRewardsIcon.y + this.storedRewardsIcon.displayHeight * 1.1
-            this.goldText.x = this.goldIcon.x + (screenWidth * 0.045)
-            this.goldText.y = this.goldIcon.y
-            this.goldText.setText(Math.floor(this.gold))
+                    //this.gloryIcon.x = this.playerIcon.x + screenWidth * 0.035  
+                    this.gloryIcon.y = this.playerIcon.y + 5
+                    this.gloryText.x = this.gloryIcon.x + (screenWidth * 0.0525)
+                    this.gloryText.y = this.gloryIcon.y
+                    this.gloryText.setText(Math.floor(this.glory))
 
-            this.skillABox.x = this.playerIconBox.x + this.playerIconBox.displayWidth * 0.75
-            this.skillABox.y = this.playerIconBox.y + (75 * (scaleModX))
+                    this.storedRewardsIcon.x = this.gloryText.x + (screenWidth * 0.045)
+                    this.storedRewardsIcon.y = this.playerIconBox.y - this.skillABox.displayHeight * 0.25//this.gloryIcon.y - this.gloryIcon.displayHeight * 0.25
+                    this.storedRewardsText.x = this.storedRewardsIcon.x + (screenWidth * 0.03)
+                    this.storedRewardsText.y = this.storedRewardsIcon.y
+                    this.storedRewardsText.setText(Math.floor(this.rewards))
 
-            this.skillAIcon.x = this.skillABox.x
-            this.skillAIcon.y = this.skillABox.y
-
-            this.skillBBox.x = this.skillABox.x + 100
-            this.skillBBox.y = this.skillABox.y
-
-            this.skillBIcon.x = this.skillBBox.x
-            this.skillBIcon.y = this.skillBBox.y
+                    this.goldIcon.x = this.storedRewardsText.x + this.storedRewardsText.displayWidth * 1.05
+                    this.goldIcon.y = this.storedRewardsIcon.y
+                    this.goldText.x = this.goldIcon.x + (screenWidth * 0.03)
+                    this.goldText.y = this.goldIcon.y
+                    this.goldText.setText(Math.floor(this.gold))
             
-            this.scoreBox.x = this.camera.scrollX + ((screenWidth * 0.725) - (this.camera.worldView.x - this.camera.scrollX))
-            this.scoreBox.y = this.playerIconBox.y
+            
 
-            this.levelIcon.x = this.scoreBox.x + (screenWidth * 0.0475)
-            this.levelIcon.y = this.playerIcon.y + 5
-            this.levelText.x = this.levelIcon.x + 110
-            this.levelText.y = this.levelIcon.y
-            this.levelText.setText(Math.floor(this.level))
+           
+                this.skillABox.x = this.storedRewardsIcon.x + this.storedRewardsIcon.displayWidth //* 0.75
+                this.skillABox.y = this.playerIconBox.y + this.playerIconBox.displayHeight * 0.5//this.gloryIcon.y + this.gloryIcon.displayHeight * 0.25 + this.skillABox.displayHeight * 0.5
+            
 
-            this.gloryIcon.x = this.levelText.x + 115 
-            this.gloryIcon.y = this.levelIcon.y
-            this.gloryText.x = this.gloryIcon.x + 125
-            this.gloryText.y = this.gloryIcon.y
-            this.gloryText.setText(Math.floor(this.glory))
+                
+                this.skillAIcon.x = this.skillABox.x
+                this.skillAIcon.y = this.skillABox.y
 
-            this.stageProgress.x = this.scoreBox.x + 30
-            this.stageProgress.y = this.scoreBox.y + 90
-            this.stageProgress.draw()
+                this.skillBBox.x = this.skillABox.x + 100
+                this.skillBBox.y = this.skillABox.y
+
+                this.skillBIcon.x = this.skillBBox.x
+                this.skillBIcon.y = this.skillBBox.y
+
+                
+
+            // Player Speed
+
+                
+                    this.playerSpeedHolder.x = this.player.x + (this.player.displayWidth * 0.1) 
+                    this.playerSpeedHolder.y = this.player.y + (this.player.displayHeight * 0.3) 
+                
+                
+                    this.playerSpeedBottom.x = this.playerSpeedHolder.x
+                    this.playerSpeedBottom.y = this.playerSpeedHolder.y
+                    this.playerSpeedBottom.setAngle(this.playerSpeedHolder.angle)
+                    
+                    this.playerSpeedMiddle.x = this.playerSpeedHolder.x
+                    this.playerSpeedMiddle.y = this.playerSpeedHolder.y
+                    this.playerSpeedMiddle.setAngle(this.playerSpeedHolder.angle)
+
+                    this.playerSpeedMask.x = this.playerSpeedHolder.x 
+                    this.playerSpeedMask.y = this.playerSpeedHolder.y
+                    this.playerSpeedMask.setAngle(this.playerSpeedHolder.angle)
+
+                    this.playerSpeedTop.x = this.playerSpeedHolder.x
+                    this.playerSpeedTop.y = this.playerSpeedHolder.y
+                    this.playerSpeedTop.setAngle(this.playerSpeedHolder.angle)
+
+                this.uiSubModule_setPlayerSpeedPercentageAnimated(this.playerSpeed/this.playerTopSpeed)
+
+            
+
+            // Stage Progress
+              
+                    this.stageProgressIconHolder.x = this.camera.scrollX + (screenWidth * 0.8) - (this.stageProgressMiddleHolder.displayWidth * 0.5)
+                    this.stageProgressIconHolder.y = this.playerIconBox.y//(this.camera.scrollY + (screenHeight * 0.95)) - (this.camera.worldView.y - this.camera.scrollY)
+                
+                
+
+                    this.levelText.x = this.stageProgressIconHolder.x 
+                    this.levelText.y = this.stageProgressIconHolder.y
+                    this.levelText.setText(Math.floor(this.level))
+
+                    this.stageProgressMiddleHolder.x = this.stageProgressIconHolder.x
+                    this.stageProgressMiddleHolder.y = this.stageProgressIconHolder.y
+                    this.stageProgressMiddle.x = this.stageProgressIconHolder.x
+                    this.stageProgressMiddle.y = this.stageProgressIconHolder.y
+
+                    this.stageProgressIconHolderC1.x = this.stageProgressMiddleHolder.x + this.stageProgressMiddleHolder.displayWidth * 0.25
+                    this.stageProgressIconHolderC1.y = this.stageProgressMiddleHolder.y
+                    this.stageProgressIconC1.x = this.stageProgressIconHolderC1.x
+                    this.stageProgressIconC1.y = this.stageProgressIconHolderC1.y
+                    if(this.progress < this.progressToNextCheckPoint ){
+                        this.stageProgressIconC1.setVisible(0)
+                    } else {
+                        this.stageProgressIconC1.setVisible(1)
+                    }
+
+                    this.stageProgressIconHolderC2.x = this.stageProgressMiddleHolder.x + this.stageProgressMiddleHolder.displayWidth * 0.5
+                    this.stageProgressIconHolderC2.y = this.stageProgressMiddleHolder.y
+                    this.stageProgressIconC2.x = this.stageProgressIconHolderC2.x
+                    this.stageProgressIconC2.y = this.stageProgressIconHolderC2.y
+                    if(this.progress < this.progressToNextCheckPoint * 2){
+                        this.stageProgressIconC2.setVisible(0)
+                    } else {
+                        this.stageProgressIconC2.setVisible(1)
+                    }
+
+                    this.stageProgressIconHolderC3.x = this.stageProgressMiddleHolder.x + this.stageProgressMiddleHolder.displayWidth * 0.75
+                    this.stageProgressIconHolderC3.y = this.stageProgressMiddleHolder.y
+                    this.stageProgressIconC3.x = this.stageProgressIconHolderC3.x
+                    this.stageProgressIconC3.y = this.stageProgressIconHolderC3.y
+                    if(this.progress < this.progressToNextCheckPoint * 3){
+                        this.stageProgressIconC3.setVisible(0)
+                    } else {
+                        this.stageProgressIconC3.setVisible(1)
+                    }
+
+                    this.stageProgressRightCapHolder.x = this.stageProgressMiddleHolder.x + this.stageProgressMiddleHolder.displayWidth
+                    this.stageProgressRightCapHolder.y = this.stageProgressMiddleHolder.y 
+                    this.stageProgressRightCap.y = this.stageProgressMiddle.y
+
+                    this.stageProgressIconHolderFinalCheckPoint.x = this.stageProgressRightCapHolder.x
+                    this.stageProgressIconHolderFinalCheckPoint.y = this.stageProgressRightCapHolder.y
+                    this.stageProgressIconFinalCheckPoint.x = this.stageProgressIconHolderFinalCheckPoint.x
+                    this.stageProgressIconFinalCheckPoint.y = this.stageProgressIconHolderFinalCheckPoint.y 
+                    
+                    this.uiSubModule_setStageProgressPercentageAnimated(this.progress/this.progressToNextLevel)
     }
 
         uiSubModule_setLifePercentage(percent = 1){
@@ -1512,7 +1966,7 @@ class Simulacrum extends Phaser.Scene {
             
         }
 
-        uiSubModule_setLifePercentageAnimated(percent = 1, duration = 500){
+        uiSubModule_setLifePercentageAnimated(percent = 1, duration = 250){
             this.width = this.vitalsfullWidth * percent
 
             this.lifeRightCap.x = this.lifeMiddle.x + this.lifeMiddle.displayWidth
@@ -1524,12 +1978,60 @@ class Simulacrum extends Phaser.Scene {
                 ease: Phaser.Math.Easing.Sine.Out,
                 onUpdate: () => {
                     this.lifeRightCap.x = this.lifeMiddle.x + this.lifeMiddle.displayWidth
-        
-                    //this.lifeLeftCap.visible = this.lifeMiddle.displayWidth > 0
+
                     this.lifeMiddle.visible = this.lifeMiddle.displayWidth > 0
                     this.lifeRightCap.visible = this.lifeMiddle.displayWidth > 0
                 }
             })
+
+            // Alpha Tween
+
+                if (this.player.lifeCurrent / this.player.lifeMax < this.lowVitalsPercent || this.playerIsHit || this.emergencyPower){
+                    this.tweens.add({
+                        targets: [this.lifeIconHolder,
+                            this.lifeIcon,
+                            this.lifeMiddleHolder,
+                            this.lifeMiddle,
+                            this.lifeRightCapHolder,
+                            this.lifeRightCap],
+                        alpha: 1,
+                        duration,
+                        ease: Phaser.Math.Easing.Sine.Out,
+                        onUpdate: () => {
+        
+                        },
+        
+                    
+                    })
+                } else {
+                    this.tweens.add({
+                        targets: [this.lifeIconHolder,
+                            this.lifeIcon,
+                            this.lifeMiddleHolder,
+                            this.lifeMiddle,
+                            this.lifeRightCapHolder,
+                            this.lifeRightCap],
+                        alpha: 0,
+                        duration,
+                        ease: Phaser.Math.Easing.Sine.Out,
+                        onUpdate: () => {
+        
+                        },
+        
+                    
+                    })
+                }
+
+                // Tint Tween
+                    if (this.player.lifeCurrent/this.player.lifeMax > this.lowVitalsPercent){
+                        this.lifeMiddle.setTint()
+                        this.lifeRightCap.setTint()
+                    } else {
+                        this.lifeMiddle.setTint(this.lowVitalsTintColour)
+                        this.lifeRightCap.setTint(this.lowVitalsTintColour)
+                    }
+
+
         }
 
         uiSubModule_setFocusPercentage(percent = 1){
@@ -1540,7 +2042,7 @@ class Simulacrum extends Phaser.Scene {
         
         }
 
-        uiSubModule_setFocusPercentageAnimated(percent = 1, duration = 500){
+        uiSubModule_setFocusPercentageAnimated(percent = 1, duration = 250){
             this.width = this.vitalsfullWidth * percent
 
             this.focusRightCap.x = this.focusMiddle.x + this.focusMiddle.displayWidth
@@ -1558,6 +2060,53 @@ class Simulacrum extends Phaser.Scene {
                     this.focusRightCap.visible = this.focusMiddle.displayWidth > 0
                 }
             })
+
+            // Alpha Tween
+
+            if (this.skillPower < this.lowVitalsPercent || (s1IsDown || s2IsDown)){
+                this.tweens.add({
+                    targets: [this.focusIconHolder,
+                        this.focusIcon,
+                        this.focusMiddleHolder,
+                        this.focusMiddle,
+                        this.focusRightCapHolder,
+                        this.focusRightCap],
+                    alpha: 1,
+                    duration,
+                    ease: Phaser.Math.Easing.Sine.Out,
+                    onUpdate: () => {
+    
+                    },
+    
+                
+                })
+            } else {
+                this.tweens.add({
+                    targets: [this.focusIconHolder,
+                        this.focusIcon,
+                        this.focusMiddleHolder,
+                        this.focusMiddle,
+                        this.focusRightCapHolder,
+                        this.focusRightCap],
+                    alpha: 0,
+                    duration,
+                    ease: Phaser.Math.Easing.Sine.Out,
+                    onUpdate: () => {
+    
+                    },
+    
+                
+                })
+            }
+
+            // Tint Tween
+            if (this.skillPower > this.lowVitalsPercent){
+                this.focusMiddle.setTint()
+                this.focusRightCap.setTint()
+            } else {
+                this.focusMiddle.setTint(this.lowVitalsTintColour)
+                this.focusRightCap.setTint(this.lowVitalsTintColour)
+            }
         }
 
         uiSubModule_setStaminaPercentage(percent = 1){
@@ -1568,7 +2117,7 @@ class Simulacrum extends Phaser.Scene {
         
         }
 
-        uiSubModule_setStaminaPercentageAnimated(percent = 1, duration = 500){
+        uiSubModule_setStaminaPercentageAnimated(percent = 1, duration = 250){
             this.width = this.vitalsfullWidth * percent
 
             this.staminaRightCap.x = this.staminaMiddle.x + this.staminaMiddle.displayWidth
@@ -1580,19 +2129,163 @@ class Simulacrum extends Phaser.Scene {
                 ease: Phaser.Math.Easing.Sine.Out,
                 onUpdate: () => {
                     this.staminaRightCap.x = this.staminaMiddle.x + this.staminaMiddle.displayWidth
-
                     //this.lifeLeftCap.visible = this.lifeMiddle.displayWidth > 0
                     this.staminaMiddle.visible = this.staminaMiddle.displayWidth > 0
                     this.staminaRightCap.visible = this.staminaMiddle.displayWidth > 0
+                },
+
+            
+            })
+
+            // Alpha Tween
+
+                if (this.actionPower < this.lowVitalsPercent || (a1IsDown || a2IsDown)){
+                    this.tweens.add({
+                        targets: [this.staminaIconHolder,
+                            this.staminaIcon,
+                            this.staminaMiddleHolder,
+                            this.staminaMiddle,
+                            this.staminaRightCapHolder,
+                            this.staminaRightCap],
+                        alpha: 1,
+                        duration,
+                        ease: Phaser.Math.Easing.Sine.Out,
+                        onUpdate: () => {
+        
+                        },
+        
+                    
+                    })
+                } else {
+                    this.tweens.add({
+                        targets: [this.staminaIconHolder,
+                            this.staminaIcon,
+                            this.staminaMiddleHolder,
+                            this.staminaMiddle,
+                            this.staminaRightCapHolder,
+                            this.staminaRightCap],
+                        alpha: 0,
+                        duration,
+                        ease: Phaser.Math.Easing.Sine.Out,
+                        onUpdate: () => {
+        
+                        },
+        
+                    
+                    })
                 }
+
+                // Tint Tween
+                if (this.actionPower > this.lowVitalsPercent){
+                    this.staminaMiddle.setTint()
+                    this.staminaRightCap.setTint()
+                } else {
+                    this.staminaMiddle.setTint(this.lowVitalsTintColour)
+                    this.staminaRightCap.setTint(this.lowVitalsTintColour)
+                    
+                }
+
+        }
+
+         uiSubModule_setPlayerSpeedPercentage(percent = 1){
+          
+            this.width = this.playerSpeedfullWidth * percent
+
+            this.playerSpeedMask.displayWidth = this.width
+
+        }
+
+        uiSubModule_setPlayerSpeedPercentageAnimated(percent = 1, duration = 250){
+            this.width = this.playerSpeedfullWidth *  percent
+
+            //this.alphaDuration = 1000
+
+            if (this.playerSpeed < 0.95 || this.playerSpeed > 1.05 || (a1IsDown || a2IsDown)){
+                this.tweens.add({
+                    targets: [this.playerSpeedHolder,
+                        this.playerSpeedBottom,
+                        this.playerSpeedMiddle,
+                        this.playerSpeedTop],
+                    alpha: 1,
+                    duration,
+                    ease: Phaser.Math.Easing.Sine.Out,
+                    onUpdate: () => {
+    
+                    },
+    
+                
+                })
+            } else {
+                this.tweens.add({
+                    targets: [this.playerSpeedHolder,
+                                this.playerSpeedBottom,
+                                this.playerSpeedMiddle,
+                                this.playerSpeedTop],
+                    alpha: 0,
+                    duration,
+                    ease: Phaser.Math.Easing.Sine.Out,
+                    onUpdate: () => {
+    
+                    },
+    
+                
+                })
+            }
+
+            
+            
+
+            this.tweens.add({
+                targets: this.playerSpeedMask,
+                displayWidth: this.width,
+                duration,
+                ease: Phaser.Math.Easing.Sine.Out,
+                onUpdate: () => {
+
+                },
+
+            
+            })
+        }
+
+        uiSubModule_setStageProgressPercentage(percent = 1){
+            this.width = this.stageProgressfullWidth * percent
+
+            this.stageProgressMiddle.displayWidth = this.width
+            this.stageProgressRightCap.x = this.stageProgressMiddle.x + this.stageProgressMiddle.displayWidth
+        
+        }
+
+        uiSubModule_setStageProgressPercentageAnimated(percent = 1, duration = 250){
+            this.width = this.stageProgressfullWidth * percent
+
+            this.stageProgressRightCap.x = this.stageProgressMiddle.x + this.stageProgressMiddle.displayWidth
+
+            this.tweens.add({
+                targets: this.stageProgressMiddle,
+                displayWidth: this.width,
+                duration,
+                ease: Phaser.Math.Easing.Sine.Out,
+                onUpdate: () => {
+                    this.stageProgressRightCap.x = this.stageProgressMiddle.x + this.stageProgressMiddle.displayWidth
+                    this.stageProgressMiddle.visible = this.stageProgressMiddle.displayWidth > 0
+                    this.stageProgressRightCap.visible = this.stageProgressMiddle.displayWidth > 0
+                },
+
+            
             })
         }
 
     playerModule(){
 
+        
+
         // Function Variables
-        this.actionPower = this.currentEnergy / this.maxEnergy
-        this.skillPower = this.currentFocus / this.maxFocus
+        this.vitalityPower = this.player.lifeCurrent/this.player.lifeMax 
+        this.skillPower = this.player.focusCurrent/this.player.focusMax
+        this.actionPower = this.player.staminaCurrent/this.player.staminaMax 
+        
+
 
             // Base Mode Toggles 
                 // Base Energy Cost
@@ -1632,11 +2325,16 @@ class Simulacrum extends Phaser.Scene {
                 this.baseDashDistance = 0.01
 
             // Energy Efficency Parameters
-                this.baseEmergencyEnergyCostPercent = 0.075
+                this.baseEmergencyEnergyCostPercent = 0.1
                 this.baseActionSpeedPercent = 0.5
                 this.baseTopSpeedPercent = 0.5
                 this.baseJumpHeightPercent = 0.8
                 this.baseDashDistancePercent = 0.7
+            
+            // Regen
+                this.player.lifeRegen
+                this.player.focusRegen
+                this.player.staminaRegen
 
             // Energy Costs
 
@@ -1656,8 +2354,8 @@ class Simulacrum extends Phaser.Scene {
                 if (this.gameMode == 1){
                     this.action1CostModifier = 0.6
                     this.action2CostModifier = 0.125
-                    this.skill1CostModifier = 2
-                    this.skill2CostModifier = 2
+                    this.skill1CostModifier = 1
+                    this.skill2CostModifier = 1
 
                     if (regenActive){
                         this.moveUpCostModifier = 1.5
@@ -1665,10 +2363,10 @@ class Simulacrum extends Phaser.Scene {
                         this.moveLeftCostModifier = 0.5
                         this.moveRightCostModifier = 0.5
                     } else {
-                        this.moveUpCostModifier = 0.75
+                        this.moveUpCostModifier = 0.5
                         this.moveDownCostModifier = 0.5
-                        this.moveLeftCostModifier = 0.25
-                        this.moveRightCostModifier = 0.25
+                        this.moveLeftCostModifier = 0.5
+                        this.moveRightCostModifier = 0.5
                     }
                     
                 }
@@ -1680,14 +2378,10 @@ class Simulacrum extends Phaser.Scene {
                     if (this.gameMode == 0 && !this.endRun){
 
                         if(this.playerSpeed > 1){
-                            // Lose more acceleration at higher speed - GAMEPLAY WISE, ALLOWS PLAYER TO BUILD SPEED EASIER, FUNNELS PLAYER TO MAXIMISE REGEN 
-                                //this.playerSpeed -= 0.0075 * (this.playerSpeed / 2) 
-                            // Lose more acceleration at lower speed - NEXT FAV, MOST RELAISTIC PHYSICS WISE (MOMENTUM), PROVIDES REWARD FOR ACHIEVING HIGHER SPEED (LESS INVOVLED AS REWARD), FUNNELS PLAYER TO MAXIMISE MAX ENERGY
-                                //this.playerSpeed -= 0.0075 * (1 / this.playerSpeed) 
                             // Lose more acceleration at lower energy (100 - 50 %) - FUNNLES PLAYER TO BOTH REGEN & MAX ENERGY
-                            this.playerSpeed -= 0.004 + (0.004 * (1 - this.actionPower)) 
+                            this.playerSpeed -= 0.004 + (0.004 * (1 - Math.max(0,this.actionPower))) 
                         } else if (this.playerSpeed < 1 ){
-                            this.playerSpeed += 0.005 + (0.005 * this.actionPower)
+                            this.playerSpeed += 0.005 + (0.005 * Math.max(0,this.actionPower))
                         }
                     }
 
@@ -1745,14 +2439,27 @@ class Simulacrum extends Phaser.Scene {
 
                 // Regen
                     // Regen
-                        this.regenMod = 3
                         if (regenActive){
+
+                            if(this.vitalityPower < 1 && this.vitalityPower > 0){
+                                    this.player.lifeCurrent += this.player.lifeRegen 
+                            }
+
                             if(this.skillPower < 1){
-                                this.currentFocus += 1 * this.regenMod  
+                                if(this.skillPower < 1){
+                                    this.player.focusCurrent += this.player.focusRegen 
+                                } else {
+                                    this.player.focusCurrent += this.player.focusRegen * 1.5 
+                                }
                             }
                             
                             if(this.actionPower < 1){
-                                this.currentEnergy += 1 * this.regenMod 
+                                if(this.skillPower < 1){
+                                    this.player.staminaCurrent += this.player.staminaRegen 
+                                } else {
+                                    this.player.staminaCurrent += this.player.staminaRegen * 1.5
+                                }
+                                
                             }
                 
                         }
@@ -1760,11 +2467,11 @@ class Simulacrum extends Phaser.Scene {
                 if (playerInputActive){    
                     if (a1IsDown){
                         if(this.actionPower > 0){
-                            this.currentEnergy -= this.baseCost * this.action1CostModifier
+                            this.player.staminaCurrent -= this.baseCost * this.action1CostModifier
                         } else {
                             this.player.setTint(0xff7a7a)
-                            this.currentEnergy -= this.baseCost * this.action1CostModifier
-                            this.currentLife -=(this.baseCost * this.baseEmergencyEnergyCostPercent) * this.action1CostModifier
+                            this.player.staminaCurrent -= this.baseCost * this.action1CostModifier * this.baseEmergencyEnergyCostPercent
+                            this.player.lifeCurrent -=(this.baseCost * this.baseEmergencyEnergyCostPercent) * this.action1CostModifier
                         }
                         
                     }
@@ -1773,21 +2480,21 @@ class Simulacrum extends Phaser.Scene {
 
 
                         if(this.actionPower > 0 ){
-                            this.currentEnergy -= this.baseCost * this.action2CostModifier
+                            this.player.staminaCurrent -= this.baseCost * this.action2CostModifier
                         } else {
                             this.player.setTint(0xff7a7a)
-                            this.currentEnergy -= this.baseCost * this.action2CostModifier
-                            this.currentLife -=(this.baseCost * this.baseEmergencyEnergyCostPercent) ** this.action2CostModifier
+                            this.player.staminaCurrent -= this.baseCost * this.action2CostModifier * this.baseEmergencyEnergyCostPercent
+                            this.player.lifeCurrent -=(this.baseCost * this.baseEmergencyEnergyCostPercent) * this.action2CostModifier
                         }
                     }
 
                     if (s1IsDown){
-                        if(this.actionPower > 0 ){
-                            this.currentFocus -= this.baseCost * this.skill1CostModifier
+                        if(this.skillPower > 0 ){
+                            this.player.focusCurrent -= this.baseCost * this.skill1CostModifier
                         } else {
                             this.player.setTint(0xff7a7a)
-                            this.currentFocus -= this.baseCost * this.skill1CostModifier
-                            this.currentLife -=(this.baseCost * this.baseEmergencyEnergyCostPercent) ** this.skill1CostModifier
+                            this.player.focusCurrent -= this.baseCost * this.skill1CostModifier * this.baseEmergencyEnergyCostPercent
+                            this.player.lifeCurrent -=(this.baseCost * this.baseEmergencyEnergyCostPercent) * this.skill1CostModifier
                         }
                         
                     }
@@ -1795,12 +2502,12 @@ class Simulacrum extends Phaser.Scene {
                     if (s2IsDown){
 
 
-                        if(this.actionPower > 0 ){
-                            this.currentFocus -= this.baseCost * this.skill2CostModifier
+                        if(this.skillPower > 0 ){
+                            this.player.focusCurrent -= this.baseCost * this.skill2CostModifier
                         } else {
                             this.player.setTint(0xff7a7a)
-                            this.currentFocus -= this.baseCost * this.skill2CostModifier
-                            this.currentLife -=(this.baseCost * this.baseEmergencyEnergyCostPercent) * this.skill2CostModifier
+                            this.player.focusCurrent -= this.baseCost * this.skill2CostModifier * this.baseEmergencyEnergyCostPercent
+                            tthis.player.lifeCurrent -=(this.baseCost * this.baseEmergencyEnergyCostPercent) * this.skill2CostModifier
                         }
                     }
         
@@ -1808,20 +2515,20 @@ class Simulacrum extends Phaser.Scene {
 
 
                         if(this.actionPower > 0 ){
-                            this.currentEnergy -= this.baseCost * this.moveUpCostModifier
+                            this.player.staminaCurrent -= this.baseCost * this.moveUpCostModifier
                         } else {
-                            this.currentEnergy -= this.baseCost * this.moveUpCostModifier
-                            this.currentLife -=(this.baseCost * this.baseEmergencyEnergyCostPercent) * this.moveUpCostModifier
+                            this.player.staminaCurrent -= this.baseCost * this.moveUpCostModifier * this.baseEmergencyEnergyCostPercent
+                            this.player.lifeCurrent -=(this.baseCost * this.baseEmergencyEnergyCostPercent) * this.moveUpCostModifier
                         }
                     }
                     
                     if(downIsDown){
 
                         if(this.actionPower > 0 ){
-                            this.currentEnergy -= this.baseCost * this.moveDownCostModifier
+                            this.player.staminaCurrent -= this.baseCost * this.moveDownCostModifier
                         } else {
-                            this.currentEnergy -= this.baseCost * this.moveDownCostModifier
-                            this.currentLife -=(this.baseCost * this.baseEmergencyEnergyCostPercent) * this.moveDownCostModifier
+                            this.player.staminaCurrent -= this.baseCost * this.moveDownCostModifier * this.baseEmergencyEnergyCostPercent
+                            this.player.lifeCurrent -=(this.baseCost * this.baseEmergencyEnergyCostPercent) * this.moveDownCostModifier
                         }
                     }
                     
@@ -1829,10 +2536,10 @@ class Simulacrum extends Phaser.Scene {
             
 
                         if(this.actionPower > 0 ){
-                            this.currentEnergy -= this.baseCost * this.moveLeftCostModifier
+                            this.player.staminaCurrent -= this.baseCost * this.moveLeftCostModifier
                         } else {
-                            this.currentEnergy -= this.baseCost * this.moveLeftCostModifier
-                            this.currentLife -=(this.baseCost * this.baseEmergencyEnergyCostPercent) * this.moveLeftCostModifier
+                            this.player.staminaCurrent -= this.baseCost * this.moveLeftCostModifier * this.baseEmergencyEnergyCostPercent
+                            this.player.lifeCurrent -=(this.baseCost * this.baseEmergencyEnergyCostPercent) * this.moveLeftCostModifier
                         }
                     }
 
@@ -1840,10 +2547,10 @@ class Simulacrum extends Phaser.Scene {
                         
 
                         if(this.actionPower > 0 ){
-                            this.currentEnergy -= this.baseCost * this.moveRightCostModifier
+                            this.player.staminaCurrent -= this.baseCost * this.moveRightCostModifier
                         } else {
-                            this.currentEnergy -= this.baseCost * this.moveRightCostModifier
-                            this.currentLife -=(this.baseCost * this.baseEmergencyEnergyCostPercent) * this.moveRightCostModifier
+                            this.player.staminaCurrent -= this.baseCost * this.moveRightCostModifier * this.baseEmergencyEnergyCostPercent
+                            this.player.lifeCurrent -=(this.baseCost * this.baseEmergencyEnergyCostPercent) * this.moveRightCostModifier
                         }
                     }
                 }
@@ -1915,47 +2622,49 @@ class Simulacrum extends Phaser.Scene {
                     }, this);
                 } else {
                 // A1 Button
-                    // Sprint
+                    
                         if (a1IsDown){
-                            if(this.gameMode == 0){
-                            this.pattern = new RegExp('EVADE*')
-                            this.patternMatch = this.pattern.test(this.player.anims.getFrameName())
-                            if (this.patternMatch){
-                                // Ground
-                                if (this.player.body.onFloor()){
-                                    this.player.play({key:'player_Avatar_3_RUN',frameRate: this.baseRunFrameRate + (6 * Math.abs(this.playerSpeed))},true)
-                                } 
-                                // Air
-                                else {
-                                    this.player.play({key:'player_Avatar_3_FALL',frameRate: 10},true)
-                                }
-                            } 
+                            
+                                if(this.gameMode == 0){ // Sprint
 
-                            // Animation
+                                    this.pattern = new RegExp('EVADE*')
+                                    this.patternMatch = this.pattern.test(this.player.anims.getFrameName())
+                                    if (this.patternMatch){
+                                        // Ground
+                                        if (this.player.body.onFloor()){
+                                            this.player.play({key:'player_Avatar_3_RUN',frameRate: this.baseRunFrameRate + (6 * Math.abs(this.playerSpeed))},true)
+                                        } 
+                                        // Air
+                                        else {
+                                            this.player.play({key:'player_Avatar_3_FALL',frameRate: 10},true)
+                                        }
+                                    } 
 
-                                // Ground / Air
-                                    // this.pattern = new RegExp('RUN*')
-                                    // this.patternMatch = this.pattern.test(this.player.anims.getFrameName())
-                                    // if (this.patternMatch){
-                                    //     this.player.play({key:this.player.anims.getName(),frameRate: this.baseRunFrameRate + (6 * Math.abs(this.playerSpeed))},true)
-                                    // } else {
-                                    //     this.player.play(this.player.anims.getName())
-                                    // }
+                                    // Animation
 
-                                // Ground
-                                if (this.player.body.onFloor()){
-                                    if(this.playerSpeed < 2){
-                                        this.playerSpeed += 0.0125  + (0.0125 * this.actionPower)
-                                    }
-                                } 
-                                // Air
-                                else  {
-                                    if(this.playerSpeed < 2){
-                                        this.playerSpeed += 0.0075  + (0.0075 * this.actionPower)
-                                    }
-                                }
+                                        // Ground / Air
+                                            // this.pattern = new RegExp('RUN*')
+                                            // this.patternMatch = this.pattern.test(this.player.anims.getFrameName())
+                                            // if (this.patternMatch){
+                                            //     this.player.play({key:this.player.anims.getName(),frameRate: this.baseRunFrameRate + (6 * Math.abs(this.playerSpeed))},true)
+                                            // } else {
+                                            //     this.player.play(this.player.anims.getName())
+                                            // }
 
-                            } else if (this.gameMode == 1){
+                                        // Ground
+                                        if (this.player.body.onFloor()){
+                                            if(this.playerSpeed < this.playerTopSpeed){
+                                                this.playerSpeed += 0.0125 + (0.0125 * Math.max(0,this.actionPower))
+                                            }
+                                        } 
+                                        // Air
+                                        else  {
+                                            if(this.playerSpeed < this.playerTopSpeed){
+                                                this.playerSpeed +=  0.0075 + (0.0075 * Math.max(0,this.actionPower))
+                                            }
+                                        }
+
+                            } else if (this.gameMode == 1){ // Attack
                                 // Collision Detection
                                     
                                     // Enable player sword collision detection
@@ -2043,7 +2752,7 @@ class Simulacrum extends Phaser.Scene {
                                 // Sound Effects - Grunt
                                 if (this.player.anims.getName() == 'player_Avatar_3_ACTION_1'){
                                     
-                                    if (this.player.anims.currentFrame.index == 1){
+                                    if (this.player.anims.currentFrame.index == 2){
                                         this.sound.stopByKey('playerAttack1')
                                         this.sound.stopByKey('playerAttack2')
                                         this.sound.stopByKey('playerAttack3')
@@ -2051,7 +2760,7 @@ class Simulacrum extends Phaser.Scene {
                                         this.sound.stopByKey('playerAttack5')
 
                                         this.sound.play('playerAttack1')
-                                    } else if(this.player.anims.currentFrame.index == 7) {
+                                    } else if(this.player.anims.currentFrame.index == 8) {
                                         this.sound.stopByKey('playerAttack1')
                                         this.sound.stopByKey('playerAttack2')
                                         this.sound.stopByKey('playerAttack3')
@@ -2064,7 +2773,7 @@ class Simulacrum extends Phaser.Scene {
                                 } else if (this.player.anims.getName() == 'player_Avatar_3_ACTION_2'){
                     
 
-                                    if (this.player.anims.currentFrame.index == 1 ){
+                                    if (this.player.anims.currentFrame.index == 2 ){
                                         this.sound.stopByKey('playerAttack1')
                                         this.sound.stopByKey('playerAttack2')
                                         this.sound.stopByKey('playerAttack3')
@@ -2072,7 +2781,7 @@ class Simulacrum extends Phaser.Scene {
                                         this.sound.stopByKey('playerAttack5')
 
                                         this.sound.play('playerAttack5')
-                                    } else if (this.player.anims.currentFrame.index == 7){
+                                    } else if (this.player.anims.currentFrame.index == 8){
                                         this.sound.stopByKey('playerAttack1')
                                         this.sound.stopByKey('playerAttack2')
                                         this.sound.stopByKey('playerAttack3')
@@ -2084,7 +2793,7 @@ class Simulacrum extends Phaser.Scene {
 
                                 } else if (this.player.anims.getName() == 'player_Avatar_3_ACTION_3'){
                                     
-                                    if (this.player.anims.currentFrame.index == 1){   
+                                    if (this.player.anims.currentFrame.index == 2){   
                                         this.sound.stopByKey('playerAttack1')
                                         this.sound.stopByKey('playerAttack2')
                                         this.sound.stopByKey('playerAttack3')
@@ -2127,7 +2836,7 @@ class Simulacrum extends Phaser.Scene {
                                     // Stats
 
                                     this.playerAttackStrengthX = Phaser.Math.Between(0,0) * this.actionPower
-                                    this.playerAttackStrengthY = Phaser.Math.Between(this.baseJumpHeight * 1.5,this.baseJumpHeight * 2) * this.actionPower
+                                    this.playerAttackStrengthY = (Phaser.Math.Between(this.baseJumpHeight * 1,this.baseJumpHeight * 1.25) * 0.75) + (this.baseJumpHeight * 0.25 * this.actionPower)
 
                                     // Animations
                                     this.player.play({key:'player_Avatar_3_ACTION_3',frameRate: (
@@ -2335,7 +3044,7 @@ class Simulacrum extends Phaser.Scene {
                             }
                         } else 
                 // A2 Button 
-                    // Slow
+                    
                         if (a2IsDown){
 
                             if(this.gameMode == 0){
@@ -2352,13 +3061,13 @@ class Simulacrum extends Phaser.Scene {
                                 // Ground
                                 if (this.player.body.onFloor()){
                                     if(this.playerSpeed > 0.5){
-                                        this.playerSpeed -= 0.0125  + (0.0125 * this.actionPower)
+                                        this.playerSpeed -= 0.0125  + (0.0125 * Math.max(0,this.actionPower)) 
                                     }
                                 } 
                                 // Air
                                 else  {
                                     if(this.playerSpeed > 0.5){
-                                        this.playerSpeed -= 0.0075  + (0.0075 * this.actionPower)
+                                        this.playerSpeed -= 0.0075  + (0.0075 * Math.max(0,this.actionPower))
                                     }
                                 }
                             } else if (this.gameMode == 1){
@@ -2384,38 +3093,45 @@ class Simulacrum extends Phaser.Scene {
                                     
                                 if(leftIsDown || rightIsDown){
                                         
+    
+                                        if (leftIsDown){
+                                            this.player.flipX = true
+                                        } else if (rightIsDown) {
+                                            this.player.flipX = false
+                                        }
 
-                                    if (leftIsDown){
-                                        this.player.flipX = true
-                                    } else if (rightIsDown) {
-                                        this.player.flipX = false
+                                    if(animationStarted){
+                                    
+                                        this.player.play({key:'player_Avatar_3_EVADE',frameRate: 12 + (8 * Math.abs(this.actionPower))},true)
+
+                                        this.player.once('animationcomplete', function (anim,frame) {
+                                            this.player.emit('animationcomplete_' + anim.key, frame)
+                                        }, this)
+                                        
+                                        this.player.once('animationcomplete_player_Avatar_3_EVADE', function(){
+                                            //leftIsDown = false
+                                            //rightIsDown = false
+                                            animationStarted = false
+                                            this.player.play({key:'player_Avatar_3_BLOCK',frameRate: 8 + (8 * Math.abs(this.actionPower))},true)
+                                        
+                                        },this)
                                     }
                                     
-                                    
-                                    this.player.play({key:'player_Avatar_3_EVADE',frameRate: 12 + (8 * Math.abs(this.actionPower))},true)
-
-                                    this.player.once('animationcomplete', function (anim,frame) {
-                                        this.player.emit('animationcomplete_' + anim.key, frame)
-                                    }, this)
-                                    
-                                    this.player.once('animationcomplete_player_Avatar_3_EVADE', function(){
-                                        leftIsDown = false
-                                        rightIsDown = false
-                                        this.player.play({key:'player_Avatar_3_BLOCK',frameRate: 8 + (8 * Math.abs(this.actionPower))},true)
-                                    
-                                    },this)
-                                    
                                 } else 
-                                if(!this.a2Held){
+                                // if(!this.a2Held){
+                                //     this.player.play({key:'player_Avatar_3_BLOCK',frameRate: 8 + (8 * Math.abs(this.actionPower))},true)
+                                //     this.a2Held = true
+                                // }
+                                if(animationStarted){
                                     this.player.play({key:'player_Avatar_3_BLOCK',frameRate: 8 + (8 * Math.abs(this.actionPower))},true)
-                                    this.a2Held = true
+                                    animationStarted = false
                                 }
 
 
                         // Positioning
 
                                 // Ground
-                                if (this.player.body.onFloor()){
+                                if (this.player.body.onFloor() && animationStarted){
 
                                     if (leftIsDown){
                                         if (this.playerBattleSpeed > 0){
@@ -2452,7 +3168,7 @@ class Simulacrum extends Phaser.Scene {
                                     }
                                 }    
                                 // Air
-                                else {
+                                else if (!this.player.body.onFloor() && animationStarted) {
                 
                                     if (leftIsDown){
                 
@@ -2464,7 +3180,10 @@ class Simulacrum extends Phaser.Scene {
                                             this.playerBattleSpeed -= 0.00375 + 0.03 * this.actionPower
                                         }
                 
-                                        this.player.x -= (((screenWidth * 0.002) + ((screenWidth * 0.006) * this.actionPower))) * this.movementMod
+                                        //this.player.x -= (((screenWidth * 0.002) + ((screenWidth * 0.006) * this.actionPower))) * this.movementMod
+
+                                        this.player.x -= ((screenWidth * (this.baseDashDistance * this.baseDashDistancePercent)) + 
+                                                            ((screenWidth * (this.baseDashDistance * (1-this.baseDashDistancePercent))) * this.actionPower)) * 0.75 * this.movementMod
                                     } else if (rightIsDown){
                 
                                         if (this.playerBattleSpeed < 0){
@@ -2475,7 +3194,10 @@ class Simulacrum extends Phaser.Scene {
                                             this.playerBattleSpeed += 0.00375 + 0.03 * this.actionPower
                                             
                                         }
-                                        this.player.x += (((screenWidth * 0.002) + ((screenWidth * 0.006) * this.actionPower))) * this.movementMod
+                                        //this.player.x += (((screenWidth * 0.002) + ((screenWidth * 0.006) * this.actionPower))) * this.movementMod
+
+                                        this.player.x += ((screenWidth * (this.baseDashDistance * this.baseDashDistancePercent)) + 
+                                                            ((screenWidth * (this.baseDashDistance * (1-this.baseDashDistancePercent))) * this.actionPower)) * 0.75 * this.movementMod
                                     } else {
                                         if(this.playerBattleSpeed > 0.5){
                                             this.playerBattleSpeed -= 0.0125  + (0.0125 * this.actionPower)
@@ -2487,8 +3209,212 @@ class Simulacrum extends Phaser.Scene {
                                 
                             }
                         }
+
+                // S1 Button
+
+                        if (s1IsDown){
+                            if(this.gameMode == 0){
+                              
+                            } else if (this.gameMode == 1){ 
+
+                                    
+                                
+                                 if(animationStarted){
+                                    animationStarted = false
+                                    this.skillFrameRate = 10 + 4 * this.skillPower
+                                    this.nextXDest = this.player.x
+                                    this.nextYDest = this.player.y
+                                    this.critChance = 2.5
+                                    this.critDamage = 1.5
+                                    this.playerAttackStrengthX = Phaser.Math.Between(20,30) * this.actionPower
+                                    this.playerAttackStrengthY = Phaser.Math.Between(-20,-25) * this.actionPower
+                                    
+                                 }
+
+                                 
+
+
+                                    if (this.player.body.onFloor()){
+                                        this.player.play({key:'player_Avatar_3_ACTION_2',frameRate: Math.max(this.skillFrameRate,8)},true)
+                                    } else {
+                                        this.player.play({key:'player_Avatar_3_ACTION_2',frameRate: Math.max(this.skillFrameRate,8)},true)
+                                    }
+
+                                   
+ 
+                                    if (this.player.anims.getName() == 'player_Avatar_3_ACTION_2'){
+                        
+
+                                        if (this.player.anims.currentFrame.index >= 4 && this.player.anims.currentFrame.index < 6 
+                                            || this.player.anims.currentFrame.index >= 12 && this.player.anims.currentFrame.index < 14 ){
+                                            
+                                            this.playerAttackHitBox.body.checkCollision.none = false
+                                            
+                                        } else {
+                                            this.playerAttackHitBox.body.checkCollision.none = true
+                                        }
+
+                                    }
+                                
+
+                                   this.playerSubModule_AirTime(0,this.skillPower,0.35)
+
+                                   if (this.player.anims.currentFrame.index == 4 || this.player.anims.currentFrame.index == 12){
+                                        this.skillFrameRate *= 0.9
+                                        this.critChance *= 1.1
+                                        this.critDamage *= 1.01
+                                        this.playerAttackStrengthX *= 1.15//Phaser.Math.Between(0,50) * this.actionPower
+                                        this.playerAttackStrengthY *= 1.15//Phaser.Math.Between(250,750) * this.actionPower
+                                   }
+
+                                            if(this.blinkActive && this.playerLockedOn){
+                                    this.tweens.add({
+                                        targets: this.player,
+                                        x: this.nextXDest,
+                                        y: this.nextYDest,
+                                        duration: 150,
+                                        ease: Phaser.Math.Easing.Sine.Out,
+                                        onUpdate: () => {
+                                            if(this.closestEnemy){
+                                                if (this.player.x <= this.closestEnemy.x){
+                                                    this.nextXDest = this.closestEnemy.x + (this.closestEnemy.displayWidth * Phaser.Math.FloatBetween(0.1,0.25))
+                                                } else {
+                                                    this.nextXDest = this.closestEnemy.x - (this.closestEnemy.displayWidth * Phaser.Math.FloatBetween(0.1,0.25))
+                                                }
+
+                                                if (this.closestEnemy.body.onFloor()){
+                                                    this.nextYDest = this.player.y
+                                                } else {
+                                                    this.nextYDest = this.player.y//this.closestEnemy.y + (this.closestEnemy.displayWidth * Phaser.Math.FloatBetween(-0.15,0.15))
+                                                }
+                                            } else {
+                                                this.nextXDest = this.player.x
+                                                this.nextYDest = this.player.y
+                                            }
+                                          
+                                        },
+                        
+                                    
+                                    })
+
+                                    
+                                 }
+
+            
+                                    
+                                    if (this.player.anims.currentFrame.index == 4 || this.player.anims.currentFrame.index == 12){
+
+                                        this.blinkActive = true
+                                        if(this.closestEnemy){
+                                            if (this.player.x < this.closestEnemy.x){
+                                                this.nextXDest = this.closestEnemy.x + (this.closestEnemy.displayWidth * Phaser.Math.FloatBetween(0.05,0.15))
+                                            } else {
+                                                this.nextXDest = this.closestEnemy.x - (this.closestEnemy.displayWidth * Phaser.Math.FloatBetween(0.05,0.15))
+                                            }
+
+                                            if (this.closestEnemy.body.onFloor()){
+                                                this.nextYDest = this.player.y
+                                            } else {
+                                                this.nextYDest = this.closestEnemy.y + (this.closestEnemy.displayWidth * Phaser.Math.FloatBetween(-0.5,0.5))
+                                            }
+                                        } else {
+                                            this.nextXDest = this.player.x
+                                            this.nextYDest = this.player.y
+                                        }
+                                         
+
+                                    } else {
+                                        this.blinkActive = false
+                                    }
+                                
+                            }
+                        }
+
+                        //Blink Strike Proto
+                        // if (s1IsDown){
+                        //     if(this.gameMode == 0){
+                              
+                        //     } else if (this.gameMode == 1){ 
+                                
+                    
+                        //            this.player.play({key:'player_Avatar_3_ACTION_2',frameRate: 12, repeat: 10 * this.skillPower},true)
+
+                    
+          
+                                        
+                        //                 this.playerAttackHitBox.body.checkCollision.none = false
+                                        
+                                    
+
+
+                        //            this.playerSubModule_AirTime(0,this.skillPower,0)
+
+                        //          if(this.blinkActive && this.playerLockedOn){
+                        //             this.tweens.add({
+                        //                 targets: this.player,
+                        //                 x: this.nextXDest,
+                        //                 y: this.nextYDest,
+                        //                 duration: 150,
+                        //                 ease: Phaser.Math.Easing.Sine.Out,
+                        //                 onUpdate: () => {
+                        //                     if(this.playerLockedOn){
+                        //                         if (this.player.x <= this.closestEnemy.x){
+                        //                             this.nextXDest = this.closestEnemy.x + (this.closestEnemy.displayWidth * Phaser.Math.FloatBetween(0.25,0.35))
+                        //                         } else {
+                        //                             this.nextXDest = this.closestEnemy.x - (this.closestEnemy.displayWidth * Phaser.Math.FloatBetween(0.25,0.35))
+                        //                         }
+
+                        //                         if (this.closestEnemy.body.onFloor()){
+                        //                             this.nextYDest = this.player.y
+                        //                         } else {
+                        //                             this.nextYDest = this.closestEnemy.y + (this.closestEnemy.displayWidth * Phaser.Math.FloatBetween(-0.15,0.15))
+                        //                         }
+                        //                     } else {
+                        //                         this.nextXDest = this.player.x
+                        //                         this.nextYDest = this.player.y
+                        //                     }
+                                          
+                        //                 },
+                        
+                                    
+                        //             })
+
+                                    
+                        //          }
+
+            
+                                    
+                        //             if (this.player.anims.currentFrame.index == 4 || this.player.anims.currentFrame.index == 12){
+
+                        //                 this.blinkActive = true
+                        //                 if(this.playerLockedOn ){
+                        //                     if (this.player.x < this.closestEnemy.x){
+                        //                         this.nextXDest = this.closestEnemy.x + (this.closestEnemy.displayWidth * Phaser.Math.FloatBetween(0.25,0.35))
+                        //                     } else {
+                        //                         this.nextXDest = this.closestEnemy.x - (this.closestEnemy.displayWidth * Phaser.Math.FloatBetween(0.25,0.35))
+                        //                     }
+
+                        //                     if (this.closestEnemy.body.onFloor()){
+                        //                         this.nextYDest = this.player.y
+                        //                     } else {
+                        //                         this.nextYDest = this.closestEnemy.y + (this.closestEnemy.displayWidth * Phaser.Math.FloatBetween(-0.5,0.5))
+                        //                     }
+                        //                 } else {
+                        //                     this.nextXDest = this.player.x
+                        //                     this.nextYDest = this.player.y
+                        //                 }
+                                         
+
+                        //             } else {
+                        //                 this.blinkActive = false
+                        //             }
+                                
+                                
+                        //     }
+                        // }
+                
                 // Up Button 
-                    // Jump
+                    
                         if (upIsDown){
                             if(this.gameMode == 0){
                                 this.playerSubModule_Jump()
@@ -2498,7 +3424,7 @@ class Simulacrum extends Phaser.Scene {
                             
                         } 
                 // Down Button
-                    // Slide
+                    
                         if (downIsDown){
                             if(this.gameMode == 0){
                                 this.playerSubModule_Crouch() 
@@ -2508,17 +3434,18 @@ class Simulacrum extends Phaser.Scene {
                             
                         }
                 // Left/Right Button
-                    // Move Left/Right
+                    
                         if (leftIsDown || rightIsDown){
                             if(this.gameMode == 0){
                                 this.playerSubModule_LateralMovement()
-                            } else if (this.gameMode == 1 && (!a1IsDown && !a2IsDown)){
+                            } else if (this.gameMode == 1 && (!a1IsDown && !a2IsDown && !s1IsDown && !s2IsDown)){
                                 this.playerSubModule_LateralMovement()
                             }
                         
                         } 
                 
                 // Neutral
+
                     if(this.gameMode == 0){
                         // No A2, Up or Down
                     if (!this.playerIsHit && !a2IsDown && !upIsDown && !downIsDown){
@@ -2558,7 +3485,7 @@ class Simulacrum extends Phaser.Scene {
                         
                     }
                     } else if (this.gameMode == 1){
-                        if ((!this.enterBattleAnimation && !upIsDown && !downIsDown && !leftIsDown && !rightIsDown) && (!a1IsDown && !a2IsDown)){
+                        if ((!this.enterBattleAnimation && !upIsDown && !downIsDown && !leftIsDown && !rightIsDown) && (!a1IsDown && !a2IsDown && !s1IsDown && !s2IsDown)){
                             if(this.player.body.onFloor()){
         
                                 if (Math.abs(this.playerBattleSpeed) > 1){
@@ -2636,6 +3563,12 @@ class Simulacrum extends Phaser.Scene {
                     this.closestEnemyOutline.setTexture()
                 }
 
+            // Energy Cost
+            if (this.actionPower <= 0 && (a1IsDown || a2IsDown) || this.skillPower <= 0 && (s1IsDown || s2IsDown)){
+                this.emergencyPower = true
+            } else {
+                this.emergencyPower = false
+            }
 
             // Regen
                 if (a1IsDown || a2IsDown || s1IsDown || s2IsDown){
@@ -2677,9 +3610,11 @@ class Simulacrum extends Phaser.Scene {
             
                 }
                 
-                if (!a1IsDown){
+                if (!a1IsDown && !s1IsDown){
                     this.playerAttackHitBox.body.checkCollision.none = true
                 }
+
+                this.playerMomentum = 0
                 
 
     }
@@ -2880,7 +3815,8 @@ class Simulacrum extends Phaser.Scene {
                 this.physics.world.setBounds(screenWidth, 0, screenWidth * 2,  screenHeight)
             } else {
                 this.playerSpeed -= 0.06 
-                this.currentLife -= 0.5
+                this.player.lifeCurrent -= 0.5
+                this.glory -= 0.5 * 0.25
                 this.playerIsHit = true
                 //this.camera.flash(175,204,0,0)
 
@@ -2903,26 +3839,27 @@ class Simulacrum extends Phaser.Scene {
         // V1 Code
 
         // UI Module
-        this.uiModule()            
+            this.uiModule()            
  
         // Camera Module
-        this.cameraModule()
+            this.cameraModule()
 
         // Player/Controls
-        this.playerModule()
+            this.playerModule()
 
         // Environment
-        this.environmentModule()
-        
-        this.platforms(this)
+            this.environmentModule()
+            
+            this.platforms(this)
 
         // Enemies
-        this.enemyModule(this)
+            this.enemyModule(this)
 
-        // Stage
-        this.stageModule()
+        // Stage Management
+            this.stageModule()
 
-    
+        // Checkpoints
+
 
         // End of V1 Code
 
@@ -2934,13 +3871,20 @@ class Simulacrum extends Phaser.Scene {
 
         this.debugText.setText('Stage Name: ' + this.stageData.stageName
                                 + '\nTime Period: ' + this.stageData.timeText
-                                + '\nPlayer Speed: ' + Math.round(this.playerSpeed * 100) + '%' 
-                                +'\nPlayer Battle Speed: ' + Math.round(this.playerBattleSpeed * 100) + '%' 
-                                + '\nEnemies: ' + this.enemyGroup.countActive()
-                                + '\nPlayer Attack Strength X: ' + Math.round(this.playerAttackStrengthX) 
-                                + '\nPlayer Attack Strength Y: ' + Math.round(this.playerAttackStrengthY) 
-                                + '\nPlayer Crit Roll: ' + this.playerAttackCrit)
+                                + '\nMusic Duration: ' + Math.floor(bgMusic.duration / 60) + ':' + Phaser.Math.RoundTo((((bgMusic.duration / 60) - Math.floor(bgMusic.duration / 60)) * 60),-2)
+                                + '\nPlayer Life Max: ' + this.player.lifeMax + '\nPlayer Life Regen: ' + this.player.lifeRegen
+                                + '\nPlayer Focus Max: ' + this.player.focusMax + '\nPlayer Focus Regen: ' + this.player.focusRegen
+                                + '\nPlayer Stamina Max: ' + this.player.staminaMax + '\nPlayer Stamina Regen: ' + this.player.staminaRegen
 
+                                 + '\nPlayer Speed: ' + Math.round(this.playerSpeed * 100) + '%' 
+                                // +'\nPlayer Battle Speed: ' + Math.round(this.playerBattleSpeed * 100) + '%' 
+                                // + '\nEnemies: ' + this.enemyGroup.countActive()
+                                // + '\nPlayer Attack Strength X: ' + Math.round(this.playerAttackStrengthX) 
+                                // + '\nPlayer Attack Strength Y: ' + Math.round(this.playerAttackStrengthY) 
+                                // + '\nPlayer Crit Roll: ' + this.playerAttackCrit
+                                )
+                                
+     
 
         // Toggle Mode
 

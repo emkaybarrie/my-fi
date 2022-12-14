@@ -154,348 +154,6 @@
     var sunPositionX
     var sunPositionY
 
-   
-
-    class HealthBar {
-
-                constructor (scene,startLife, x, y,depth)
-                {   
-                    this.scene = scene
-
-                    this.bg = new Phaser.GameObjects.Graphics(scene).setDepth(depth);
-                    
-                    this.lifeBar = new Phaser.GameObjects.Graphics(scene).setDepth(depth);
-                    this.focusBar = new Phaser.GameObjects.Graphics(scene).setDepth(depth);
-                    this.energyBar = new Phaser.GameObjects.Graphics(scene).setDepth(depth);
-                    
-                    this.x = x;
-                    this.y = y;
-                    
-                    this.pL =  (444  * (scaleModX)) / this.scene.maxLife
-                    this.pF =  (444  * (scaleModX))  / this.scene.maxFocus 
-                    this.pE =  (444  * (scaleModX)) / this.scene.maxEnergy
-
-                    this.draw();
-        
-                    scene.add.existing(this.bg)
-                    scene.add.existing(this.lifeBar);
-                    scene.add.existing(this.focusBar);
-                    scene.add.existing(this.energyBar);
-                    
-                }
-        
-                decreaseLife (amount)
-                {
-                    this.scene.currentLife -= amount;
-        
-                    if (this.scene.currentLife > this.scene.maxLife){
-                        this.scene.currentLife = this.scene.maxLife
-                    }
-        
-                   
-        
-                    if (this.scene.currentLife < 0)
-                    {
-                        this.scene.currentLife = 0;
-                    }
-        
-                    this.draw();
-        
-                    return (this.scene.currentLife === 0);
-                }
-        
-                decreaseEnergy (amount)
-                {
-                    this.scene.currentEnergy -= amount;
-        
-                    if (this.scene.currentEnergy > this.scene.maxEnergy){
-                        this.scene.currentEnergy = this.scene.maxEnergy
-                    }
-        
-                    if (this.scene.currentEnergy < 0)
-                    {
-                        this.scene.currentEnergy = 0;
-                    }
-                    
-        
-                    this.draw();
-        
-                    return (this.scene.currentEnergy === 0);
-                }
-        
-                decreaseFocus (amount)
-                {
-                    this.scene.currentFocus -= amount;
-        
-                    if (this.scene.currentFocus > this.scene.maxFocus){
-                        this.scene.currentFocus = this.scene.maxFocus
-                    }
-        
-                    if (this.scene.currentFocus < 0)
-                    {
-                        this.scene.currentFocus = 0;
-                    }
-        
-                    this.draw();
-        
-                    return (this.scene.currentFocus === 0);
-                }
-        
-                hide ()
-                {
-                    this.bg.setVisible(0)
-                    this.lifeBar.setVisible(0)
-                    this.energyBar.setVisible(0)
-                    this.focusBar.setVisible(0)
-                }
-        
-                show ()
-                {
-                    this.bg.setVisible(1)
-                    this.lifeBar.setVisible(1)
-                    this.energyBar.setVisible(1)
-                    this.focusBar.setVisible(1)
-                }
-        
-                draw ()
-                {
-                    this.bg.clear()
-                    this.lifeBar.clear();
-                    this.focusBar.clear();
-                    this.energyBar.clear();
-                    
-        
-                    //  BG
-                    this.bg.fillStyle(0x000000);
-                    this.bg.fillRect(this.x, this.y, 445 * (scaleModX), 85 * (scaleModX));
-        
-                    //  Health
-        
-                    this.lifeBar.fillStyle(0xffffff);
-                    this.lifeBar.fillRect(this.x + (1 * (scaleModX)) , this.y + (2 * (scaleModX)), 444 * (scaleModX), 30 * (scaleModX));
-                    this.lifeBar.fillStyle(0xcc0000);
-                    
-                    var d = Math.floor(this.pL * this.scene.currentLife);
-        
-                    this.lifeBar.fillRect(this.x + (1 * (scaleModX)) , this.y + (2  * (scaleModX)), d , 30 * (scaleModX));
-        
-                    //  Focus
-        
-                    this.focusBar.fillStyle(0xffffff);
-                    this.focusBar.fillRect(this.x + (1 * (scaleModX)) , this.y + ((5 + 30)  * (scaleModX)), 444 * (scaleModX), 30 * (scaleModX));
-                    this.focusBar.fillStyle(0xf1c232);
-                    
-        
-                    var d = Math.floor(this.pF * this.scene.currentFocus);
-        
-                    this.focusBar.fillRect(this.x + (1 * (scaleModX)) , this.y + ((5 + 30) * (scaleModX)), d, 30 * (scaleModX));
-        
-                    //  Energy
-        
-                    this.energyBar.fillStyle(0xffffff);
-                    this.energyBar.fillRect(this.x + (1 * (scaleModX)) , this.y + ((8 + 60) * (scaleModX)) , 444 * (scaleModX), 15 * (scaleModX));
-                    this.energyBar.fillStyle(0x00a86b);
-                
-        
-                    var d = Math.floor(this.pE * this.scene.currentEnergy);
-        
-                    this.energyBar.fillRect(this.x + (1 * (scaleModX)) ,this.y + ((8 + 60) * (scaleModX)) , d , 15 * (scaleModX));
-        
-                    
-                }
-        
-    }
-
-    class StageProgressBar {
-
-        constructor (scene,progress, x, y,depth)
-        {
-            this.scene = scene
-
-            this.bg = new Phaser.GameObjects.Graphics(scene).setDepth(depth);
-            this.stageProgressBar = new Phaser.GameObjects.Graphics(scene).setDepth(depth);
-            this.checkPoint1 = new Phaser.GameObjects.Graphics(scene).setDepth(depth);
-            this.checkPoint2 = new Phaser.GameObjects.Graphics(scene).setDepth(depth);
-            this.checkPoint3 = new Phaser.GameObjects.Graphics(scene).setDepth(depth);
-            //this.checkPoint4 = new Phaser.GameObjects.Graphics(scene).setDepth(4);
-
-            this.x = x;
-            this.y = y;
-            
-            this.p =  (((screenWidth * 0.25)-2) * (scaleModX)) / this.scene.progressToNextLevel
-
-            this.draw();
-
-            scene.add.existing(this.bg)
-            scene.add.existing(this.stageProgressBar);
-            scene.add.existing(this.checkPoint1);
-            scene.add.existing(this.checkPoint2);
-            scene.add.existing(this.checkPoint3);
-            //scene.add.existing(this.checkPoint4);
-            
-        }
-
-        increaseProgress (amount)
-        {
-            this.scene.progress += amount;
-
-            if (this.scene.progress > this.scene.progressToNextLevel)
-            {
-                this.scene.progress = this.scene.progressToNextLevel;
-            }
-
-            this.draw();
-
-            return (this.scene.progress === this.scene.progressToNextLevel);
-        }
-
-        hide ()
-            {
-                this.bg.setVisible(0)
-                this.stageProgressBar.setVisible(0)
-                this.checkPoint1.setVisible(0)
-                this.checkPoint2.setVisible(0)
-                this.checkPoint3.setVisible(0)
-            }
-
-        show ()
-        {
-            this.bg.setVisible(1)
-            this.stageProgressBar.setVisible(1)
-            this.checkPoint1.setVisible(1)
-            this.checkPoint2.setVisible(1)
-            this.checkPoint3.setVisible(1)
-
-        }
-
-
-        draw ()
-        {
-            this.bg.clear()
-            this.stageProgressBar.clear();
-            this.checkPoint1.clear()
-            this.checkPoint2.clear()
-            this.checkPoint3.clear()
-            //this.checkPoint4.clear()
-            
-
-            //  BG
-            this.bg.fillStyle(0x000000);
-            this.bg.fillRect(this.x, this.y, screenWidth * 0.25 * (scaleModX), 10 * (scaleModX));
-
-            //  Progress
-
-            this.stageProgressBar.fillStyle(0xffffff);
-            this.stageProgressBar.fillRect(this.x + (1 * (scaleModX)) , this.y + (1 * (scaleModX)), screenWidth * 0.25 * (scaleModX) - (2 * (scaleModX)) , 8 * (scaleModX));
-            this.stageProgressBar.fillStyle(0x674EA7);
-
-            var d = Math.floor(this.p * this.scene.progress);
-
-            this.stageProgressBar.fillRect(this.x + (1 * (scaleModX)) , this.y + (1 * (scaleModX)), d, 8 * (scaleModX));
-
-            // Checkpoints
-            // 1
-            this.checkPoint1.fillStyle(0x000000);
-            this.checkPoint1.fillCircle(this.x + (screenWidth * 0.0625 * 1 * (scaleModX)), this.y + (5 * (scaleModX)), 14 * (scaleModX));
-            if(this.scene.progress >= (this.scene.progressToNextLevel * 0.25 * 1)){
-                this.checkPoint1.fillStyle(0x674EA7);
-            } else {
-                this.checkPoint1.fillStyle(0xffffff);
-            }
-            this.checkPoint1.fillCircle(this.x + (screenWidth * 0.0625 * 1 * (scaleModX)), this.y + (5 * (scaleModX)), 12.5 * (scaleModX));
-
-            // 2
-            this.checkPoint2.fillStyle(0x000000);
-            this.checkPoint2.fillCircle(this.x + (screenWidth * 0.0625 * 2 * (scaleModX)), this.y + (5 * (scaleModX)), 14 * (scaleModX));
-            if(this.scene.progress >= (this.scene.progressToNextLevel * 0.25 * 2)){
-                this.checkPoint2.fillStyle(0x674EA7);
-            } else {
-                this.checkPoint2.fillStyle(0xffffff);
-            }
-            this.checkPoint2.fillCircle(this.x + (screenWidth * 0.0625 * 2 * (scaleModX)), this.y + (5 * (scaleModX)), 12.5 * (scaleModX));
-
-            // 3
-            this.checkPoint3.fillStyle(0x000000);
-            this.checkPoint3.fillCircle(this.x + (screenWidth * 0.0625 * 3 * (scaleModX)), this.y + (5 * (scaleModX)), 14 * (scaleModX));
-            if(this.scene.progress >= (this.scene.progressToNextLevel * 0.25 * 3)){
-                this.checkPoint3.fillStyle(0x674EA7);
-            } else {
-                this.checkPoint3.fillStyle(0xffffff);
-            }
-            this.checkPoint3.fillCircle(this.x + (screenWidth * 0.0625 * 3 * (scaleModX)), this.y + (5 * (scaleModX)), 12.5 * (scaleModX));
-
-            // 4
-            // this.checkPoint4.fillStyle(0x000000);
-            // this.checkPoint4.fillCircle(this.x + (width * 0.125 * 4), this.y + 5, 14);
-            // if(this.scene.progress >= (this.scene.progressToNextLevel * 0.25 * 4)){
-            //     this.checkPoint4.fillStyle(0x674EA7);
-            // } else {
-            //     this.checkPoint4.fillStyle(0xffffff);
-            // }
-            // this.checkPoint4.fillCircle(this.x + (width * 0.125 * 4), this.y + 5, 12.5);
-    
-        }
-
-    }
-
-    // class EnemyHealthBar {
-
-    // constructor (scene, x, y)
-    // {
-    //     this.bg = new Phaser.GameObjects.Graphics(scene).setDepth(1);
-        
-    //     this.nightBorneLifeBar = new Phaser.GameObjects.Graphics(scene).setDepth(1);
-
-    //     this.x = x;
-    //     this.y = y;
-        
-    //     this.p =  (38 * (scaleModX)) / nightBorneMaxLife
-
-    //     this.draw();
-
-    //     scene.add.existing(this.bg)
-    //     scene.add.existing(this.nightBorneLifeBar);
-    // }
-
-    // decreaseNightborneLife (amount)
-    // {
-    //     nightBorneLife -= amount;
-
-    //     if (nightBorneLife < 0)
-    //     {
-    //         nightBorneLife = 0;
-    //     }
-
-    //     this.draw();
-
-    //     return (nightBorneLife === 0);
-    // }
-
-    // draw ()
-    // {
-    //     this.bg.clear()
-    //     this.nightBorneLifeBar.clear();
-
-    //     //  BG
-    //     this.bg.fillStyle(0x000000);
-    //     this.bg.fillRect(this.x, this.y, 40 * (scaleModX), 5 * (scaleModX));
-
-    //     //  Health
-
-    //     this.nightBorneLifeBar.fillStyle(0xffffff);
-    //     this.nightBorneLifeBar.fillRect(this.x + (1 * (scaleModX)), this.y + (1 * (scaleModX)), 38 * (scaleModX), 3 * (scaleModX));
-    //     this.nightBorneLifeBar.fillStyle(0xcc0000);
-
-
-    //     var d = Math.floor(this.p * nightBorneLife);
-   
-
-    //     this.nightBorneLifeBar.fillRect(this.x + (1 * (scaleModX)), this.y + (1 * (scaleModX)), d, 3 * (scaleModX));
-
-    // }
-
-    // }
-
     function toggleSkillTree(){
 
             inspirationPic = Phaser.Math.Between(1,3)
@@ -649,22 +307,19 @@ class Badlands extends Phaser.Scene {
         this.load.audio("bgMusic0d", ["assets/music/Throw_Me_To_The_Wolves.mp3"]);
         this.load.audio("bgMusic0e", ["assets/music/Legend_Has_It.mp3"]);
             
-        this.load.audio("bgMusic1", ["assets/music/The_Apartment.mp3"]);
-            this.load.audio("bgMusic2", ["assets/music/Arbol.mp3"]);
-            this.load.audio("bgMusic3", ["assets/music/Nine_Levels.mp3"]);
-            this.load.audio("bgMusic4", ["assets/music/Katana.mp3"]);
-            this.load.audio("bgMusic5", ["assets/music/Legend_Has_It.mp3"]);
-            this.load.audio("bgMusic6", ["assets/music/Fate_I.mp3"]);
-            this.load.audio("bgMusic7", ["assets/music/Talk_Like_Thunder.mp3"]);
+        // this.load.audio("bgMusic1", ["assets/music/The_Apartment.mp3"]);
+        //     this.load.audio("bgMusic2", ["assets/music/Arbol.mp3"]);
+        //     this.load.audio("bgMusic3", ["assets/music/Nine_Levels.mp3"]);
+        //     this.load.audio("bgMusic4", ["assets/music/Katana.mp3"]);
+        //     //this.load.audio("bgMusic5", ["assets/music/Legend_Has_It.mp3"]);
+        //     this.load.audio("bgMusic6", ["assets/music/Fate_I.mp3"]);
+        //     this.load.audio("bgMusic7", ["assets/music/Talk_Like_Thunder.mp3"]);
 
         this.load.image('playerIcon', 'assets/icons/playerIcon1.png');
         this.load.image('playerInspirationIcon1', 'assets/icons/playerInspirationIcon1.png');
         this.load.image('playerInspirationIcon2', 'assets/icons/playerInspirationIcon2.png');
         this.load.image('playerInspirationIcon3', 'assets/icons/playerInspirationIcon3.png');
         
-        this.load.image('storingBuffIcon', 'assets/ach_00059.png');
-        this.load.image('spendingBuffIcon', 'assets/ach_00046.png');
-        this.load.image('growingBuffIcon', 'assets/ach_00057.png');
 
         this.load.image('levelIcon', 'assets/ach_00006.png');
         this.load.image('gloryIcon', 'assets/ach_00035.png');
@@ -755,60 +410,7 @@ class Badlands extends Phaser.Scene {
 
     }
 
-    // Stage Functions
-    loadStageBG(stageAssetName,bgLayers,fgLayers){
-
-        console.log('bgL'+ i, this.stageData.stageAssetPathRoot + 'BG' + this.stageData.stageAssetName + i + '.png')
-        console.log('fgL'+ i, this.stageData.stageAssetPathRoot + 'FG' + this.stageData.stageAssetName + i+ '.png')
-
-        for (var i = 1; i < bgLayers + 1; i++){
-
-            this.load.image('bgL'+ i, this.stageData.stageAssetPathRoot + 'BG' + stageAssetName + i + '.png');
-
-        }
-
-        for (var i = 1; i < fgLayers + 1; i++){
-
-            this.load.image('fgL'+ i, this.stageData.stageAssetPathRoot + 'FG' + stageAssetName + i + '.png');
-
-        }
-
-    }
-
-    renderStageBG(bgLayers,bgScroll,floorMin,floorMax,floorColour ,fgLayers,fgScroll){
-        for (var i = bgLayers; i > 0; i--){
-                
-            this.textureToApply = this.textures.get('bgL' + i).getSourceImage()
-        
-            this.textureWidthScaleMod = screenWidth / this.textureToApply.width
-            this.textureHeightScaleMod = screenHeight / this.textureToApply.height     
-
-            window['bgL'+i] =  this.add.tileSprite(0,0,screenWidth,screenHeight).setScrollFactor(0).setOrigin(0).setPipeline('Light2D')
-            window['bgL'+i].setTexture('bgL'+i).setTileScale(this.textureWidthScaleMod,this.textureHeightScaleMod)
-            window['bgL'+i+'ScrollMod'] = + bgScroll[i - 1]
-
-        }
-
-        this.floorHeight = Phaser.Math.FloatBetween(floorMin,floorMax)
-        
-        this.floor = this.physics.add.image(0, screenHeight * this.floorHeight,'floor').setScale((screenWidth * 5)/400, 2).setImmovable(true).refreshBody().setOrigin(0)
-        this.floor.body.setAllowGravity(false)
-        this.floor.setTint(floorColour)
-        this.floor.setVisible()
-
-        for (var i = fgLayers; i > 0; i--){
-
-            this.textureToApply = this.textures.get('fgL' + i).getSourceImage()
-        
-            this.textureWidthScaleMod = screenWidth / this.textureToApply.width
-            this.textureHeightScaleMod = screenHeight / this.textureToApply.height
-           
-            window['fgL'+i] =  this.add.tileSprite(0,0,screenWidth,screenHeight).setScrollFactor(0).setOrigin(0).setDepth(2).setPipeline('Light2D')//.setAlpha(this.fgAlpha[i-1])
-            window['fgL'+i].setTexture('fgL'+i).setTileScale(this.textureWidthScaleMod,this.textureHeightScaleMod)
-            window['fgL'+i+'ScrollMod'] = + fgScroll[i - 1]
-            
-        }
-    }
+   
 
     create ()
     {
@@ -912,7 +514,8 @@ class Badlands extends Phaser.Scene {
                    // Day/Night System
 
                    this.initialise_DayNightSystem() 
-                   console.log(this.lightSource.x)  
+                  
+                  
                    
                 // Stage (B) - Background Objects & Obstacles
 
@@ -960,7 +563,7 @@ class Badlands extends Phaser.Scene {
                 // Player - To be updated
        
                 this.playerScale = 4 * (scaleModX) 
-                this.player = this.physics.add.sprite(screenWidth * 1.75, screenHeight * 0.5 ,'avatar3').setScale(this.playerScale).setDepth(1).setPipeline('Light2D')
+                this.player = this.physics.add.sprite(screenWidth * 1.75, screenHeight * 0.5 ,'avatar3').setScale(this.playerScale).setDepth(1)//.setPipeline('Light2D')
                 this.player.body.setSize(10, 30).setOffset(25,15).setAllowDrag(true)
                 this.player.setBounce(0.05)
                 this.player.setCollideWorldBounds(true);
@@ -1290,16 +893,6 @@ class Badlands extends Phaser.Scene {
         // V1 Code End
 
     
-
-            // Background Music
-
-            bgMusic.on('complete', function(){
-                //     songChoice = Math.floor(Phaser.Math.Between(1,songDatabaseSize))
-                //     Phaser.Utils.Array.Add(bgMusicArray,"bgMusic" + songChoice)
-                bgMusic.destroy()
-                bgMusic = this.sound.add(Phaser.Utils.Array.GetRandom(bgMusicArray))
-                bgMusic.play()
-            },this) 
 
         
 
@@ -1722,7 +1315,7 @@ class Badlands extends Phaser.Scene {
                 this.textureWidthScaleMod = screenWidth / this.textureToApply.width
                 this.textureHeightScaleMod = screenHeight / this.textureToApply.height     
 
-                window['bgL'+i] =  this.add.tileSprite(0,0,screenWidth,screenHeight).setScrollFactor(0).setOrigin(0).setPipeline('Light2D')
+                window['bgL'+i] =  this.add.tileSprite(0,0,screenWidth,screenHeight).setScrollFactor(0).setOrigin(0)//.setPipeline('Light2D')
                 window['bgL'+i].setTexture('bgL'+i).setTileScale(this.textureWidthScaleMod,this.textureHeightScaleMod)
                 window['bgL'+i+'ScrollMod'] = + bgScroll[i - 1]
 
@@ -1742,7 +1335,7 @@ class Badlands extends Phaser.Scene {
                 this.textureWidthScaleMod = screenWidth / this.textureToApply.width
                 this.textureHeightScaleMod = screenHeight / this.textureToApply.height
             
-                window['fgL'+i] =  this.add.tileSprite(0,0,screenWidth,screenHeight).setScrollFactor(0).setOrigin(0).setPipeline('Light2D').setDepth(2)//.setAlpha(this.fgAlpha[i-1])
+                window['fgL'+i] =  this.add.tileSprite(0,0,screenWidth,screenHeight).setScrollFactor(0).setOrigin(0).setDepth(2)//.setPipeline('Light2D')
                 window['fgL'+i].setTexture('fgL'+i).setTileScale(this.textureWidthScaleMod,this.textureHeightScaleMod)
                 window['fgL'+i+'ScrollMod'] = + fgScroll[i - 1]
                 
@@ -2223,7 +1816,7 @@ platforms(game){
             platform.y = Phaser.Math.FloatBetween(this.platformPositionYMin, this.platformPositionYMax)
             platform.setScale(Phaser.Math.FloatBetween(this.platformScaleXMin,this.platformScaleXMax),Phaser.Math.FloatBetween(1, 1.25))
             platform.setActive(true)
-            platform.setPipeline('Light2D')
+            //platform.setPipeline('Light2D')
             platform.setImmovable(true)
             platform.body.setAllowGravity(false)
             platform.body.checkCollision.down = false
@@ -2363,7 +1956,7 @@ enemyModule(game){
                 this.enemy.y = Phaser.Math.FloatBetween(0, screenHeight * 0.5)
                 this.enemy.setScale(this.creepScale)
                 this.enemy.setVisible(true)
-                this.enemy.setActive(true).setPipeline('Light2D')
+                this.enemy.setActive(true)//.setPipeline('Light2D')
                 if (Phaser.Math.Between(0,100) < 25){
                     this.enemy.setDepth(1)
                 } else {
@@ -4776,6 +4369,7 @@ exitBattle(){
     update (time,delta)
     {
 
+        console.log(this.playerSpeed)
         // V1 Code
 
         // UI Module

@@ -49,7 +49,7 @@ class MainMenu extends Phaser.Scene {
         this.percentText.setOrigin(0.5, 0.5);
 
         this.load.on('progress', function (value) {
-            console.log(value);
+            //console.log(Math.round(value * 100) + '%');
             this.percentText.setText(parseInt(value * 100) + '%');
             this.progressBar.clear();
             this.progressBar.fillStyle(0xffffff, 1);
@@ -58,7 +58,7 @@ class MainMenu extends Phaser.Scene {
         },this);
                     
         this.load.on('fileprogress', function (file) {
-            console.log(file.src);
+            //console.log(file.src);
             
         });
         this.load.on('complete', function () {
@@ -101,6 +101,90 @@ class MainMenu extends Phaser.Scene {
         for (var i = 1; i < exploreImages + 1;i++){
             this.load.image('explore' + i, 'assets/icons/menus/explore/' + i + '.png')
         }
+
+        // HUD/UI
+        
+        // Vitals Bars
+            // Life
+            this.load.image('life-icon-holder', 'assets/UI/playerVitals/red/meter_icon_holder_red.png')
+            this.load.image('life-icon', 'assets/UI/playerVitals/icons/health.png')
+
+            this.load.image('life-left-cap-holder', 'assets/UI/playerVitals/red/meter_bar_holder_left_red.png')
+            this.load.image('life-middle-holder', 'assets/UI/playerVitals/red/meter_bar_holder_center_red.png')
+            this.load.image('life-right-cap-holder', 'assets/UI/playerVitals/red/meter_bar_holder_right_red.png')
+
+            this.load.image('life-left-cap', 'assets/UI/playerVitals/red/meter_bar_left_red.png')
+            this.load.image('life-middle', 'assets/UI/playerVitals/red/meter_bar_center_red.png')
+            this.load.image('life-right-cap', 'assets/UI/playerVitals/red/meter_bar_right_red.png')
+
+        // Focus
+            this.load.image('focus-icon-holder', 'assets/UI/playerVitals/yellow/meter_icon_holder_yellow.png')
+            this.load.image('focus-icon', 'assets/UI/playerVitals/icons/magic.png')
+
+            this.load.image('focus-left-cap-holder', 'assets/UI/playerVitals/yellow/meter_bar_holder_left_yellow.png')
+            this.load.image('focus-middle-holder', 'assets/UI/playerVitals/yellow/meter_bar_holder_center_yellow.png')
+            this.load.image('focus-right-cap-holder', 'assets/UI/playerVitals/yellow/meter_bar_holder_right_yellow.png')
+
+            this.load.image('focus-left-cap', 'assets/UI/playerVitals/yellow/meter_bar_left_yellow.png')
+            this.load.image('focus-middle', 'assets/UI/playerVitals/yellow/meter_bar_center_yellow.png')
+            this.load.image('focus-right-cap', 'assets/UI/playerVitals/yellow/meter_bar_right_yellow.png')
+
+        // Stamina
+            this.load.image('stamina-icon-holder', 'assets/UI/playerVitals/green/meter_icon_holder_green.png')
+            this.load.image('stamina-icon', 'assets/UI/playerVitals/icons/stamina.png')
+
+            this.load.image('stamina-left-cap-holder', 'assets/UI/playerVitals/green/meter_bar_holder_left_green.png')
+            this.load.image('stamina-middle-holder', 'assets/UI/playerVitals/green/meter_bar_holder_center_green.png')
+            this.load.image('stamina-right-cap-holder', 'assets/UI/playerVitals/green/meter_bar_holder_right_green.png')
+
+            this.load.image('stamina-left-cap', 'assets/UI/playerVitals/green/meter_bar_left_green.png')
+            this.load.image('stamina-middle', 'assets/UI/playerVitals/green/meter_bar_center_green.png')
+            this.load.image('stamina-right-cap', 'assets/UI/playerVitals/green/meter_bar_right_green.png')
+        
+        // Player Speed
+
+            this.playerSpeedUIType = 2
+
+            if(this.playerSpeedUIType == 1){
+                this.load.image('playerSpeed-holder', 'assets/UI/playerVitals/powerBars/curved_bar/curver_bar_holder.png')
+
+                this.load.image('playerSpeed-bottom', 'assets/UI/playerVitals/powerBars/curved_bar/curver_bar_bottom.png')
+                this.load.image('playerSpeed-middle', 'assets/UI/playerVitals/powerBars/curved_bar/curver_bar_middle.png')
+                this.load.image('playerSpeed-top', 'assets/UI/playerVitals/powerBars/curved_bar/curver_bar_top.png')
+            } else if (this.playerSpeedUIType == 2){
+                this.load.image('playerSpeed-holder', 'assets/UI/playerVitals/powerBars/straight_bar/straight_bar_holder.png')
+
+                this.load.image('playerSpeed-bottom', 'assets/UI/playerVitals/powerBars/straight_bar/straight_bar_bottom.png')
+                this.load.image('playerSpeed-middle', 'assets/UI/playerVitals/powerBars/straight_bar/straight_bar_middle.png')
+                this.load.image('playerSpeed-top', 'assets/UI/playerVitals/powerBars/straight_bar/straight_bar_top.png')
+            } else if (this.playerSpeedUIType == 3) {
+                this.load.image('playerSpeed-holder', 'assets/UI/playerVitals/powerBars/triangle_bar/triangle_bar_holder.png')
+
+                this.load.image('playerSpeed-bottom', 'assets/UI/playerVitals/powerBars/triangle_bar/triangle_bar_bottom.png')
+                this.load.image('playerSpeed-middle', 'assets/UI/playerVitals/powerBars/triangle_bar/triangle_bar_middle.png')
+                this.load.image('playerSpeed-top', 'assets/UI/playerVitals/powerBars/triangle_bar/triangle_bar_top.png')
+            }
+            
+
+            this.load.image('playerSpeed-mask', 'assets/UI/playerVitals/powerBars/mask.png')
+
+    // Stage Progress
+            this.load.image('stageProgress-icon-holder', 'assets/UI/playerVitals/purple/meter_icon_holder_purple.png')
+            this.load.image('stageProgress-icon', 'assets/UI/playerVitals/icons/shield.png')
+
+            this.load.image('horde-checkpoint-icon', 'assets/UI/playerVitals/icons/timer.png')
+            this.load.image('chaser-checkpoint-icon', 'assets/UI/playerVitals/icons/stamina.png')
+            this.load.image('miniBoss-checkpoint-icon', 'assets/UI/playerVitals/icons/shield.png')
+            this.load.image('landmark-checkpoint-icon', 'assets/UI/playerVitals/icons/shield.png')
+            this.load.image('shop-checkpoint-icon', 'assets/UI/playerVitals/icons/shield.png')
+
+            this.load.image('stageProgress-left-cap-holder', 'assets/UI/playerVitals/purple/meter_bar_holder_left_purple.png')
+            this.load.image('stageProgress-middle-holder', 'assets/UI/playerVitals/purple/meter_bar_holder_center_purple.png')
+            this.load.image('stageProgress-right-cap-holder', 'assets/UI/playerVitals/purple/meter_bar_holder_right_purple.png')
+
+            this.load.image('stageProgress-left-cap', 'assets/UI/playerVitals/purple/meter_bar_left_purple.png')
+            this.load.image('stageProgress-middle', 'assets/UI/playerVitals/purple/meter_bar_center_purple.png')
+            this.load.image('stageProgress-right-cap', 'assets/UI/playerVitals/purple/meter_bar_right_purple.png')
 
        
     
@@ -203,6 +287,7 @@ class MainMenu extends Phaser.Scene {
         if (!firstRun && gameInitialised){
         if(downIsDown && this.selectedOption < 2){
             downIsDown = false
+            console.log(this.selectedMode)
             this.selectedOption += 1
             activeMenuBox.y += (screenHeight * 0.07)
 
@@ -210,6 +295,7 @@ class MainMenu extends Phaser.Scene {
             
         } else if (upIsDown && this.selectedOption > 1){
             upIsDown = false
+            console.log(this.selectedMode)
             this.selectedOption -= 1
             activeMenuBox.y -= (screenHeight * 0.07)
 
@@ -241,7 +327,7 @@ class MainMenu extends Phaser.Scene {
         }
     }
         
-      console.log(this.selectedMode)
+      
       
         if (this.selectedOption == 1){
             this.selectedMode = 'ModeSelect'

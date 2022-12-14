@@ -7,9 +7,7 @@ var resilienceIcon
 var focusIcon
 var staminaIcon
 
-var resilienceStars 
-var focusStars
-var staminaStars
+
 
 var sectorInfo
 var selectedSector = 2
@@ -117,9 +115,6 @@ class Kianova extends Phaser.Scene {
         this.load.image('playerIconBox', 'assets/vFX/textBox3a.png');
         this.load.image('playerIcon1', 'assets/icons/playerInspirationIcon3.png');
 
-        this.load.image('resilienceIcon', 'assets/ach_00059.png');
-        this.load.image('focusIcon', 'assets/ach_00057.png');
-        this.load.image('staminaIcon', 'assets/ach_00046.png');
         this.load.image('storedRewardsIcon', 'assets/ach_00017.png');
        
 
@@ -153,19 +148,7 @@ class Kianova extends Phaser.Scene {
 
     }
 
-    importFreePlayAllocation(){
-        // Reset Scores
-
-       
-        this.freePlayGloryAmara = 0
-        this.freePlayGloryOmnia = 0
-        this.freePlayGloryMundo = 0
-        this.freePlayGlorylucarus = 0
-        this.freePlayGloryIlluvik = 0
-        this.freePlayGloryTotal = 0
-
-        
-    }
+    
 
 
     updateGlory(badlandsData){
@@ -236,8 +219,6 @@ class Kianova extends Phaser.Scene {
 
         this.vitalsHeaderFontSize = 24 * scaleModifier
 
-    
-
         var regionImageScale = 0.113 * (scaleModX) * scaleModifier
 
         //PLayer Stats
@@ -279,61 +260,18 @@ class Kianova extends Phaser.Scene {
         this.gloryScoreText.setFontStyle('bold')
         this.gloryScoreText.setText(this.freePlayGloryAmara + this.freePlayGloryMundo + this.freePlayGlorylucarus + this.freePlayGloryIlluvik)
 
-        this.vitalsIconsHeight = 0.175
+        this.vitalsIconsHeight = 0.2
         this.vitalsIconsWidth = 0.675
 
 
-        resilienceIcon = this.add.image(playerIcon.x + (playerIcon.displayWidth * this.vitalsIconsWidth),playerIconBox.y - (playerIconBox.displayHeight * this.vitalsIconsHeight),'resilienceIcon').setScale(this.iconScale)
-        focusIcon = this.add.image(resilienceIcon.x,resilienceIcon.y + resilienceIcon.displayHeight * 0.85 ,'focusIcon').setScale(this.iconScale)
-        staminaIcon = this.add.image(resilienceIcon.x,focusIcon.y + resilienceIcon.displayHeight * 0.85,'staminaIcon').setScale(this.iconScale)
+        this.uiSubModule_initialiseVitals()
+
+        //
 
         this.starToIconSpacing = 55
 
-        resilienceStars = this.add.group()
-        resilienceStars.createMultiple({key:'star',frameQuantity: 5, setScale: {x: 1.25 * (scaleModX), y: 1.25 * (scaleModX)}})
-        resilienceStars.setVisible(0)
-        resilienceStars.setX(resilienceIcon.x + (this.starToIconSpacing * (scaleModX)) , 30 * (scaleModX))
-        resilienceStars.setY(resilienceIcon.y)
 
-        
-        for (var i = 0; i < resilienceRating; i++){
-            resilienceStars.getChildren()[i].setTint().play('star',true)
-        }
-
-        for (var i = resilienceRating; i < 5; i++){
-            resilienceStars.getChildren()[i].setTint(0x000000).stop() 
-        }
-        
-
-        focusStars = this.add.group()
-        focusStars.createMultiple({key:'star',frameQuantity: 5, setScale: {x: 1.25 * (scaleModX), y: 1.25 * (scaleModX)}})
-        focusStars.setVisible(0)
-        focusStars.setX(focusIcon.x + (this.starToIconSpacing * (scaleModX)) , 30 * (scaleModX))
-        focusStars.setY(focusIcon.y)
-
-        for (var i = 0; i < focusRating; i++){
-            focusStars.getChildren()[i].setTint().play('star',true)
-        }
-
-        for (var i = focusRating; i < 5; i++){
-            focusStars.getChildren()[i].setTint(0x000000).stop() 
-        }
-       
-        staminaStars = this.add.group()
-        staminaStars.createMultiple({key:'star',frameQuantity: 5, setScale: {x: 1.25 * (scaleModX), y: 1.25 * (scaleModX)}})
-        staminaStars.setVisible(0)
-        staminaStars.setX(staminaIcon.x + (this.starToIconSpacing * (scaleModX)) , 30 * (scaleModX))
-        staminaStars.setY(staminaIcon.y)
-
-        for (var i = 0; i < staminaRating; i++){
-            staminaStars.getChildren()[i].setTint().play('star',true)
-        }
-
-        for (var i = staminaRating; i < 5; i++){
-            staminaStars.getChildren()[i].setTint(0x000000).stop() 
-        }
-
-        this.storedRewardsIcon = this.add.image(staminaIcon.x,staminaIcon.y + staminaIcon.displayHeight * 0.85,'storedRewardsIcon').setScale(this.iconScale)
+        this.storedRewardsIcon = this.add.image(this.staminaIcon.x,this.staminaIcon.y + this.staminaIcon.displayHeight * 2.75,'storedRewardsIcon').setScale(this.iconScale)
         
         this.storedRewardsText = this.make.text({
             origin: { x: 0.5, y: 0.5 },
@@ -516,12 +454,13 @@ class Kianova extends Phaser.Scene {
         sectorInfo.setVisible(0)
 
         this.sectorUI = this.add.group()
-        this.sectorUI.addMultiple([playerIconBox,playerIcon,playerLoginName,avatarName,resilienceIcon,resilienceStars,focusIcon,focusStars,staminaIcon,
-                                    staminaStars,this.storedRewardsIcon,this.storedRewardsText,
-                                    this.cityIconBox,this.sectorImage,this.sectorNameText,this.sectorGloryScoreText,this.votingPowerIcon,this.votingPowerGrowthIcon,regionRewardsIcon,
-                                    regionPowerGrowthIcon,this.gloryScoreIcon,this.gloryScoreText,this.loginNameBox,sector1Icon,sector2Icon,sector0Icon,
-                                    sector3Icon,sector4Icon,this.sectorIconBox,
-                                    sector1MapIcon,sector2MapIcon,sector0MapIcon,sector3MapIcon,sector4MapIcon,this.selectedSectorIcon
+        this.sectorUI.addMultiple([playerIconBox,playerIcon,playerLoginName,avatarName,this.lifeIconHolder,this.lifeIcon,this.lifeMiddleHolder,
+                                    this.lifeRightCapHolder,this.lifeMiddle,this.lifeRightCap,this.focusIconHolder,this.focusIcon,this.focusMiddleHolder,
+                                    this.focusRightCapHolder,this.focusMiddle,this.focusRightCap,this.staminaIconHolder,this.staminaIcon,this.staminaMiddleHolder,
+                                    this.staminaRightCapHolder,this.staminaMiddle,this.staminaRightCap,this.storedRewardsIcon,this.storedRewardsText,
+                                    this.cityIconBox,this.sectorImage,this.sectorNameText,this.sectorGloryScoreText,this.votingPowerIcon,this.votingPowerGrowthIcon,
+                                    regionRewardsIcon,regionPowerGrowthIcon,this.gloryScoreIcon,this.gloryScoreText,this.loginNameBox,sector1Icon,sector2Icon,sector0Icon,
+                                    sector3Icon,sector4Icon,this.sectorIconBox,sector1MapIcon,sector2MapIcon,sector0MapIcon,sector3MapIcon,sector4MapIcon,this.selectedSectorIcon
                                 ]) 
         this.sectorUI.setVisible(0)
         
@@ -605,7 +544,7 @@ class Kianova extends Phaser.Scene {
                 }
                 
                 console.log('Selected Region: ' + activeRegion)
-                console.log('Target Scene: ' + this.targetS)
+
                 
                 nextScene = true
             
@@ -722,6 +661,8 @@ class Kianova extends Phaser.Scene {
     }
 
     refreshUI(){
+
+        this.uiSubModule_setVitalsPercentageAnimated()
 
         // Hide Textbox and Info
 
@@ -936,14 +877,8 @@ class Kianova extends Phaser.Scene {
         // Show Elements
                 
                 playerLoginName.setVisible(1)
-                resilienceIcon.setVisible(1)
-                focusIcon.setVisible(1)
-                staminaIcon.setVisible(1)
-                resilienceStars.setVisible(1)
-                focusStars.setVisible(1)
-                staminaStars.setVisible(1)
+      
 
-        
                 sectorInfo.setVisible(1)
                 if(selectedSector == 0){
                     this.sectorGloryScoreIcon.setVisible()
@@ -985,5 +920,146 @@ class Kianova extends Phaser.Scene {
 
                 
     }
+
+    uiSubModule_setVitalsPercentageAnimated(duration = 4000){
+     
+
+        this.widthLife = this.vitalsfullWidth * Math.min(this.scene.get('DataModule').avatarData.lifeCapacityBonus,1)
+        this.widthFocus = this.vitalsfullWidth * Math.min(this.scene.get('DataModule').avatarData.focusCapacityBonus,1)
+        this.widthStamina = this.vitalsfullWidth * Math.min(this.scene.get('DataModule').avatarData.staminaCapacityBonus,1)
+
+        this.lifeRightCap.x = this.lifeMiddle.x + this.lifeMiddle.displayWidth
+        this.focusRightCap.x = this.focusMiddle.x + this.focusMiddle.displayWidth
+        this.staminaRightCap.x = this.staminaMiddle.x + this.staminaMiddle.displayWidth
+
+        this.tweens.add({
+            targets: this.lifeMiddle,
+            displayWidth: this.widthLife,
+            duration,
+            ease: Phaser.Math.Easing.Sine.Out,
+            onUpdate: () => {
+                this.lifeRightCap.x = this.lifeMiddle.x + this.lifeMiddle.displayWidth
+                this.lifeMiddle.visible = this.lifeMiddle.displayWidth > 0
+                this.lifeRightCap.visible = this.lifeMiddle.displayWidth > 0
+            }
+        })
+
+        this.tweens.add({
+            targets: this.focusMiddle,
+            displayWidth: this.widthFocus,
+            duration,
+            ease: Phaser.Math.Easing.Sine.Out,
+            onUpdate: () => {
+                this.focusRightCap.x = this.focusMiddle.x + this.focusMiddle.displayWidth
+                this.focusMiddle.visible = this.focusMiddle.displayWidth > 0
+                this.focusRightCap.visible = this.focusMiddle.displayWidth > 0
+            }
+        })
+
+        this.tweens.add({
+            targets: this.staminaMiddle,
+            displayWidth: this.widthStamina,
+            duration,
+            ease: Phaser.Math.Easing.Sine.Out,
+            onUpdate: () => {
+                this.staminaRightCap.x = this.staminaMiddle.x + this.staminaMiddle.displayWidth
+                this.staminaMiddle.visible = this.staminaMiddle.displayWidth > 0
+                this.staminaRightCap.visible = this.staminaMiddle.displayWidth > 0
+            },
+
+        
+        })
+
+    }
+
+    uiSubModule_initialiseVitals(){
+
+
+        var anchorPointX = playerIcon.x + (playerIcon.displayWidth * this.vitalsIconsWidth)
+        var anchorPointY = playerIconBox.y - (playerIconBox.displayHeight * this.vitalsIconsHeight)
+        this.vitalsfullWidth = playerIconBox.displayWidth * 0.35
+        this.vitalsScale = 0.075
+
+        // Life
+
+                    
+            // Holder
+
+                    this.lifeMiddleHolder = this.add.image(anchorPointX ,anchorPointY, 'life-middle-holder')
+                    .setOrigin(0, 0.5).setDepth(5).setScale(this.vitalsScale)
+
+                this.lifeMiddleHolder.displayWidth = this.vitalsfullWidth
+
+                this.lifeRightCapHolder = this.add.image(this.lifeMiddleHolder.x + this.lifeMiddleHolder.displayWidth, anchorPointY, 'life-right-cap-holder')
+                    .setOrigin(0, 0.5).setDepth(5).setScale(this.vitalsScale)
+            // Bar
+
+                this.lifeMiddle = this.add.image(anchorPointX, anchorPointY, 'life-middle')
+                    .setOrigin(0, 0.5).setDepth(5).setScale(this.vitalsScale)
+
+                this.lifeMiddle.displayWidth = 0
+
+                this.lifeRightCap = this.add.image(this.lifeMiddle.x + this.lifeMiddle.displayWidth,anchorPointY, 'life-right-cap')
+                    .setOrigin(0, 0.5).setDepth(5).setScale(this.vitalsScale)
+
+            // Icon Holder
+
+            this.lifeIconHolder = this.add.image(anchorPointX,anchorPointY, 'life-icon-holder').setDepth(6).setScale(this.vitalsScale)
+            this.lifeIcon = this.add.image(anchorPointX,anchorPointY, 'life-icon').setDepth(6).setScale(this.vitalsScale)
+
+        // Focus
+
+            
+            // Holder
+
+                this.focusMiddleHolder = this.add.image(anchorPointX,this.lifeMiddleHolder.y + this.lifeMiddleHolder.displayHeight * 1.65, 'focus-middle-holder')
+                    .setOrigin(0, 0.5).setDepth(5).setScale(this.vitalsScale)
+
+                this.focusMiddleHolder.displayWidth = this.vitalsfullWidth
+
+                this.focusRightCapHolder = this.add.image(this.focusMiddleHolder.x + this.focusMiddleHolder.displayWidth,this.focusMiddleHolder.y, 'focus-right-cap-holder')
+                    .setOrigin(0, 0.5).setDepth(5).setScale(this.vitalsScale)
+            // Bar
+
+                this.focusMiddle = this.add.image(anchorPointX,this.focusMiddleHolder.y, 'focus-middle')
+                    .setOrigin(0, 0.5).setDepth(5).setScale(this.vitalsScale)
+
+                this.focusMiddle.displayWidth = 0
+
+                this.focusRightCap = this.add.image(this.focusMiddle.x + this.focusMiddle.displayWidth,this.focusMiddleHolder.y, 'focus-right-cap')
+                    .setOrigin(0, 0.5).setDepth(5).setScale(this.vitalsScale)
+
+            // Icon Holder
+                this.focusIconHolder = this.add.image(anchorPointX,this.focusMiddleHolder.y, 'focus-icon-holder').setDepth(6).setScale(this.vitalsScale).setOrigin(0.5)
+                this.focusIcon = this.add.image(anchorPointX,this.focusMiddleHolder.y, 'focus-icon').setDepth(6).setScale(this.vitalsScale) 
+
+        // Stamina
+
+            // Holder
+
+                this.staminaMiddleHolder = this.add.image(anchorPointX,this.focusMiddleHolder.y + this.focusMiddleHolder.displayHeight* 1.65,'stamina-middle-holder')
+                    .setOrigin(0, 0.5).setDepth(5).setScale(this.vitalsScale)
+
+                this.staminaMiddleHolder.displayWidth = this.vitalsfullWidth
+
+                this.staminaRightCapHolder = this.add.image(this.staminaMiddleHolder.x + this.staminaMiddleHolder.displayWidth,this.staminaMiddleHolder.y, 'stamina-right-cap-holder')
+                    .setOrigin(0, 0.5).setDepth(5).setScale(this.vitalsScale)
+            // Bar
+
+                this.staminaMiddle = this.add.image(anchorPointX,this.staminaMiddleHolder.y, 'stamina-middle')
+                    .setOrigin(0, 0.5).setDepth(5).setScale(this.vitalsScale)
+
+                this.staminaMiddle.displayWidth = 0
+
+                this.staminaRightCap = this.add.image(this.staminaMiddle.x + this.staminaMiddle.displayWidth,this.staminaMiddleHolder.y, 'stamina-right-cap')
+                    .setOrigin(0, 0.5).setDepth(5).setScale(this.vitalsScale)
+
+            // Icon Holder
+
+                this.staminaIconHolder = this.add.image(anchorPointX,this.staminaMiddleHolder.y, 'stamina-icon-holder').setDepth(6).setScale(this.vitalsScale).setOrigin(0.5)
+                this.staminaIcon = this.add.image(anchorPointX,this.staminaMiddleHolder.y, 'stamina-icon').setDepth(6).setScale(this.vitalsScale)
+
+    }
+
 }
 

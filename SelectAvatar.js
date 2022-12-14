@@ -60,7 +60,7 @@ class SelectAvatar extends Phaser.Scene {
 
          this.load.atlas('defaultAvatar', ['assets/Avatars/3/avatar3.png','assets/Avatars/3/avatar3_n.png'],'assets/Avatars/3/avatar3.json');
 
-         await getRating()
+         //await getRating()
     }
     
     
@@ -69,6 +69,7 @@ class SelectAvatar extends Phaser.Scene {
 
         
         this.redirect = data.redirect
+        console.log('Next Scene: ' + this.redirect)
 
         camera = this.cameras.main
         
@@ -467,8 +468,8 @@ class SelectAvatar extends Phaser.Scene {
     
    async update(){
 
-    console.log(this.confirmSelection)
-    console.log(this.redirect)
+    //console.log(this.confirmSelection)
+    //console.log(this.redirect)
     if (this.userActive){
     this.playAvatarPreview(this,this.selectedPatronArray,this.selectedPersonaArray) 
     }

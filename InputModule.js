@@ -30,17 +30,20 @@ class InputModule extends Phaser.Scene {
             // Left
             this.cursors.left.on('down', function (){
                 leftIsDown = true
+                animationStarted = true
                 console.log('Left Pressed: ' +  leftIsDown)
             })
 
             this.cursors.left.on('up', function (){
                 leftIsDown = false 
+                
                 console.log('Left Pressed: ' +  leftIsDown)
             })
 
             // Right
             this.cursors.right.on('down', function (){
                 rightIsDown = true
+                animationStarted = true
                 console.log('Right Pressed: ' +  rightIsDown)
             })
 
@@ -63,12 +66,13 @@ class InputModule extends Phaser.Scene {
             // Down
             this.cursors.down.on('down', function (){
                 downIsDown = true
-                //console.log('Down Pressed: ' +  downIsDown)
+                
+                console.log('Down Pressed: ' +  downIsDown)
             })
 
             this.cursors.down.on('up', function (){
                 downIsDown = false 
-                //console.log('Down Pressed: ' +  downIsDown)
+                console.log('Down Pressed: ' +  downIsDown)
             })
 
             // Key A - Action 1
@@ -86,11 +90,13 @@ class InputModule extends Phaser.Scene {
             // Key D - Action 2
             this.keyD.on('down', function (){
                 a2IsDown = true
+                animationStarted = true
                 console.log('A2 Pressed: ' +  a2IsDown)
             })
 
             this.keyD.on('up', function (){
                 a2IsDown = false 
+
                 console.log('A2 Pressed: ' +  a2IsDown)
             })
 
@@ -98,7 +104,7 @@ class InputModule extends Phaser.Scene {
 
             this.cursors.space.on('down', function (){
                 s1IsDown = true
-                
+                animationStarted = true
                 console.log('S1 Pressed: ' +  s1IsDown)
             })
 

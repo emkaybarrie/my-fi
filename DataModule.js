@@ -18,6 +18,8 @@
     var a2IsDown = false
     var s1IsDown
     var s2IsDown
+    var holdAnimationStarted
+    var animationStarted = false
     var buttonDown
     var openMenuIsDown
     var abortStageIsDown
@@ -77,38 +79,7 @@
 
     var playerVitalsBox
 
-
-function powerPointMechanism(){
-    // Move this and below into general function - integrate with music manager/stage 
-  
-    this.music = this.sound.add('menuMusic')
-    this.music.setVolume(0.25).play()
-    // Reps data associated with song
-    this.array = [[7.5,1],[10],[40,0],[47.5,1],[54,1]] 
-    this.array.push([this.music.duration + 1])
-    this.activeArray = 0
-
-    this.timedEvent = new Phaser.Time.TimerEvent({ delay: 5000 });
-    // Runs in Update
-    if (this.music.seek >= this.array[this.activeArray][0] && this.activeArray < this.array.length){
-        camera.flash(500) // Represents trigger point for boost timer 
-        this.time.addEvent(this.timedEvent); // Boost buff modifier = 1 - this.timedEvent.getProgress() - decays over time
-        this.mode = this.array[this.activeArray][1]
-        // this.timedEvent.getProgress() also used to check against context senstive button press window (if this.timedEvent.getProgress() < 1 && a1IsDown)
-        // At Power Point
-        // Mode switches, boost timer started
-        
-
-        if(this.mode == 0){
-            this.sound.play('defense')
-        } else if (this.mode == 1) {
-            this.sound.setVolume(1).play('offense')
-        } 
-        
-            this.activeArray += 1
-
-    }
-}
+            
 
 async function importUserData(userName,passWord){
     
@@ -126,7 +97,7 @@ async function importUserData(userName,passWord){
           
     } else {
     
-    var userList = fetch("https://opensheet.elk.sh/1Tdh0tV-EapNYWqOS9GzKarnt_b4ZVy1YXPN4dq85H5o/PlayerDB")
+    var userList = fetch("https://opensheet.elk.sh/1Tdh0tV-EapNYWqOS9GzKarnt_b4ZVy1YXPN4dq85H5o/Player_Data_EndPoint")
 
      var userListContent = await (await userList).json()
     
@@ -137,9 +108,13 @@ async function importUserData(userName,passWord){
                 if(passWord == userListContent[i].PASSWORD){
                     console.log("Password Validated")
                    
-                    activeUser = userListContent[i]
-                    console.log(activeUser)
-                   
+                    activePlayerData = userListContent[i]
+                    console.log(activePlayerData)
+                    // If the username and password match, store the player data in the DataModule scene
+                    loadPlayerData(activePlayerData)
+                    
+                    
+                    
                     return 1
                 } else {
                     console.log("Password does not match")
@@ -155,244 +130,6 @@ async function importUserData(userName,passWord){
     //getRating()
     
 }
-
-async function importAvatarData(){
-    // Avatar Details, Stats & Animation Data
-   
-        var avatarDataResponse = fetch(
-            "https://opensheet.elk.sh/1Tdh0tV-EapNYWqOS9GzKarnt_b4ZVy1YXPN4dq85H5o/AvatarDB"
-          )
-     
-          avatarData = await (await avatarDataResponse).json() 
-          
-}
-
-
-function daysDiff(dt1, dt2) 
- {
- 
-  // calculate the time difference of two dates JavaScript
-  var diffTime =(dt2.getTime() - dt1.getTime());
- 
-  // calculate the number of days between two dates javascript
-  var daysDiff = diffTime / (1000 * 3600 * 24); 
- 
-  return daysDiff;
-   
-}
-
-function getRating(){
-        // Update to general function get get ALL ratings - 
-            // Credit Scores = Resilence
-            // Savings = Focus
-            // Spending (Current Account) = Stamina
-            // Note - umberella for above = Energy
-            // 
-            // Risk Group 1 = Patron 1 = Blue = new name / Lucarus
-            // Risk Group 2 = Patron 2 = Green = Amara
-            // Risk Group 3 = Patron 3 = Purple = Omnia/ Azakai / New Name
-            // Risk Group 4 = Patron 4 = Orange = Mundo
-            // Risk Group 5 = Patron 5 = Red = Illuvik
-
-            // Rating Algo
-
-            // For Non-Credit Score - this is just taken as is, averaged, and applied against average overall score, (threshold based or possibly % of flat bonus)
-            // On Log in
-            // 1 (Best but hardest & most intensive)  standard player acocunt query for whole db each week to get exact weekly start amounts
-            // 2 (simplest - needs testing) Player creation data, start amount, current amount, current date, weeks passed - calculate average weekly change, rating drawen from that
-            // OPtion 2 results in number tending towrds average, longer time = harder to change (i.e early game, easy to level hard to maintain, late game hard to level easy to maintain - > pushes towards staking)
-            // Going w/ Option 2 - Average % Change (Season and/or lifetime) used to apply scaling buf based on exact %
-            // Also records % change between logins, averaged over weeks between log in - % from this determines weekly buff (threshold based or possibly % of flat bonus, unlikely as another flat buff)
-
-        // Structure
-
-            // var X_START_AMOUNT = activeUser.X_START_AMOUNT 
-            // var X_LAST_LOGIN_AMOUNT = activeUser.X_LAST_LOGIN_AMOUNT
-            // var X_CURRENT_AMOUNT = activeUser.X_CURRENT_AMOUNT
-            
-            // Last Login - Weeks from Start to Last Login Date
-            // var weeks_FromStartToLogin = daysDiff(START_DATE,LAST_LOGIN_DATE) / 7
-            // Last Login - Average Weekly % Change
-            //var X_LAST_LOGIN_AVERAGE_WEEKLY_PERCENT_CHANGE = ((X_LAST_LOGIN_AMOUNT - X_START_AMOUNT) / X_START_AMOUNT) / weeks_FromStartToLogin
-            
-            // // Current - Weeks Since Start Date
-            // var weeks_SinceStart = daysDiff(START_DATE,CURRENT_DATE) / 7
-            // Current - Average Weekly % Change
-            //var X_CURRENT_AVERAGE_WEEKLY_PERCENT_CHANGE = ((X_CURRENT_AMOUNT - X_START_AMOUNT) / X_START_AMOUNT) / weeks_SinceStart
-
-            // Weekly Change - Weeks since Last Login
-            //var weeks_SinceLogin = daysDiff(LAST_LOGIN_DATE,CURRENT_DATE) / 7 
-            // Weekly Change - Average Weekly % Change
-            //var X_SINCE_LAST_LOGIN_AVERAGE_WEEKLY_PERCENT_CHANGE = ((X_CURRENT_AVERAGE_WEEKLY_PERCENT_CHANGE - X_LAST_LOGIN_AVERAGE_WEEKLY_PERCENT_CHANGE) / X_LAST_LOGIN_AVERAGE_WEEKLY_PERCENT_CHANGE) / weeks_SinceLogin
-
-        // Expects User Data to have been loaded - integrated into getUserData function
-            
-            var dataSource 
-
-            if(activeUser == null||undefined||''){
-                dataSource = freePlayUser
-                console.log('Loading Free Play Game Data')
-            } else {
-                dataSource = activeUser
-                console.log('Loading ' + activeUser.USERNAME + ' Game Data')
-            }
-
-            // Get Resilience
-            var userDataCreditScorePrefixArray = ['EXPERIAN_CREDIT_SCORE','EQUIFAX_CREDIT_SCORE','TRANSUNION_CREDIT_SCORE']
-            var gameParameterResilience = Phaser.Math.Average([dataSource[userDataCreditScorePrefixArray[0]],dataSource[userDataCreditScorePrefixArray[1]],dataSource[userDataCreditScorePrefixArray[2]]])
-            var gameParameterResilience_MAX = Phaser.Math.Average([840,850,850])
-            var RESILIENCE_PERCENT =  gameParameterResilience / gameParameterResilience_MAX
-
-            var resilienceRatingThreshold5 = 0.9
-            var resilienceRatingThreshold4 = 0.8
-            var resilienceRatingThreshold3 = 0.65
-            var resilienceRatingThreshold2 = 0.4
-
-
-            if (RESILIENCE_PERCENT > resilienceRatingThreshold5){
-                resilienceRating = 5
-           } else if (RESILIENCE_PERCENT > resilienceRatingThreshold4){
-                resilienceRating = 4
-           } else if (RESILIENCE_PERCENT > resilienceRatingThreshold3){
-                resilienceRating = 3 
-           } else if (RESILIENCE_PERCENT > resilienceRatingThreshold2){
-                resilienceRating = 2 
-           } else {
-                resilienceRating = 1 
-           }
-
-           console.log('Resilience Rating: ' + resilienceRating)
-
-            
-           // Get Focus, Stamina and Patron/District Ratings
-            var userDataPrefixArray = ['SAVINGS','CURRENT_ACCOUNT',
-                                        'RISK_GROUP_1_UNITS','RISK_GROUP_1_VALUE',
-                                        'RISK_GROUP_2_UNITS','RISK_GROUP_2_VALUE',
-                                        'RISK_GROUP_3_UNITS','RISK_GROUP_3_VALUE',
-                                        'RISK_GROUP_4_UNITS','RISK_GROUP_4_VALUE',
-                                        'RISK_GROUP_5_UNITS','RISK_GROUP_5_VALUE'
-                                    ]
-
-
-            var gameParameterNameArray = ['FOCUS','STAMINA',
-                                        'PATRON 1 INFLUENCE','PATRON 1 PROSPERITY',
-                                        'PATRON 2 INFLUENCE','PATRON 2 PROSPERITY',
-                                        'PATRON 3 INFLUENCE','PATRON 3 PROSPERITY',
-                                        'PATRON 4 INFLUENCE','PATRON 4 PROSPERITY',
-                                        'PATRON 5 INFLUENCE','PATRON 5 PROSPERITY',
-                                    ]
-                                   
-
-            var CURRENT_DATE = new Date() 
-            var START_DATE = new Date (dataSource.START_DATE_USFORMAT)
-            var LAST_LOGIN_DATE = new Date (dataSource.LAST_LOGIN_DATE_USFORMAT)
-
-            // Last Login - Weeks from Start to Last Login Date
-            var weeks_FromStartToLogin = daysDiff(START_DATE,LAST_LOGIN_DATE) / 7
-            // Current - Weeks Since Start Date
-            var weeks_SinceStart = daysDiff(START_DATE,CURRENT_DATE) / 7
-            // Weekly Change - Weeks since Last Login
-            var weeks_SinceLogin = daysDiff(LAST_LOGIN_DATE,CURRENT_DATE) / 7 
-
-            console.log('Weeks Since Last Login: ' + Math.round(weeks_SinceLogin))
-            console.log('Weeks Since Joining: ' + Math.round(weeks_SinceStart))
-
-                                    
-
-            for (var i = 0; i < userDataPrefixArray.length; i++){
-
-                var field = userDataPrefixArray[i] 
-                window[userDataPrefixArray[i] + '_START_AMOUNT'] = dataSource[field + '_START_AMOUNT']
-                window[userDataPrefixArray[i] + '_LAST_LOGIN_AMOUNT'] = dataSource[field + '_LAST_LOGIN_AMOUNT']
-                window[userDataPrefixArray[i] + '_CURRENT_AMOUNT'] = dataSource[field + '_CURRENT_AMOUNT']
-
-                // Last Login - Average Weekly % Change
-                window[userDataPrefixArray[i] + '_LAST_LOGIN_AVERAGE_WEEKLY_PERCENT_CHANGE'] = ((window[userDataPrefixArray[i] + '_LAST_LOGIN_AMOUNT'] - window[userDataPrefixArray[i] + '_START_AMOUNT']) / window[userDataPrefixArray[i] + '_START_AMOUNT']) / weeks_FromStartToLogin
-                // Current - Average Weekly % Change
-                window[userDataPrefixArray[i] + '_CURRENT_AVERAGE_WEEKLY_PERCENT_CHANGE'] = ((window[userDataPrefixArray[i] + '_CURRENT_AMOUNT'] - window[userDataPrefixArray[i] + '_START_AMOUNT']) / window[userDataPrefixArray[i] + '_START_AMOUNT']) / weeks_SinceStart
-                // Current - Average Weekly % Change
-                window[userDataPrefixArray[i] + '_SINCE_LAST_LOGIN_AVERAGE_WEEKLY_PERCENT_CHANGE'] = ((window[userDataPrefixArray[i] + '_CURRENT_AVERAGE_WEEKLY_PERCENT_CHANGE'] - window[userDataPrefixArray[i] + '_LAST_LOGIN_AVERAGE_WEEKLY_PERCENT_CHANGE']) / window[userDataPrefixArray[i] + '_LAST_LOGIN_AVERAGE_WEEKLY_PERCENT_CHANGE']) / weeks_SinceLogin
-            
-                
-                //console.log(userDataPrefixArray[i] + ' Last Login - Average Weekly % Change: ' + Math.round(window[userDataPrefixArray[i] + '_LAST_LOGIN_AVERAGE_WEEKLY_PERCENT_CHANGE'] * 100) + '%')
-                console.log(userDataPrefixArray[i] + ' Current - Average Weekly % Change: ' + Math.round(window[userDataPrefixArray[i] + '_CURRENT_AVERAGE_WEEKLY_PERCENT_CHANGE'] * 100) + '%')
-                //console.log(userDataPrefixArray[i] + ' Current vs Last Login % Change: ' + Math.round(window[userDataPrefixArray[i] + '_SINCE_LAST_LOGIN_AVERAGE_WEEKLY_PERCENT_CHANGE'] * 100) + '%')
-                
-                // Process Output to get Rating
-                // Temp Code
-                // Bandings - to be added to DB and pulled form there
-  
-    
-                // // > 10% - 5 Stars
-                // // <= 10%, > 5% - 4 Stars
-                // // <= 5%, >= -5% - 3 Stars
-                // // < -5% , >= -10% - 2 Stars 
-                // // < -10% - 1 Star  
-
-                // Temp
-                var ratingThreshold5 = 0.10
-                var ratingThreshold4 = 0.05
-                var ratingThreshold3 = -0.05
-                var ratingThreshold2 = -0.10
-                //var ratingThreshold1
-
-                var parameterToCheck = '_CURRENT_AVERAGE_WEEKLY_PERCENT_CHANGE'
-
-                var gameParameterArray = ['focusRating','staminaRating',
-                    'patron1Rating_Influence','patron1Rating_Prosperity',
-                    'patron2Rating_Influence','patron2Rating_Prosperity',
-                    'patron3Rating_Influence','patron3Rating_Prosperity',
-                    'patron4Rating_Influence','patron4Rating_Prosperity',
-                    'patron5Rating_Influence','patron5Rating_Prosperity'
-                ]
-
-    
-
-                if (window[userDataPrefixArray[i] + parameterToCheck] > ratingThreshold5){
-                    window[gameParameterArray[i]] = 5 
-                    
-                } else if (window[userDataPrefixArray[i] + parameterToCheck] > ratingThreshold4){
-                    window[gameParameterArray[i]] = 4 
-                    
-                } else if (window[userDataPrefixArray[i] + parameterToCheck] > ratingThreshold3){
-                    window[gameParameterArray[i]] = 3 
-                    
-                } else if (window[userDataPrefixArray[i] + parameterToCheck] > ratingThreshold2){
-                    window[gameParameterArray[i]] = 2
-                   
-                } else {
-                    window[gameParameterArray[i]] = 1 
-                   
-                }
-                
-                
-                
-                console.log(gameParameterNameArray[i] + ' Rating: ' + gameParameterArray[i] )
-                console.log( window[gameParameterArray[i]])
-
-                
-            }
-
-            
-    
-    
-
-}
-
-
-
-    /**
-    * Add function desc here
-    * @param {type} INPUT Desc of input
-    * @return {type} Desc of outputs
-    */
-    function exampleFunction(){
-
-        console.log([screenWidth,screenHeight])
-        return [screenWidth,screenHeight]
-
-    } 
-
 
 
 function openExternalLink ()
@@ -424,22 +161,272 @@ class DataModule extends Phaser.Scene {
     }
 
     preload(){
-        
+        this.setBaseStats()
   
     }
 
+    setBaseStats(){
+        var importedBaseData = {
+            lifeMax: 100,
+            lifeCapacityBonusMax: 50,
+            lifeRegen: 0.1,
+            focusMax:100,
+            focusCapacityBonusMax: 100,
+            focusRegen: 1,
+            staminaMax: 100,
+            staminaCapacityBonusMax: 200,
+            staminaRegen: 1
+        }
+
+        this.baseData = importedBaseData
+        console.log('Base data loaded to Data Module')
+
+    }
+
+    async autheticateUser(userName,passWord){
+    
+        // User Credentials & Kianova Data
+        if(userName == null || undefined || ''){
+            
+            var freePlayDataResponse = fetch("https://opensheet.elk.sh/1Tdh0tV-EapNYWqOS9GzKarnt_b4ZVy1YXPN4dq85H5o/FreePlay_Data_EndPoint")
+    
+              
+         
+            var freePlayData = await (await freePlayDataResponse).json()  
+              console.log(freePlayData)
+    
+              freePlayUser = freePlayData[0]
+              
+        } else {
+        
+        var userList = fetch("https://opensheet.elk.sh/1Tdh0tV-EapNYWqOS9GzKarnt_b4ZVy1YXPN4dq85H5o/Player_Data_EndPoint")
+    
+         var userListContent = await (await userList).json()
+      
+        
+            // Validate Credentials
+            for (var i = 0; i < userListContent.length;i++){
+                if (userName == userListContent[i].USERNAME){
+                    console.log("User Found")
+                    if(passWord == userListContent[i].PASSWORD){
+                        console.log("Password Validated")
+                       
+                        var activePlayerData = userListContent[i]
+                        
+                        // If the username and password match, store the player data in the DataModule scene
+                        this.getAutheticatedUserPlayerID(activePlayerData)
+                        
+                        
+                        
+                        return 1
+                    } else {
+                        console.log("Password does not match")
+                        activeUser = null
+                        return 0
+                    }
+                }
+            }
+            activeUser = null
+            return -1
+        }
+    
+        //getRating()
+        
+    }
+
+
+    getAutheticatedUserPlayerID(autheticatedUserPlayerData){
+        var importedPlayerData = {
+            id: autheticatedUserPlayerData.ID,
+        };
+
+        
+        this.playerData = importedPlayerData;
+        console.log('Player data loaded to Data Module')
+        this.getAvatarData(this.playerData.id)
+    }
+
+    async getAvatarData(autheticatedUserPlayerID){
+
+        var avatarList = fetch("https://opensheet.elk.sh/1Tdh0tV-EapNYWqOS9GzKarnt_b4ZVy1YXPN4dq85H5o/Avatar_Data_EndPoint")
+
+         var avatarListContent = await (await avatarList).json()
+
+        
+            // Validate Credentials
+            for (var i = 0; i < avatarListContent.length;i++){
+                if (autheticatedUserPlayerID == avatarListContent[i].ID){
+                    console.log("Avatar Found!")
+                       
+                        var activeAvatarData = avatarListContent[i]
+                        
+                        // ID found, store the player data in the DataModule scene
+                        var importedAvatarData = {
+                            //id: autheticatedUserPlayerID.ID,
+                            avatarLevel: activeAvatarData.AVATAR_LEVEL,
+                            lifeEnergyPool: activeAvatarData.LIFE_ENERGY_POOL,
+                            lifeTargetEnergyPool: activeAvatarData.LIFE_TARGET_ENERGY_POOL,
+                            lifeStartModifier: activeAvatarData.LIFE_START_MODIFIER,
+                            lifeMaxModifier: activeAvatarData.LIFE_MAX_MODIFIER,
+                            lifeRegenModifier: activeAvatarData.LIFE_REGEN_MODIFIER,
+                            focusEnergyPool: activeAvatarData.FOCUS_ENERGY_POOL,
+                            focusTargetEnergyPool: activeAvatarData.FOCUS_TARGET_ENERGY_POOL,
+                            focusMaxModifier: activeAvatarData.FOCUS_MAX_MODIFIER,
+                            focusRegenModifier: activeAvatarData.FOCUS_REGEN_MODIFIER,
+                            staminaEnergyPool: activeAvatarData.STAMINA_ENERGY_POOL,
+                            staminaTargetEnergyPool: activeAvatarData.STAMINA_TARGET_ENERGY_POOL,
+                            staminaMaxModifier: activeAvatarData.STAMINA_MAX_MODIFIER,
+                            staminaRegenModifier: activeAvatarData.STAMINA_REGEN_MODIFIER,
+                            travelSpeedMaxModifier: activeAvatarData.TRAVEL_MAX_MODIFIER,
+                            gloryGenerationModifier: activeAvatarData.GLORY_GENERATION_MODIFIER,
+                            goldGenerationModifier: activeAvatarData.GOLD_GENERATION_MODIFIER,
+                        };
+                  
+                        this.avatarData = importedAvatarData;
+                        console.log('Player data loaded to Data Module')
+                        console.log(this.avatarData)
+                        this.updateAvatar_CapacityData()
+                        return 1
+                    
+                } else {
+                    console.log("Avatar Not Found :(")
+                    return
+                }
+            }
+
+            
+            //activeAvatar = null
+            return -1
+
+        
+    }
+
+    updateAvatar_CapacityData() {
+
+        // Get the values for lifeEnergyPool, lifeTargetEnergyPool, focus, and stamina from the this.playerData object
+        var lifeEnergyPool = this.avatarData.lifeEnergyPool;
+        var lifeTargetEnergyPool = this.avatarData.lifeTargetEnergyPool;
+        var focusEnergyPool = this.avatarData.focusEnergyPool;
+        var focusTargetEnergyPool = this.avatarData.focusTargetEnergyPool;
+        var staminaEnergyPool = this.avatarData.staminaEnergyPool;
+        var staminaTargetEnergyPool = this.avatarData.staminaTargetEnergyPool;
+      
+        // Calculate the life capacity bonus by taking the ratio of lifeEnergyPool and lifeTargetEnergyPool,
+        // and clamping the result to a maximum value of 1.25
+        var lifeCapacityBonus = Math.min(lifeEnergyPool / lifeTargetEnergyPool, 1.25);
+      
+        // Calculate the focus capacity bonus and stamina capacity bonus in the same way
+        var focusCapacityBonus = Math.min(focusEnergyPool / focusTargetEnergyPool, 1.25);
+        var staminaCapacityBonus = Math.min(staminaEnergyPool / staminaTargetEnergyPool, 1.25);
+      
+        // Store the capacity bonuses in the this.playerData object
+        this.avatarData.lifeCapacityBonus = lifeCapacityBonus;
+        this.avatarData.focusCapacityBonus = focusCapacityBonus;
+        this.avatarData.staminaCapacityBonus = staminaCapacityBonus;
+      
+        console.log('Avatar Capacity Bonuses calculated and applied to Avatar Data')
+        console.log(this.avatarData)
+
+        // Check if the energy pools are at or above their target values
+        if (lifeEnergyPool >= lifeTargetEnergyPool) {
+            console.log('Life Energy Pool Target reached!')
+          // Increase the target energy pool by 6% and store the new value
+          var newLifeTargetEnergyPool = lifeTargetEnergyPool * 1.06;
+          this.avatarData.lifeTargetEnergyPool = newLifeTargetEnergyPool
+        }
+
+        if (focusEnergyPool >= focusTargetEnergyPool) {
+            console.log('Focus Energy Pool Target reached!')
+            // Increase the target energy pool by 6% and store the new value
+            var newFocusTargetEnergyPool = focusTargetEnergyPool * 1.06;
+            this.avatarData.focusTargetEnergyPool = newFocusTargetEnergyPool
+        }
+
+        if (staminaEnergyPool >= staminaTargetEnergyPool) {
+            console.log('Stamina Energy Pool Target reached!')
+            // Increase the target energy pool by 6% and store the new value
+            var newStaminaTargetEnergyPool = staminaTargetEnergyPool * 1.06;
+            this.avatarData.staminaTargetEnergyPool = newStaminaTargetEnergyPool
+        }
+
+        console.log('New Target Energy Pool values ready for write to Avatar DB data')
+
+        // Update Ratings
+
+        this.getRating(this.avatarData)
+        
+    }
+
+    getRating(avatarData){
+
+            
+            var ratingThreshold5 = 0.8
+            var ratingThreshold4 = 0.6
+            var ratingThreshold3 = 0.4
+            var ratingThreshold2 = 0.2
+
+            this.capacityBonus = [avatarData.lifeCapacityBonus,avatarData.focusCapacityBonus,avatarData.staminaCapacityBonus]
+            this.ratingVariables = [resilienceRating,focusRating,staminaRating]
+
+        for (var i = 0 ; i < 3; i++){
+
+            if (this.capacityBonus[i] > ratingThreshold5){
+                this.ratingVariables[i] = 5
+           } else if (this.capacityBonus[i] > ratingThreshold4){
+                this.ratingVariables[i] = 4
+           } else if (this.capacityBonus[i] > ratingThreshold3){
+                this.ratingVariables[i] = 3 
+           } else if (this.capacityBonus[i] > ratingThreshold2){
+                this.ratingVariables[i] = 2 
+           } else {
+                this.ratingVariables[i] = 1 
+           }
+
+           
+           
+
+        }
+
+        resilienceRating = this.ratingVariables[0]
+           focusRating = this.ratingVariables[1]
+           staminaRating = this.ratingVariables[2]
+            console.log('Resilience Rating: ' + resilienceRating 
+                        + ' Focus Rating: : ' + focusRating 
+                        + ' Stamina Rating: : ' + staminaRating)
+      
+
+          
+                
+    }
+
+    async importAvatarSpriteData(){
+        // Avatar Details, Stats & Animation Data
+       
+            var avatarDataResponse = fetch(
+                "https://opensheet.elk.sh/1Tdh0tV-EapNYWqOS9GzKarnt_b4ZVy1YXPN4dq85H5o/AvatarDB"
+              )
+         
+              avatarData = await (await avatarDataResponse).json() 
+              
+    }
+
+
     
    async create(){
-        await importUserData()
-        await importAvatarData()
+        
+        await this.autheticateUser('test','test')
+        await importUserData() // Legacy to be updated replaced fully
+
+        await this.importAvatarSpriteData()
         console.log('Data Module Online')
+
         gameInitialised = true
         
  
     }
     
     update(){
-        
+
     }
 
     
