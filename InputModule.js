@@ -153,38 +153,330 @@ class InputModule extends Phaser.Scene {
     }
 
     activateGamepad(){
+        
         this.input.gamepad.on('connected', function (pad) {
                     gamePad = pad
                     gamePadEnabled = true
+                    //this.mapGamepad()
                     console.log('Gamepad Active')
                     
         },this)
     }
 
     mapGamepad(){
-       
+       // GamePad
+        // Gamepad Control Mapping
+
+                //console.log(gamePad)
+                 if (gamePadEnabled){
+                    if (gamePad.leftStick.y < -0.25){ 
+                        upIsDown = true
+                        console.log('Up Pressed: ' +  upIsDown)
+                        
+                    } else if (gamePad.leftStick.y > -0.25){
+                        upIsDown = false
+                    }
+                    
+                    if (gamePad.leftStick.y > 0.25){ 
+                        downIsDown = true
+                    } else if (gamePad.leftStick.y < 0.25){
+                        downIsDown = false
+                    }
+                    
+
+                    if(gamePad.leftStick.x >= 0.25){
+                        rightIsDown = true
+                        if (!this.gamePadStickTilted){
+                            this.gamePadStickTilted = true
+                            animationStarted = true
+                        }
+                        
+                        
+                    } else if (gamePad.leftStick.x < 0.25){
+                        rightIsDown = false
+                        
+                    } 
+            
+                    if(gamePad.leftStick.x <= -0.25){
+                        leftIsDown = true
+                        if (!this.gamePadStickTilted){
+                            this.gamePadStickTilted = true
+                            animationStarted = true
+                        }
+                    } else if (gamePad.leftStick.x > -0.25){
+                        leftIsDown = false
+                        
+                    }
+
+                    if (gamePad.leftStick.x >= -0.25 && gamePad.leftStick.x <= 0.25){
+                        this.gamePadStickTilted = false
+                    }
+                
+
+                    
+                    
+                    gamePad.on('down', function (button) {
+                     
+
+                       
+
+                        // Up = 12, Down = 13
+                    // Left = 14; Right = 15
+                    // LT = 6 ; RT = 7 
+                    // LB = 4 ; RB = 5
+                    // A = 0
+                    // B = 1
+                    // X = 2
+                    // Y = 3
+                    // Back = 8 ; Start = 9
+                    // LS = 10 ; RS = 11 
+
+                        if (button == 2){ // X
+                           
+                            
+
+                        } else if (button == 1){ // B
+
+                         
+
+                        } else if (button == 3){ // Y
+
+
+                        } else if (button == 0){ // A
+                        
+                            
+                        } else if (button == 8){ // Back
+                            finish()
+                        
+
+                        } else if (button == 7){ // RT
+
+                            a1IsDown = true
+                            animationStarted = true
+                            console.log('A1 Pressed: ' +  a1IsDown)
+
+                            
+                        } else if (button == 5){
+                            
+                            s1IsDown = true
+                            animationStarted = true
+
+                            
+                        } else if (button == 6){
+
+                            a2IsDown = true
+                            animationStarted = true
+                        } else if (button == 4){
+                            
+                            s2IsDown = true
+           
+ 
+                        }
+
+                       
+
+                    }, this);
+
+                    gamePad.on('up', function (button) {
+                        // Up = 12, Down = 13
+                        // Left = 14; Right = 15
+                        // LT = 6 ; RT = 7 
+                        // LB = 4 ; RB = 5
+                        // A = 0
+                        // B = 1
+                        // X = 2
+                        // Y = 3
+                        // Back = 8 ; Start = 9
+                        // LS = 10 ; RS = 11 
+                        if (button == 7){
+                             
+                            a1IsDown = false
+                    
+                        } else if (button == 5){
+                            s1IsDown = false
+   
+                        } else if (button == 6){
+                            
+                            a2IsDown = false
+                            
+                        } else if (button == 4){
+                            s2IsDown = false
+
+                            
+
+
+                        }
+
+                    }, this);
+                }
+     
     }
     
 
 
     // activateTouch(){
     //     this.input.addPointer(8);
+    // Touch Controls
+
+                    // Touch Control Screen Tracking
+
+                        // Anchor Buttons
+                    //     left.x = camera.scrollX + (screenWidth * 0.075)
+                    //     left.y = camera.worldView.y + (screenHeight * 0.8)
+
+                    //     actionA.x = camera.scrollX + (screenWidth * 0.925)
+                    //     actionA.y = camera.worldView.y + (screenHeight * 0.85)
+                    //     actionB.x = camera.scrollX + (screenWidth * 0.825)
+                    //     actionB.y = camera.worldView.y + (screenHeight * 0.9)
+
+                        
+                    //     // Remaining Buttons                        
+                    //     deadSpace.x = left.x + (screenWidth * 0.05)
+                    //     deadSpace.y = left.y
+                    //     right.x = deadSpace.x + (screenWidth * 0.05)
+                    //     right.y = deadSpace.y
+                    //     up.x = deadSpace.x
+                    //     up.y = deadSpace.y - (screenHeight * 0.1)
+                    //     down.x = deadSpace.x
+                    //     down.y = left.y + (screenHeight * 0.1) 
+
+                    //     skillA.x = actionA.x 
+                    //     skillA.y = actionA.y - (screenHeight * 0.2)
+                    //     skillB.x = actionB.x 
+                    //     skillB.y = actionB.y - (screenHeight * 0.2)
+                    
+                    
+                    // left.on('pointerdown', function(){
+
+                    //     leftIsDown = true
+
+                    // })
+
+                    // left.on('pointerup', function(){
+
+                    //     leftIsDown = false
+
+                    // })
+
+                    // right.on('pointerdown', function(){
+
+                    //     rightIsDown = true
+
+                    // })
+
+                    // right.on('pointerup', function(){
+
+                    //     rightIsDown = false
+
+                    // })
+
+                    // up.on('pointerdown', function(){
+
+                    //     upIsDown = true
+
+                    // })
+
+                    // up.on('pointerup', function(){
+
+                    // })
+
+                    // down.on('pointerdown', function(){
+
+                    //     downIsDown = true
+  
+                    // })
+
+                    // down.on('pointerup', function(){
+
+
+                    //     downIsDown = false
+                    // })
+
+                    // actionA.on('pointerdown', function (button) {
+
+                    //         a1IsDown = true
+                    //         usingPower = true
+
+                            
+
+                    //     }, this);
+
+                    // actionB.on('pointerup', function (button) {
+
+                    //     a1IsDown = false
+                        
+
+
+
+                    // }, this);
+
+                    // actionB.on('pointerdown', function (button) {
+                        
+                    //     a2IsDown = true
+
+
+                    // }, this);
+
+                    // actionB.on('pointerup', function (button) {
+
+                    //     a2IsDown = false
+
+                    // }, this);
+
+                    // skillA.on('pointerdown', function (button) {
+
+
+                    
+                    //     s1IsDown = true
+                    //     usingPower = true
+                    
+
+                    // }, this);
+
+                    // skillA.on('pointerup', function (button) {
+              
+                    
+                    //     s1IsDown = false
+
+                    // }, this);
+
+                    // skillB.on('pointerdown', function (button) {
+
+
+                    
+                    // s2IsDown = true
+                    // usingPower = true
+
+
+                    // }, this);
+
+                    // skillB.on('pointerup', function (button) {
+
+
+                    // s2IsDown = false
+
+                    // }, this);
     // }
 
     
     create(){
 
         this.activateKeyboard()
-        if (playerInputActive){
+      
         this.mapKeyboard()
-        }
         this.activateGamepad()
+        
         
         
         
         
         console.log('Input Module Online')
      
+    }
+
+    update(){
+        this.mapGamepad()
+        
     }
 
     

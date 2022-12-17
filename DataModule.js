@@ -166,22 +166,44 @@ class DataModule extends Phaser.Scene {
     }
 
     setBaseStats(){
+
+        var baseVitals = 100
+        var maxBonus = baseVitals * 1
+        var lifeMod = 0.5
+        var timeToFillVitals = 4 // Seconds
+
+        var baseActionPower = 1
+        var baseSkillPower = 1.5
+        var baseCritChance = 1.01 
+        var baseCritDamage = 1.5
+        
+
         var importedBaseData = {
-            lifeMax: 100,
-            lifeCapacityBonusMax: 50,
-            lifeRegen: 0.1,
-            focusMax:100,
-            focusCapacityBonusMax: 100,
-            focusRegen: 1,
-            staminaMax: 100,
-            staminaCapacityBonusMax: 200,
-            staminaRegen: 1
+            lifeCapacity: baseVitals * lifeMod,
+            lifeCapacityBonusMax: maxBonus * lifeMod,
+            lifeRegen: 0,
+            focusCapacity:baseVitals,
+            focusCapacityBonusMax: maxBonus,
+            focusRegen: (baseVitals / (timeToFillVitals * 60)) * 0.3,
+            staminaCapacity: baseVitals,
+            staminaCapacityBonusMax: maxBonus,
+            staminaRegen: baseVitals / (timeToFillVitals * 60),
+            actionPower: baseActionPower,
+            skillPower: baseSkillPower,
+            critChance: baseCritChance, 
+            critDamage: baseCritDamage
+
+ 
+      
         }
 
+      
         this.baseData = importedBaseData
         console.log('Base data loaded to Data Module')
 
     }
+
+    
 
     async autheticateUser(userName,passWord){
     
@@ -203,7 +225,7 @@ class DataModule extends Phaser.Scene {
     
          var userListContent = await (await userList).json()
       
-        
+         
             // Validate Credentials
             for (var i = 0; i < userListContent.length;i++){
                 if (userName == userListContent[i].USERNAME){
@@ -267,16 +289,20 @@ class DataModule extends Phaser.Scene {
                             lifeEnergyPool: activeAvatarData.LIFE_ENERGY_POOL,
                             lifeTargetEnergyPool: activeAvatarData.LIFE_TARGET_ENERGY_POOL,
                             lifeStartModifier: activeAvatarData.LIFE_START_MODIFIER,
-                            lifeMaxModifier: activeAvatarData.LIFE_MAX_MODIFIER,
+                            lifeCapacityBonusPercent: activeAvatarData.LIFE_CAPACITY_BONUS_PERCENT,
                             lifeRegenModifier: activeAvatarData.LIFE_REGEN_MODIFIER,
                             focusEnergyPool: activeAvatarData.FOCUS_ENERGY_POOL,
                             focusTargetEnergyPool: activeAvatarData.FOCUS_TARGET_ENERGY_POOL,
-                            focusMaxModifier: activeAvatarData.FOCUS_MAX_MODIFIER,
+                            focusCapacityBonusPercent: activeAvatarData.FOCUS_CAPACITY_BONUS_PERCENT,
                             focusRegenModifier: activeAvatarData.FOCUS_REGEN_MODIFIER,
                             staminaEnergyPool: activeAvatarData.STAMINA_ENERGY_POOL,
                             staminaTargetEnergyPool: activeAvatarData.STAMINA_TARGET_ENERGY_POOL,
-                            staminaMaxModifier: activeAvatarData.STAMINA_MAX_MODIFIER,
+                            staminaCapacityBonusPercent: activeAvatarData.STAMINA_CAPACITY_BONUS_PERCENT,
                             staminaRegenModifier: activeAvatarData.STAMINA_REGEN_MODIFIER,
+                            actionPowerModifier: activeAvatarData.ACTION_POWER_MODIFIER,
+                            skillPowerModifier: activeAvatarData.SKILL_POWER_MODIFIER,
+                            critChanceModifier: activeAvatarData.ACTION_POWER_MODIFIER,
+                            critDamageModifier: activeAvatarData.SKILL_POWER_MODIFIER,
                             travelSpeedMaxModifier: activeAvatarData.TRAVEL_MAX_MODIFIER,
                             gloryGenerationModifier: activeAvatarData.GLORY_GENERATION_MODIFIER,
                             goldGenerationModifier: activeAvatarData.GOLD_GENERATION_MODIFIER,

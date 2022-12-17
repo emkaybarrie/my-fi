@@ -179,6 +179,7 @@ class Simulacrum extends Phaser.Scene {
         this.load.image('goldIcon', 'assets/ach_00040.png');
         this.load.image('skillIconBox', 'assets/vFX/textBox2a.png');
         this.load.spritesheet('deadlyCombatAssaultIcon', 'assets/skills/deadlyCombatAssaultIcon.png', { frameWidth: 256, frameHeight: 256});
+        this.load.spritesheet('deadlyCombatAssaultHitSmear', 'assets/skills/deadlyCombatAssaultHitSmear.png', { frameWidth: 1024, frameHeight: 1024});
         this.load.spritesheet('thunderStrikeIcon', 'assets/skills/thunderStrikeIcon.png', { frameWidth: 256, frameHeight: 256});
 
         this.load.image('floor', 'assets/floorNeutral.png');
@@ -218,7 +219,7 @@ class Simulacrum extends Phaser.Scene {
                                                         //'bgMusic1','bgMusic2','bgMusic3','bgMusic4','bgMusic5','bgMusic6','bgMusic7'
                                                     ])
 
-                    bgMusic = this.sound.add(Phaser.Utils.Array.GetRandom(bgMusicArray))
+                    bgMusic = this.sound.add(Phaser.Utils.Array.GetRandom(bgMusicArray), {volume: 0.5})
 
             // Base Variables
 
@@ -230,15 +231,16 @@ class Simulacrum extends Phaser.Scene {
             this.gameMode = 0 // Starting Game Mode - 0 = Run, 1 = Battle
             this.speedLevel = 2 // Starting Speed Level in Run Mode (rename to Intensity Level)
             this.endRun = false
+            this.return = false
 
             this.playerSpeed = 0
             this.playerBattleSpeed = 0 
            
 
-            this.rewards = 0
+            this.rewards = 1000
             this.level = 1
             this.glory = 0
-            this.gold = 0
+            this.gold = 1000
 
 
             this.baseGoldDrop = 100
@@ -262,9 +264,11 @@ class Simulacrum extends Phaser.Scene {
                 this.camera.setBounds(screenWidth,0,screenWidth * 2,screenHeight)
                 this.camera.centerOnX(screenWidth * 2)
                 this.camera.fadeIn(1000)
+               
                 bgMusic.play()
                 this.camera.once('camerafadeincomplete',function(){
                     this.stageProgressEnabled = true
+                    playerInputActive = true
 
                     // Background Music
 
@@ -364,12 +368,15 @@ class Simulacrum extends Phaser.Scene {
                 this.playerAttackHitBox.body.setAllowGravity(false).setSize(175, 100)
                 this.playerAttackHitBox.body.checkCollision.none = true
                 this.physics.add.overlap(this.playerAttackHitBox,this.enemyGroup,this.enemyTakeHit,null,this)
+                this.playerAttackHitBox.damage = 0
                 this.playerAttackHitBoxVFX = this.add.sprite(this.playerAttackHitBox.x, this.playerAttackHitBox.y)
                 this.playerAttackHitBoxVFX.setSize(175, 100).setDepth(2)
                 this.playerIsHit = false
                 this.playerInAir = false
 
                 this.playerTopSpeed = 2
+
+                this.spotlightPlayerPower = this.lights.addLight(0, 0, this.player.displayWidth * 40 ,0x6d54a9,2.5);
 
                 this.renderAvatarStats()
 
@@ -392,15 +399,12 @@ class Simulacrum extends Phaser.Scene {
                 // Vitals Bars
                     this.playerVitalsPosition = 2
                     this.lowVitalsTintColour = 0xE10600
-                    this.lowVitalsPercent = 0.2
+                    this.lowVitalsPercent = 0.35
 
-                    if (this.playerVitalsPosition == 1){
-                        this.vitalsfullWidth = this.playerIconBox.displayWidth * 0.4
-                        this.vitalsScale = 0.0575//0.075
-                    } else {
+                 
                         this.vitalsfullWidth = this.player.displayWidth * 0.5
-                        this.vitalsScale = 0.025//0.075
-                    }
+                        this.vitalsScale = 0.035//0.075
+                    
                     
 
                     
@@ -426,7 +430,7 @@ class Simulacrum extends Phaser.Scene {
                         this.lifeRightCap = this.add.image(0,0, 'life-right-cap')
                             .setOrigin(0, 0.5).setDepth(5).setScale(this.vitalsScale)
                 
-                        this.uiSubModule_setLifePercentage(this.player.lifeCurrent/this.player.lifeMax)
+                        this.uiSubModule_setLifePercentage(this.player.lifeCurrent/this.player.lifeCapacity)
                     // Icon Holder
 
                     this.lifeIconHolder = this.add.image(0,0, 'life-icon-holder').setDepth(6).setScale(this.vitalsScale)
@@ -455,7 +459,7 @@ class Simulacrum extends Phaser.Scene {
                         this.focusRightCap = this.add.image(0,0, 'focus-right-cap')
                             .setOrigin(0, 0.5).setDepth(5).setScale(this.vitalsScale)
 
-                        this.uiSubModule_setFocusPercentage(this.player.focusCurrent/this.player.focusMax)
+                        this.uiSubModule_setFocusPercentage(this.skillPower)
                     // Icon Holder
                         this.focusIconHolder = this.add.image(0,0, 'focus-icon-holder').setDepth(6).setScale(this.vitalsScale).setVisible(1).setOrigin(0.5)
                         this.focusIcon = this.add.image(0,0, 'focus-icon').setDepth(6).setScale(this.vitalsScale)
@@ -483,7 +487,7 @@ class Simulacrum extends Phaser.Scene {
                         this.staminaRightCap = this.add.image(0,0, 'stamina-right-cap')
                             .setOrigin(0, 0.5).setDepth(5).setScale(this.vitalsScale)
                 
-                        this.uiSubModule_setStaminaPercentage(this.player.staminaCurrent/this.player.staminaMax)
+                        this.uiSubModule_setStaminaPercentage(this.actionPower)
 
                     // Icon Holder
 
@@ -523,7 +527,7 @@ class Simulacrum extends Phaser.Scene {
  
                 this.playerSpeedPosition = 2
 
-                    this.playerSpeedfullWidth = this.vitalsfullWidth
+                    this.playerSpeedfullWidth = this.vitalsfullWidth * 0.5
                     this.playerSpeedScaleX = 0.05
                     this.playerSpeedScaleY = 0.05
                 
@@ -647,35 +651,35 @@ class Simulacrum extends Phaser.Scene {
                 )
 
                 this.hudGroup.setDepth(this.hudDepth)
-                if(this.playerVitalsPosition == 2){
-                    this.lifeIconHolder.depth = this.player.depth - 1
-                    this.lifeIcon.depth = this.player.depth - 1
-                    this.lifeMiddleHolder.depth = this.player.depth - 1
-                    this.lifeRightCapHolder.depth = this.player.depth - 1  
-                    this.lifeMiddle.depth = this.player.depth - 1
-                    this.lifeRightCap.depth = this.player.depth - 1   
+                // if(this.playerVitalsPosition == 2){
+                //     this.lifeIconHolder.depth = this.player.depth - 1
+                //     this.lifeIcon.depth = this.player.depth - 1
+                //     this.lifeMiddleHolder.depth = this.player.depth - 1
+                //     this.lifeRightCapHolder.depth = this.player.depth - 1  
+                //     this.lifeMiddle.depth = this.player.depth - 1
+                //     this.lifeRightCap.depth = this.player.depth - 1   
                     
-                    this.focusIconHolder.depth = this.player.depth - 1
-                    this.focusIcon.depth = this.player.depth - 1
-                    this.focusMiddleHolder.depth = this.player.depth - 1
-                    this.focusRightCapHolder.depth = this.player.depth - 1  
-                    this.focusMiddle.depth = this.player.depth - 1
-                    this.focusRightCap.depth = this.player.depth - 1  
+                //     this.focusIconHolder.depth = this.player.depth - 1
+                //     this.focusIcon.depth = this.player.depth - 1
+                //     this.focusMiddleHolder.depth = this.player.depth - 1
+                //     this.focusRightCapHolder.depth = this.player.depth - 1  
+                //     this.focusMiddle.depth = this.player.depth - 1
+                //     this.focusRightCap.depth = this.player.depth - 1  
 
-                    this.staminaIconHolder.depth = this.player.depth - 1
-                    this.staminaIcon.depth = this.player.depth - 1
-                    this.staminaMiddleHolder.depth = this.player.depth - 1
-                    this.staminaRightCapHolder.depth = this.player.depth - 1  
-                    this.staminaMiddle.depth = this.player.depth - 1
-                    this.staminaRightCap.depth = this.player.depth - 1  
-                }
+                //     this.staminaIconHolder.depth = this.player.depth - 1
+                //     this.staminaIcon.depth = this.player.depth - 1
+                //     this.staminaMiddleHolder.depth = this.player.depth - 1
+                //     this.staminaRightCapHolder.depth = this.player.depth - 1  
+                //     this.staminaMiddle.depth = this.player.depth - 1
+                //     this.staminaRightCap.depth = this.player.depth - 1  
+                // }
 
-                if (this.playerSpeedPosition == 2){
-                    this.playerSpeedHolder.depth = this.player.depth - 1
-                    this.playerSpeedBottom.depth = this.player.depth - 1
-                    this.playerSpeedMiddle.depth = this.player.depth - 1
-                    this.playerSpeedTop.depth = this.player.depth - 1
-                }
+                // if (this.playerSpeedPosition == 2){
+                //     this.playerSpeedHolder.depth = this.player.depth - 1
+                //     this.playerSpeedBottom.depth = this.player.depth - 1
+                //     this.playerSpeedMiddle.depth = this.player.depth - 1
+                //     this.playerSpeedTop.depth = this.player.depth - 1
+                // }
 
 
         // V1 Code End
@@ -739,6 +743,15 @@ class Simulacrum extends Phaser.Scene {
         this.anims.create({
             key: 'whiteHitSmear',
             frames: this.anims.generateFrameNumbers('whiteHitSmear', { start:0, end: 16}),
+            frameRate: 40,
+            repeat: 0,
+            showOnStart: 1,
+            hideOnComplete: 1
+        });
+
+        this.anims.create({
+            key: 'deadlyCombatAssaultHitSmear',
+            frames: this.anims.generateFrameNumbers('deadlyCombatAssaultHitSmear', { start:0, end: 16}),
             frameRate: 40,
             repeat: 0,
             showOnStart: 1,
@@ -1032,28 +1045,39 @@ class Simulacrum extends Phaser.Scene {
         // Get the base data and avatar data from the DataModule Scene
         var baseData = this.scene.get('DataModule').baseData;
         var avatarData = this.scene.get('DataModule').avatarData;
+       // var skillData = this.scene.get('DataModule').skillData;
 
         
         // Render Avatar with final stats ahead of run
 
         // Life
-            this.player.lifeMax = baseData.lifeMax + (baseData.lifeCapacityBonusMax * avatarData.lifeCapacityBonus);
+            this.player.lifeCapacity = baseData.lifeCapacity + (baseData.lifeCapacityBonusMax * avatarData.lifeCapacityBonusPercent);
 
-            this.player.lifeCurrent = this.player.lifeMax * avatarData.lifeStartModifier;
+            this.player.lifeCurrent = this.player.lifeCapacity * avatarData.lifeStartModifier;
             
             this.player.lifeRegen = baseData.lifeRegen * avatarData.lifeRegenModifier;
         // Focus
-            this.player.focusMax = baseData.focusMax + (baseData.focusCapacityBonusMax * avatarData.focusCapacityBonus);
+            this.player.focusCapacity = baseData.focusCapacity + (baseData.focusCapacityBonusMax * avatarData.focusCapacityBonusPercent);
 
-            this.player.focusCurrent = this.player.focusMax * Phaser.Math.FloatBetween(0,1)
+            this.player.focusCurrent = this.player.focusCapacity * Math.min(1,avatarData.focusCapacityBonus)
             
             this.player.focusRegen = baseData.focusRegen * avatarData.focusRegenModifier;
         // Stamina
-            this.player.staminaMax = baseData.staminaMax + (baseData.staminaCapacityBonusMax * avatarData.staminaCapacityBonus);
+            this.player.staminaCapacity = baseData.staminaCapacity + (baseData.staminaCapacityBonusMax * avatarData.staminaCapacityBonusPercent);
 
-            this.player.staminaCurrent = this.player.staminaMax * Phaser.Math.FloatBetween(0,1)
+            this.player.staminaCurrent = this.player.staminaCapacity * Math.min(1,avatarData.staminaCapacityBonus)
             
-            this.player.staminaRegen = baseData.focusRegen * avatarData.focusRegenModifier;
+            this.player.staminaRegen = baseData.staminaRegen * avatarData.staminaRegenModifier;
+
+        // Damage
+
+            this.player.actionPower = baseData.actionPower * avatarData.actionPowerModifier
+            this.player.skill1Power = (baseData.skillPower * avatarData.skillPowerModifier) * 1//avatarData.skill1Modifier  
+            this.player.skill2Power = (baseData.skillPower * avatarData.skillPowerModifier) * 0.65//avatarData.skill2Modifier  
+            this.player.critChance =  baseData.critChance * avatarData.critChanceModifier
+            this.player.critDamage =  baseData.critDamage * avatarData.critDamageModifier
+            
+            
         
         this.player.travelSpeedMaxModifier = avatarData.travelSpeedMaxModifier;
         
@@ -1061,17 +1085,20 @@ class Simulacrum extends Phaser.Scene {
 
         this.player.goldGenerationModifier = avatarData.goldGenerationModifier;
 
+        // States
+
+        this.player.canBeHit = true
+        this.player.momentum = 0
+        this.player.lifeRegenActive = true
+        this.player.focusRegenActive = true
+        this.player.staminaRegenActive = true
+
+
         console.log(this.player)
 
     }
 
-    recordScores(){     
-            this.stageScore = this.level
-            this.gloryScore = this.glory
-            this.rewardsScore = this.rewards
-            this.goldScore = this.gold
-  
-    }
+    
 
 
     stageModule(){
@@ -1124,21 +1151,44 @@ class Simulacrum extends Phaser.Scene {
         }
 
         // Return To Kianova
-        if (this.player.lifeCurrent <= 0 && this.stageProgressEnabled){
-            this.stageProgressEnabled = false
-            this.endRun = true
-            this.playerSpeed = 0
-            playerInputActive = false
-
+        if (this.endRun){
+            
+        
             this.recordScores()
-            this.camera.fadeOut(6000)
-            this.camera.on('camerafadeoutcomplete', function () {
-                this.scene.run('Kianova',{regionID:this.stageData.regionID,stage:this.stageScore,glory:Math.round(this.gloryScore),rewards:this.rewardsScore,gold:this.goldScore})
-                this.scene.stop('Badlands')
-           },this);
+
+            this.returnAvatar()
+
+            
+            
+            
         }
    
     }
+
+        recordScores(){     
+            this.stageScore = this.level
+            this.gloryScore = this.glory
+            this.rewardsScore = this.rewards
+            this.goldScore = this.gold
+
+    }
+
+        returnAvatar(){
+            if(!this.return){
+                this.return = true
+
+                this.camera.fadeOut(4000)
+            
+                this.camera.on('camerafadeoutcomplete', function () {
+                    if (this.scene.key == 'Simulacrum'){
+                        this.scene.restart()
+                    } else {
+                        this.scene.run('Kianova',{regionID:this.stageData.regionID,stage:this.stageScore,glory:Math.round(this.gloryScore),rewards:this.rewardsScore,gold:this.goldScore})
+                        this.scene.stop('Badlands')
+                    }
+                },this);
+            }
+        }
 
     loadCheckPoint() {
         // Set stageProgressEnabled to false
@@ -1208,7 +1258,7 @@ class Simulacrum extends Phaser.Scene {
         
 
     environmentModule(){
-        if (this.gameMode == 0 && !this.endRun){
+        if (this.gameMode == 0){
             for (var i = 1; i < this.bgLayers + 1 ; i++){
                 window['bgL'+i].tilePositionX += (this.baseSpeed* this.playerSpeed)  * window['bgL'+ i + 'ScrollMod'] * (scaleModX / (screenWidth / this.textures.get('bgL' + i).getSourceImage().width))
             }
@@ -1323,9 +1373,9 @@ class Simulacrum extends Phaser.Scene {
 
             if (e.active){
                 if (e.x > this.player.x + screenWidth * 0.1){
-                    e.setDepth(0)
+                    e.setDepth(0)//(Phaser.Math.Between(0,2))
                 } else if (e.x < this.player.x - screenWidth * 0.1){
-                    e.setDepth(2)
+                    e.setDepth(0)//(Phaser.Math.Between(0,2))
                 }
             }
 
@@ -1362,14 +1412,19 @@ class Simulacrum extends Phaser.Scene {
         // Spawn Code
         if(game.spawningEnemy){
 
-            this.enemiesSpawned = Phaser.Math.Between(1,Math.min(this.enemyGroup.getTotalFree(),3))
+            this.enemiesSpawned = Phaser.Math.Between(0,Math.min(this.enemyGroup.getTotalFree(),3))
 
             for (var i = 0; i < this.enemiesSpawned; i++){
-            //enemy = game.enemyGroup.get()
+ 
             this.enemy = game.enemyGroup.get()
-            
+                // Type
+                if(Phaser.Math.Between(0,100) <= 30){
+                    this.enemiesType = 2
+                } else {
+                    this.enemiesType = 1
+                }
                 // Scaling
-                this.enemiesType = Phaser.Math.Between(1,2)
+              
                 if(this.enemiesType == 1){
                     // Common Enemy
                     this.creepScale = Phaser.Math.FloatBetween(2.5,3) //* (scaleModX) 
@@ -1455,7 +1510,7 @@ class Simulacrum extends Phaser.Scene {
                 if (e.anims.getName() != 'nightBorne_Move'){
                     e.x -= this.baseSpeed * e.baseSpeedMod * this.playerSpeed
                 } else {
-                    if (this.player.x < (this.camera.scrollX + screenWidth * 0.6) && this.progress <= this.progressToNextLevel * 0.96){
+                    if (this.player.x < (this.camera.scrollX + screenWidth * 0.55) && this.progress <= this.progressToNextLevel * 0.96){
                         e.x += this.baseSpeed * (e.baseSpeedMod/5) / this.playerSpeed
                     } else {
                         e.x -= this.baseSpeed * (e.baseSpeedMod/3) * this.playerSpeed 
@@ -1560,7 +1615,7 @@ class Simulacrum extends Phaser.Scene {
         
 
     enemyTakeHit(playerAttackHitBox,enemy){
-        if(this.gameMode == 1){
+
 
             
 
@@ -1589,18 +1644,27 @@ class Simulacrum extends Phaser.Scene {
 
             } else {
 
-            // Sound Effect of Hit
-                // Hit connected
-                this.sound.play('enemyTakeMeleeHit')
+            
             
             // Crit Check
             if (Phaser.Math.Between(0,100)<=this.critChance){
-                this.playerAttackCrit = this.critDamage
+                this.playerAttackCrit = this.player.critDamage
+               
             } else {
                 this.playerAttackCrit = 1
             }
+
             
-            this.playerAttackHitBoxVFX.play('whiteHitSmear',true)
+
+            // Damage Calc
+
+                this.playerAttackPower = playerAttackHitBox.damage * this.playerAttackCrit
+            
+            this.playerAttackHitBoxVFX.play(this.playerAttackHitSmear,true)
+
+            // Momentum Gain
+
+            this.player.momentum += this.playerAttackPower * 10 * 2
             
 
             if (!enemy.body.onFloor()){
@@ -1615,26 +1679,23 @@ class Simulacrum extends Phaser.Scene {
                 enemy.x -= Phaser.Math.Between(0,25)
             }
 
-            enemy.setVelocityY(enemy.body.velocity.y + (Math.max(this.playerAttackStrengthY,-5000) * (Math.max(1,this.playerAttackCrit/2))))
+            enemy.setVelocityY(enemy.body.velocity.y + (Phaser.Math.Between((this.player.momentum /100) * -3500 ,(this.player.momentum /100) * 3500) * (Math.max(1,this.playerAttackCrit/2))))
 
 
             if (enemy.x >= this.player.x){
-                enemy.setVelocityX(enemy.body.velocity.x + (Math.min(this.playerAttackStrengthX,2500) * this.playerAttackCrit))
+                enemy.setVelocityX(enemy.body.velocity.x + (Phaser.Math.Between((this.player.momentum /100) * 0 ,(this.player.momentum /100) * 2500) * this.playerAttackCrit))
              } else {
-                enemy.setVelocityX(enemy.body.velocity.x - (Math.min(this.playerAttackStrengthX,2500) * this.playerAttackCrit))
+                enemy.setVelocityX(enemy.body.velocity.x - (Phaser.Math.Between((this.player.momentum /100) * 0 ,(this.player.momentum /100) * 2500) * this.playerAttackCrit))
             }
 
-            if (Math.abs(this.playerAttackStrengthY) > this.baseJumpHeight * 2){
-                //this.camera.shake(250,0.005)
-            }
-
-            if (Math.abs(this.playerAttackStrengthX) > 750){
-                //this.camera.shake(250,0.005)
+            if (this.player.momentum / 100 > 0.4){
+                this.camera.shake(500,0.01)
+                
             }
 
             if(this.playerAttackCrit > 1.5){
                 this.camera.flash()
-                this.camera.shake(250,0.02)  
+                this.camera.shake(100,0.005)  
                 this.sound.stopByKey('playerAttack1')
                 this.sound.stopByKey('playerAttack2')
                 this.sound.stopByKey('playerAttack3')
@@ -1646,13 +1707,24 @@ class Simulacrum extends Phaser.Scene {
 
             if(enemy.type == 1){
                 enemy.play('nightBorneMinion_Hurt',true)
+
+                // Sound Effect of Hit
+                // Hit connected
+                
+
                 enemy.once('animationcomplete', function (anim,frame) {
                     enemy.emit('animationcomplete_' + anim.key, frame)
                 }, enemy)
                 enemy.once('animationcomplete_nightBorneMinion_Hurt',function(){
                     enemy.isHit = false
                     enemy.setVelocityX(0)
-                    enemy.hitsTaken += 1
+                     if(this.gameMode == 0){
+                         enemy.hitsTaken += enemy.hitHP
+                     } else {
+               
+                         enemy.hitsTaken += this.playerAttackPower
+                     }
+                    
                     if (enemy.hitsTaken >= enemy.hitHP){
                         enemy.play('nightBorneMinion_Death',true)
                         this.physics.add.collider(enemy,this.floor); 
@@ -1678,21 +1750,23 @@ class Simulacrum extends Phaser.Scene {
             } else if (enemy.type == 2){
                 enemy.play('nightBorne_Hurt',true)
                
-                if (this.playerAttackCrit > 1){
-                    if(Phaser.Math.Between(0,100) <= 10){
-                        this.sound.play('nightBorneTakeHeavyDamage3')
-                    } else if (Phaser.Math.Between(0,100) <= 25){
-                        this.sound.play('nightBorneTakeHeavyDamage2')
+                if(Phaser.Math.Between(0,100) <= 15){
+                    if (this.playerAttackCrit > 1){
+                        if(Phaser.Math.Between(0,100) <= 10){
+                            this.sound.play('nightBorneTakeHeavyDamage3')
+                        } else if (Phaser.Math.Between(0,100) <= 25){
+                            this.sound.play('nightBorneTakeHeavyDamage2')
+                        } else {
+                            this.sound.play('nightBorneTakeHeavyDamage1')
+                        }
                     } else {
-                        this.sound.play('nightBorneTakeHeavyDamage1')
-                    }
-                } else {
-                    if(Phaser.Math.Between(0,100) <= 10){
-                        this.sound.play('nightBorneTakeLightDamage3')
-                    } else if (Phaser.Math.Between(0,100) <= 25){
-                        this.sound.play('nightBorneTakeLightDamage2')
-                    } else {
-                        this.sound.play('nightBorneTakeLightDamage1')
+                        if(Phaser.Math.Between(0,100) <= 10){
+                            this.sound.play('nightBorneTakeLightDamage3')
+                        } else if (Phaser.Math.Between(0,100) <= 25){
+                            this.sound.play('nightBorneTakeLightDamage2')
+                        } else {
+                            this.sound.play('nightBorneTakeLightDamage1')
+                        }
                     }
                 }
                 
@@ -1702,7 +1776,12 @@ class Simulacrum extends Phaser.Scene {
                 enemy.once('animationcomplete_nightBorne_Hurt',function(){
                     enemy.isHit = false
                     enemy.setVelocityX(0)
-                    enemy.hitsTaken += 1
+                    if(this.gameMode == 0){
+                        enemy.hitsTaken += enemy.hitHP
+                    } else {
+                        
+                        enemy.hitsTaken += this.playerAttackPower
+                    }
                     if (enemy.hitsTaken >= enemy.hitHP){
                         enemy.play('nightBorne_Death',true)
 
@@ -1730,7 +1809,7 @@ class Simulacrum extends Phaser.Scene {
  
         }
     }
-    }
+    
     }
 
     cameraModule(){
@@ -1738,27 +1817,40 @@ class Simulacrum extends Phaser.Scene {
         if (this.gameMode == 0){
 
             if (a1IsDown){
-                if (this.camera.zoom < 1.15){
-                    this.camera.zoom += 0.15/60
-                }
+   
+
+                this.camera.zoomTo(1.15,500)
             } else if (a2IsDown){
-                if (this.camera.zoom > 1){
-                    this.camera.zoom -= 0.15/60
-                }
+   
+
+                this.camera.zoomTo(1,500)
             } else {
-                if (this.camera.zoom <= 1.053 && this.camera.zoom >= 1.047){
-                    this.camera.zoom = 1.05
-                } else if (this.camera.zoom > 1.05){
-                    this.camera.zoom -= 0.3/60
-                } else if (this.camera.zoom < 1.05) {
-                    this.camera.zoom += 0.3/60
-                }
+
+
+                this.camera.zoomTo(1.05,250)
             }
         } else {
-            this.camera.zoom = 1
-            if (this.battleCameraActive){
+
+            if(this.powerBarSource >= 0.75) {
+                
+                this.camera.zoomTo(1.2,25)
+                this.camera.centerOn(this.player.x,screenHeight * 0.5)
+
+            } else if(this.powerBarSource >= 0.5) {
+                
+                this.camera.zoomTo(1.1,50)
+                this.camera.centerOn(this.player.x,screenHeight * 0.5)
+
+            } else {
+                this.camera.zoomTo(1,100)
                 this.camera.centerOnX(this.player.x)
+
             }
+                
+            
+            // if (this.battleCameraActive){
+            //     this.camera.centerOnX(this.player.x)
+            // }
         }
 
         
@@ -1777,13 +1869,10 @@ class Simulacrum extends Phaser.Scene {
 
             // Life
 
-                if(this.playerVitalsPosition == 1){
-                    this.lifeIconHolder.x = this.playerIcon.x + screenWidth * 0.0375
-                    this.lifeIconHolder.y = this.playerIcon.y - this.lifeIconHolder.displayWidth
-                } else {
-                    this.lifeIconHolder.x = this.player.x + (this.player.displayWidth * 0.1) 
-                    this.lifeIconHolder.y = this.player.y - (this.player.displayHeight * 0.25) 
-                }
+                
+                    this.lifeIconHolder.x = this.player.x + (this.player.displayWidth * 0.2) 
+                    this.lifeIconHolder.y = this.player.y - (this.player.displayHeight * 0.5) 
+               
 
                     this.lifeIcon.x = this.lifeIconHolder.x
                     this.lifeIcon.y = this.lifeIconHolder.y
@@ -1797,7 +1886,7 @@ class Simulacrum extends Phaser.Scene {
                     this.lifeRightCapHolder.y = this.lifeMiddleHolder.y 
                     this.lifeRightCap.y = this.lifeMiddle.y
                     
-                    this.uiSubModule_setLifePercentageAnimated(this.player.lifeCurrent/this.player.lifeMax)
+                    this.uiSubModule_setLifePercentageAnimated(this.player.lifeCurrent/this.player.lifeCapacity)
 
                 // Focus
                     this.focusIconHolder.x = this.lifeIconHolder.x
@@ -1842,13 +1931,13 @@ class Simulacrum extends Phaser.Scene {
                     this.gloryText.y = this.gloryIcon.y
                     this.gloryText.setText(Math.floor(this.glory))
 
-                    this.storedRewardsIcon.x = this.gloryText.x + (screenWidth * 0.045)
+                    this.storedRewardsIcon.x = this.gloryIcon.x + (screenWidth * 0.09)
                     this.storedRewardsIcon.y = this.playerIconBox.y - this.skillABox.displayHeight * 0.25//this.gloryIcon.y - this.gloryIcon.displayHeight * 0.25
                     this.storedRewardsText.x = this.storedRewardsIcon.x + (screenWidth * 0.03)
                     this.storedRewardsText.y = this.storedRewardsIcon.y
                     this.storedRewardsText.setText(Math.floor(this.rewards))
 
-                    this.goldIcon.x = this.storedRewardsText.x + this.storedRewardsText.displayWidth * 1.05
+                    this.goldIcon.x = this.storedRewardsIcon.x + this.storedRewardsIcon.displayWidth * 3
                     this.goldIcon.y = this.storedRewardsIcon.y
                     this.goldText.x = this.goldIcon.x + (screenWidth * 0.03)
                     this.goldText.y = this.goldIcon.y
@@ -1857,7 +1946,7 @@ class Simulacrum extends Phaser.Scene {
             
 
            
-                this.skillABox.x = this.storedRewardsIcon.x + this.storedRewardsIcon.displayWidth //* 0.75
+                this.skillABox.x = this.storedRewardsIcon.x + this.storedRewardsIcon.displayWidth * 1.25
                 this.skillABox.y = this.playerIconBox.y + this.playerIconBox.displayHeight * 0.5//this.gloryIcon.y + this.gloryIcon.displayHeight * 0.25 + this.skillABox.displayHeight * 0.5
             
 
@@ -1876,8 +1965,8 @@ class Simulacrum extends Phaser.Scene {
             // Player Speed
 
                 
-                    this.playerSpeedHolder.x = this.player.x + (this.player.displayWidth * 0.1) 
-                    this.playerSpeedHolder.y = this.player.y + (this.player.displayHeight * 0.3) 
+                    this.playerSpeedHolder.x = this.player.x + (this.player.displayWidth * 0.25) 
+                    this.playerSpeedHolder.y = this.player.y + (this.player.displayHeight * 0.35) 
                 
                 
                     this.playerSpeedBottom.x = this.playerSpeedHolder.x
@@ -1896,7 +1985,13 @@ class Simulacrum extends Phaser.Scene {
                     this.playerSpeedTop.y = this.playerSpeedHolder.y
                     this.playerSpeedTop.setAngle(this.playerSpeedHolder.angle)
 
-                this.uiSubModule_setPlayerSpeedPercentageAnimated(this.playerSpeed/this.playerTopSpeed)
+                    if(this.gameMode == 0){
+                        this.powerBarSource = this.playerSpeed/this.playerTopSpeed
+                    } else {
+                        this.powerBarSource = this.player.momentum / 100
+                    }
+
+                this.uiSubModule_setPlayerSpeedPercentageAnimated(this.powerBarSource)
 
             
 
@@ -1986,7 +2081,7 @@ class Simulacrum extends Phaser.Scene {
 
             // Alpha Tween
 
-                if (this.player.lifeCurrent / this.player.lifeMax < this.lowVitalsPercent || this.playerIsHit || this.emergencyPower){
+                if (this.player.lifeCurrent / this.player.lifeCapacity < this.lowVitalsPercent || this.playerIsHit || this.emergencyPower){
                     this.tweens.add({
                         targets: [this.lifeIconHolder,
                             this.lifeIcon,
@@ -1995,7 +2090,7 @@ class Simulacrum extends Phaser.Scene {
                             this.lifeRightCapHolder,
                             this.lifeRightCap],
                         alpha: 1,
-                        duration,
+                        duration:500,
                         ease: Phaser.Math.Easing.Sine.Out,
                         onUpdate: () => {
         
@@ -2012,7 +2107,7 @@ class Simulacrum extends Phaser.Scene {
                             this.lifeRightCapHolder,
                             this.lifeRightCap],
                         alpha: 0,
-                        duration,
+                        duration:500,
                         ease: Phaser.Math.Easing.Sine.Out,
                         onUpdate: () => {
         
@@ -2023,7 +2118,7 @@ class Simulacrum extends Phaser.Scene {
                 }
 
                 // Tint Tween
-                    if (this.player.lifeCurrent/this.player.lifeMax > this.lowVitalsPercent){
+                    if (this.player.lifeCurrent/this.player.lifeCapacity > this.lowVitalsPercent){
                         this.lifeMiddle.setTint()
                         this.lifeRightCap.setTint()
                     } else {
@@ -2063,7 +2158,7 @@ class Simulacrum extends Phaser.Scene {
 
             // Alpha Tween
 
-            if (this.skillPower < this.lowVitalsPercent || (s1IsDown || s2IsDown)){
+            if (this.skillPower < this.lowVitalsPercent && (!a1IsDown && !a2IsDown || this.gameMode == 0)){// || (s1IsDown || s2IsDown)){
                 this.tweens.add({
                     targets: [this.focusIconHolder,
                         this.focusIcon,
@@ -2072,7 +2167,7 @@ class Simulacrum extends Phaser.Scene {
                         this.focusRightCapHolder,
                         this.focusRightCap],
                     alpha: 1,
-                    duration,
+                    duration:500,
                     ease: Phaser.Math.Easing.Sine.Out,
                     onUpdate: () => {
     
@@ -2080,6 +2175,55 @@ class Simulacrum extends Phaser.Scene {
     
                 
                 })
+            } else if ((s1IsDown || s2IsDown)){//|| (a1IsDown || a2IsDown)){
+                if (this.gameMode == 0){
+                this.tweens.add({
+                    targets: [this.focusIconHolder,
+                        this.focusIcon,
+                        this.focusMiddleHolder,
+                        this.focusMiddle,
+                        this.focusRightCapHolder,
+                        this.focusRightCap],
+                    alpha: 1,
+                    duration:500,
+                    ease: Phaser.Math.Easing.Sine.Out,
+                    onUpdate: () => {
+    
+                    },
+    
+                
+                })
+            } else if (this.gameMode == 1){
+                this.tweens.add({
+                    targets: [this.focusIconHolder,
+                        this.focusIcon],
+                    alpha: 1,
+                    duration:500,
+                    ease: Phaser.Math.Easing.Sine.Out,
+                    onUpdate: () => {
+    
+                    },
+    
+                
+                })
+
+                this.tweens.add({
+                    targets: [
+                        this.focusMiddleHolder,
+                        this.focusMiddle,
+                        this.focusRightCapHolder,
+                        this.focusRightCap],
+                    alpha: 0,
+                    duration:500,
+                    ease: Phaser.Math.Easing.Sine.Out,
+                    onUpdate: () => {
+    
+                    },
+    
+                
+                })
+            } 
+            
             } else {
                 this.tweens.add({
                     targets: [this.focusIconHolder,
@@ -2089,7 +2233,7 @@ class Simulacrum extends Phaser.Scene {
                         this.focusRightCapHolder,
                         this.focusRightCap],
                     alpha: 0,
-                    duration,
+                    duration:500,
                     ease: Phaser.Math.Easing.Sine.Out,
                     onUpdate: () => {
     
@@ -2100,13 +2244,13 @@ class Simulacrum extends Phaser.Scene {
             }
 
             // Tint Tween
-            if (this.skillPower > this.lowVitalsPercent){
-                this.focusMiddle.setTint()
-                this.focusRightCap.setTint()
-            } else {
-                this.focusMiddle.setTint(this.lowVitalsTintColour)
-                this.focusRightCap.setTint(this.lowVitalsTintColour)
-            }
+            // if (this.skillPower > this.lowVitalsPercent){
+            //     this.focusMiddle.setTint()
+            //     this.focusRightCap.setTint()
+            // } else {
+            //     this.focusMiddle.setTint(this.lowVitalsTintColour)
+            //     this.focusRightCap.setTint(this.lowVitalsTintColour)
+            // }
         }
 
         uiSubModule_setStaminaPercentage(percent = 1){
@@ -2139,7 +2283,7 @@ class Simulacrum extends Phaser.Scene {
 
             // Alpha Tween
 
-                if (this.actionPower < this.lowVitalsPercent || (a1IsDown || a2IsDown)){
+                if (this.actionPower < this.lowVitalsPercent && (!s1IsDown && !s2IsDown || this.gameMode == 0)){//|| (a1IsDown || a2IsDown)){
                     this.tweens.add({
                         targets: [this.staminaIconHolder,
                             this.staminaIcon,
@@ -2148,7 +2292,7 @@ class Simulacrum extends Phaser.Scene {
                             this.staminaRightCapHolder,
                             this.staminaRightCap],
                         alpha: 1,
-                        duration,
+                        duration:500,
                         ease: Phaser.Math.Easing.Sine.Out,
                         onUpdate: () => {
         
@@ -2156,7 +2300,56 @@ class Simulacrum extends Phaser.Scene {
         
                     
                     })
-                } else {
+                } else if ((a1IsDown || a2IsDown)){//|| (a1IsDown || a2IsDown)){
+                    if (this.gameMode == 0){
+                    this.tweens.add({
+                        targets: [this.staminaIconHolder,
+                            this.staminaIcon,
+                            this.staminaMiddleHolder,
+                            this.staminaMiddle,
+                            this.staminaRightCapHolder,
+                            this.staminaRightCap],
+                        alpha: 1,
+                        duration:500,
+                        ease: Phaser.Math.Easing.Sine.Out,
+                        onUpdate: () => {
+        
+                        },
+        
+                    
+                    })
+                } else if (this.gameMode == 1){
+                    this.tweens.add({
+                        targets: [this.staminaIconHolder,
+                            this.staminaIcon],
+                        alpha: 1,
+                        duration:500,
+                        ease: Phaser.Math.Easing.Sine.Out,
+                        onUpdate: () => {
+        
+                        },
+        
+                    
+                    })
+
+                    this.tweens.add({
+                        targets: [
+                            this.staminaMiddleHolder,
+                            this.staminaMiddle,
+                            this.staminaRightCapHolder,
+                            this.staminaRightCap],
+                        alpha: 0,
+                        duration:500,
+                        ease: Phaser.Math.Easing.Sine.Out,
+                        onUpdate: () => {
+        
+                        },
+        
+                    
+                    })
+                } 
+                
+                }  else {
                     this.tweens.add({
                         targets: [this.staminaIconHolder,
                             this.staminaIcon,
@@ -2165,7 +2358,7 @@ class Simulacrum extends Phaser.Scene {
                             this.staminaRightCapHolder,
                             this.staminaRightCap],
                         alpha: 0,
-                        duration,
+                        duration:500,
                         ease: Phaser.Math.Easing.Sine.Out,
                         onUpdate: () => {
         
@@ -2176,14 +2369,14 @@ class Simulacrum extends Phaser.Scene {
                 }
 
                 // Tint Tween
-                if (this.actionPower > this.lowVitalsPercent){
-                    this.staminaMiddle.setTint()
-                    this.staminaRightCap.setTint()
-                } else {
-                    this.staminaMiddle.setTint(this.lowVitalsTintColour)
-                    this.staminaRightCap.setTint(this.lowVitalsTintColour)
+                // if (this.actionPower > this.lowVitalsPercent){
+                //     this.staminaMiddle.setTint()
+                //     this.staminaRightCap.setTint()
+                // } else {
+                //     this.staminaMiddle.setTint(this.lowVitalsTintColour)
+                //     this.staminaRightCap.setTint(this.lowVitalsTintColour)
                     
-                }
+                // }
 
         }
 
@@ -2198,9 +2391,8 @@ class Simulacrum extends Phaser.Scene {
         uiSubModule_setPlayerSpeedPercentageAnimated(percent = 1, duration = 250){
             this.width = this.playerSpeedfullWidth *  percent
 
-            //this.alphaDuration = 1000
 
-            if (this.playerSpeed < 0.95 || this.playerSpeed > 1.05 || (a1IsDown || a2IsDown)){
+            if ((this.playerSpeed < 0.95 || this.playerSpeed > 1.05)  && this.gameMode == 0 || (a1IsDown || a2IsDown || s1IsDown || s2IsDown) ){
                 this.tweens.add({
                     targets: [this.playerSpeedHolder,
                         this.playerSpeedBottom,
@@ -2278,14 +2470,71 @@ class Simulacrum extends Phaser.Scene {
 
     playerModule(){
 
-        
+        // Return To Default Functions
+
+            // Return Player to Default angle 
+            if(!upIsDown && !downIsDown || this.player.body.onFloor()){
+                this.player.setAngle(0)
+                }
+                    
+            // Return Player to Default Gravity
+                this.player.body.setGravityY(0)
+                this.player.body.setAllowGravity(1)
+
+            // Misc
+                if (!this.playerIsHit || this.gameMode == 1){
+                    this.player.setTint()
+                }
+
+                this.playerAttackHitSmear = 'whiteHitSmear'
+                this.playerAttackHitBox.y = this.player.y - 15
+                this.playerAttackHitBoxVFX.y = this.playerAttackHitBox.y
+
+                if (this.player.flipX){
+                    this.playerAttackHitBox.x = this.player.x - 10
+
+                    this.playerAttackHitBoxVFX.flipX = true
+                    this.playerAttackHitBoxVFX.x = this.playerAttackHitBox.x - 50
+                    
+                } else {
+                    this.playerAttackHitBox.x = this.player.x + 10
+
+                    this.playerAttackHitBoxVFX.flipX = false
+                    this.playerAttackHitBoxVFX.x = this.playerAttackHitBox.x + 50
+            
+                }
+                
+                if (!a1IsDown && !s1IsDown){
+                    this.playerAttackHitBox.body.checkCollision.none = true
+                }
+
+                this.playerMomentum = 0
+                this.player.canBeHit = true
+
+                if(this.player.momentum > 0){
+                    if (this.player.momentum < 25){
+                        this.player.momentum -= 0.1 //3.5     
+                    } else if (this.player.momentum < 50) {
+                        this.player.momentum -= 0.25//3.75
+                    } else if (this.player.momentum < 75) {
+                        this.player.momentum -= 0.75//4
+                    } else {
+                        this.player.momentum -= 1.5//4.5
+                    }
+                    
+                }
+                
+
 
         // Function Variables
-        this.vitalityPower = this.player.lifeCurrent/this.player.lifeMax 
-        this.skillPower = this.player.focusCurrent/this.player.focusMax
-        this.actionPower = this.player.staminaCurrent/this.player.staminaMax 
+        this.vitalityPower = this.player.lifeCurrent/this.player.lifeCapacity 
+        this.skillPower = this.player.focusCurrent/this.player.focusCapacity 
+        this.actionPower = this.player.staminaCurrent/this.player.staminaCapacity  
         
-
+        this.spotlightPlayerPower.intensity =  2 * this.powerBarSource//(this.actionPower) * (this.skillPower)
+                this.spotlightPlayerPower.radius =  (this.player.displayWidth * 40) * this.powerBarSource//(this.actionPower)  * (this.skillPower)
+                this.spotlightPlayerPower.x = this.player.x ;
+                this.spotlightPlayerPower.y = this.player.y// - 10 ;
 
             // Base Mode Toggles 
                 // Base Energy Cost
@@ -2340,15 +2589,15 @@ class Simulacrum extends Phaser.Scene {
 
                 // Running
                 if (this.gameMode == 0){
-                    this.action1CostModifier = 1.5
-                    this.action2CostModifier = 0.25
-                    this.skill1CostModifier = 4
-                    this.skill2CostModifier = 4
+                    this.action1CostModifier = 0.8
+                    this.action2CostModifier = 0.145
+                    this.skill1CostModifier = 1.2
+                    this.skill2CostModifier = 1.2
 
-                    this.moveUpCostModifier = 1.5
-                    this.moveDownCostModifier = 1.5
-                    this.moveLeftCostModifier = 0.5
-                    this.moveRightCostModifier = 0.5
+                    this.moveUpCostModifier = 1.7
+                    this.moveDownCostModifier = 1
+                    this.moveLeftCostModifier = 0.6
+                    this.moveRightCostModifier = 0.6
                 } else     
                 // Battle
                 if (this.gameMode == 1){
@@ -2357,16 +2606,16 @@ class Simulacrum extends Phaser.Scene {
                     this.skill1CostModifier = 1
                     this.skill2CostModifier = 1
 
-                    if (regenActive){
+                    if (this.player.focusRegenActive && this.player.staminaRegenActive){
                         this.moveUpCostModifier = 1.5
-                        this.moveDownCostModifier = 1
-                        this.moveLeftCostModifier = 0.5
-                        this.moveRightCostModifier = 0.5
+                        this.moveDownCostModifier = 0.8
+                        this.moveLeftCostModifier = 0.4
+                        this.moveRightCostModifier = 0.4
                     } else {
-                        this.moveUpCostModifier = 0.5
-                        this.moveDownCostModifier = 0.5
-                        this.moveLeftCostModifier = 0.5
-                        this.moveRightCostModifier = 0.5
+                        this.moveUpCostModifier = 0.1
+                        this.moveDownCostModifier = 0.1
+                        this.moveLeftCostModifier = 0.1
+                        this.moveRightCostModifier = 0.1
                     }
                     
                 }
@@ -2385,7 +2634,7 @@ class Simulacrum extends Phaser.Scene {
                         }
                     }
 
-            // Player Momentum        
+            // Player Momentum   (keep - as in BattleSpeed)     
 
                 // Lose
                 if (!leftIsDown && !rightIsDown && Math.abs(this.playerBattleSpeed) < 0.05 ){
@@ -2439,12 +2688,14 @@ class Simulacrum extends Phaser.Scene {
 
                 // Regen
                     // Regen
-                        if (regenActive){
+                        if (this.player.lifeRegenActive){
 
                             if(this.vitalityPower < 1 && this.vitalityPower > 0){
                                     this.player.lifeCurrent += this.player.lifeRegen 
                             }
+                        }
 
+                        if (this.player.focusRegenActive){    
                             if(this.skillPower < 1){
                                 if(this.skillPower < 1){
                                     this.player.focusCurrent += this.player.focusRegen 
@@ -2452,6 +2703,9 @@ class Simulacrum extends Phaser.Scene {
                                     this.player.focusCurrent += this.player.focusRegen * 1.5 
                                 }
                             }
+                        }
+
+                        if (this.player.staminaRegenActive){
                             
                             if(this.actionPower < 1){
                                 if(this.skillPower < 1){
@@ -2469,9 +2723,10 @@ class Simulacrum extends Phaser.Scene {
                         if(this.actionPower > 0){
                             this.player.staminaCurrent -= this.baseCost * this.action1CostModifier
                         } else {
-                            this.player.setTint(0xff7a7a)
-                            this.player.staminaCurrent -= this.baseCost * this.action1CostModifier * this.baseEmergencyEnergyCostPercent
-                            this.player.lifeCurrent -=(this.baseCost * this.baseEmergencyEnergyCostPercent) * this.action1CostModifier
+                             //this.player.setTint(0xff7a7a)
+                            // this.player.staminaCurrent -= this.baseCost * this.action1CostModifier * this.baseEmergencyEnergyCostPercent
+                            // this.player.lifeCurrent -=(this.baseCost * this.baseEmergencyEnergyCostPercent) * this.action1CostModifier
+                            a1IsDown = false
                         }
                         
                     }
@@ -2482,9 +2737,10 @@ class Simulacrum extends Phaser.Scene {
                         if(this.actionPower > 0 ){
                             this.player.staminaCurrent -= this.baseCost * this.action2CostModifier
                         } else {
-                            this.player.setTint(0xff7a7a)
-                            this.player.staminaCurrent -= this.baseCost * this.action2CostModifier * this.baseEmergencyEnergyCostPercent
-                            this.player.lifeCurrent -=(this.baseCost * this.baseEmergencyEnergyCostPercent) * this.action2CostModifier
+                            //this.player.setTint(0xff7a7a)
+                            // this.player.staminaCurrent -= this.baseCost * this.action2CostModifier * this.baseEmergencyEnergyCostPercent
+                            // this.player.lifeCurrent -=(this.baseCost * this.baseEmergencyEnergyCostPercent) * this.action2CostModifier
+                            a2IsDown = false
                         }
                     }
 
@@ -2492,9 +2748,10 @@ class Simulacrum extends Phaser.Scene {
                         if(this.skillPower > 0 ){
                             this.player.focusCurrent -= this.baseCost * this.skill1CostModifier
                         } else {
-                            this.player.setTint(0xff7a7a)
-                            this.player.focusCurrent -= this.baseCost * this.skill1CostModifier * this.baseEmergencyEnergyCostPercent
-                            this.player.lifeCurrent -=(this.baseCost * this.baseEmergencyEnergyCostPercent) * this.skill1CostModifier
+                            //this.player.setTint(0xff7a7a)
+                            // this.player.focusCurrent -= this.baseCost * this.skill1CostModifier * this.baseEmergencyEnergyCostPercent
+                            // this.player.lifeCurrent -=(this.baseCost * this.baseEmergencyEnergyCostPercent) * this.skill1CostModifier
+                            s1IsDown = false
                         }
                         
                     }
@@ -2505,9 +2762,10 @@ class Simulacrum extends Phaser.Scene {
                         if(this.skillPower > 0 ){
                             this.player.focusCurrent -= this.baseCost * this.skill2CostModifier
                         } else {
-                            this.player.setTint(0xff7a7a)
-                            this.player.focusCurrent -= this.baseCost * this.skill2CostModifier * this.baseEmergencyEnergyCostPercent
-                            tthis.player.lifeCurrent -=(this.baseCost * this.baseEmergencyEnergyCostPercent) * this.skill2CostModifier
+                            //this.player.setTint(0xff7a7a)
+                            // this.player.focusCurrent -= this.baseCost * this.skill2CostModifier * this.baseEmergencyEnergyCostPercent
+                            // tthis.player.lifeCurrent -=(this.baseCost * this.baseEmergencyEnergyCostPercent) * this.skill2CostModifier
+                            s2IsDown = false
                         }
                     }
         
@@ -2517,6 +2775,7 @@ class Simulacrum extends Phaser.Scene {
                         if(this.actionPower > 0 ){
                             this.player.staminaCurrent -= this.baseCost * this.moveUpCostModifier
                         } else {
+                            this.player.setTint(0xff7a7a)
                             this.player.staminaCurrent -= this.baseCost * this.moveUpCostModifier * this.baseEmergencyEnergyCostPercent
                             this.player.lifeCurrent -=(this.baseCost * this.baseEmergencyEnergyCostPercent) * this.moveUpCostModifier
                         }
@@ -2527,6 +2786,7 @@ class Simulacrum extends Phaser.Scene {
                         if(this.actionPower > 0 ){
                             this.player.staminaCurrent -= this.baseCost * this.moveDownCostModifier
                         } else {
+                            this.player.setTint(0xff7a7a)
                             this.player.staminaCurrent -= this.baseCost * this.moveDownCostModifier * this.baseEmergencyEnergyCostPercent
                             this.player.lifeCurrent -=(this.baseCost * this.baseEmergencyEnergyCostPercent) * this.moveDownCostModifier
                         }
@@ -2538,6 +2798,7 @@ class Simulacrum extends Phaser.Scene {
                         if(this.actionPower > 0 ){
                             this.player.staminaCurrent -= this.baseCost * this.moveLeftCostModifier
                         } else {
+                            this.player.setTint(0xff7a7a)
                             this.player.staminaCurrent -= this.baseCost * this.moveLeftCostModifier * this.baseEmergencyEnergyCostPercent
                             this.player.lifeCurrent -=(this.baseCost * this.baseEmergencyEnergyCostPercent) * this.moveLeftCostModifier
                         }
@@ -2549,6 +2810,7 @@ class Simulacrum extends Phaser.Scene {
                         if(this.actionPower > 0 ){
                             this.player.staminaCurrent -= this.baseCost * this.moveRightCostModifier
                         } else {
+                            this.player.setTint(0xff7a7a)
                             this.player.staminaCurrent -= this.baseCost * this.moveRightCostModifier * this.baseEmergencyEnergyCostPercent
                             this.player.lifeCurrent -=(this.baseCost * this.baseEmergencyEnergyCostPercent) * this.moveRightCostModifier
                         }
@@ -2557,8 +2819,80 @@ class Simulacrum extends Phaser.Scene {
             
             // Player Sprite Controls
 
+            // Defeat animation
+                if (this.player.lifeCurrent <= 0){
+
+                    this.stageProgressEnabled = false
+                    //playerInputActive = false
+                    
+                    if (this.gameMode == 0){
+                        this.player.x -= this.baseSpeed * this.playerSpeed
+                    }
+                    
+
+                    this.tweens.add({
+                        targets: [this.lifeMiddleHolder,this.focusMiddleHolder,this.staminaMiddleHolder,this.lifeMiddle,this.focusMiddle,
+                                this.staminaMiddle,this.lifeRightCapHolder,this.focusRightCapHolder,this.staminaRightCapHolder,
+                                this.lifeIconHolder,this.focusIconHolder,this.staminaIconHolder,this.playerSpeedHolder, this.playerSpeedBottom,
+                                this.playerSpeedMiddle,this.playerSpeedTop],
+                        alpha: 0,
+
+                        duration: 500,
+                        ease: Phaser.Math.Easing.Sine.Out,
+                        onComplete: () => {
+
+                            this.lifeMiddleHolder.setVisible(0).setActive(0)
+                            this.focusMiddleHolder.setVisible(0).setActive(0)
+                            this.staminaMiddleHolder.setVisible(0).setActive(0)
+                            this.lifeMiddle.setVisible(0).setActive(0)
+                            this.focusMiddle.setVisible(0).setActive(0)
+                            this.staminaMiddle.setVisible(0).setActive(0)
+                            this.lifeRightCapHolder.setVisible(0).setActive(0)
+                            this.focusRightCapHolder.setVisible(0).setActive(0)
+                            this.staminaRightCapHolder.setVisible(0).setActive(0)
+                            this.lifeIconHolder.setVisible(0).setActive(0)
+                            this.focusIconHolder.setVisible(0).setActive(0)
+                            this.staminaIconHolder.setVisible(0).setActive(0)
+                            this.lifeIcon.setVisible(0).setActive(0)
+                            this.focusIcon.setVisible(0).setActive(0)
+                            this.staminaIcon.setVisible(0).setActive(0)
+                           
+                            this.playerSpeedHolder.setVisible(0).setActive(0)
+                            this.playerSpeedBottom.setVisible(0).setActive(0)
+                            this.playerSpeedMiddle.setVisible(0).setActive(0)
+                            this.playerSpeedTop.setVisible(0).setActive(0)
+                        },
+        
+                    
+                    })
+
+                
+
+                    if(this.player.x <= this.camera.scrollX + screenWidth * 0.01){
+                        this.player.setVisible(0)
+                    }
+                   
+                    
+
+                    if(!this.endRun){
+                        if (this.gameMode == 0){
+                            this.playerSpeed = 0.5
+                        }
+                        
+                        this.player.anims.play({key:'player_Avatar_3_DOWNED',frameRate: 8},true);
+                        
+                        this.player.once('animationcomplete', function () {
+                            this.endRun = true
+                            this.player.setActive(0)
+
+                        }, this);
+
+                        
+                    }
+                    
+                } else
             // Hit Animation
-                if (this.playerIsHit){
+                if (this.player.canBeHit && this.playerIsHit){
 
                     
 
@@ -2570,6 +2904,7 @@ class Simulacrum extends Phaser.Scene {
 
                     // Sound Effects
                     
+                    if(Phaser.Math.Between(0,100) <= 30){
 
                     if (this.player.anims.getName() == 'player_Avatar_3_TAKE_HIT'){
                         if (this.player.anims.currentFrame.index == 1 ){
@@ -2593,6 +2928,8 @@ class Simulacrum extends Phaser.Scene {
                             this.sound.play('playerHit' + Phaser.Math.Between(1,7))
                         }
                     }
+                }
+                
 
                     this.player.once('animationcomplete', function (){
                         this.playerIsHit = false
@@ -2664,7 +3001,18 @@ class Simulacrum extends Phaser.Scene {
                                             }
                                         }
 
-                            } else if (this.gameMode == 1){ // Attack
+                            } else if (this.gameMode == 1 && (!s1IsDown && !s2IsDown)){ // Attack
+
+                                // if(this.player.momentum < 100){
+                                //     this.player.momentum += 4.2
+                                // }
+                                
+                                // Set Damage
+
+                                this.playerAttackHitBox.damage = this.player.actionPower
+                                
+
+                                //this.playerAttackHitSmear = 'whiteHitSmear'
                                 // Collision Detection
                                     
                                     // Enable player sword collision detection
@@ -2750,6 +3098,7 @@ class Simulacrum extends Phaser.Scene {
                                 } 
 
                                 // Sound Effects - Grunt
+                                if(Phaser.Math.Between(0,100) <= 15){
                                 if (this.player.anims.getName() == 'player_Avatar_3_ACTION_1'){
                                     
                                     if (this.player.anims.currentFrame.index == 2){
@@ -2804,6 +3153,7 @@ class Simulacrum extends Phaser.Scene {
                                     } 
 
                                 } 
+                            }
                                 
 
                             this.critChance = 25
@@ -3051,7 +3401,11 @@ class Simulacrum extends Phaser.Scene {
                             // Animation
 
                                 // Ground / Air
+                                if(animationStarted){
                                     this.player.play({key:'player_Avatar_3_EVADE',frameRate: 3, startFrame: 5},true)
+                                    animationStarted = false
+                                }
+                                    
 
 
                             // Positioning
@@ -3070,7 +3424,7 @@ class Simulacrum extends Phaser.Scene {
                                         this.playerSpeed -= 0.0075  + (0.0075 * Math.max(0,this.actionPower))
                                     }
                                 }
-                            } else if (this.gameMode == 1){
+                            } else if (this.gameMode == 1 && (!a1IsDown && !s1IsDown && !s2IsDown)){
 
                                 // Sound Effects - Grunt
                                 if (this.player.anims.getName() == 'player_Avatar_3_EVADE'){
@@ -3117,12 +3471,27 @@ class Simulacrum extends Phaser.Scene {
                                         },this)
                                     }
                                     
-                                } else 
-                                // if(!this.a2Held){
-                                //     this.player.play({key:'player_Avatar_3_BLOCK',frameRate: 8 + (8 * Math.abs(this.actionPower))},true)
-                                //     this.a2Held = true
-                                // }
-                                if(animationStarted){
+                                } else if (downIsDown){
+                                    if(animationStarted && this.player.y < this.floor.y - this.player.displayHeight){ 
+                                    animationStarted = false
+                                   
+                                    this.player.play({key:'player_Avatar_3_FALL',frameRate: 10},true)
+                                    //this.player.body.checkCollision.down = false
+                                    this.player.y += 50
+                                 
+                                    
+                                        this.player.on('animationcomplete', function(){
+
+                                            //this.player.body.checkCollision.down = true
+                                        
+                                        
+                                        },this)
+                                    }
+    
+    
+                                }
+                        
+                                 else if(animationStarted){
                                     this.player.play({key:'player_Avatar_3_BLOCK',frameRate: 8 + (8 * Math.abs(this.actionPower))},true)
                                     animationStarted = false
                                 }
@@ -3214,10 +3583,105 @@ class Simulacrum extends Phaser.Scene {
 
                         if (s1IsDown){
                             if(this.gameMode == 0){
+
+                                this.playerAttackHitSmear = 'deadlyCombatAssaultHitSmear'
+                                this.player.canBeHit = false
+                                this.playerIsHit = false
+                                this.skillFrameRate1 = 16
+                                this.skillFrameRate2 = 12
+                                this.playerAttackStrengthY = Phaser.Math.Between(0,-2000)
+                                this.playerAttackStrengthX = Phaser.Math.Between(0,500)
+
+                                if(animationStarted){
+                                    animationStarted = false
+
+                                        if (this.gloryModifier <= 1 ){
+                                        this.nextXDest = this.player.x + screenWidth * 0.1  //this.closestEnemy.x + this.closestEnemy.displayWidth * 0.25
+                                        } else {
+                                            this.nextXDest = this.player.x + Phaser.Math.Between(-screenWidth * 0.075,-screenWidth * 0.05)
+                                        }   
+                                 
+                                            
+                        
+                                                this.tweens.add({
+                                                    targets: this.player,
+                                                    x: this.nextXDest,
+            
+                                                    duration: 500,
+                                                    ease: Phaser.Math.Easing.Sine.Out,
+                                                    onUpdate: () => {
+                  
+                                                      
+                                                    },
+                                    
+                                                
+                                                })
+                                           
+                                        
+                                    if (this.player.anims.getName() == 'player_Avatar_3_ACTION_2'){
+                                        if (this.player.anims.currentFrame.index == 4 || this.player.anims.currentFrame.index == 12){
+                                            this.skillFrameRate *= 1.1
+                                        }
+                                    }     
+
+                                        
+
+
+
+                                    if (this.player.body.onFloor()){
+                                        this.player.play({key:'player_Avatar_3_ACTION_2',frameRate: Math.max(this.skillFrameRate1,8)},true)
+                                        this.player.once('animationcomplete', function (){
+                                            //s1IsDown = false
+                                            animationStarted = true
+                                        },this)
+                                        
+                                    } else {
+                                        this.player.play({key:'player_Avatar_3_ACTION_3',frameRate: Math.max(this.skillFrameRate2,8)},true)
+                                        this.player.once('animationcomplete', function (){
+                                            //s1IsDown = false
+                                            animationStarted = true
+                                        },this)
+                                    }
+                                    
+                                }
+
+                                if (this.player.anims.getName() == 'player_Avatar_3_ACTION_2'){
+                        
+
+                                    if (this.player.anims.currentFrame.index >= 4 && this.player.anims.currentFrame.index < 6 
+                                        || this.player.anims.currentFrame.index >= 12 && this.player.anims.currentFrame.index < 14 ){
+                                        
+                                        this.playerAttackHitBox.body.checkCollision.none = false
+                                        
+                                        
+                                    } else {
+                                        this.playerAttackHitBox.body.checkCollision.none = true
+                                    }
+
+                                } else if (this.player.anims.getName() == 'player_Avatar_3_ACTION_3') {
+                                    if (this.player.anims.currentFrame.index >= 3 && this.player.anims.currentFrame.index < 5){
+                                                
+                                        this.playerAttackHitBox.body.checkCollision.none = false
+                                        
+                                    } else {
+                                        this.playerAttackHitBox.body.checkCollision.none = true
+                                    }
+
+
+                                }
+                                
+                                
                               
                             } else if (this.gameMode == 1){ 
+                                // if(this.player.momentum < 100){
+                                //     this.player.momentum += 4.3
+                                // }
 
-                                    
+                                // Set Damage
+                                this.playerAttackHitBox.damage = this.player.skill1Power
+                                
+
+                                this.playerAttackHitSmear = 'deadlyCombatAssaultHitSmear'  
                                 
                                  if(animationStarted){
                                     animationStarted = false
@@ -3240,8 +3704,7 @@ class Simulacrum extends Phaser.Scene {
                                         this.player.play({key:'player_Avatar_3_ACTION_2',frameRate: Math.max(this.skillFrameRate,8)},true)
                                     }
 
-                                   
- 
+                                    
                                     if (this.player.anims.getName() == 'player_Avatar_3_ACTION_2'){
                         
 
@@ -3250,11 +3713,35 @@ class Simulacrum extends Phaser.Scene {
                                             
                                             this.playerAttackHitBox.body.checkCollision.none = false
                                             
+                                            
                                         } else {
                                             this.playerAttackHitBox.body.checkCollision.none = true
                                         }
 
                                     }
+
+                                    // Sound Effects - Swing Sword
+                                if (this.player.anims.getName() == 'player_Avatar_3_ACTION_2'){
+                    
+
+                                    if (this.player.anims.currentFrame.index == 3 ){
+                              
+                                        this.sound.stopByKey('enemyTakeMeleeHit')
+                                        this.sound.stopByKey('swordSwing1')
+                                        this.sound.stopByKey('swordSwing2')
+                                        this.sound.stopByKey('swordSwing3')
+                                        this.sound.stopByKey('swordSwing4')
+
+                                        this.sound.play('enemyTakeMeleeHit')
+                                    } else if (this.player.anims.currentFrame.index == 9){
+                                        this.sound.stopByKey('enemyTakeMeleeHit')
+                                        this.sound.stopByKey('swordSwing2')
+                                        this.sound.stopByKey('swordSwing3')
+
+                                        this.sound.play('enemyTakeMeleeHit')
+                                    }
+
+                                } 
                                 
 
                                    this.playerSubModule_AirTime(0,this.skillPower,0.35)
@@ -3330,88 +3817,7 @@ class Simulacrum extends Phaser.Scene {
                             }
                         }
 
-                        //Blink Strike Proto
-                        // if (s1IsDown){
-                        //     if(this.gameMode == 0){
-                              
-                        //     } else if (this.gameMode == 1){ 
-                                
-                    
-                        //            this.player.play({key:'player_Avatar_3_ACTION_2',frameRate: 12, repeat: 10 * this.skillPower},true)
-
-                    
-          
-                                        
-                        //                 this.playerAttackHitBox.body.checkCollision.none = false
-                                        
-                                    
-
-
-                        //            this.playerSubModule_AirTime(0,this.skillPower,0)
-
-                        //          if(this.blinkActive && this.playerLockedOn){
-                        //             this.tweens.add({
-                        //                 targets: this.player,
-                        //                 x: this.nextXDest,
-                        //                 y: this.nextYDest,
-                        //                 duration: 150,
-                        //                 ease: Phaser.Math.Easing.Sine.Out,
-                        //                 onUpdate: () => {
-                        //                     if(this.playerLockedOn){
-                        //                         if (this.player.x <= this.closestEnemy.x){
-                        //                             this.nextXDest = this.closestEnemy.x + (this.closestEnemy.displayWidth * Phaser.Math.FloatBetween(0.25,0.35))
-                        //                         } else {
-                        //                             this.nextXDest = this.closestEnemy.x - (this.closestEnemy.displayWidth * Phaser.Math.FloatBetween(0.25,0.35))
-                        //                         }
-
-                        //                         if (this.closestEnemy.body.onFloor()){
-                        //                             this.nextYDest = this.player.y
-                        //                         } else {
-                        //                             this.nextYDest = this.closestEnemy.y + (this.closestEnemy.displayWidth * Phaser.Math.FloatBetween(-0.15,0.15))
-                        //                         }
-                        //                     } else {
-                        //                         this.nextXDest = this.player.x
-                        //                         this.nextYDest = this.player.y
-                        //                     }
-                                          
-                        //                 },
                         
-                                    
-                        //             })
-
-                                    
-                        //          }
-
-            
-                                    
-                        //             if (this.player.anims.currentFrame.index == 4 || this.player.anims.currentFrame.index == 12){
-
-                        //                 this.blinkActive = true
-                        //                 if(this.playerLockedOn ){
-                        //                     if (this.player.x < this.closestEnemy.x){
-                        //                         this.nextXDest = this.closestEnemy.x + (this.closestEnemy.displayWidth * Phaser.Math.FloatBetween(0.25,0.35))
-                        //                     } else {
-                        //                         this.nextXDest = this.closestEnemy.x - (this.closestEnemy.displayWidth * Phaser.Math.FloatBetween(0.25,0.35))
-                        //                     }
-
-                        //                     if (this.closestEnemy.body.onFloor()){
-                        //                         this.nextYDest = this.player.y
-                        //                     } else {
-                        //                         this.nextYDest = this.closestEnemy.y + (this.closestEnemy.displayWidth * Phaser.Math.FloatBetween(-0.5,0.5))
-                        //                     }
-                        //                 } else {
-                        //                     this.nextXDest = this.player.x
-                        //                     this.nextYDest = this.player.y
-                        //                 }
-                                         
-
-                        //             } else {
-                        //                 this.blinkActive = false
-                        //             }
-                                
-                                
-                        //     }
-                        // }
                 
                 // Up Button 
                     
@@ -3419,6 +3825,9 @@ class Simulacrum extends Phaser.Scene {
                             if(this.gameMode == 0){
                                 this.playerSubModule_Jump()
                             } else if (this.gameMode == 1 && (!a1IsDown && !a2IsDown)){
+                                // if(this.player.momentum < 100){
+                                //     this.player.momentum += 0.5
+                                // }
                                 this.playerSubModule_Jump()
                             }
                             
@@ -3429,8 +3838,13 @@ class Simulacrum extends Phaser.Scene {
                             if(this.gameMode == 0){
                                 this.playerSubModule_Crouch() 
                             } else if (this.gameMode == 1 && (!a1IsDown && !a2IsDown)){
+                                // if(this.player.momentum < 100){
+                                //     this.player.momentum += 0.5
+                                // }
                                 this.playerSubModule_Crouch() 
                             }
+
+                           
                             
                         }
                 // Left/Right Button
@@ -3439,6 +3853,9 @@ class Simulacrum extends Phaser.Scene {
                             if(this.gameMode == 0){
                                 this.playerSubModule_LateralMovement()
                             } else if (this.gameMode == 1 && (!a1IsDown && !a2IsDown && !s1IsDown && !s2IsDown)){
+                                // if(this.player.momentum < 100){
+                                //     this.player.momentum += 2.5
+                                // }
                                 this.playerSubModule_LateralMovement()
                             }
                         
@@ -3448,7 +3865,7 @@ class Simulacrum extends Phaser.Scene {
 
                     if(this.gameMode == 0){
                         // No A2, Up or Down
-                    if (!this.playerIsHit && !a2IsDown && !upIsDown && !downIsDown){
+                    if (!this.playerIsHit && !a2IsDown && !s1IsDown && !s2IsDown  && !upIsDown && !downIsDown){
                         // Animation
 
                             // Variables
@@ -3539,7 +3956,7 @@ class Simulacrum extends Phaser.Scene {
 
                 this.closestEnemy = this.physics.closest(this.player,this.enemyGroup.getMatching('active',true)) 
 
-                
+                // Lock on VFX
                 if(this.closestEnemy && this.gameMode == 1){
 
                     
@@ -3571,50 +3988,28 @@ class Simulacrum extends Phaser.Scene {
             }
 
             // Regen
-                if (a1IsDown || a2IsDown || s1IsDown || s2IsDown){
-                    regenActive = false
+
+                if (s1IsDown || s2IsDown){
+                    this.player.focusRegenActive = false
                 } else {
-                    regenActive = true
+                    this.player.focusRegenActive = true
                 }
+
+                if (a1IsDown || a2IsDown){
+                    this.player.staminaRegenActive = false
+                } else {
+                    this.player.staminaRegenActive = true
+                }
+
+                
+
+                
             // Airborne
                 if(!this.player.body.onFloor()){
                     this.playerInAir = true
                 }
 
-        // Return To Default Functions
-
-            // Return Player to Default angle 
-                if(!upIsDown && !downIsDown || this.player.body.onFloor()){
-                this.player.setAngle(0)
-                }
-                    
-            // Return Player to Default Gravity
-                this.player.body.setGravityY(0)
-                this.player.body.setAllowGravity(1)
-
-            // Misc
-                if (!this.playerIsHit || this.gameMode == 1){
-                    this.player.setTint()
-                }
-
-                this.playerAttackHitBox.y = this.player.y - 15
-                this.playerAttackHitBoxVFX.y = this.playerAttackHitBox.y
-
-                if (this.player.flipX){
-                    this.playerAttackHitBox.x = this.player.x - 10
-                    this.playerAttackHitBoxVFX.x = this.playerAttackHitBox.x - 50
-                    
-                } else {
-                    this.playerAttackHitBox.x = this.player.x + 10
-                    this.playerAttackHitBoxVFX.x = this.playerAttackHitBox.x + 50
-            
-                }
-                
-                if (!a1IsDown && !s1IsDown){
-                    this.playerAttackHitBox.body.checkCollision.none = true
-                }
-
-                this.playerMomentum = 0
+        
                 
 
     }
@@ -3778,12 +4173,12 @@ class Simulacrum extends Phaser.Scene {
         }
 
     enterBattle(){
-        if(this.gameMode == 0){
+        if(this.gameMode == 0 && this.player.canBeHit && !this.endRun){
 
             if(this.speedCheckOverride == 1){
                 this.speedCheckThreshold = 3
             } else {
-                this.speedCheckThreshold = 0.25
+                this.speedCheckThreshold = 0.35
             }
 
             if(this.playerSpeed < this.speedCheckThreshold){   
@@ -3835,7 +4230,6 @@ class Simulacrum extends Phaser.Scene {
 
     update(time,delta){
 
-
         // V1 Code
 
         // UI Module
@@ -3870,17 +4264,18 @@ class Simulacrum extends Phaser.Scene {
         this.debugText.y = screenHeight * 0.25
 
         this.debugText.setText('Stage Name: ' + this.stageData.stageName
-                                + '\nTime Period: ' + this.stageData.timeText
+                                //+ '\nTime Period: ' + this.stageData.timeText
                                 + '\nMusic Duration: ' + Math.floor(bgMusic.duration / 60) + ':' + Phaser.Math.RoundTo((((bgMusic.duration / 60) - Math.floor(bgMusic.duration / 60)) * 60),-2)
-                                + '\nPlayer Life Max: ' + this.player.lifeMax + '\nPlayer Life Regen: ' + this.player.lifeRegen
-                                + '\nPlayer Focus Max: ' + this.player.focusMax + '\nPlayer Focus Regen: ' + this.player.focusRegen
-                                + '\nPlayer Stamina Max: ' + this.player.staminaMax + '\nPlayer Stamina Regen: ' + this.player.staminaRegen
-
+                                + '\nPlayer Life Max: ' + this.player.lifeCapacity + '\nPlayer Life Regen: ' + Phaser.Math.RoundTo(this.player.lifeRegen,-2)
+                                + '\nPlayer Focus Max: ' + this.player.focusCapacity + '\nPlayer Focus Regen: ' + Phaser.Math.RoundTo(this.player.focusRegen,-2)
+                                + '\nPlayer Stamina Max: ' + this.player.staminaCapacity + '\nPlayer Stamina Regen: ' + Phaser.Math.RoundTo(this.player.staminaRegen,-2)
+                                //+ '\nEnd Run Status ' + this.endRun
                                  + '\nPlayer Speed: ' + Math.round(this.playerSpeed * 100) + '%' 
-                                // +'\nPlayer Battle Speed: ' + Math.round(this.playerBattleSpeed * 100) + '%' 
-                                // + '\nEnemies: ' + this.enemyGroup.countActive()
-                                // + '\nPlayer Attack Strength X: ' + Math.round(this.playerAttackStrengthX) 
-                                // + '\nPlayer Attack Strength Y: ' + Math.round(this.playerAttackStrengthY) 
+                                // +'\nPlayer Battle Speed: ' + Math.round(this.playerBattleSpeed * 100) + '%'
+                                //+ '\nPlayer Momentum: ' + this.player.momentum 
+                                 + '\nEnemies: ' + this.enemyGroup.countActive()
+                                 + '\nPlayer Attack Power: ' + Math.round(this.playerAttackPower) 
+
                                 // + '\nPlayer Crit Roll: ' + this.playerAttackCrit
                                 )
                                 
