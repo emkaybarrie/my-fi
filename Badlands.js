@@ -231,147 +231,128 @@ class Badlands extends Phaser.Scene {
 
     }
 
-    init(data)
-    {
-        
+    init(data) {
+
         console.log('Data Package Received: ', data)
         this.stageData = data;
         console.log('Staging Complete')
         console.log('Entering ' + this.stageData.stageName)
         console.log('Time ' + this.stageData.timeText)
-        
-       this.stageRefresh()
- 
+
+        this.stageRefresh()
+
+        // Stubbed Data
+
+        this.stageData.fgAlpha = [0.6, 1, 1]
+
+
     }
 
-    stageRefresh ()
-    {
+    stageRefresh() {
 
         console.log('Refreshing Stage')
 
-        for(var i = 1; i < this.stageData.bgLayers + 1;i++){
+        for (var i = 1; i < this.stageData.bgLayers + 1; i++) {
             this.textures.remove('bgL' + i);
         }
 
-        for(var i = 1; i < this.stageData.fgLayers + 1;i++){
+        for (var i = 1; i < this.stageData.fgLayers + 1; i++) {
             this.textures.remove('fgL' + i);
         }
-        
-       
+
+
         console.log('Stage Refreshed')
-        
+
     }
 
-    preload ()
-    {   
+    preload() {
+
+        this.loadStageBG(this.stageData.stageAssetName, this.stageData.bgLayers, this.stageData.fgLayers)
+
+        // Not need - test env only
+        // HUD/UI
+
         // Vitals Bars
-            // Life
-            this.load.image('life-icon-holder', 'assets/UI/playerVitals/red/meter_icon_holder_red.png')
-            this.load.image('life-icon', 'assets/UI/playerVitals/icons/health.png')
+        // Life
+        this.load.image('life-icon-holder', 'assets/UI/playerVitals/red/meter_icon_holder_red.png')
+        this.load.image('life-icon', 'assets/UI/playerVitals/icons/health.png')
 
-            this.load.image('life-left-cap-holder', 'assets/UI/playerVitals/red/meter_bar_holder_left_red.png')
-            this.load.image('life-middle-holder', 'assets/UI/playerVitals/red/meter_bar_holder_center_red.png')
-            this.load.image('life-right-cap-holder', 'assets/UI/playerVitals/red/meter_bar_holder_right_red.png')
+        this.load.image('life-left-cap-holder', 'assets/UI/playerVitals/red/meter_bar_holder_left_red.png')
+        this.load.image('life-middle-holder', 'assets/UI/playerVitals/red/meter_bar_holder_center_red.png')
+        this.load.image('life-right-cap-holder', 'assets/UI/playerVitals/red/meter_bar_holder_right_red.png')
 
-            this.load.image('life-left-cap', 'assets/UI/playerVitals/red/meter_bar_left_red.png')
-            this.load.image('life-middle', 'assets/UI/playerVitals/red/meter_bar_center_red.png')
-            this.load.image('life-right-cap', 'assets/UI/playerVitals/red/meter_bar_right_red.png')
+        this.load.image('life-left-cap', 'assets/UI/playerVitals/red/meter_bar_left_red.png')
+        this.load.image('life-middle', 'assets/UI/playerVitals/red/meter_bar_center_red.png')
+        this.load.image('life-right-cap', 'assets/UI/playerVitals/red/meter_bar_right_red.png')
 
         // Focus
-            this.load.image('focus-icon-holder', 'assets/UI/playerVitals/yellow/meter_icon_holder_yellow.png')
-            this.load.image('focus-icon', 'assets/UI/playerVitals/icons/magic.png')
+        this.load.image('focus-icon-holder', 'assets/UI/playerVitals/yellow/meter_icon_holder_yellow.png')
+        this.load.image('focus-icon', 'assets/UI/playerVitals/icons/magic.png')
 
-            this.load.image('focus-left-cap-holder', 'assets/UI/playerVitals/yellow/meter_bar_holder_left_yellow.png')
-            this.load.image('focus-middle-holder', 'assets/UI/playerVitals/yellow/meter_bar_holder_center_yellow.png')
-            this.load.image('focus-right-cap-holder', 'assets/UI/playerVitals/yellow/meter_bar_holder_right_yellow.png')
+        this.load.image('focus-left-cap-holder', 'assets/UI/playerVitals/yellow/meter_bar_holder_left_yellow.png')
+        this.load.image('focus-middle-holder', 'assets/UI/playerVitals/yellow/meter_bar_holder_center_yellow.png')
+        this.load.image('focus-right-cap-holder', 'assets/UI/playerVitals/yellow/meter_bar_holder_right_yellow.png')
 
-            this.load.image('focus-left-cap', 'assets/UI/playerVitals/yellow/meter_bar_left_yellow.png')
-            this.load.image('focus-middle', 'assets/UI/playerVitals/yellow/meter_bar_center_yellow.png')
-            this.load.image('focus-right-cap', 'assets/UI/playerVitals/yellow/meter_bar_right_yellow.png')
+        this.load.image('focus-left-cap', 'assets/UI/playerVitals/yellow/meter_bar_left_yellow.png')
+        this.load.image('focus-middle', 'assets/UI/playerVitals/yellow/meter_bar_center_yellow.png')
+        this.load.image('focus-right-cap', 'assets/UI/playerVitals/yellow/meter_bar_right_yellow.png')
 
         // Stamina
-            this.load.image('stamina-icon-holder', 'assets/UI/playerVitals/green/meter_icon_holder_green.png')
-            this.load.image('stamina-icon', 'assets/UI/playerVitals/icons/stamina.png')
+        this.load.image('stamina-icon-holder', 'assets/UI/playerVitals/green/meter_icon_holder_green.png')
+        this.load.image('stamina-icon', 'assets/UI/playerVitals/icons/stamina.png')
 
-            this.load.image('stamina-left-cap-holder', 'assets/UI/playerVitals/green/meter_bar_holder_left_green.png')
-            this.load.image('stamina-middle-holder', 'assets/UI/playerVitals/green/meter_bar_holder_center_green.png')
-            this.load.image('stamina-right-cap-holder', 'assets/UI/playerVitals/green/meter_bar_holder_right_green.png')
+        this.load.image('stamina-left-cap-holder', 'assets/UI/playerVitals/green/meter_bar_holder_left_green.png')
+        this.load.image('stamina-middle-holder', 'assets/UI/playerVitals/green/meter_bar_holder_center_green.png')
+        this.load.image('stamina-right-cap-holder', 'assets/UI/playerVitals/green/meter_bar_holder_right_green.png')
 
-            this.load.image('stamina-left-cap', 'assets/UI/playerVitals/green/meter_bar_left_green.png')
-            this.load.image('stamina-middle', 'assets/UI/playerVitals/green/meter_bar_center_green.png')
-            this.load.image('stamina-right-cap', 'assets/UI/playerVitals/green/meter_bar_right_green.png')
+        this.load.image('stamina-left-cap', 'assets/UI/playerVitals/green/meter_bar_left_green.png')
+        this.load.image('stamina-middle', 'assets/UI/playerVitals/green/meter_bar_center_green.png')
+        this.load.image('stamina-right-cap', 'assets/UI/playerVitals/green/meter_bar_right_green.png')
 
-        this.load.audio("bgMusic0a", ["assets/music/Riptide.mp3"]);
-        this.load.audio("bgMusic0b", ["assets/music/Landslide.mp3"]);
-        this.load.audio("bgMusic0c", ["assets/music/Gumshield.mp3"]);
-        this.load.audio("bgMusic0d", ["assets/music/Throw_Me_To_The_Wolves.mp3"]);
-        this.load.audio("bgMusic0e", ["assets/music/Legend_Has_It.mp3"]);
-            
-        this.load.audio("bgMusic1", ["assets/music/The_Apartment.mp3"]);
-            this.load.audio("bgMusic2", ["assets/music/Arbol.mp3"]);
-            this.load.audio("bgMusic3", ["assets/music/Nine_Levels.mp3"]);
-            this.load.audio("bgMusic4", ["assets/music/Katana.mp3"]);
-            this.load.audio("bgMusic5", ["assets/music/Fate_I.mp3"]);
-            this.load.audio("bgMusic6", ["assets/music/Talk_Like_Thunder.mp3"]);
+        // Player Speed
 
-        this.load.image('playerIcon', 'assets/icons/playerIcon1.png');
-        this.load.image('playerInspirationIcon1', 'assets/icons/playerInspirationIcon1.png');
-        this.load.image('playerInspirationIcon2', 'assets/icons/playerInspirationIcon2.png');
-        this.load.image('playerInspirationIcon3', 'assets/icons/playerInspirationIcon3.png');
-        
+        this.playerSpeedUIType = 2
 
-        this.load.image('levelIcon', 'assets/ach_00006.png');
-        this.load.image('gloryIcon', 'assets/ach_00035.png');
-        this.load.image('goldIcon', 'assets/ach_00040.png');
+        if (this.playerSpeedUIType == 1) {
+            this.load.image('playerSpeed-holder', 'assets/UI/playerVitals/powerBars/curved_bar/curver_bar_holder.png')
 
-        this.load.image('skillIconBox', 'assets/vFX/textBox2a.png');
+            this.load.image('playerSpeed-bottom', 'assets/UI/playerVitals/powerBars/curved_bar/curver_bar_bottom.png')
+            this.load.image('playerSpeed-middle', 'assets/UI/playerVitals/powerBars/curved_bar/curver_bar_middle.png')
+            this.load.image('playerSpeed-top', 'assets/UI/playerVitals/powerBars/curved_bar/curver_bar_top.png')
+        } else if (this.playerSpeedUIType == 2) {
+            this.load.image('playerSpeed-holder', 'assets/UI/playerVitals/powerBars/straight_bar/straight_bar_holder.png')
 
-        // this.load.image('up', 'assets/controls/shadedDark03.png');
-        // this.load.image('down', 'assets/controls/shadedDark10.png');
-        // this.load.image('deadSpace', 'assets/controls/buttonDeadSpace.png');
-        // this.load.image('left', 'assets/controls/shadedDark05.png');
-        // this.load.image('right', 'assets/controls/shadedDark06.png');
-        // this.load.image('defaultAction', 'assets/controls/ach_00022.png');
-        // this.load.image('charge', 'assets/controls/ach_00005.png');
-        
-        // Battle Mode
+            this.load.image('playerSpeed-bottom', 'assets/UI/playerVitals/powerBars/straight_bar/straight_bar_bottom.png')
+            this.load.image('playerSpeed-middle', 'assets/UI/playerVitals/powerBars/straight_bar/straight_bar_middle.png')
+            this.load.image('playerSpeed-top', 'assets/UI/playerVitals/powerBars/straight_bar/straight_bar_top.png')
+        } else if (this.playerSpeedUIType == 3) {
+            this.load.image('playerSpeed-holder', 'assets/UI/playerVitals/powerBars/triangle_bar/triangle_bar_holder.png')
 
-        // Menus & Icons
-        
-        this.load.image('inspirationBox', 'assets/vFX/inspirationBox.png');
-        this.load.image('playerVitalsBox', 'assets/vFX/playerHUDBox.png');
-       
-        // Stage Data Docking Bay
-        console.log('Loading Textures for: ' + this.stageData.stageName + '\nAsset Name: ' + this.stageData.stageAssetName)
-
-        this.loadStageBG(this.stageData.stageAssetName,this.stageData.bgLayers,this.stageData.fgLayers)
-
-        this.load.image('vines', 'assets/vines.png');
-        this.load.image('treeTrunk', ['assets/treeTrunk.png','assets/treeTrunk_n.png']);
-        this.load.image('lamp', ['assets/lamp.png','assets/lamp_n.png'])
-        this.load.image('rock1', 'assets/rock_1.png')
-        this.load.image('rock2', 'assets/rock_2.png')
-        this.load.image('rock3', 'assets/rock_3.png')
-        this.load.image('floor', 'assets/woodground.png');
+            this.load.image('playerSpeed-bottom', 'assets/UI/playerVitals/powerBars/triangle_bar/triangle_bar_bottom.png')
+            this.load.image('playerSpeed-middle', 'assets/UI/playerVitals/powerBars/triangle_bar/triangle_bar_middle.png')
+            this.load.image('playerSpeed-top', 'assets/UI/playerVitals/powerBars/triangle_bar/triangle_bar_top.png')
+        }
 
 
-        // Enemies
+        this.load.image('playerSpeed-mask', 'assets/UI/playerVitals/powerBars/mask.png')
 
-        this.load.atlas('doomsayer', ['assets/doomsayer.png','assets/doomsayer_n.png'],'assets/doomsayersprites.json');
-        this.load.spritesheet('nightBorne', ['assets/nightBorne.png','assets/nightBorne.png'], { frameWidth: 80, frameHeight: 80});
-         this.load.spritesheet('nightBorneNecromancer', 'assets/nightBorneNecromancer.png', { frameWidth: 160, frameHeight: 128});
+        // Stage Progress
+        this.load.image('stageProgress-icon-holder', 'assets/UI/playerVitals/purple/meter_icon_holder_purple.png')
+        this.load.image('stageProgress-icon', 'assets/UI/playerVitals/icons/shield.png')
 
- 
-        // VFX - Hit Animation
-         this.load.spritesheet('whiteHitSmear', 'assets/whiteHitSmear.png', { frameWidth: 1024, frameHeight: 1024});
-         this.load.spritesheet('whiteHitSmear2', 'assets/whiteHitSmear2.png', { frameWidth: 1048, frameHeight: 1048});  
+        this.load.image('horde-checkpoint-icon', 'assets/UI/playerVitals/icons/timer.png')
+        this.load.image('chaser-checkpoint-icon', 'assets/UI/playerVitals/icons/stamina.png')
+        this.load.image('miniBoss-checkpoint-icon', 'assets/UI/playerVitals/icons/shield.png')
+        this.load.image('landmark-checkpoint-icon', 'assets/UI/playerVitals/icons/shield.png')
+        this.load.image('shop-checkpoint-icon', 'assets/UI/playerVitals/icons/shield.png')
 
-        this.load.spritesheet('thunderStrikeIcon', 'assets/skills/thunderStrikeIcon.png', { frameWidth: 256, frameHeight: 256});
-        this.load.spritesheet('thunderStrike', ['assets/skills/thunderStrike.png','assets/skills/thunderStrike_n.png'], { frameWidth: 64, frameHeight: 64}); 
-        this.load.spritesheet('thunderStrikeHitSmear', 'assets/skills/thunderStrikeSmear.png', { frameWidth: 1024, frameHeight: 1024});
+        this.load.image('stageProgress-left-cap-holder', 'assets/UI/playerVitals/purple/meter_bar_holder_left_purple.png')
+        this.load.image('stageProgress-middle-holder', 'assets/UI/playerVitals/purple/meter_bar_holder_center_purple.png')
+        this.load.image('stageProgress-right-cap-holder', 'assets/UI/playerVitals/purple/meter_bar_holder_right_purple.png')
 
-        this.load.spritesheet('deadlyCombatAssaultIcon', 'assets/skills/deadlyCombatAssaultIcon.png', { frameWidth: 256, frameHeight: 256});
-        this.load.spritesheet('deadlyCombatAssaultHitSmear', 'assets/skills/deadlyCombatAssaultHitSmear.png', { frameWidth: 1024, frameHeight: 1024});
+        this.load.image('stageProgress-left-cap', 'assets/UI/playerVitals/purple/meter_bar_left_purple.png')
+        this.load.image('stageProgress-middle', 'assets/UI/playerVitals/purple/meter_bar_center_purple.png')
+        this.load.image('stageProgress-right-cap', 'assets/UI/playerVitals/purple/meter_bar_right_purple.png')
 
         // Sound Effects
         this.load.audio("enemyTakeMeleeHit", ["assets/sFX/sliceFlesh.wav"]);
@@ -406,602 +387,251 @@ class Badlands extends Phaser.Scene {
         this.load.audio("playerHit6", ["assets/sFX/Player/playerHit6.wav"]);
         this.load.audio("playerHit7", ["assets/sFX/Player/playerHit7.wav"]);
 
+        this.load.atlas('avatar3', ['assets/Avatars/3/avatar3.png', 'assets/Avatars/3/avatar3_n.png'], 'assets/Avatars/3/avatar3.json');
+        this.load.spritesheet('whiteHitSmear', 'assets/whiteHitSmear.png', { frameWidth: 1024, frameHeight: 1024 });
+        this.load.spritesheet('whiteHitSmear2', 'assets/whiteHitSmear2.png', { frameWidth: 1048, frameHeight: 1048 });
+        this.load.image('playerIconBox', 'assets/vFX/textBox3a.png');
+        this.load.image('playerVitalsBox', 'assets/vFX/playerHUDBox.png');
+        this.load.image('playerIcon', 'assets/icons/playerIcon1.png');
+        this.load.image('storedRewardsIcon', 'assets/ach_00017.png');
+        this.load.image('levelIcon', 'assets/ach_00006.png');
+        this.load.image('gloryIcon', 'assets/ach_00035.png');
+        this.load.image('goldIcon', 'assets/ach_00040.png');
+        this.load.image('skillIconBox', 'assets/vFX/textBox2a.png');
+        this.load.spritesheet('deadlyCombatAssaultIcon', 'assets/skills/deadlyCombatAssaultIcon.png', { frameWidth: 256, frameHeight: 256 });
+        this.load.spritesheet('deadlyCombatAssaultHitSmear', 'assets/skills/deadlyCombatAssaultHitSmear.png', { frameWidth: 1024, frameHeight: 1024 });
+        this.load.spritesheet('thunderStrikeIcon', 'assets/skills/thunderStrikeIcon.png', { frameWidth: 256, frameHeight: 256 });
+
+        this.load.image('floor', 'assets/floorNeutral.png');
+        this.load.atlas('doomsayer', ['assets/doomsayer.png', 'assets/doomsayer_n.png'], 'assets/doomsayersprites.json');
+        this.load.spritesheet('nightBorne', ['assets/nightBorne.png', 'assets/nightBorne.png'], { frameWidth: 80, frameHeight: 80 });
+
+
+        this.load.audio("bgMusic1", ["assets/music/The_Apartment.mp3"]);
+        this.load.audio("bgMusic2", ["assets/music/Arbol.mp3"]);
+        this.load.audio("bgMusic3", ["assets/music/Nine_Levels.mp3"]);
+        this.load.audio("bgMusic4", ["assets/music/Katana.mp3"]);
+        this.load.audio("bgMusic5", ["assets/music/Fate_I.mp3"]);
+        this.load.audio("bgMusic6", ["assets/music/Talk_Like_Thunder.mp3"]);
+        this.load.audio("bgMusic7", ["assets/music/Thundering_Voices.mp3"]);
+        this.load.audio("bgMusic8", ["assets/music/Riptide.mp3"]);
+        this.load.audio("bgMusic9", ["assets/music/Legend_Has_It.mp3"]);
+        this.load.audio("bgMusic10", ["assets/music/Gumshield.mp3"]);
+        this.load.audio("bgMusic11", ["assets/music/Throw_Me_To_The_Wolves.mp3"]);
+        this.load.audio("bgMusic12", ["assets/music/Wide_Eyes.mp3"]);
+        this.load.audio("bgMusic13", ["assets/music/Dynasties_&_Dystopia.mp3"]);
+        this.load.audio("bgMusic14", ["assets/music/Come_Down.mp3"]);
+        this.load.audio("bgMusic15", ["assets/music/Blood_On_Me.mp3"]);
+
 
     }
 
-   
+    create() {
 
-    create ()
-    {
         // V1 Code
 
         // Initialisation & Setup
 
-            // Load Music
-
-                    // Music
-                    this.sound.stopByKey('mainTheme');
-                    this.sound.stopAll();
-                    bgMusicArray = []
-
-                    Phaser.Utils.Array.Add(bgMusicArray,["bgMusic0a","bgMusic0b","bgMusic0c","bgMusic0d","bgMusic0e",
-                                                        //'bgMusic1','bgMusic2','bgMusic3','bgMusic4','bgMusic5','bgMusic6','bgMusic7'
-                                                    ])
-
-                    bgMusic = this.sound.add(Phaser.Utils.Array.GetRandom(bgMusicArray), {volume: 0.5})
-
-            // Base Variables
-
-            this.musicBPM = 131
-            this.baseScreenClearTime = 4 // Beats
-            this.basePlatformSpawnTime = 8 // Beats 
-            this.baseEnemySpawnTime = 4 // Beats 
-
-            this.gameMode = 0 // Starting Game Mode - 0 = Run, 1 = Battle
-            this.speedLevel = 2 // Starting Speed Level in Run Mode (rename to Intensity Level)
-            this.endRun = false
-            this.return = false
-
-            this.playerSpeed = 0
-            this.playerBattleSpeed = 0 
-           
-
-            this.rewards = 1000
-            this.level = 1
-            this.glory = 0
-            this.gold = 1000
-
-
-            this.baseGoldDrop = 100
-
-            this.baseZoneLength = 1000
-            this.baseZoneClearTime =  (Math.floor(bgMusic.duration / 60) * 60) + (((bgMusic.duration / 60) - Math.floor(bgMusic.duration / 60)) * 60)
-            this.progress = 0
-            this.stage = {nextCheckPoint:1,checkPointType:0}
-            this.progressToNextLevel = this.baseZoneLength//Phaser.Math.Between(this.baseZoneLength * 0.75,this.baseZoneLength * 1.25)
-            this.progressToNextCheckPoint = this.progressToNextLevel * 0.25
-
-            // World Initialisation
-            
-                // World Bounds (effective Player Bounds)
-                this.physics.world.setBounds(screenWidth * 1.5, 0 - (screenHeight * 0.1), screenWidth * 1,  screenHeight * 1.1);
-
-                // Camera and Music
-                
-                this.camera = this.cameras.main
-                this.camera.zoom = 1.05
-                this.camera.setBounds(screenWidth,0,screenWidth * 2,screenHeight)
-                this.camera.centerOnX(screenWidth * 2)
-                this.camera.fadeIn(1000)
-               
-                bgMusic.play()
-                this.camera.once('camerafadeincomplete',function(){
-                    this.stageProgressEnabled = true
-                    playerInputActive = true
-
-                    // Background Music
-
-                    bgMusic.on('complete', function(){
-                        //     songChoice = Math.floor(Phaser.Math.Between(1,songDatabaseSize))
-                        //     Phaser.Utils.Array.Add(bgMusicArray,"bgMusic" + songChoice)
-                        bgMusic.destroy()
-                        bgMusic = this.sound.add(Phaser.Utils.Array.GetRandom(bgMusicArray))
-                        bgMusic.play()
-                    },this) 
-
-                },this)
-
-                
-
-                // Stage (A) - Base Background, Floor, and Base Foreground
-
-                    // Import Stage Parameters to local active stage variables - redundant? Use stageData directly?
-                    
-                    this.bgLayers = this.stageData.bgLayers
-                    this.bgScroll = this.stageData.bgScroll
-
-                    this.fgLayers = this.stageData.fgLayers
-                    this.fgAlpha = this.stageData.fgAlpha
-                    this.fgScroll = this.stageData.fgScroll
-
-                    this.floorMin = this.stageData.floorMin
-                    this.floorMax = this.stageData.floorMax
-                    this.floorColour = this.stageData.floorColour
-                    this.floorVisible = this.stageData.floorVisible
-
-                    // Render Stage
-                    
-                    this.renderStageBG(this.bgLayers,this.bgScroll,this.floorMin,this.floorMax,this.floorColour,this.floorVisible,this.fgLayers,this.fgScroll)
-
-                   // Day/Night System
-
-                   this.initialise_DayNightSystem() 
-                   console.log(this.lightSource.x)  
-                   
-                // Stage (B) - Background Objects & Obstacles
-
-                // Platforms
-
-                this.platformGroup = this.physics.add.group({
-                    defaultKey: 'floor',
-                    maxSize: 8
-                });
-        
-                this.spawningPlatform = false
-                this.platformTimer = this.time.addEvent({delay: this.basePlatformSpawnTime * (60/this.musicBPM) * 1000, 
-                                                        callback: this.spawnPlatform, args: [], callbackScope: this, 
-                                                        loop: true});
-            
-            // Entities Initialisation
-
-                // Enemies
-
-                this.enemyGroup = this.physics.add.group({
-                    defaultKey: 'doomsayer',
-                    maxSize: 20
-                });
-
-                this.enemyHordeGroup = this.physics.add.group({
-                    defaultKey: 'doomsayer',
-                    maxSize: 20
-                });
-
-                this.enemyChaserGroup = this.physics.add.group({
-                    defaultKey: 'doomsayer',
-                    maxSize: 20
-                });
-
-                this.closestEnemyOutline = this.add.sprite()
-                this.closestEnemyOutline.setTintFill(0x7851a9).setAlpha(0.75)
-
-
-                this.spawningEnemy = false  
-                this.enemyTimer = this.time.addEvent({delay: this.baseEnemySpawnTime * (60/this.musicBPM) * 1000, callback: this.spawnEnemy, args: [], callbackScope: this, loop: true});
-
-                this.physics.add.collider(this.enemyGroup,this.floor); 
-                this.physics.add.collider(this.enemyGroup,this.platformGroup); 
+        // Load Music
 
-                // Player - To be updated
-       
-                this.playerScale = 4 * (scaleModX) 
-                this.player = this.physics.add.sprite(screenWidth * 1.75, screenHeight * 0.5 ,'avatar3').setScale(this.playerScale).setDepth(1).setPipeline('Light2D')
-                this.player.body.setSize(10, 30).setOffset(25,15).setAllowDrag(true)
-                this.player.setBounce(0.05)
-                this.player.setCollideWorldBounds(true);
-                this.physics.add.collider(this.player,this.floor);
-                this.physics.add.collider(this.player,this.platformGroup)
-                this.physics.add.overlap(this.player,this.enemyGroup,this.enterBattle,null,this)
+        // Music
+        this.sound.stopByKey('mainTheme');
+        this.sound.stopAll();
+        bgMusicArray = []
 
-                this.playerAttackHitBox = this.add.sprite(this.player.x, this.player.y)
-                this.physics.add.existing(this.playerAttackHitBox, false)
-                this.playerAttackHitBox.body.setAllowGravity(false).setSize(175, 100)
-                this.playerAttackHitBox.body.checkCollision.none = true
-                this.physics.add.overlap(this.playerAttackHitBox,this.enemyGroup,this.enemyTakeHit,null,this)
-                this.playerAttackHitBox.damage = 0
-                this.playerAttackHitBoxVFX = this.add.sprite(this.playerAttackHitBox.x, this.playerAttackHitBox.y)
-                this.playerAttackHitBoxVFX.setSize(175, 100).setDepth(2)
-                this.playerIsHit = false
-                this.playerInAir = false
+        Phaser.Utils.Array.Add(bgMusicArray, ['bgMusic1', 'bgMusic2', 'bgMusic3', 'bgMusic4', 'bgMusic5', 'bgMusic6', 'bgMusic7',
+            'bgMusic8', 'bgMusic9', 'bgMusic10', 'bgMusic11', 'bgMusic12', 'bgMusic13', 'bgMusic14'
+        ])
 
-                this.playerTopSpeed = 2
+        bgMusic = this.sound.add(Phaser.Utils.Array.GetRandom(bgMusicArray), { volume: 0.5 })
 
-                this.spotlightPlayerPower = this.lights.addLight(0, 0, this.player.displayWidth * 40 ,0x6d54a9,2.5);
+        // Base Variables
 
-                this.renderAvatarStats()
+        this.musicBPM = 131
+        this.baseScreenClearTime = 4 // Beats
+        this.basePlatformSpawnTime = 8 // Beats 
+        this.baseEnemySpawnTime = 4 // Beats 
 
-                // Stage 
+        this.gameMode = 0 // Starting Game Mode - 0 = Run, 1 = Battle
+        this.speedLevel = 2 // Starting Speed Level in Run Mode (rename to Intensity Level)
+        this.endRun = false
+        this.return = false
 
-                this.baseSpeed = screenWidth /  (60 * this.baseScreenClearTime * (60/this.musicBPM)) 
-                this.speedLevel = 2
+        this.playerSpeed = 0
+        this.playerBattleSpeed = 0
 
-            // HUD/UI Initialisation
 
-                this.hudDepth = 2
-                // Player
-                this.playerIconBoxScaleX = 0.85
-                this.playerIconBoxScaleY = 0.3
-                this.playerIconBox = this.add.image(0,0,'playerIconBox').setDepth(3).setScale(this.playerIconBoxScaleX,this.playerIconBoxScaleY).setOrigin(0,0.5).setAlpha(0.75)
-                this.playerIconScale = 0.06    
-                this.playerIcon = this.add.image(0,0,'playerIcon').setDepth(3).setScale(this.playerIconScale).setOrigin(0.5,0.5)
-            
-               
-                // Vitals Bars
-                    this.playerVitalsPosition = 2
-                    this.lowVitalsTintColour = 0xE10600
-                    this.lowVitalsPercent = 0.35
+        this.rewards = 0
+        this.level = 1
+        this.glory = 0
+        this.gold = 0
 
-                 
-                        this.vitalsfullWidth = this.player.displayWidth * 0.5
-                        this.vitalsScale = 0.035//0.075
-                    
-                    
 
-                    
-                // Life
+        this.baseGoldDrop = 100
 
-                    
-                    // Holder
+        this.baseZoneLength = 1000
+        this.baseZoneClearTime = (Math.floor(bgMusic.duration / 60) * 60) + (((bgMusic.duration / 60) - Math.floor(bgMusic.duration / 60)) * 60)
+        this.progress = 0
+        this.stage = { nextCheckPoint: 1, checkPointType: 0 }
+        this.progressToNextLevel = this.baseZoneLength//Phaser.Math.Between(this.baseZoneLength * 0.75,this.baseZoneLength * 1.25)
+        this.progressToNextCheckPoint = this.progressToNextLevel * 0.25
 
-                        this.lifeMiddleHolder = this.add.image(0 ,0, 'life-middle-holder')
-                            .setOrigin(0, 0.5).setDepth(5).setScale(this.vitalsScale)
+        // World Initialisation
 
-                        this.lifeMiddleHolder.displayWidth = this.vitalsfullWidth
+        // World Bounds (effective Player Bounds)
+        this.physics.world.setBounds(screenWidth * 1.5, 0 - (screenHeight * 0.1), screenWidth * 1, screenHeight * 1.1);
 
-                        this.lifeRightCapHolder = this.add.image(0, 0, 'life-right-cap-holder')
-                            .setOrigin(0, 0.5).setDepth(5).setScale(this.vitalsScale)
-                    // Bar
+        // Camera and Music
 
-                        this.lifeMiddle = this.add.image(0, 0, 'life-middle')
-                            .setOrigin(0, 0.5).setDepth(5).setScale(this.vitalsScale)
+        this.camera = this.cameras.main
+        this.camera.zoom = 1.05
+        this.camera.setBounds(screenWidth, 0, screenWidth * 2, screenHeight)
+        this.camera.centerOnX(screenWidth * 2)
+        this.camera.fadeIn(1000)
 
-                        this.lifeMiddle.displayWidth = this.vitalsfullWidth
+        //bgMusic.play()
+        this.camera.once('camerafadeincomplete', function () {
+            this.stageProgressEnabled = true
+            playerInputActive = true
 
-                        this.lifeRightCap = this.add.image(0,0, 'life-right-cap')
-                            .setOrigin(0, 0.5).setDepth(5).setScale(this.vitalsScale)
-                
-                        this.uiSubModule_setLifePercentage(this.player.lifeCurrent/this.player.lifeCapacity)
-                    // Icon Holder
+            // Background Music
 
-                    this.lifeIconHolder = this.add.image(0,0, 'life-icon-holder').setDepth(6).setScale(this.vitalsScale)
-                    this.lifeIcon = this.add.image(0,0, 'life-icon').setDepth(6).setScale(this.vitalsScale)
+            bgMusic.on('complete', function () {
+                //     songChoice = Math.floor(Phaser.Math.Between(1,songDatabaseSize))
+                //     Phaser.Utils.Array.Add(bgMusicArray,"bgMusic" + songChoice)
+                bgMusic.destroy()
+                bgMusic = this.sound.add(Phaser.Utils.Array.GetRandom(bgMusicArray))
+                // bgMusic.play()
+            }, this)
 
-                // Focus
+        }, this)
 
-                    
-                    // Holder
 
-                        this.focusMiddleHolder = this.add.image(0,0, 'focus-middle-holder')
-                            .setOrigin(0, 0.5).setDepth(5).setScale(this.vitalsScale)
 
-                        this.focusMiddleHolder.displayWidth = this.vitalsfullWidth
+        // Stage (A) - Base Background, Floor, and Base Foreground
 
-                        this.focusRightCapHolder = this.add.image(0,0, 'focus-right-cap-holder')
-                            .setOrigin(0, 0.5).setDepth(5).setScale(this.vitalsScale)
-                    // Bar
+        // Import Stage Parameters to local active stage variables - redundant? Use stageData directly?
 
+        this.bgLayers = this.stageData.bgLayers
+        this.bgScroll = this.stageData.bgScroll
 
-                        this.focusMiddle = this.add.image(0,0, 'focus-middle')
-                            .setOrigin(0, 0.5).setDepth(5).setScale(this.vitalsScale)
+        this.fgLayers = this.stageData.fgLayers
+        this.fgAlpha = this.stageData.fgAlpha
+        this.fgScroll = this.stageData.fgScroll
 
-                        this.focusMiddle.displayWidth = this.vitalsfullWidth
+        this.floorMin = this.stageData.floorMin
+        this.floorMax = this.stageData.floorMax
+        this.floorColour = this.stageData.floorColour
+        this.floorVisible = this.stageData.floorVisible
 
-                        this.focusRightCap = this.add.image(0,0, 'focus-right-cap')
-                            .setOrigin(0, 0.5).setDepth(5).setScale(this.vitalsScale)
+        // Render Stage
 
-                        this.uiSubModule_setFocusPercentage(this.skillPower)
-                    // Icon Holder
-                        this.focusIconHolder = this.add.image(0,0, 'focus-icon-holder').setDepth(6).setScale(this.vitalsScale).setVisible(1).setOrigin(0.5)
-                        this.focusIcon = this.add.image(0,0, 'focus-icon').setDepth(6).setScale(this.vitalsScale)
-                
-                        
+        this.renderStageBG(this.bgLayers, this.bgScroll, this.floorMin, this.floorMax, this.floorColour, this.floorVisible, this.fgLayers, this.fgScroll)
 
-                // Stamina
+        // Day/Night System
 
-                    // Holder
+        this.initialise_DayNightSystem()
 
-                        this.staminaMiddleHolder = this.add.image(0,0,'stamina-middle-holder')
-                            .setOrigin(0, 0.5).setDepth(5).setScale(this.vitalsScale)
 
-                        this.staminaMiddleHolder.displayWidth = this.vitalsfullWidth
+        // Stage (B) - Background Objects & Obstacles
 
-                        this.staminaRightCapHolder = this.add.image(0,0, 'stamina-right-cap-holder')
-                            .setOrigin(0, 0.5).setDepth(5).setScale(this.vitalsScale)
-                    // Bar
+        // Platforms
 
-                        this.staminaMiddle = this.add.image(0,0, 'stamina-middle')
-                            .setOrigin(0, 0.5).setDepth(5).setScale(this.vitalsScale)
-
-                        this.staminaMiddle.displayWidth = this.vitalsfullWidth
-
-                        this.staminaRightCap = this.add.image(0,0, 'stamina-right-cap')
-                            .setOrigin(0, 0.5).setDepth(5).setScale(this.vitalsScale)
-                
-                        this.uiSubModule_setStaminaPercentage(this.actionPower)
-
-                    // Icon Holder
-
-                        this.staminaIconHolder = this.add.image(0,0, 'stamina-icon-holder').setDepth(6).setScale(this.vitalsScale).setVisible(1).setOrigin(0.5)
-                        this.staminaIcon = this.add.image(0,0, 'stamina-icon').setDepth(6).setScale(this.vitalsScale)
-
-                
-
-                this.resourcesPosition = 1
-
-
-                this.bigIconScale = 0.85
-                this.bigTextSize = 42
-
-                this.iconScale = 0.45
-                this.textSize = 24
-                
-                this.gloryIcon = this.add.image(0,0,'gloryIcon').setDepth(4).setScale(this.bigIconScale * (scaleModX))
-                this.gloryText = this.add.text(0, 0, Math.floor(this.glory)).setFontFamily('Arial').setFontSize(this.bigTextSize * (scaleModX)).setColor('#BC3823').setDepth(4).setOrigin(0.5,0.5);
-                
-
-                this.storedRewardsIcon = this.add.image(0,0,'storedRewardsIcon').setDepth(4).setScale(this.iconScale * (scaleModX)).setOrigin(0.5,0.5)
-                this.storedRewardsText = this.add.text(this.storedRewardsIcon.x + 5, this.storedRewardsIcon.y, Math.floor(this.level)).setFontFamily('Arial').setFontSize(this.textSize * (scaleModX)).setColor('#674EA7').setDepth(4).setOrigin(0.5,0.5)
-                
-                this.goldIcon = this.add.image(0,0,'goldIcon').setDepth(4).setScale(this.iconScale * (scaleModX)).setOrigin(0.5,0.5)
-                this.goldText = this.add.text(0, 0, Math.floor(gold)).setFontFamily('Arial').setFontSize(this.textSize * (scaleModX)).setColor('#ffd700').setDepth(4).setOrigin(0.5,0.5);
-
-                this.skillBoxScale = 0.25
-                this.skillIconScale = 0.3
-
-                this.skillABox = this.add.image(0,0,'skillIconBox').setDepth(3).setScale(this.skillBoxScale).setOrigin(0.5,0.5)
-                this.skillAIcon = this.add.image(0,0,'deadlyCombatAssaultIcon').setDepth(3).setScale(this.skillIconScale).setOrigin(0.5,0.5)
-                this.skillBBox = this.add.image(0,0,'skillIconBox').setDepth(3).setScale(this.skillBoxScale).setOrigin(0.5,0.5)
-                this.skillBIcon = this.add.image(0,0,'thunderStrikeIcon').setDepth(3).setScale(this.skillIconScale).setOrigin(0.5,0.5)
-
-                // Player Speed
- 
-                this.playerSpeedPosition = 2
-
-                    this.playerSpeedfullWidth = this.vitalsfullWidth * 0.5
-                    this.playerSpeedScaleX = 0.05
-                    this.playerSpeedScaleY = 0.05
-                
-                
-
-                // Holder
-
-                    this.playerSpeedHolder = this.add.image(0,0,'playerSpeed-holder')
-                        .setOrigin(0, 0.5).setScale(this.playerSpeedScaleX,this.playerSpeedScaleY).setVisible(1)
-
-                    this.playerSpeedHolder.displayWidth = this.playerSpeedfullWidth
-
-                // Bar
-
-                    this.playerSpeedBottom = this.add.image(0,0, 'playerSpeed-bottom')
-                        .setOrigin(0, 0.5).setScale(this.playerSpeedScaleX,this.playerSpeedScaleY)
-
-
-                    this.playerSpeedBottom.displayWidth = this.playerSpeedfullWidth
-
-                    this.playerSpeedMiddle = this.add.image(0,0, 'playerSpeed-middle')
-                        .setOrigin(0, 0.5).setScale(this.playerSpeedScaleX,this.playerSpeedScaleY)
-
-
-                    this.playerSpeedMiddle.displayWidth = this.playerSpeedfullWidth
-
-                    this.playerSpeedTop = this.add.image(0,0, 'playerSpeed-top')
-                        .setOrigin(0, 0.5).setScale(this.playerSpeedScaleX,this.playerSpeedScaleY).setVisible(1)
-
-
-                    this.playerSpeedTop.displayWidth = this.playerSpeedfullWidth
-
-                    this.playerSpeedMask = this.add.image(0,0, 'playerSpeed-mask')
-                    .setOrigin(0, 0.5).setScale(this.playerSpeedScaleX,this.playerSpeedScaleY)
-                    .setVisible(0)
-
-                    this.playerSpeedMask.displayWidth = this.playerSpeedfullWidth
-                    this.playerSpeedMask.displayHeight = this.playerSpeedHolder.displayHeight
-
-                    this.playerSpeedMiddle.mask = new Phaser.Display.Masks.BitmapMask(this, this.playerSpeedMask);
-            
-                    this.uiSubModule_setPlayerSpeedPercentage(0.5)
-
-              
-                // Stage Progress
- 
-                    this.stageProgressPosition = 2
-
-                    
-                        this.stageProgressfullWidth = this.playerIconBox.displayWidth * 0.8
-                        this.StageProgressScale = 0.075
-                        this.stageProgressTextSize = 24
-                    
-                    
-
-                    // Holder
-
-                        this.stageProgressMiddleHolder = this.add.image(0,0,'stageProgress-middle-holder')
-                            .setOrigin(0, 0.5).setScale(this.StageProgressScale)
-
-                        this.stageProgressMiddleHolder.displayWidth = this.stageProgressfullWidth
-
-                        this.stageProgressRightCapHolder = this.add.image(0,0, 'stageProgress-right-cap-holder')
-                            .setOrigin(0, 0.5).setScale(this.StageProgressScale)
-                    // Bar
-
-                        this.stageProgressMiddle = this.add.image(0,0, 'stageProgress-middle')
-                            .setOrigin(0, 0.5).setScale(this.StageProgressScale)
-
-                        this.stageProgressMiddle.displayWidth = this.stageProgressfullWidth
-
-                        this.stageProgressRightCap = this.add.image(0,0, 'stageProgress-right-cap')
-                            .setOrigin(0, 0.5).setScale(this.StageProgressScale)
-                
-                        this.uiSubModule_setStageProgressPercentage(this.progress/this.progressToNextLevel)
-
-                    // Icon Holders
-
-                        this.stageProgressIconHolder = this.add.image(0,0, 'stageProgress-icon-holder').setScale(this.StageProgressScale).setOrigin(0.5)
-                        this.levelText = this.add.text(0, 0, Math.floor(this.level)).setFontFamily('Arial').setFontSize(this.stageProgressTextSize * (scaleModX)).setOrigin(0.5)
-                        
-                        this.stageProgressIconHolderC1 = this.add.image(0,0, 'stageProgress-icon-holder').setScale(this.StageProgressScale).setOrigin(0.5)
-                        if (Phaser.Math.Between(0,100)<=30){
-                            this.stageProgressIconC1 = this.add.image(0,0, 'chaser-checkpoint-icon').setScale(this.StageProgressScale)
-                        } else {
-                            this.stageProgressIconC1 = this.add.image(0,0, 'horde-checkpoint-icon').setScale(this.StageProgressScale)
-                        }
-                        
-                        this.stageProgressIconHolderC2 = this.add.image(0,0, 'stageProgress-icon-holder').setScale(this.StageProgressScale).setOrigin(0.5)
-                        if (Phaser.Math.Between(0,100)<=60){
-                            this.stageProgressIconC2 = this.add.image(0,0, 'chaser-checkpoint-icon').setScale(this.StageProgressScale)
-                        } else {
-                            this.stageProgressIconC2 = this.add.image(0,0, 'horde-checkpoint-icon').setScale(this.StageProgressScale)
-                        }
-
-                        this.stageProgressIconHolderC3 = this.add.image(0,0, 'stageProgress-icon-holder').setScale(this.StageProgressScale).setOrigin(0.5)
-                        if (Phaser.Math.Between(0,100)<=30){
-                            this.stageProgressIconC3 = this.add.image(0,0, 'chaser-checkpoint-icon').setScale(this.StageProgressScale)
-                        } else {
-                            this.stageProgressIconC3 = this.add.image(0,0, 'horde-checkpoint-icon').setScale(this.StageProgressScale)
-                        }
-
-
-                        this.stageProgressIconHolderFinalCheckPoint = this.add.image(0,0, 'stageProgress-icon-holder').setScale(this.StageProgressScale).setOrigin(0.5)
-                        this.stageProgressIconFinalCheckPoint = this.add.image(0,0, 'stageProgress-icon').setScale(this.StageProgressScale)
-
-
-                this.hudGroup = this.add.group([
-                    this.playerIconBox,this.playerIcon,this.storedRewardsIcon,this.storedRewardsText,this.goldIcon,
-                    this.goldText,this.skillABox,this.skillAIcon,this.skillBBox, this.skillBIcon,
-                    this.gloryIcon, this.gloryText,
-                    this.lifeIconHolder,this.lifeIcon,this.lifeMiddleHolder,this.lifeRightCapHolder,this.lifeMiddle,this.lifeRightCap,
-                    this.focusIconHolder,this.focusIcon,this.focusMiddleHolder,this.focusRightCapHolder,this.focusMiddle,this.focusRightCap,
-                    this.staminaIconHolder,this.staminaIcon,this.staminaMiddleHolder,this.staminaRightCapHolder,this.staminaMiddle,this.staminaRightCap,
-                    this.playerSpeedHolder,this.playerSpeedBottom,this.playerSpeedMiddle,this.playerSpeedTop,
-                    this.stageProgressIconHolder,this.levelText,this.stageProgressIconHolderC1,this.stageProgressIconC1,
-                    this.stageProgressIconHolderC2,this.stageProgressIconC2,this.stageProgressIconHolderC3,this.stageProgressIconC3,
-                    this.stageProgressMiddleHolder,this.stageProgressRightCapHolder,this.stageProgressMiddle,this.stageProgressRightCap,
-                    this.stageProgressIconHolderFinalCheckPoint,this.stageProgressIconFinalCheckPoint
-                ]
-                )
-
-                this.hudGroup.setDepth(this.hudDepth)
-                // if(this.playerVitalsPosition == 2){
-                //     this.lifeIconHolder.depth = this.player.depth - 1
-                //     this.lifeIcon.depth = this.player.depth - 1
-                //     this.lifeMiddleHolder.depth = this.player.depth - 1
-                //     this.lifeRightCapHolder.depth = this.player.depth - 1  
-                //     this.lifeMiddle.depth = this.player.depth - 1
-                //     this.lifeRightCap.depth = this.player.depth - 1   
-                    
-                //     this.focusIconHolder.depth = this.player.depth - 1
-                //     this.focusIcon.depth = this.player.depth - 1
-                //     this.focusMiddleHolder.depth = this.player.depth - 1
-                //     this.focusRightCapHolder.depth = this.player.depth - 1  
-                //     this.focusMiddle.depth = this.player.depth - 1
-                //     this.focusRightCap.depth = this.player.depth - 1  
-
-                //     this.staminaIconHolder.depth = this.player.depth - 1
-                //     this.staminaIcon.depth = this.player.depth - 1
-                //     this.staminaMiddleHolder.depth = this.player.depth - 1
-                //     this.staminaRightCapHolder.depth = this.player.depth - 1  
-                //     this.staminaMiddle.depth = this.player.depth - 1
-                //     this.staminaRightCap.depth = this.player.depth - 1  
-                // }
-
-                // if (this.playerSpeedPosition == 2){
-                //     this.playerSpeedHolder.depth = this.player.depth - 1
-                //     this.playerSpeedBottom.depth = this.player.depth - 1
-                //     this.playerSpeedMiddle.depth = this.player.depth - 1
-                //     this.playerSpeedTop.depth = this.player.depth - 1
-                // }
-
-
-        // V1 Code End
-
-    
-
-        
-
-        // Checks if player is on Desktop.  If YES, touch controls disabled on initialisation
-
-        // Player Life/Energy VFX
-
-       
-        spotlightPlayerHealth = this.lights.addLight(0, 0, this.player.displayWidth * 10,0xd4b9e2);
-        
-
-
-        // VFX
-
-        // General
-
-        this.anims.create({
-            key: 'whiteHitSmear',
-            frames: this.anims.generateFrameNumbers('whiteHitSmear', { start:0, end: 16}),
-            frameRate: 40,
-            repeat: 0,
-            showOnStart: 1,
-            hideOnComplete: 1
+        this.platformGroup = this.physics.add.group({
+            defaultKey: 'floor',
+            maxSize: 8
         });
 
-        this.anims.create({
-            key: 'deadlyCombatAssaultHitSmear',
-            frames: this.anims.generateFrameNumbers('deadlyCombatAssaultHitSmear', { start:0, end: 16}),
-            frameRate: 20,
-            repeat: 0,
-            showOnStart: 1,
-            hideOnComplete: 1
+        this.spawningPlatform = false
+        this.platformTimer = this.time.addEvent({
+            delay: this.basePlatformSpawnTime * (60 / this.musicBPM) * 1000,
+            callback: this.spawnPlatform, args: [], callbackScope: this,
+            loop: true
         });
 
-        // // Thunder Strike
+        // Entities Initialisation
 
-        // this.anims.create({
-        //     key: 'thunderStrike',
-        //     frames: this.anims.generateFrameNumbers('thunderStrike', { start:0, end: 12}),
-        //     frameRate: 24,
-        //     repeat: 0,
-        //     showOnStart: 1,
-        //     hideOnComplete: 1
-        // });
+        // Enemies
 
-        // this.anims.create({
-        //     key: 'thunderStrikeHitSmear',
-        //     frames: this.anims.generateFrameNumbers('thunderStrikeHitSmear', { start:0, end: 16}),
-        //     frameRate: 20,
-        //     repeat: 0,
-        //     showOnStart: 1,
-        //     hideOnComplete: 1
-        // });
+        this.enemyGroup = this.physics.add.group({
+            defaultKey: 'doomsayer',
+            maxSize: 20
+        });
 
-        // thunderStrikeVFX = this.physics.add.sprite(this.player.x,0).setOffset(0,30)
-        // thunderStrikeVFX.body.checkCollision.none = true
-        // this.physics.add.overlap(thunderStrikeVFX,enemies,enemyHit,null,this)
-        // this.physics.add.collider(ground,thunderStrikeVFX);
-        // thunderStrikeVFX.setCollideWorldBounds(true)
-        // thunderStrikeVFX.setDepth(2).setScale(3.5 * (scaleModX),15 * (scaleModX)).setOrigin(0.5,1)
-        // thunderStrikeLighting = this.lights.addLight(0, 0, 0).setIntensity(5)
-        // thunderStrikeLighting.setColor(0xFFBF1F)
-        
-        // thunderStrikeLighting.intensity = 2
-        // thunderStrikeLighting.x = thunderStrikeVFX.x
-        // thunderStrikeLighting.y = thunderStrikeVFX.y
+        this.enemyHordeGroup = this.physics.add.group({
+            defaultKey: 'doomsayer',
+            maxSize: 20
+        });
+
+        this.enemyChaserGroup = this.physics.add.group({
+            defaultKey: 'doomsayer',
+            maxSize: 20
+        });
+
+        this.closestEnemyOutline = this.add.sprite()
+        this.closestEnemyOutline.setTintFill(0x7851a9).setAlpha(0.75)
 
 
-        // this.anims.create({
-        //     key: 'pBackDash',
-        //     frames: this.anims.generateFrameNames('avatar3',{prefix: 'EVADE_', start: 5, end: 7}),
-        //     frameRate: 12,
-           
-        // });
+        this.spawningEnemy = false
+        this.enemyTimer = this.time.addEvent({ delay: this.baseEnemySpawnTime * (60 / this.musicBPM) * 1000, callback: this.spawnEnemy, args: [], callbackScope: this, loop: true });
 
-        // this.anims.create({
-        //     key: 'pParry',
-        //     frames: this.anims.generateFrameNames('avatar3',{prefix: 'ACTION_1_', start: 9, end: 12}),
-        //     frameRate: 14,
-        //     repeat: 0,
-        //     //delay: 1
-        // });
+        this.physics.add.collider(this.enemyGroup, this.floor);
+        this.physics.add.collider(this.enemyGroup, this.platformGroup);
 
-        // this.anims.create({
-        //     key: 'pAttack1',
-        //     frames: this.anims.generateFrameNames('avatar3',{prefix: 'ACTION_1_', start: 1, end: 8}),
-        //     frameRate: 14,
-        //     repeat: 0,
-        //     //delay: 1
-        // });
+        // Player - To be updated
 
-        // this.anims.create({
-        //     key: 'pAttack2',
-        //     frames: this.anims.generateFrameNames('avatar3',{prefix: 'ACTION_1_', start: 9, end: 12}),
-        //     frameRate: 10,
-        //     repeat: 0,
-        //     //delay: 1
-        // });
+        this.playerScale = 4 * (scaleModX)
+        this.player = this.physics.add.sprite(screenWidth * 1.75, screenHeight * 0.5, 'avatar3').setScale(this.playerScale).setDepth(1).setPipeline('Light2D')
+        this.player.body.setSize(10, 30).setOffset(25, 15).setAllowDrag(true)
+        this.player.setBounce(0.05)
+        this.player.setCollideWorldBounds(true);
+        this.physics.add.collider(this.player, this.floor);
+        this.physics.add.collider(this.player, this.platformGroup)
+        this.physics.add.overlap(this.player, this.enemyGroup, this.enterBattle, null, this)
 
-        // this.anims.create({
-        //     key: 'pBlock',
-        //     frames: this.anims.generateFrameNames('avatar3',{prefix: 'ACTION_1_', start: 8, end: 9}),
-        //     frameRate: 8,
-        //     repeat: 0,
-        //     //delay: 1
-        // });
+        this.playerAttackHitBox = this.add.sprite(this.player.x, this.player.y)
+        this.physics.add.existing(this.playerAttackHitBox, false)
+        this.playerAttackHitBox.body.setAllowGravity(false).setSize(175, 100)
+        this.playerAttackHitBox.body.checkCollision.none = true
+        this.physics.add.overlap(this.playerAttackHitBox, this.enemyGroup, this.enemyTakeHit, null, this)
+        this.playerAttackHitBox.damage = 0
+        this.playerAttackHitBoxVFX = this.add.sprite(this.playerAttackHitBox.x, this.playerAttackHitBox.y)
+        this.playerAttackHitBoxVFX.setSize(175, 100).setDepth(2)
+        this.playerIsHit = false
+        this.playerInAir = false
 
-        // NightBorne Animation
+        this.playerTopSpeed = 2
+
+        this.spotlightPlayerPower = this.lights.addLight(0, 0, this.player.displayWidth * 40, 0x6d54a9, 2.5);
+
+        this.renderAvatarStats()
+
+        // Stage 
+        this.stage.nextCheckPoint = 1
+        this.stage.chaserTimer = 10000
+        this.stage.hordeTimer = 2000
+        this.stage.hordeDifficultyModifier = 1
+        this.stageData.availableCheckPoints = [1,2]
+
+        this.checkPointTimer = this.time.addEvent({ delay: 0, callback: this.updateCheckPointStatus, args: [], callbackScope: this, repeat: 0 });
+
+        this.baseSpeed = screenWidth / (60 * this.baseScreenClearTime * (60 / this.musicBPM))
+        this.speedLevel = 2
+
+
+        // HUD/UI Initialisation
+
+        this.initialise_UI()
+
+        // Stubbed Animations
+
+        this.anims.create({
+            key: 'nightBorneMinion_Idle',
+            frames: this.anims.generateFrameNames('doomsayer', { prefix: 'idle', start: 1, end: 8 }),
+            frameRate: 10,
+            showOnStart: 1,
+            repeat: -1
+        });
 
         this.anims.create({
             key: 'nightBorneMinion_Move',
@@ -1009,14 +639,6 @@ class Badlands extends Phaser.Scene {
             frameRate: 10,
             showOnStart: 1,
             repeat: -1
-        });
-
-        this.anims.create({
-            key: 'nightBorneMinion_Idle',
-            frames: this.anims.generateFrameNames('doomsayer',{prefix: 'idle', start: 1, end: 8}),
-            frameRate: 10,
-            showOnStart: 1,
-            repeat:-1
         });
 
         this.anims.create({
@@ -1031,34 +653,34 @@ class Badlands extends Phaser.Scene {
 
         this.anims.create({
             key: 'nightBorneMinion_Hurt',
-            frames: this.anims.generateFrameNames('doomsayer',{prefix: 'hurt', start: 1, end: 3}),
+            frames: this.anims.generateFrameNames('doomsayer', { prefix: 'hurt', start: 1, end: 3 }),
             frameRate: 10,
             repeat: 0
         });
 
         this.anims.create({
             key: 'nightBorneMinion_Death',
-            frames: this.anims.generateFrameNames('doomsayer',{prefix: 'death', start: 1, end: 10}),
+            frames: this.anims.generateFrameNames('doomsayer', { prefix: 'death', start: 1, end: 10 }),
             frameRate: 12,
             repeat: 0,
             hideOnComplete: 1
-            
+
         });
 
         this.anims.create({
             key: 'nightBorne_Idle',
-            frames: this.anims.generateFrameNumbers('nightBorne', { start:0, end: 8}),
+            frames: this.anims.generateFrameNumbers('nightBorne', { start: 0, end: 8 }),
             frameRate: 12,
             showOnStart: 1,
-            repeat:-1
+            repeat: -1
         });
 
         this.anims.create({
             key: 'nightBorne_Move',
-            frames: this.anims.generateFrameNumbers('nightBorne', { start:23, end: 28}),
+            frames: this.anims.generateFrameNumbers('nightBorne', { start: 23, end: 28 }),
             frameRate: 12,
             showOnStart: 1,
-            repeat:-1
+            repeat: -1
         });
 
         this.anims.create({
@@ -1071,17 +693,17 @@ class Badlands extends Phaser.Scene {
 
         this.anims.create({
             key: 'nightBorne_Hurt',
-            frames: this.anims.generateFrameNumbers('nightBorne', { start:69, end: 73}),
+            frames: this.anims.generateFrameNumbers('nightBorne', { start: 69, end: 73 }),
             frameRate: 12,
             showOnStart: 1,
-            repeat:0
+            repeat: 0
         });
 
         this.anims.create({
             key: 'nightBorne_Death',
-            frames: this.anims.generateFrameNumbers('nightBorne', { start:91, end: 115}),
+            frames: this.anims.generateFrameNumbers('nightBorne', { start: 91, end: 115 }),
             frameRate: 23,
-            repeat:0,
+            repeat: 0,
             hideOnComplete: 1
         });
 
@@ -1141,1306 +763,1685 @@ class Badlands extends Phaser.Scene {
             hideOnComplete: 1
         });
 
-        
+        this.anims.create({
+            key: 'whiteHitSmear',
+            frames: this.anims.generateFrameNumbers('whiteHitSmear', { start: 0, end: 16 }),
+            frameRate: 40,
+            repeat: 0,
+            showOnStart: 1,
+            hideOnComplete: 1
+        });
+
+        this.anims.create({
+            key: 'deadlyCombatAssaultHitSmear',
+            frames: this.anims.generateFrameNumbers('deadlyCombatAssaultHitSmear', { start: 0, end: 16 }),
+            frameRate: 40,
+            repeat: 0,
+            showOnStart: 1,
+            hideOnComplete: 1
+        });
+
+
+        // V1 Code End
 
         
+        //spotlightPlayerHealth = this.lights.addLight(0, 0, this.player.displayWidth * 10,0xd4b9e2);
+
+
+
+        this.debugText = this.add.text(this.lifeIconHolder.x + screenWidth * 0.3, screenHeight * 0.1, this.actionPower, { fontFamily: 'Gothic', fontStyle: 'bold', align: 'left' });
+        this.debugText.setFontSize(32).setDepth(5)//.setColor('#708421')
+
+
     }
 
-        // Initialisation Functions
-        loadStageBG(stageAssetName,bgLayers,fgLayers){
+    // Initialisation Functions
+    loadStageBG(stageAssetName, bgLayers, fgLayers) {
 
-                
-                
 
-            for (var i = 1; i < bgLayers + 1; i++){
-                console.log('bgL'+ i, this.stageData.stageAssetPathRoot + 'BG' + this.stageData.stageAssetName + i + '.png')
-                this.load.image('bgL'+ i, this.stageData.stageAssetPathRoot + 'BG' + stageAssetName + i + '.png');
 
-            }
 
-            for (var i = 1; i < fgLayers + 1; i++){
-                console.log('fgL'+ i, this.stageData.stageAssetPathRoot + 'FG' + this.stageData.stageAssetName + i+ '.png')
-                this.load.image('fgL'+ i, this.stageData.stageAssetPathRoot + 'FG' + stageAssetName + i + '.png');
+        for (var i = 1; i < bgLayers + 1; i++) {
+            console.log('bgL' + i, this.stageData.stageAssetPathRoot + 'BG' + this.stageData.stageAssetName + i + '.png')
+            this.load.image('bgL' + i, this.stageData.stageAssetPathRoot + 'BG' + stageAssetName + i + '.png');
 
+        }
+
+        for (var i = 1; i < fgLayers + 1; i++) {
+            console.log('fgL' + i, this.stageData.stageAssetPathRoot + 'FG' + this.stageData.stageAssetName + i + '.png')
+            this.load.image('fgL' + i, this.stageData.stageAssetPathRoot + 'FG' + stageAssetName + i + '.png');
+
+        }
+
+    }
+
+    renderStageBG(bgLayers, bgScroll, floorMin, floorMax, floorColour, floorVisible, fgLayers, fgScroll) {
+        for (var i = bgLayers; i > 0; i--) {
+
+            this.textureToApply = this.textures.get('bgL' + i).getSourceImage()
+
+            this.textureWidthScaleMod = screenWidth / this.textureToApply.width
+            this.textureHeightScaleMod = screenHeight / this.textureToApply.height
+
+            window['bgL' + i] = this.add.tileSprite(0, 0, screenWidth, screenHeight).setScrollFactor(0).setOrigin(0).setPipeline('Light2D')
+            window['bgL' + i].setTexture('bgL' + i).setTileScale(this.textureWidthScaleMod, this.textureHeightScaleMod)
+            window['bgL' + i + 'ScrollMod'] = + bgScroll[i - 1]
+
+        }
+
+        this.floorHeight = Phaser.Math.FloatBetween(floorMin, floorMax)
+
+        this.floor = this.physics.add.image(0, screenHeight * this.floorHeight, 'floor').setScale((screenWidth * 5) / 400, 4).setImmovable(true).refreshBody().setOrigin(0)
+        this.floor.body.setAllowGravity(false)
+        this.floor.setTint(floorColour)
+        this.floor.setVisible(floorVisible)
+
+        for (var i = fgLayers; i > 0; i--) {
+
+            this.textureToApply = this.textures.get('fgL' + i).getSourceImage()
+
+            this.textureWidthScaleMod = screenWidth / this.textureToApply.width
+            this.textureHeightScaleMod = screenHeight / this.textureToApply.height
+
+            window['fgL' + i] = this.add.tileSprite(0, 0, screenWidth, screenHeight).setScrollFactor(0).setOrigin(0).setPipeline('Light2D').setDepth(2)//.setAlpha(this.fgAlpha[i-1])
+            window['fgL' + i].setTexture('fgL' + i).setTileScale(this.textureWidthScaleMod, this.textureHeightScaleMod)
+            window['fgL' + i + 'ScrollMod'] = + fgScroll[i - 1]
+
+        }
+    }
+
+    initialise_DayNightSystem() {
+        // Day Night System Function
+        console.log('Initialising Day/Night System')
+        // Default Settings
+
+        this.morningAmbientLightColourDefault = 0xE49759
+        this.morningLightSourceColourDefault = 0xE49759
+        this.morningLightSourceMinXDefault = 0.75
+        this.morningLightSourceMaxXDefault = 1
+        this.morningLightSourceMinYDefault = 0.25
+        this.morningLightSourceMaxYDefault = 0.5
+
+        this.dayAmbientLightColourDefault = 0xfdfbd3
+        this.dayLightSourceColourDefault = 0xfdfbd3
+        this.dayLightSourceMinXDefault = 0.5
+        this.dayLightSourceMaxXDefault = 0.75
+        this.dayLightSourceMinYDefault = 0
+        this.dayLightSourceMaxYDefault = 0.25
+
+        this.eveningAmbientLightColourDefault = 0xFF8866
+        this.eveningLightSourceColourDefault = 0xFF8866
+        this.eveningLightSourceMinXDefault = 0.25
+        this.eveningLightSourceMaxXDefault = 0.5
+        this.eveningLightSourceMinYDefault = 0.25
+        this.eveningLightSourceMaxYDefault = 0.5
+
+        this.nightAmbientLightColourDefault = 0x252fc1//0x212aab//0x181f81//0x141a6b//0x131862
+        this.nightLightSourceColourDefault = 0x131862
+        this.nightLightSourceMinXDefault = 0
+        this.nightLightSourceMaxXDefault = 1
+        this.nightLightSourceMinYDefault = 0
+        this.nightLightSourceMaxYDefault = 0.25
+
+        // Store import stage parameters
+
+        // Morning Arrays
+
+        this.morningParametersArray = [this.morningAmbientLightColour,
+        this.morningLightSourceColour,
+        this.morningLightSourceMinX,
+        this.morningLightSourceMaxX,
+        this.morningLightSourceMinY,
+        this.morningLightSourceMaxY]
+
+
+        this.morningDefaultParametersArray = [this.morningAmbientLightColourDefault,
+        this.morningLightSourceColourDefault,
+        this.morningLightSourceMinXDefault,
+        this.morningLightSourceMaxXDefault,
+        this.morningLightSourceMinYDefault,
+        this.morningLightSourceMaxYDefault]
+
+        this.morningSettingsArray = [this.stageData.morningAmbientLightColour,
+        this.stageData.morningLightSourceColour,
+        this.stageData.morningLightSourceMinX,
+        this.stageData.morningLightSourceMaxX,
+        this.stageData.morningLightSourceMinY,
+        this.stageData.morningLightSourceMaxY]
+
+
+        // Day Arrays
+
+        this.dayParametersArray = [this.dayAmbientLightColour,
+        this.dayLightSourceColour,
+        this.dayLightSourceMinX,
+        this.dayLightSourceMaxX,
+        this.dayLightSourceMinY,
+        this.dayLightSourceMaxY]
+
+        this.dayDefaultParametersArray = [this.dayAmbientLightColourDefault,
+        this.dayLightSourceColourDefault,
+        this.dayLightSourceMinXDefault,
+        this.dayLightSourceMaxXDefault,
+        this.dayLightSourceMinYDefault,
+        this.dayLightSourceMaxYDefault]
+
+        this.daySettingsArray = [this.stageData.dayAmbientLightColour,
+        this.stageData.dayLightSourceColour,
+        this.stageData.dayLightSourceMinX,
+        this.stageData.dayLightSourceMaxX,
+        this.stageData.dayLightSourceMinY,
+        this.stageData.dayLightSourceMaxY]
+        // Evening Arrays
+
+        this.eveningParametersArray = [this.eveningAmbientLightColour,
+        this.eveningLightSourceColour,
+        this.eveningLightSourceMinX,
+        this.eveningLightSourceMaxX,
+        this.eveningLightSourceMinY,
+        this.eveningLightSourceMaxY]
+
+        this.eveningDefaultParametersArray = [this.eveningAmbientLightColourDefault,
+        this.eveningLightSourceColourDefault,
+        this.eveningLightSourceMinXDefault,
+        this.eveningLightSourceMaxXDefault,
+        this.eveningLightSourceMinYDefault,
+        this.eveningLightSourceMaxYDefault]
+
+        this.eveningSettingsArray = [this.stageData.eveningAmbientLightColour,
+        this.stageData.eveningLightSourceColour,
+        this.stageData.eveningLightSourceMinX,
+        this.stageData.eveningLightSourceMaxX,
+        this.stageData.eveningLightSourceMinY,
+        this.stageData.eveningLightSourceMaxY]
+        // Night Arrays
+
+        this.nightParametersArray = [this.nightAmbientLightColour,
+        this.nightLightSourceColour,
+        this.nightLightSourceMinX,
+        this.nightLightSourceMaxX,
+        this.nightLightSourceMinY,
+        this.nightLightSourceMaxY]
+
+        this.nightDefaultParametersArray = [this.nightAmbientLightColourDefault,
+        this.nightLightSourceColourDefault,
+        this.nightLightSourceMinXDefault,
+        this.nightLightSourceMaxXDefault,
+        this.nightLightSourceMinYDefault,
+        this.nightLightSourceMaxYDefault]
+
+        this.nightSettingsArray = [this.stageData.nightAmbientLightColour,
+        this.stageData.nightLightSourceColour,
+        this.stageData.nightLightSourceMinX,
+        this.stageData.nightLightSourceMaxX,
+        this.stageData.nightLightSourceMinY,
+        this.stageData.nightLightSourceMaxY]
+
+        //  Load Parameters      
+        for (var i = 0; i < this.morningParametersArray.length; i++) {
+            if (this.morningSettingsArray[i] == null) {
+                this.morningParametersArray[i] = this.morningDefaultParametersArray[i]
+            } else {
+                this.morningParametersArray[i] = this.morningSettingsArray[i]
             }
 
         }
 
-        renderStageBG(bgLayers,bgScroll,floorMin,floorMax,floorColour,floorVisible,fgLayers,fgScroll){
-            for (var i = bgLayers; i > 0; i--){
-                    
-                this.textureToApply = this.textures.get('bgL' + i).getSourceImage()
-            
-                this.textureWidthScaleMod = screenWidth / this.textureToApply.width
-                this.textureHeightScaleMod = screenHeight / this.textureToApply.height     
-
-                window['bgL'+i] =  this.add.tileSprite(0,0,screenWidth,screenHeight).setScrollFactor(0).setOrigin(0).setPipeline('Light2D')
-                window['bgL'+i].setTexture('bgL'+i).setTileScale(this.textureWidthScaleMod,this.textureHeightScaleMod)
-                window['bgL'+i+'ScrollMod'] = + bgScroll[i - 1]
-
-            }
-
-            this.floorHeight = Phaser.Math.FloatBetween(floorMin,floorMax)
-            
-            this.floor = this.physics.add.image(0, screenHeight * this.floorHeight,'floor').setScale((screenWidth * 5)/400, 4).setImmovable(true).refreshBody().setOrigin(0)
-            this.floor.body.setAllowGravity(false)
-            this.floor.setTint(floorColour)
-            this.floor.setVisible(floorVisible)
-
-            for (var i = fgLayers; i > 0; i--){
-
-                this.textureToApply = this.textures.get('fgL' + i).getSourceImage()
-            
-                this.textureWidthScaleMod = screenWidth / this.textureToApply.width
-                this.textureHeightScaleMod = screenHeight / this.textureToApply.height
-            
-                window['fgL'+i] =  this.add.tileSprite(0,0,screenWidth,screenHeight).setScrollFactor(0).setOrigin(0).setPipeline('Light2D').setDepth(2)//.setAlpha(this.fgAlpha[i-1])
-                window['fgL'+i].setTexture('fgL'+i).setTileScale(this.textureWidthScaleMod,this.textureHeightScaleMod)
-                window['fgL'+i+'ScrollMod'] = + fgScroll[i - 1]
-                
+        for (var i = 0; i < this.dayParametersArray.length; i++) {
+            if (this.daySettingsArray[i] == null) {
+                this.dayParametersArray[i] = this.dayDefaultParametersArray[i]
+            } else {
+                this.dayParametersArray[i] = this.daySettingsArray[i]
             }
         }
 
-        initialise_DayNightSystem(game){
-            // Day Night System Function
-                console.log('Initialising Day/Night System')
-                // Default Settings
-
-                    this.morningAmbientLightColourDefault = 0xE49759
-                    this.morningLightSourceColourDefault = 0xE49759
-                    this.morningLightSourceMinXDefault = 0.75
-                    this.morningLightSourceMaxXDefault = 1
-                    this.morningLightSourceMinYDefault = 0.25
-                    this.morningLightSourceMaxYDefault = 0.5
-
-                    this.dayAmbientLightColourDefault = 0xfdfbd3
-                    this.dayLightSourceColourDefault = 0xfdfbd3
-                    this.dayLightSourceMinXDefault = 0.5
-                    this.dayLightSourceMaxXDefault = 0.75
-                    this.dayLightSourceMinYDefault = 0
-                    this.dayLightSourceMaxYDefault = 0.25
-
-                    this.eveningAmbientLightColourDefault = 0xFF8866
-                    this.eveningLightSourceColourDefault = 0xFF8866
-                    this.eveningLightSourceMinXDefault = 0.25
-                    this.eveningLightSourceMaxXDefault = 0.5
-                    this.eveningLightSourceMinYDefault = 0.25
-                    this.eveningLightSourceMaxYDefault = 0.5
-
-                    this.nightAmbientLightColourDefault = 0x252fc1//0x212aab//0x181f81//0x141a6b//0x131862
-                    this.nightLightSourceColourDefault = 0x131862
-                    this.nightLightSourceMinXDefault = 0
-                    this.nightLightSourceMaxXDefault = 1
-                    this.nightLightSourceMinYDefault = 0
-                    this.nightLightSourceMaxYDefault = 0.25
-
-            // Store import stage parameters
-
-                // Morning Arrays
-                
-                    this.morningParametersArray = [this.morningAmbientLightColour,
-                                                    this.morningLightSourceColour,
-                                                    this.morningLightSourceMinX,
-                                                    this.morningLightSourceMaxX,
-                                                    this.morningLightSourceMinY,
-                                                    this.morningLightSourceMaxY]
-
-
-                    this.morningDefaultParametersArray = [this.morningAmbientLightColourDefault,
-                                                        this.morningLightSourceColourDefault,
-                                                        this.morningLightSourceMinXDefault,
-                                                        this.morningLightSourceMaxXDefault,
-                                                        this.morningLightSourceMinYDefault,
-                                                        this.morningLightSourceMaxYDefault]
-
-                    this.morningSettingsArray = [this.stageData.morningAmbientLightColour,
-                                                this.stageData.morningLightSourceColour,
-                                                this.stageData.morningLightSourceMinX,
-                                                this.stageData.morningLightSourceMaxX,
-                                                this.stageData.morningLightSourceMinY,
-                                                this.stageData.morningLightSourceMaxY]
-                                      
-                
-                // Day Arrays
-
-                    this.dayParametersArray = [this.dayAmbientLightColour,
-                                                this.dayLightSourceColour,
-                                                this.dayLightSourceMinX,
-                                                this.dayLightSourceMaxX,
-                                                this.dayLightSourceMinY,
-                                                this.dayLightSourceMaxY]
-
-                    this.dayDefaultParametersArray = [this.dayAmbientLightColourDefault,
-                                                        this.dayLightSourceColourDefault,
-                                                        this.dayLightSourceMinXDefault,
-                                                        this.dayLightSourceMaxXDefault,
-                                                        this.dayLightSourceMinYDefault,
-                                                        this.dayLightSourceMaxYDefault]   
-                                                        
-                    this.daySettingsArray = [this.stageData.dayAmbientLightColour,
-                        this.stageData.dayLightSourceColour,
-                        this.stageData.dayLightSourceMinX,
-                        this.stageData.dayLightSourceMaxX,
-                        this.stageData.dayLightSourceMinY,
-                        this.stageData.dayLightSourceMaxY]
-                // Evening Arrays
-
-                    this.eveningParametersArray = [this.eveningAmbientLightColour,
-                                                this.eveningLightSourceColour,
-                                                this.eveningLightSourceMinX,
-                                                this.eveningLightSourceMaxX,
-                                                this.eveningLightSourceMinY,
-                                                this.eveningLightSourceMaxY]
-
-                    this.eveningDefaultParametersArray = [this.eveningAmbientLightColourDefault,
-                                                        this.eveningLightSourceColourDefault,
-                                                        this.eveningLightSourceMinXDefault,
-                                                        this.eveningLightSourceMaxXDefault,
-                                                        this.eveningLightSourceMinYDefault,
-                                                        this.eveningLightSourceMaxYDefault]
-
-                    this.eveningSettingsArray = [this.stageData.eveningAmbientLightColour,
-                        this.stageData.eveningLightSourceColour,
-                        this.stageData.eveningLightSourceMinX,
-                        this.stageData.eveningLightSourceMaxX,
-                        this.stageData.eveningLightSourceMinY,
-                        this.stageData.eveningLightSourceMaxY]
-                // Night Arrays
-
-                    this.nightParametersArray = [this.nightAmbientLightColour,
-                                                this.nightLightSourceColour,
-                                                this.nightLightSourceMinX,
-                                                this.nightLightSourceMaxX,
-                                                this.nightLightSourceMinY,
-                                                this.nightLightSourceMaxY]
-
-                    this.nightDefaultParametersArray = [this.nightAmbientLightColourDefault,
-                                                        this.nightLightSourceColourDefault,
-                                                        this.nightLightSourceMinXDefault,
-                                                        this.nightLightSourceMaxXDefault,
-                                                        this.nightLightSourceMinYDefault,
-                                                        this.nightLightSourceMaxYDefault]
-                                                        
-                    this.nightSettingsArray = [this.stageData.nightAmbientLightColour,
-                        this.stageData.nightLightSourceColour,
-                        this.stageData.nightLightSourceMinX,
-                        this.stageData.nightLightSourceMaxX,
-                        this.stageData.nightLightSourceMinY,
-                        this.stageData.nightLightSourceMaxY]
-
-                //  Load Parameters      
-                    for (var i = 0; i < this.morningParametersArray.length;i++){
-                        if(this.morningSettingsArray[i] == null){
-                            this.morningParametersArray[i] = this.morningDefaultParametersArray[i]
-                        } else {
-                            this.morningParametersArray[i] = this.morningSettingsArray[i]
-                        } 
-                        
-                    }
-
-                    for (var i = 0; i < this.dayParametersArray.length;i++){
-                        if(this.daySettingsArray[i] == null){
-                            this.dayParametersArray[i] = this.dayDefaultParametersArray[i]
-                        } else {
-                            this.dayParametersArray[i] = this.daySettingsArray[i]
-                        }   
-                    }
-
-                    for (var i = 0; i < this.eveningParametersArray.length;i++){
-                        if(this.eveningSettingsArray[i] == null){
-                            this.eveningParametersArray[i] = this.eveningDefaultParametersArray[i]
-                        } else {
-                            this.eveningParametersArray[i] = this.eveningSettingsArray[i]
-                        }   
-                    }
-
-                    for (var i = 0; i < this.nightParametersArray.length;i++){
-                        if(this.nightSettingsArray[i] == null){
-                            this.nightParametersArray[i] = this.nightDefaultParametersArray[i]
-                        } else {
-                            this.nightParametersArray[i] = this.nightSettingsArray[i]
-                        }   
-                    }
-                
-                // Parameter Arrays
-
-                        this.ambientLightColourArray = [this.morningParametersArray[0],
-                                                        this.dayParametersArray[0],
-                                                        this.eveningParametersArray[0],
-                                                        this.nightParametersArray[0]]
-                        
-                        this.lightSourceColourArray = [this.morningParametersArray[1],
-                                                        this.dayParametersArray[1],
-                                                        this.eveningParametersArray[1],
-                                                        this.nightParametersArray[1]]
-
-                        this.lightSourceMinXArray = [this.morningParametersArray[2],
-                                                    this.dayParametersArray[2],
-                                                    this.eveningParametersArray[2],
-                                                    this.nightParametersArray[2]]
-
-                        this.lightSourceMaxXArray = [this.morningParametersArray[3],
-                                                    this.dayParametersArray[3],
-                                                    this.eveningParametersArray[3],
-                                                    this.nightParametersArray[3]]                                                
-
-                        this.lightSourceMinYArray = [this.morningParametersArray[4],
-                                                        this.dayParametersArray[4],
-                                                        this.eveningParametersArray[4],
-                                                        this.nightParametersArray[4]]
-        
-                        this.lightSourceMaxYArray = [this.morningParametersArray[5],
-                                                        this.dayParametersArray[5],
-                                                        this.eveningParametersArray[5],
-                                                        this.nightParametersArray[5]]  
-
-                // Apply Parameter Arrays
-
-                    // Ambient Light
-                        this.ambientLightColour = this.ambientLightColourArray[this.stageData.timeCode - 1]
-                    // Light Source
-                        this.lightSourceColour = this.lightSourceColourArray[this.stageData.timeCode - 1]
-                        this.lightSourcePositionX = Phaser.Math.Between((screenWidth * this.lightSourceMinXArray[this.stageData.timeCode - 1]),
-                                                                        (screenWidth * this.lightSourceMaxXArray[this.stageData.timeCode - 1]))
-                        this.lightSourcePositionY = Phaser.Math.Between((screenHeight * this.lightSourceMinYArray[this.stageData.timeCode - 1]),
-                                                                        (screenHeight * this.lightSourceMaxYArray[this.stageData.timeCode - 1]))
-
-                    console.log('Time Period: ' + this.stageData.timeCode)
-                    console.log('Ambient Colour: ' + this.ambientLightColour)
-                    console.log('Light Source Colour: ' + this.lightSourceColour)
-                    console.log(this.camera.scrollY)
-                    console.log('Light Position X: ' + this.lightSourcePositionX + '\nLight Position Y: ' + this.lightSourcePositionY +' (' + this.lightSourceMinYArray[this.stageData.timeCode - 1]*100 + '% - ' + this.lightSourceMaxYArray[this.stageData.timeCode - 1]*100 + '%)')
-                
-                // Initialise Day/Night System 
-                    
-                this.lights.enable().setAmbientColor(this.ambientLightColour);
-                this.lightSource = this.lights.addLight(this.camera.scrollX + this.lightSourcePositionX, this.camera.scrollY + this.lightSourcePositionY, screenWidth,this.lightSourceColour, 1);    
-            
+        for (var i = 0; i < this.eveningParametersArray.length; i++) {
+            if (this.eveningSettingsArray[i] == null) {
+                this.eveningParametersArray[i] = this.eveningDefaultParametersArray[i]
+            } else {
+                this.eveningParametersArray[i] = this.eveningSettingsArray[i]
+            }
         }
 
+        for (var i = 0; i < this.nightParametersArray.length; i++) {
+            if (this.nightSettingsArray[i] == null) {
+                this.nightParametersArray[i] = this.nightDefaultParametersArray[i]
+            } else {
+                this.nightParametersArray[i] = this.nightSettingsArray[i]
+            }
+        }
 
-renderAvatarStats() {
+        // Parameter Arrays
 
-    // Get the base data and avatar data from the DataModule Scene
-    var baseData = this.scene.get('DataModule').baseData;
-    var avatarData = this.scene.get('DataModule').avatarData;
-   // var skillData = this.scene.get('DataModule').skillData;
+        this.ambientLightColourArray = [this.morningParametersArray[0],
+        this.dayParametersArray[0],
+        this.eveningParametersArray[0],
+        this.nightParametersArray[0]]
 
-    
-    // Render Avatar with final stats ahead of run
+        this.lightSourceColourArray = [this.morningParametersArray[1],
+        this.dayParametersArray[1],
+        this.eveningParametersArray[1],
+        this.nightParametersArray[1]]
 
-    // Life
+        this.lightSourceMinXArray = [this.morningParametersArray[2],
+        this.dayParametersArray[2],
+        this.eveningParametersArray[2],
+        this.nightParametersArray[2]]
+
+        this.lightSourceMaxXArray = [this.morningParametersArray[3],
+        this.dayParametersArray[3],
+        this.eveningParametersArray[3],
+        this.nightParametersArray[3]]
+
+        this.lightSourceMinYArray = [this.morningParametersArray[4],
+        this.dayParametersArray[4],
+        this.eveningParametersArray[4],
+        this.nightParametersArray[4]]
+
+        this.lightSourceMaxYArray = [this.morningParametersArray[5],
+        this.dayParametersArray[5],
+        this.eveningParametersArray[5],
+        this.nightParametersArray[5]]
+
+        // Apply Parameter Arrays
+
+        // Ambient Light
+        this.ambientLightColour = this.ambientLightColourArray[this.stageData.timeCode - 1]
+        // Light Source
+        this.lightSourceColour = this.lightSourceColourArray[this.stageData.timeCode - 1]
+        this.lightSourcePositionX = Phaser.Math.Between((screenWidth * this.lightSourceMinXArray[this.stageData.timeCode - 1]),
+            (screenWidth * this.lightSourceMaxXArray[this.stageData.timeCode - 1]))
+        this.lightSourcePositionY = Phaser.Math.Between((screenHeight * this.lightSourceMinYArray[this.stageData.timeCode - 1]),
+            (screenHeight * this.lightSourceMaxYArray[this.stageData.timeCode - 1]))
+
+        console.log('Time Period: ' + this.stageData.timeCode)
+        console.log('Ambient Colour: ' + this.ambientLightColour)
+        console.log('Light Source Colour: ' + this.lightSourceColour)
+        console.log(this.camera.scrollY)
+        console.log('Light Position X: ' + this.lightSourcePositionX + '\nLight Position Y: ' + this.lightSourcePositionY + ' (' + this.lightSourceMinYArray[this.stageData.timeCode - 1] * 100 + '% - ' + this.lightSourceMaxYArray[this.stageData.timeCode - 1] * 100 + '%)')
+
+        // Initialise Day/Night System 
+
+        this.lights.enable().setAmbientColor(this.ambientLightColour);
+        this.lightSource = this.lights.addLight(this.camera.scrollX + this.lightSourcePositionX, this.camera.scrollY + this.lightSourcePositionY, screenWidth, this.lightSourceColour, 1);
+
+    }
+
+
+    renderAvatarStats() {
+
+        // Get the base data and avatar data from the DataModule Scene
+        var baseData = this.scene.get('DataModule').baseData;
+        var avatarData = this.scene.get('DataModule').avatarData;
+        // var skillData = this.scene.get('DataModule').skillData;
+
+
+        // Render Avatar with final stats ahead of run
+
+        // Life
         this.player.lifeCapacity = baseData.lifeCapacity + (baseData.lifeCapacityBonusMax * avatarData.lifeCapacityBonusPercent);
 
         this.player.lifeCurrent = this.player.lifeCapacity * avatarData.lifeStartModifier;
-        
+
         this.player.lifeRegen = baseData.lifeRegen * avatarData.lifeRegenModifier;
-    // Focus
+        // Focus
         this.player.focusCapacity = baseData.focusCapacity + (baseData.focusCapacityBonusMax * avatarData.focusCapacityBonusPercent);
 
-        this.player.focusCurrent = this.player.focusCapacity * Math.min(1,avatarData.focusCapacityBonus)
-        
+        this.player.focusCurrent = this.player.focusCapacity * Math.min(1, avatarData.focusCapacityBonus)
+
         this.player.focusRegen = baseData.focusRegen * avatarData.focusRegenModifier;
-    // Stamina
+        // Stamina
         this.player.staminaCapacity = baseData.staminaCapacity + (baseData.staminaCapacityBonusMax * avatarData.staminaCapacityBonusPercent);
 
-        this.player.staminaCurrent = this.player.staminaCapacity * Math.min(1,avatarData.staminaCapacityBonus)
-        
+        this.player.staminaCurrent = this.player.staminaCapacity * Math.min(1, avatarData.staminaCapacityBonus)
+
         this.player.staminaRegen = baseData.staminaRegen * avatarData.staminaRegenModifier;
 
-    // Damage
+        // Damage
 
         this.player.actionPower = baseData.actionPower * avatarData.actionPowerModifier
         this.player.skill1Power = (baseData.skillPower * avatarData.skillPowerModifier) * 1//avatarData.skill1Modifier  
         this.player.skill2Power = (baseData.skillPower * avatarData.skillPowerModifier) * 0.65//avatarData.skill2Modifier  
-        this.player.critChance =  baseData.critChance * avatarData.critChanceModifier
-        this.player.critDamage =  baseData.critDamage * avatarData.critDamageModifier
-        
-        
-    
-    this.player.travelSpeedMaxModifier = avatarData.travelSpeedMaxModifier;
-    
-    this.player.gloryGenerationModifier = avatarData.gloryGenerationModifier;
+        this.player.critChance = baseData.critChance * avatarData.critChanceModifier
+        this.player.critDamage = baseData.critDamage * avatarData.critDamageModifier
 
-    this.player.goldGenerationModifier = avatarData.goldGenerationModifier;
+        this.player.travelSpeedMaxModifier = avatarData.travelSpeedMaxModifier;
 
-    // States
+        this.player.gloryGenerationModifier = avatarData.gloryGenerationModifier;
 
-    this.player.canBeHit = true
-    this.player.momentum = 0
-    this.player.lifeRegenActive = true
-    this.player.focusRegenActive = true
-    this.player.staminaRegenActive = true
+        this.player.goldGenerationModifier = avatarData.goldGenerationModifier;
+
+        // States
+
+        this.player.canBeHit = true
+        this.player.momentum = 0
+        this.player.lifeRegenActive = true
+        this.player.focusRegenActive = true
+        this.player.staminaRegenActive = true
 
 
-    console.log(this.player)
+        console.log(this.player)
 
-}
-
-
-
-
-stageModule(){
-    // Stage Progress
-
-    if (this.gameMode == 0 && this.stageProgressEnabled){
-
-        this.baseProgressRate = (this.baseZoneLength / this.baseZoneClearTime) / 60
-        this.progress += this.baseProgressRate * this.playerSpeed
-
-        // Glory Modifier
-        if (this.player.x > this.camera.scrollX + (screenWidth * 0.6)){
-            this.gloryModifier = 1.25
-        } else if (this.player.x < this.camera.scrollX + (screenWidth * 0.3)){
-            this.gloryModifier = 0.75
-        } else {
-            this.gloryModifier = 1
-        }
-        // Glory Accumulation
-        this.glory += this.baseProgressRate  * this.playerSpeed * this.gloryModifier
     }
 
-    if(this.progress >= this.stage.nextCheckPoint * this.progressToNextCheckPoint && this.stageProgressEnabled){
-        //this.stageProgressEnabled = false
 
-        // Trigger loadCheckpoint function
-        // Rolls for checkpoint type based on this.stageData.availableCheckpoints array (containing valid types for stage)
-        // Sets this.stage.checkpointType to rolled type 
-        // Sets gameMode based on checkpoint type
-        // Run checkpointSubModule that activates timer based on checkpoint type
-         // Type  1
-             // Timer delay set based on this.stage.chaserTimer.  Repeat set to 0 
-             // Timer delay set based on this.stage.hordeTimer. Repeat set to -1
 
-             // Timer triggers checkPoint Function that:
-             // Type 1 - Switches stage.checkpointType back to 0, +1 to this.stage.nextCheckPoint and this.stageProgressEnabled to true
-             // Type 2 - Checks active enemies against stage.maxHordeSize.  If maxHordzise > 0 and active >= X% of maxHordeSize then increases stage.hordeDifficultyModifier (X%, eg inflation)
+
+    stageModule() {
+        // Stage Progress
+
+        if (this.gameMode == 0 && this.stageProgressEnabled) {
+
+            this.baseProgressRate = (this.baseZoneLength / this.baseZoneClearTime) / 60
+            this.progress += this.baseProgressRate * this.playerSpeed
+
+            // Glory Modifier
+            if (this.player.x > this.camera.scrollX + (screenWidth * 0.6)) {
+                this.gloryModifier = 1.25
+            } else if (this.player.x < this.camera.scrollX + (screenWidth * 0.3)) {
+                this.gloryModifier = 0.75
+            } else {
+                this.gloryModifier = 1
+            }
+            // Glory Accumulation
+            this.glory += this.baseProgressRate * this.playerSpeed * this.gloryModifier
+        }
+
+        if (this.progress >= this.stage.nextCheckPoint * this.progressToNextCheckPoint && this.stageProgressEnabled && !this.stage.complete) {
+
+            // Trigger loadCheckpoint function
+            // Rolls for checkpoint type based on this.stageData.availableCheckpoints array (containing valid types for stage)
+            // Sets this.stage.checkpointType to rolled type 
+            // Sets gameMode based on checkpoint type
+            // Activates checkpoint timer that run updateCheckpointStatus based on checkpoint type
+
+            // Type 1 - Timer delay set based on this.stage.chaserTimer.  Repeat set to 0 
+            // Type 2 -Timer delay set based on this.stage.hordeTimer. Repeat set to -1
+
+            // Timer triggers checkPoint Function that:
+            // Type 1 - Switches stage.checkpointType back to 0, +1 to this.stage.nextCheckPoint and this.stageProgressEnabled to true
+            // Type 2 - Checks active enemies against stage.maxHordeSize.  If maxHordzise > 0 and active >= X% of maxHordeSize then increases stage.hordeDifficultyModifier (X%, eg inflation)
             //           else if active == 0, then reset diffuclity mod, switches mode back to 0 (mode and checkpointtype) and repeat to 0 
+
+            if (this.stage.nextCheckPoint === 4){
+                this.loadFinalCheckPoint()
+            } else {
+                this.loadCheckPoint()
+            }
             
 
+            
+
+        }
+
+        // Next Stage
+        if (this.progress >= this.progressToNextLevel && this.stage.complete == true) {
+            this.progress = 0
+            this.level += 1
+            this.stage.nextCheckPoint = 1
+            this.stage.complete = false
+
+            this.progressToNextLevel *= 1.08
+            this.progressToNextCheckPoint = this.progressToNextLevel * 0.25
+        }
+
+        // Return To Kianova
+        if (this.endRun) {
+
+
+            this.recordScores()
+
+            this.returnAvatar()
+
+
+
+
+        }
+
     }
 
-    // Next Stage
-    if (this.progress >= this.progressToNextLevel){
-        this.progress = 0
-        this.level += 1
-
-        this.progressToNextLevel *= 1.08
-        this.progressToNextCheckPoint = this.progressToNextLevel * 0.25 
-    }
-
-    // Return To Kianova
-    if (this.endRun){
-        
-    
-        this.recordScores()
-
-        this.returnAvatar()
-
-        
-        
-        
-    }
-
-}
-
-    recordScores(){     
+    recordScores() {
         this.stageScore = this.level
         this.gloryScore = this.glory
         this.rewardsScore = this.rewards
         this.goldScore = this.gold
 
-}
+    }
 
-    returnAvatar(){
-        if(!this.return){
+    returnAvatar() {
+        if (!this.return) {
             this.return = true
 
             this.camera.fadeOut(4000)
-        
+
             this.camera.on('camerafadeoutcomplete', function () {
-                if (this.scene.key == 'Simulacrum'){
+                if (this.scene.key == 'Simulacrum') {
                     this.scene.restart()
                 } else {
-                    this.scene.run('Kianova',{regionID:this.stageData.regionID,stage:this.stageScore,glory:Math.round(this.gloryScore),rewards:this.rewardsScore,gold:this.goldScore})
+                    this.scene.run('Kianova', { regionID: this.stageData.regionID, stage: this.stageScore, glory: Math.round(this.gloryScore), rewards: this.rewardsScore, gold: this.goldScore })
                     this.scene.stop('Badlands')
                 }
-            },this);
+            }, this);
         }
     }
 
-loadCheckPoint() {
-    // Set stageProgressEnabled to false
-    this.stageProgressEnabled = false;
-  
-    // Choose a random entry from this.stageData.availableCheckPoints
-    const randomIndex = Math.floor(Math.random() * this.stageData.availableCheckPoints.length);
-    const checkPointType = this.stageData.availableCheckPoints[randomIndex];
-  
-    // Store the value of the checkpoint in this.stage.checkPointType
-    this.stage.checkPointType = checkpointType;
-  
-    // Set this.gameMode based on the value of this.stage.checkPointType
-    if (this.stage.checkPointType === 1) {
-      this.gameMode = 0;
-    } else if (this.stage.checkPointType === 2) {
-      this.gameMode = 1;
-    }
-  
-    // Update the delay and repeat properties of this.checkPointTimer
-    if (this.stage.checkPointType === 1) {
-      this.checkPointTimer.delay = this.stage.chaserTimer;
-      this.checkPointTimer.repeat = 0;
-    } else if (this.stage.checkPointType === 2) {
-      this.checkPointTimer.delay = this.stage.hordeTimer;
-      this.checkPointTimer.repeat = -1;
-    }
-  
-    // Start this.checkPointTimer
-    this.checkPointTimer.start();
-  }
-  
-updateCheckPointStatus() {
-    if (this.stage.checkPointType === 1) {
-      // If this.stage.checkPointType = 1, change this.stage.checkPointType to 0,
-      // add 1 to this.stage.nextCheckPoint (if it is less than 4),
-      // and set this.stageProgressEnabled to true
-      this.stage.checkPointType = 0;
-      if (this.stage.nextCheckPoint < 4) {
-        this.stage.nextCheckPoint += 1;
-      }
-      this.stageProgressEnabled = true;
-    } else if (this.stage.checkPointType === 2) {
-      if (this.stage.maxHordeSize > 0 && this.enemyHordeGroup.active > 0.6 * this.stage.maxHordeSize) {
-        // If this.stage.checkPointType = 2, and this.stage.maxHordeSize > 0 and
-        // this.enemyHordeGroup.active > 60% of this.stage.maxHordeSize,
-        // increase this.stage.hordeDifficultyModifier by 4%
-        this.stage.hordeDifficultyModifier += 0.04;
-      } else if (this.enemyHordeGroup.active === 0) {
-        // If this.stage.checkPointType = 2 and this.enemyHordeGroup.active = 0,
-        // reset this.stage.hordeDifficultyModifier to 1,
-        // change this.stage.checkPointType to 0,
-        // change this.gameMode to 0, and
-        // set the repeat property of this.checkPointTimer to 0
-        // updates this.stage.nextCheckPoint and enables progression
-        this.stage.hordeDifficultyModifier = 1;
-        this.stage.checkPointType = 0;
-        this.gameMode = 0;
-        this.checkPointTimer.repeat = 0;
-        if (this.stage.nextCheckPoint < 4) {
-            this.stage.nextCheckPoint += 1;
-          }
-          this.stageProgressEnabled = true;
-      }
-    }
-  }
-    
+    loadCheckPoint() {
+        // Set stageProgressEnabled to false
+        this.stageProgressEnabled = false;
+        this.camera.flash(500,255,0,0)
 
-environmentModule(){
-    if (this.gameMode == 0){
-        for (var i = 1; i < this.bgLayers + 1 ; i++){
-            window['bgL'+i].tilePositionX += (this.baseSpeed* this.playerSpeed)  * window['bgL'+ i + 'ScrollMod'] * (scaleModX / (screenWidth / this.textures.get('bgL' + i).getSourceImage().width))
+        // Choose a random entry from this.stageData.availableCheckPoints
+        const randomIndex = Math.floor(Math.random() * this.stageData.availableCheckPoints.length);
+        const checkPointType = this.stageData.availableCheckPoints[randomIndex];
+
+        // Store the value of the checkpoint in this.stage.checkPointType
+        this.stage.checkPointType = checkPointType;
+
+        // Set this.gameMode based on the value of this.stage.checkPointType
+        if (this.stage.checkPointType === 1) {
+            this.gameMode = 0;
+            this.checkPointIcon = 'chaser-checkpoint-icon'
+        } else if (this.stage.checkPointType === 2) {
+            this.speedCheckOverride = 1
+            this.enterBattle()
+            this.checkPointIcon = 'horde-checkpoint-icon'
         }
 
-        for (var i = 1; i < this.fgLayers + 1 ; i++){
-            window['fgL'+i].tilePositionX += (this.baseSpeed  * this.playerSpeed)  * window['fgL'+ i + 'ScrollMod'] * (scaleModX / (screenWidth / this.textures.get('fgL' + i).getSourceImage().width))
+        // Render Checkpoint Icon
+
+        if (this.stage.nextCheckPoint == 1){
+            this.currentCheckPointIcon = this.stageProgressIconC1
+        } else if (this.stage.nextCheckPoint == 2) {
+            this.currentCheckPointIcon = this.stageProgressIconC2
+        } else if (this.stage.nextCheckPoint == 3) {
+            this.currentCheckPointIcon = this.stageProgressIconC3
         }
 
-        this.lightSource.x -= (screenWidth * 0.00000003) * this.playerSpeed * 1000
-        this.lightSourceCameraXOffset = this.lightSource.x - this.camera.scrollX
-        this.cameraScrollAnchor = this.camera.scrollX
+        this.currentCheckPointIcon.setTexture(this.checkPointIcon)
 
-    } else if (this.gameMode == 1) {
+        // Update the delay and repeat properties of this.checkPointTimer
+        if (this.stage.checkPointType === 1) {
+            this.checkPointTimer.delay = this.stage.chaserTimer;
+            this.checkPointTimer.repeat = 0;
+        } else if (this.stage.checkPointType === 2) {
+            this.checkPointTimer.delay = this.stage.hordeTimer;
+            this.checkPointTimer.repeat = -1;
+        } 
+        
+        this.checkPointTimer.callback = this.updateCheckPointStatus
+        this.checkPointTimer.callbackScope = this
 
-            for (var i = 1; i < this.bgLayers + 1 ; i++){
-                window['bgL'+i].tilePositionX = this.camera.scrollX * window['bgL'+ i + 'ScrollMod'] * (scaleModX / (screenWidth / this.textures.get('bgL' + i).getSourceImage().width)) 
+
+        // Start this.checkPointTimer
+        this.time.addEvent(this.checkPointTimer)
+    }
+
+    loadFinalCheckPoint(){
+        // Set stageProgressEnabled to false
+        this.stageProgressEnabled = false;
+        this.camera.flash(1000,255,0,0)
+        // Load Boss function (tbc)
+
+        // Stub
+        this.camera.fadeOut(4000)
+        this.camera.once('camerafadeoutcomplete',function(){
+            this.camera.fadeIn(4000)
+            this.rewards += Phaser.Math.Between(50,100) * (1 + (0.25 * this.level))
+            this.camera.once('camerafadeincomplete',function(){
+                this.stageProgressEnabled = true;
+                this.stage.complete = true
+            },this)
+            
+        
+        },this)
+
+
+
+    }
+
+    updateCheckPointStatus() {
+        if (this.stage.checkPointType === 1) {
+            this.camera.flash(500,0,255,0)
+            // If this.stage.checkPointType = 1, change this.stage.checkPointType to 0,
+            // add 1 to this.stage.nextCheckPoint (if it is less than 4),
+            // and set this.stageProgressEnabled to true
+            this.rewards += Phaser.Math.Between(5,10) * (1 + (0.25 * this.level)) // Stub for gaining Rewards in checkpoint
+
+            this.stage.checkPointType = 0;
+            this.checkPointTimer.repeat = 0;
+            this.checkPointTimer.delay = 0;
+            if (this.stage.nextCheckPoint < 4) {
+                this.stage.nextCheckPoint += 1;
+            }
+            this.stageProgressEnabled = true;
+        } else if (this.stage.checkPointType === 2) {
+           // if (this.stage.maxHordeSize > 0 && this.enemyHordeGroup.countActive() > 0.6 * this.stage.maxHordeSize) {
+                if (this.enemyGroup.countActive() > 0) { // Stub
+                // If this.stage.checkPointType = 2, and this.stage.maxHordeSize > 0 and
+                // this.enemyHordeGroup.active > 60% of this.stage.maxHordeSize,
+                // increase this.stage.hordeDifficultyModifier by 2%
+                this.stage.hordeDifficultyModifier *= 1.02;
+            //} else if (this.enemyHordeGroup.countActive() === 0) {
+            } else if (this.enemyGroup.countActive() == 0) { // Stub
+                this.camera.flash(500,0,255,0)
+                this.rewards += Phaser.Math.Between(5,10) * (1 + (0.25 * this.level)) // Stub for gaining Rewards in checkpoint
+                // If this.stage.checkPointType = 2 and this.enemyHordeGroup.active = 0,
+                // reset this.stage.hordeDifficultyModifier to 1,
+                // change this.stage.checkPointType to 0,
+                // change this.gameMode to 0, and
+                // set the repeat property of this.checkPointTimer to 0
+                // updates this.stage.nextCheckPoint and enables progression
+                
+                
+
+                this.stage.checkPointType = 0;
+                this.checkPointTimer.repeat = 0;
+                this.checkPointTimer.delay = 0;
+                if (this.stage.nextCheckPoint < 4) {
+                    this.stage.nextCheckPoint += 1;
+                }
+                this.stage.hordeDifficultyModifier = 1;
+                this.exitBattle()
+                this.stageProgressEnabled = true;
             }
 
-            for (var i = 1; i < this.fgLayers + 1 ; i++){
-                window['fgL'+i].tilePositionX = this.camera.scrollX * window['bgL'+ i + 'ScrollMod'] * (scaleModX / (screenWidth / this.textures.get('bgL' + i).getSourceImage().width)) 
+        } else {
+            this.checkPointTimer.reset()
+  
+        }
+    }
+
+
+    environmentModule() {
+        if (this.gameMode == 0) {
+            for (var i = 1; i < this.bgLayers + 1; i++) {
+                window['bgL' + i].tilePositionX += (this.baseSpeed * this.playerSpeed) * window['bgL' + i + 'ScrollMod'] * (scaleModX / (screenWidth / this.textures.get('bgL' + i).getSourceImage().width))
             }
 
-    
+            for (var i = 1; i < this.fgLayers + 1; i++) {
+                window['fgL' + i].tilePositionX += (this.baseSpeed * this.playerSpeed) * window['fgL' + i + 'ScrollMod'] * (scaleModX / (screenWidth / this.textures.get('fgL' + i).getSourceImage().width))
+            }
+
+            this.lightSource.x -= (screenWidth * 0.00000003) * this.playerSpeed * 1000
+            this.lightSourceCameraXOffset = this.lightSource.x - this.camera.scrollX
+            this.cameraScrollAnchor = this.camera.scrollX
+
+        } else if (this.gameMode == 1) {
+
+            for (var i = 1; i < this.bgLayers + 1; i++) {
+                window['bgL' + i].tilePositionX = this.camera.scrollX * window['bgL' + i + 'ScrollMod'] * (scaleModX / (screenWidth / this.textures.get('bgL' + i).getSourceImage().width))
+            }
+
+            for (var i = 1; i < this.fgLayers + 1; i++) {
+                window['fgL' + i].tilePositionX = this.camera.scrollX * window['bgL' + i + 'ScrollMod'] * (scaleModX / (screenWidth / this.textures.get('bgL' + i).getSourceImage().width))
+            }
+
+
 
             // less offset = moving right
             // more offset = moving left
-            this.lightSource.x = this.camera.scrollX + ((this.lightSourceCameraXOffset * 0.9)  + (this.lightSourceCameraXOffset * (0.1 * (this.cameraScrollAnchor/this.camera.scrollX))))
+            this.lightSource.x = this.camera.scrollX + ((this.lightSourceCameraXOffset * 0.9) + (this.lightSourceCameraXOffset * (0.1 * (this.cameraScrollAnchor / this.camera.scrollX))))
 
-    }
-}
-
-platforms(game){
-
-    
-
-    if(game.spawningPlatform){
-
-        for (var i = 0; i < 2; i++){
-        var platform = game.platformGroup.get()
-
-        if(game.speedLevel == 1){
-            
-            this.platformScaleXMin = 2.125
-            this.platformScaleXMax = 2.125
-
-            this.platformPositionYMin = screenHeight * 0.5
-            this.platformPositionYMax = screenHeight * 0.7
-
-        } else
-        // Level 2
-        if(game.speedLevel == 2){
-            this.platformScaleXMin = 2
-            this.platformScaleXMax = 2.25
-
-            this.platformPositionYMin = screenHeight * 0.4
-            this.platformPositionYMax = screenHeight * 0.725
-        } else
-        // Level 3
-        if(game.speedLevel == 3){
-            this.platformScaleXMin = 1.75
-            this.platformScaleXMax = 2.5
-
-            this.platformPositionYMin = screenHeight * 0.3
-            this.platformPositionYMax = screenHeight * 0.75
-        } 
-        
-
-        if(platform){
-            platform.setOrigin(1,0)
-            platform.setTint(this.floorColour)
-            platform.x = Phaser.Math.FloatBetween(screenWidth * 3.25 + (screenWidth * 0.6 * i), screenWidth * 3.35 + (screenWidth * 0.6 * i)) //screenWidth * 2
-            platform.y = Phaser.Math.FloatBetween(this.platformPositionYMin, this.platformPositionYMax)
-            platform.setScale(Phaser.Math.FloatBetween(this.platformScaleXMin,this.platformScaleXMax),Phaser.Math.FloatBetween(1, 1.25))
-            platform.setActive(true)
-            platform.setPipeline('Light2D')
-            platform.setImmovable(true)
-            platform.body.setAllowGravity(false)
-            platform.body.checkCollision.down = false
-            
         }
-        }
-
-        game.spawningPlatform = false
     }
 
-    game.platformGroup.children.each(function(p) {
-
-        p.x -= this.baseSpeed * this.playerSpeed 
-
-        if (p.active) {
-            if (p.x < 0) {
-                p.setActive(false);
-            }
-        }
-    }.bind(game));
+    platforms(game) {
 
 
-}
 
-    spawnPlatform(){
-        if (this.gameMode == 0){
-        this.spawningPlatform = true
-        } 
-    }
+        if (game.spawningPlatform) {
 
-enemyModule(game){
+            for (var i = 0; i < 2; i++) {
+                var platform = game.platformGroup.get()
 
+                if (game.speedLevel == 1) {
 
-    game.enemyGroup.children.each(function(e) {
+                    this.platformScaleXMin = 2.125
+                    this.platformScaleXMax = 2.125
 
-        // Alternate Depth
+                    this.platformPositionYMin = screenHeight * 0.5
+                    this.platformPositionYMax = screenHeight * 0.7
 
-        if (e.active){
-            if (e.x > this.player.x + screenWidth * 0.1){
-                e.setDepth(0)//(Phaser.Math.Between(0,2))
-            } else if (e.x < this.player.x - screenWidth * 0.1){
-                e.setDepth(0)//(Phaser.Math.Between(0,2))
-            }
-        }
+                } else
+                    // Level 2
+                    if (game.speedLevel == 2) {
+                        this.platformScaleXMin = 2
+                        this.platformScaleXMax = 2.25
 
+                        this.platformPositionYMin = screenHeight * 0.4
+                        this.platformPositionYMax = screenHeight * 0.725
+                    } else
+                        // Level 3
+                        if (game.speedLevel == 3) {
+                            this.platformScaleXMin = 1.75
+                            this.platformScaleXMax = 2.5
 
-        // Lock on Code
-       if (e.active){
-        // Enables enemy to automatically face and move towards player
-        if(Math.abs(e.x - this.player.x) <= screenWidth * 0.15 ){
-            //&& Math.abs(e.y - this.player.y) <= screenHeight * 0.25 
-            //enemyLockedOn = true
-            if(e.x < this.player.x){
-                if (e.type == 1){
-                    e.flipX = true
-                } else {
-                    e.flipX = false
-                }
-                
-            } else {
-                if (e.type == 1){
-                    e.flipX = false
-                } else {
-                    e.flipX = true
-                }
-            }
-        } else {
-            //enemyLockedOn = false
-        }
-    } 
-
-    }.bind(game));
-
-    if (this.gameMode == 0){
-        
-    // Spawn Code
-    if(game.spawningEnemy){
-
-        this.enemiesSpawned = Phaser.Math.Between(0,Math.min(this.enemyGroup.getTotalFree(),3))
-
-        for (var i = 0; i < this.enemiesSpawned; i++){
-
-        this.enemy = game.enemyGroup.get()
-            // Type
-            if(Phaser.Math.Between(0,100) <= 30){
-                this.enemiesType = 2
-            } else {
-                this.enemiesType = 1
-            }
-            // Scaling
-          
-            if(this.enemiesType == 1){
-                // Common Enemy
-                this.creepScale = Phaser.Math.FloatBetween(2.5,3) //* (scaleModX) 
-            } else {
-                // Uncommon Enemy
-                this.creepScale = Phaser.Math.FloatBetween(7.5,8.5) //* (scaleModX) 
-        
-            }
-            
-            this.enemyOrientation = Phaser.Math.Between(1,2)
-
-            if(this.enemyOrientation == 1){
-                //enemy.flipX = true 
-                this.enemy.flipX = true 
-            } else {
-                //enemy.flipX = false
-                this.enemy.flipX = false  
-            }
-
-            if(this.enemy){
-
-                if(this.enemiesType == 1){
-                    this.enemy.setTexture('doomsayer')
-                    this.enemy.type = 1
-                    this.enemy.play('nightBorneMinion_Idle')
-                    this.enemy.baseSpeedMod = 1
-                    
-                } else {
-                    this.enemy.setTexture('nightBorne')
-                    this.enemy.type = 2
-                    this.enemy.setOrigin(0.5,1)
-                    this.enemy.body.setSize(25, 25).setOffset(25,37.5)
-                    if (this.enemyOrientation == 1){
-                        this.spawnChance = Phaser.Math.Between(0,100)
-                        if (this.spawnChance < 35){
-                            this.enemy.play({key:'nightBorne_Move',frameRate: 8},true)
-                            this.enemy.baseSpeedMod = 1.5
-                        } else {
-                            this.enemy.play('nightBorne_Idle')
-                            this.enemy.baseSpeedMod = 1
+                            this.platformPositionYMin = screenHeight * 0.3
+                            this.platformPositionYMax = screenHeight * 0.75
                         }
-                        
-                    } else {
-                        this.enemy.play('nightBorne_Idle')
-                        this.enemy.baseSpeedMod = 1
-                    }
-                    
-                    
-                }
-                this.enemy.x = Phaser.Math.FloatBetween(screenWidth * 3.125 + (screenWidth * 0.3 * i), screenWidth * 3.175 + (screenWidth * 0.3 * i)) //screenWidth * 2
-                this.enemy.y = Phaser.Math.FloatBetween(0, screenHeight * 0.5)
-                this.enemy.setScale(this.creepScale)
-                this.enemy.setVisible(true)
-                this.enemy.setActive(true).setPipeline('Light2D')
-                if (Phaser.Math.Between(0,100) < 25){
-                    this.enemy.setDepth(1)
-                } else {
-                    this.enemy.setDepth(0)
-                }
-                this.enemy.body.setAllowGravity(true)
-                this.enemy.isHit = false
-                this.enemy.hitsTaken = 0
-                if (this.enemy.type == 1){
-                    this.enemy.hitHP = Phaser.Math.Between(2,4) * (1 + (0.1 * this.level))
-                } else if (this.enemy.type == 2){
-                    this.enemy.hitHP = Phaser.Math.Between(4,8) * (1 + (0.1 * this.level))
-                }
-                
 
+
+                if (platform) {
+                    platform.setOrigin(1, 0)
+                    platform.setTint(this.floorColour)
+                    platform.x = Phaser.Math.FloatBetween(screenWidth * 3.25 + (screenWidth * 0.6 * i), screenWidth * 3.35 + (screenWidth * 0.6 * i)) //screenWidth * 2
+                    platform.y = Phaser.Math.FloatBetween(this.platformPositionYMin, this.platformPositionYMax)
+                    platform.setScale(Phaser.Math.FloatBetween(this.platformScaleXMin, this.platformScaleXMax), Phaser.Math.FloatBetween(1, 1.25))
+                    platform.setActive(true)
+                    platform.setPipeline('Light2D')
+                    platform.setImmovable(true)
+                    platform.body.setAllowGravity(false)
+                    platform.body.checkCollision.down = false
+
+                }
             }
+
+            game.spawningPlatform = false
         }
 
-        game.spawningEnemy = false
+        game.platformGroup.children.each(function (p) {
+
+            p.x -= this.baseSpeed * this.playerSpeed
+
+            if (p.active) {
+                if (p.x < 0) {
+                    p.setActive(false);
+                }
+            }
+        }.bind(game));
+
+
     }
 
-    // Movement  Code
-    game.enemyGroup.children.each(function(e) {
+    spawnPlatform() {
+        if (this.gameMode == 0) {
+            this.spawningPlatform = true
+        }
+    }
 
-        
-        if(e.x >= this.player.x - screenWidth * 0.1){
-            e.x -= this.baseSpeed * e.baseSpeedMod * this.playerSpeed 
-        } else {
-            if (e.anims.getName() != 'nightBorne_Move'){
-                e.x -= this.baseSpeed * e.baseSpeedMod * this.playerSpeed
-            } else {
-                if (this.player.x < (this.camera.scrollX + screenWidth * 0.55) && this.progress <= this.progressToNextLevel * 0.96){
-                    e.x += this.baseSpeed * (e.baseSpeedMod/5) / this.playerSpeed
-                } else {
-                    e.x -= this.baseSpeed * (e.baseSpeedMod/3) * this.playerSpeed 
+    enemyModule(game) {
+
+
+        game.enemyGroup.children.each(function (e) {
+
+            // Alternate Depth
+
+            if (e.active) {
+                if (e.x > this.player.x + screenWidth * 0.1) {
+                    e.setDepth(0)//(Phaser.Math.Between(0,2))
+                } else if (e.x < this.player.x - screenWidth * 0.1) {
+                    e.setDepth(0)//(Phaser.Math.Between(0,2))
                 }
             }
-            
-        }
-        
 
-        if (e.active) {
-            if (e.x < screenWidth * 0.75 || e.y > screenHeight * 1.25) {
-                e.setActive(false);
-                e.setVisible(false)
+
+            // Lock on Code
+            if (e.active) {
+                // Enables enemy to automatically face and move towards player
+                if (Math.abs(e.x - this.player.x) <= screenWidth * 0.15) {
+                    //&& Math.abs(e.y - this.player.y) <= screenHeight * 0.25 
+                    //enemyLockedOn = true
+                    if (e.x < this.player.x) {
+                        if (e.type == 1) {
+                            e.flipX = true
+                        } else {
+                            e.flipX = false
+                        }
+
+                    } else {
+                        if (e.type == 1) {
+                            e.flipX = false
+                        } else {
+                            e.flipX = true
+                        }
+                    }
+                } else {
+                    //enemyLockedOn = false
+                }
+            }
+
+        }.bind(game));
+
+        if (this.gameMode == 0) {
+
+            // Spawn Code
+            if (game.spawningEnemy) {
+
+                this.enemiesSpawned = Phaser.Math.Between(0, Math.min(this.enemyGroup.getTotalFree(), 3))
+
+                for (var i = 0; i < this.enemiesSpawned; i++) {
+
+                    this.enemy = game.enemyGroup.get()
+                    // Type
+                    if (Phaser.Math.Between(0, 100) <= 30) {
+                        this.enemiesType = 2
+                    } else {
+                        this.enemiesType = 1
+                    }
+                    // Scaling
+
+                    if (this.enemiesType == 1) {
+                        // Common Enemy
+                        this.creepScale = Phaser.Math.FloatBetween(2.5, 3) //* (scaleModX) 
+                    } else {
+                        // Uncommon Enemy
+                        this.creepScale = Phaser.Math.FloatBetween(7.5, 8.5) //* (scaleModX) 
+
+                    }
+
+                    this.enemyOrientation = Phaser.Math.Between(1, 2)
+
+                    if (this.enemyOrientation == 1) {
+                        //enemy.flipX = true 
+                        this.enemy.flipX = true
+                    } else {
+                        //enemy.flipX = false
+                        this.enemy.flipX = false
+                    }
+
+                    if (this.enemy) {
+
+                        if (this.enemiesType == 1) {
+                            this.enemy.setTexture('doomsayer')
+                            this.enemy.type = 1
+                            this.enemy.play('nightBorneMinion_Idle')
+                            this.enemy.baseSpeedMod = 1
+
+                        } else {
+                            this.enemy.setTexture('nightBorne')
+                            this.enemy.type = 2
+                            this.enemy.setOrigin(0.5, 1)
+                            this.enemy.body.setSize(25, 25).setOffset(25, 37.5)
+                            if (this.enemyOrientation == 1) {
+                                this.spawnChance = Phaser.Math.Between(0, 100)
+                                if (this.spawnChance < 35) {
+                                    this.enemy.play({ key: 'nightBorne_Move', frameRate: 8 }, true)
+                                    this.enemy.baseSpeedMod = 1.5
+                                } else {
+                                    this.enemy.play('nightBorne_Idle')
+                                    this.enemy.baseSpeedMod = 1
+                                }
+
+                            } else {
+                                this.enemy.play('nightBorne_Idle')
+                                this.enemy.baseSpeedMod = 1
+                            }
+
+
+                        }
+                        this.enemy.x = Phaser.Math.FloatBetween(screenWidth * 3.125 + (screenWidth * 0.3 * i), screenWidth * 3.175 + (screenWidth * 0.3 * i)) //screenWidth * 2
+                        this.enemy.y = Phaser.Math.FloatBetween(0, screenHeight * 0.5)
+                        this.enemy.setScale(this.creepScale)
+                        this.enemy.setVisible(true)
+                        this.enemy.setActive(true).setPipeline('Light2D')
+                        if (Phaser.Math.Between(0, 100) < 25) {
+                            this.enemy.setDepth(1)
+                        } else {
+                            this.enemy.setDepth(0)
+                        }
+                        this.enemy.body.setAllowGravity(true)
+                        this.enemy.isHit = false
+                        this.enemy.hitsTaken = 0
+                        if (this.enemy.type == 1) {
+                            this.enemy.hitHP = Phaser.Math.Between(2, 4) * (1 + (0.1 * this.level))
+                        } else if (this.enemy.type == 2) {
+                            this.enemy.hitHP = Phaser.Math.Between(4, 8) * (1 + (0.2 * this.level))
+                        }
+
+
+                    }
+                }
+
+                game.spawningEnemy = false
+            }
+
+            // Movement  Code
+            game.enemyGroup.children.each(function (e) {
+
+
+                if (e.x >= this.player.x - screenWidth * 0.1) {
+                    e.x -= this.baseSpeed * e.baseSpeedMod * this.playerSpeed
+                } else {
+                    if (e.anims.getName() != 'nightBorne_Move') {
+                        e.x -= this.baseSpeed * e.baseSpeedMod * this.playerSpeed
+                    } else {
+                        if (this.player.x < (this.camera.scrollX + screenWidth * 0.55) && this.progress <= this.progressToNextLevel * 0.96) {
+                            e.x += this.baseSpeed * (e.baseSpeedMod / 5) / this.playerSpeed
+                        } else {
+                            e.x -= this.baseSpeed * (e.baseSpeedMod / 3) * this.playerSpeed
+                        }
+                    }
+
+                }
+
+
+                if (e.active) {
+                    if (e.x < screenWidth * 0.75 || e.y > screenHeight * 1.25) {
+                        e.setActive(false);
+                        e.setVisible(false)
+                    }
+                }
+
+
+            }.bind(game));
+
+
+
+        } else if (game.gameMode == 1) {
+
+
+
+            game.enemyGroup.children.each(function (e) {
+
+                if (e.active) {
+                    if (e.x <= screenWidth * 1.25) {
+                        e.x += 10
+                    } else if (e.x >= screenWidth * 2.75) {
+                        e.x -= 10
+                    }
+                }
+
+
+            }.bind(game));
+
+            if (game.enemyGroup.countActive() == 0 && this.stage.checkPointType === 0) {
+                game.exitBattle()
             }
         }
 
 
-    }.bind(game));
+    }
 
-    
-
-} else if (game.gameMode == 1){
-
-  
-
-    game.enemyGroup.children.each(function(e) {
-
-        if (e.active) {
-            if (e.x <= screenWidth * 1.25){
-                e.x += 10
-            } else if (e.x >= screenWidth * 2.75){
-                e.x -= 10
-            }
-        }
-
-
-    }.bind(game));
-
-    if (game.enemyGroup.countActive() == 0){
-        game.exitBattle()
-    } 
-}
-
-
-}
-
-    spawnEnemy(){
+    spawnEnemy() {
         // Standard Enemies
-        if (this.gameMode == 0 && this.enemyGroup.getTotalFree() > 0 && this.stage.checkPointType == 0){
-            if(this.progress >= this.progressToNextLevel * 0.225 && this.progress <= this.progressToNextLevel * 0.275
+        if (this.gameMode == 0 && this.enemyGroup.getTotalFree() > 0 && this.stage.checkPointType == 0) {
+            if (this.progress >= this.progressToNextLevel * 0.225 && this.progress <= this.progressToNextLevel * 0.275
                 || this.progress >= this.progressToNextLevel * 0.475 && this.progress <= this.progressToNextLevel * 0.525
                 || this.progress >= this.progressToNextLevel * 0.725 && this.progress <= this.progressToNextLevel * 0.775
-                || this.progress >= this.progressToNextLevel * 0.95){
+                || this.progress >= this.progressToNextLevel * 0.95) {
 
-                    this.rewards += 0.5 // Stub for gaining Rewards in checkpoint
+                
 
-                this.spawningEnemy = false    
+                this.spawningEnemy = false
             } else {
                 this.spawningEnemy = true
-                this.enemyTimer.delay = Phaser.Math.Between((this.baseEnemySpawnTime * (60/this.musicBPM) * 1000) * 0.8,(this.baseEnemySpawnTime * (60/this.musicBPM) * 1000) * 1.2)
-            }    
-        
-        } 
+                this.enemyTimer.delay = Phaser.Math.Between((this.baseEnemySpawnTime * (60 / this.musicBPM) * 1000) * 0.8, (this.baseEnemySpawnTime * (60 / this.musicBPM) * 1000) * 1.2)
+            }
+
+        }
         // Checkpoint - Chaser Enemies
-        if (this.gameMode == 0 && this.enemyChaserGroup.getTotalFree() > 0 && this.stage.checkPointType == 1){
+        if (this.gameMode == 0 && this.enemyChaserGroup.getTotalFree() > 0 && this.stage.checkPointType == 1) {
             // Potentially redundant
-            if(this.progress >= this.progressToNextLevel * 0.225 && this.progress <= this.progressToNextLevel * 0.275
+            if (this.progress >= this.progressToNextLevel * 0.225 && this.progress <= this.progressToNextLevel * 0.275
                 || this.progress >= this.progressToNextLevel * 0.475 && this.progress <= this.progressToNextLevel * 0.525
                 || this.progress >= this.progressToNextLevel * 0.725 && this.progress <= this.progressToNextLevel * 0.775
-                || this.progress >= this.progressToNextLevel * 0.95){
+                || this.progress >= this.progressToNextLevel * 0.95) {
 
-                this.spawningChaserEnemy = true  
-                this.enemyTimer.delay = Phaser.Math.Between((this.baseEnemySpawnTime * (60/this.musicBPM) * 2000) * 0.8,(this.baseEnemySpawnTime * (60/this.musicBPM) * 2000) * 1.2)  
+                this.spawningChaserEnemy = true
+                this.enemyTimer.delay = Phaser.Math.Between((this.baseEnemySpawnTime * (60 / this.musicBPM) * 2000) * 0.8, (this.baseEnemySpawnTime * (60 / this.musicBPM) * 2000) * 1.2)
             } else {
                 this.spawningChaserEnemy = false
-                
-            }   
-            
-           
-        
-        } 
+
+            }
+
+
+
+        }
         // Checkpoint - Horde Enemies
-        if (this.gameMode == 1 && this.enemyHordeGroup.getTotalFree() > 0 && this.stage.checkPointType == 2){
+        if (this.gameMode == 1 && this.enemyHordeGroup.getTotalFree() > 0 && this.stage.checkPointType == 2) {
             // Potentially redundant
-            if(this.progress >= this.progressToNextLevel * 0.225 && this.progress <= this.progressToNextLevel * 0.275
+            if (this.progress >= this.progressToNextLevel * 0.225 && this.progress <= this.progressToNextLevel * 0.275
                 || this.progress >= this.progressToNextLevel * 0.475 && this.progress <= this.progressToNextLevel * 0.525
                 || this.progress >= this.progressToNextLevel * 0.725 && this.progress <= this.progressToNextLevel * 0.775
-                || this.progress >= this.progressToNextLevel * 0.95){
+                || this.progress >= this.progressToNextLevel * 0.95) {
 
-                this.spawningChaserEnemy = true  
-                this.enemyTimer.delay = Phaser.Math.Between((this.baseEnemySpawnTime * (60/this.musicBPM) * 2000) * 0.8,(this.baseEnemySpawnTime * (60/this.musicBPM) * 2000) * 1.2)  
+                this.spawningChaserEnemy = true
+                this.enemyTimer.delay = Phaser.Math.Between((this.baseEnemySpawnTime * (60 / this.musicBPM) * 2000) * 0.8, (this.baseEnemySpawnTime * (60 / this.musicBPM) * 2000) * 1.2)
             } else {
                 this.spawningChaserEnemy = false
-                
-            }    
-            
+
+            }
+
             // Enemies defeated reduce maxHordeSize.  If maxHordeSize = 0  then timer set to 0 delay (i.e repeat instantly)
-            
-        } 
+
+        }
     }
 
-    
 
-enemyTakeHit(playerAttackHitBox,enemy){
+    enemyTakeHit(playerAttackHitBox, enemy) {
 
 
-        
 
-    if(!enemy.isHit){
-        enemy.isHit = true
 
-        // Dodge Check Test
-        if(Phaser.Math.Between(0,100)<= 30){
+        if (!enemy.isHit) {
+            enemy.isHit = true
 
-            if (enemy.type == 2){
-                if(Phaser.Math.Between(0,100) <= 20){
-                    this.sound.play('nightBorneEvade2')
-                } else {
-                    this.sound.play('nightBorneEvade1')
+            // Dodge Check Test
+            if (Phaser.Math.Between(0, 100) <= 30) {
+
+                if (enemy.type == 2) {
+                    if (Phaser.Math.Between(0, 100) <= 20) {
+                        this.sound.play('nightBorneEvade2')
+                    } else {
+                        this.sound.play('nightBorneEvade1')
+                    }
                 }
-            }
 
 
-            if (enemy.x >= this.player.x){
-                enemy.x += Phaser.Math.Between(100,125)
-                enemy.isHit = false
+                if (enemy.x >= this.player.x) {
+                    enemy.x += Phaser.Math.Between(100, 125)
+                    enemy.isHit = false
+                } else {
+                    enemy.x -= Phaser.Math.Between(100, 125)
+                    enemy.isHit = false
+                }
+
             } else {
-                enemy.x -= Phaser.Math.Between(100,125)
-                enemy.isHit = false
-            }
-
-        } else {
-
-        
-        
-        // Crit Check
-        if (Phaser.Math.Between(0,100)<=this.critChance){
-            this.playerAttackCrit = this.player.critDamage
-           
-        } else {
-            this.playerAttackCrit = 1
-        }
-
-        
-
-        // Damage Calc
-
-            this.playerAttackPower = playerAttackHitBox.damage * this.playerAttackCrit
-        
-        this.playerAttackHitBoxVFX.play(this.playerAttackHitSmear,true)
-
-        // Momentum Gain
-
-        this.player.momentum += this.playerAttackPower * 10 * 2
-        
-
-        if (!enemy.body.onFloor()){
-
-            enemy.setVelocity(0)               
-
-        }
-
-        if (enemy.x >= this.player.x){
-            enemy.x += Phaser.Math.Between(0,25)
-        } else {
-            enemy.x -= Phaser.Math.Between(0,25)
-        }
-
-        enemy.setVelocityY(enemy.body.velocity.y + (Phaser.Math.Between((this.player.momentum /100) * -3500 ,(this.player.momentum /100) * 3500) * (Math.max(1,this.playerAttackCrit/2))))
 
 
-        if (enemy.x >= this.player.x){
-            enemy.setVelocityX(enemy.body.velocity.x + (Phaser.Math.Between((this.player.momentum /100) * 0 ,(this.player.momentum /100) * 2500) * this.playerAttackCrit))
-         } else {
-            enemy.setVelocityX(enemy.body.velocity.x - (Phaser.Math.Between((this.player.momentum /100) * 0 ,(this.player.momentum /100) * 2500) * this.playerAttackCrit))
-        }
 
-        if (this.player.momentum / 100 > 0.4){
-            this.camera.shake(500,0.01)
-            
-        }
+                // Crit Check
+                if (Phaser.Math.Between(0, 100) <= this.critChance) {
+                    this.playerAttackCrit = this.player.critDamage
 
-        if(this.playerAttackCrit > 1.5){
-            this.camera.flash()
-            this.camera.shake(100,0.005)  
-            this.sound.stopByKey('playerAttack1')
-            this.sound.stopByKey('playerAttack2')
-            this.sound.stopByKey('playerAttack3')
-            this.sound.stopByKey('playerAttack4')
-            this.sound.stopByKey('playerAttack5')  
-            this.sound.play('playerCriticalStrike' + Phaser.Math.Between(1,2))
-                                
-        }
+                } else {
+                    this.playerAttackCrit = 1
+                }
 
-        if(enemy.type == 1){
-            enemy.play('nightBorneMinion_Hurt',true)
 
-            // Sound Effect of Hit
-            // Hit connected
-            
 
-            enemy.once('animationcomplete', function (anim,frame) {
-                enemy.emit('animationcomplete_' + anim.key, frame)
-            }, enemy)
-            enemy.once('animationcomplete_nightBorneMinion_Hurt',function(){
-                enemy.isHit = false
-                enemy.setVelocityX(0)
-                 if(this.gameMode == 0){
-                     enemy.hitsTaken += enemy.hitHP
-                 } else {
-           
-                     enemy.hitsTaken += this.playerAttackPower
-                 }
-                
-                if (enemy.hitsTaken >= enemy.hitHP){
-                    enemy.play('nightBorneMinion_Death',true)
-                    this.physics.add.collider(enemy,this.floor); 
-                    this.physics.add.collider(enemy,this.platformGroup); 
-                    this.enemyGroup.remove(enemy)
-                    this.gold += Phaser.Math.Between(0,this.baseGoldDrop * 0.075 * this.level)
-                      
-                    enemy.once('animationcomplete', function (anim,frame) {
+                // Damage Calc
+
+                this.playerAttackPower = playerAttackHitBox.damage * this.playerAttackCrit
+
+                this.playerAttackHitBoxVFX.play(this.playerAttackHitSmear, true)
+
+                // Momentum Gain
+
+                this.player.momentum += this.playerAttackPower * 10 * 2
+
+
+                if (!enemy.body.onFloor()) {
+
+                    enemy.setVelocity(0)
+
+                }
+
+                if (enemy.x >= this.player.x) {
+                    enemy.x += Phaser.Math.Between(0, 25)
+                } else {
+                    enemy.x -= Phaser.Math.Between(0, 25)
+                }
+
+                enemy.setVelocityY(enemy.body.velocity.y + (Phaser.Math.Between((this.player.momentum / 100) * -3500, (this.player.momentum / 100) * 3500) * (Math.max(1, this.playerAttackCrit / 2))))
+
+
+                if (enemy.x >= this.player.x) {
+                    enemy.setVelocityX(enemy.body.velocity.x + (Phaser.Math.Between((this.player.momentum / 100) * 0, (this.player.momentum / 100) * 2500) * this.playerAttackCrit))
+                } else {
+                    enemy.setVelocityX(enemy.body.velocity.x - (Phaser.Math.Between((this.player.momentum / 100) * 0, (this.player.momentum / 100) * 2500) * this.playerAttackCrit))
+                }
+
+                if (this.player.momentum / 100 > 0.4) {
+                    this.camera.shake(500, 0.01)
+
+                }
+
+                if (this.playerAttackCrit > 1.5) {
+                    this.camera.flash()
+                    this.camera.shake(100, 0.005)
+                    this.sound.stopByKey('playerAttack1')
+                    this.sound.stopByKey('playerAttack2')
+                    this.sound.stopByKey('playerAttack3')
+                    this.sound.stopByKey('playerAttack4')
+                    this.sound.stopByKey('playerAttack5')
+                    this.sound.play('playerCriticalStrike' + Phaser.Math.Between(1, 2))
+
+                }
+
+                if (enemy.type == 1) {
+                    enemy.play('nightBorneMinion_Hurt', true)
+
+                    // Sound Effect of Hit
+                    // Hit connected
+
+
+                    enemy.once('animationcomplete', function (anim, frame) {
                         enemy.emit('animationcomplete_' + anim.key, frame)
                     }, enemy)
-                    enemy.once('animationcomplete_nightBorneMinion_Death',function(){
-                        
-                    enemy.setActive(false)
-                    enemy.setVisible(false)
-                    enemy.x = -screenWidth * 0.25
-                    
-                    },this)
-                } else {
-                    enemy.play('nightBorneMinion_Idle',true)
-                }
-                
-            },this)
-        } else if (enemy.type == 2){
-            enemy.play('nightBorne_Hurt',true)
-           
-            if(Phaser.Math.Between(0,100) <= 15){
-                if (this.playerAttackCrit > 1){
-                    if(Phaser.Math.Between(0,100) <= 10){
-                        this.sound.play('nightBorneTakeHeavyDamage3')
-                    } else if (Phaser.Math.Between(0,100) <= 25){
-                        this.sound.play('nightBorneTakeHeavyDamage2')
-                    } else {
-                        this.sound.play('nightBorneTakeHeavyDamage1')
-                    }
-                } else {
-                    if(Phaser.Math.Between(0,100) <= 10){
-                        this.sound.play('nightBorneTakeLightDamage3')
-                    } else if (Phaser.Math.Between(0,100) <= 25){
-                        this.sound.play('nightBorneTakeLightDamage2')
-                    } else {
-                        this.sound.play('nightBorneTakeLightDamage1')
-                    }
-                }
-            }
-            
-            enemy.once('animationcomplete', function (anim,frame) {
-                enemy.emit('animationcomplete_' + anim.key, frame)
-            }, enemy)
-            enemy.once('animationcomplete_nightBorne_Hurt',function(){
-                enemy.isHit = false
-                enemy.setVelocityX(0)
-                if(this.gameMode == 0){
-                    enemy.hitsTaken += enemy.hitHP
-                } else {
-                    
-                    enemy.hitsTaken += this.playerAttackPower
-                }
-                if (enemy.hitsTaken >= enemy.hitHP){
-                    enemy.play('nightBorne_Death',true)
+                    enemy.once('animationcomplete_nightBorneMinion_Hurt', function () {
+                        enemy.isHit = false
+                        enemy.setVelocityX(0)
+                        if (this.gameMode == 0) {
+                            enemy.hitsTaken += enemy.hitHP
+                        } else {
 
-                    this.sound.play('nightBorneTakeHeavyDamage2')
-                    this.physics.add.collider(enemy,this.floor); 
-                    this.physics.add.collider(enemy,this.platformGroup); 
-                    this.enemyGroup.remove(enemy)
-                    this.gold += Phaser.Math.Between(this.baseGoldDrop * 0.05 * this.level,this.baseGoldDrop * 0.15 * this.level)   
-                    enemy.once('animationcomplete', function (anim,frame) {
+                            enemy.hitsTaken += this.playerAttackPower
+                        }
+
+                        if (enemy.hitsTaken >= enemy.hitHP) {
+                            enemy.play('nightBorneMinion_Death', true)
+                            this.physics.add.collider(enemy, this.floor);
+                            this.physics.add.collider(enemy, this.platformGroup);
+                            this.enemyGroup.remove(enemy)
+                            this.gold += Phaser.Math.Between(0, this.baseGoldDrop * 0.075 * this.level)
+
+                            enemy.once('animationcomplete', function (anim, frame) {
+                                enemy.emit('animationcomplete_' + anim.key, frame)
+                            }, enemy)
+                            enemy.once('animationcomplete_nightBorneMinion_Death', function () {
+
+                                enemy.setActive(false)
+                                enemy.setVisible(false)
+                                enemy.x = -screenWidth * 0.25
+
+                            }, this)
+                        } else {
+                            enemy.play('nightBorneMinion_Idle', true)
+                        }
+
+                    }, this)
+                } else if (enemy.type == 2) {
+                    enemy.play('nightBorne_Hurt', true)
+
+                    if (Phaser.Math.Between(0, 100) <= 15) {
+                        if (this.playerAttackCrit > 1) {
+                            if (Phaser.Math.Between(0, 100) <= 10) {
+                                this.sound.play('nightBorneTakeHeavyDamage3')
+                            } else if (Phaser.Math.Between(0, 100) <= 25) {
+                                this.sound.play('nightBorneTakeHeavyDamage2')
+                            } else {
+                                this.sound.play('nightBorneTakeHeavyDamage1')
+                            }
+                        } else {
+                            if (Phaser.Math.Between(0, 100) <= 10) {
+                                this.sound.play('nightBorneTakeLightDamage3')
+                            } else if (Phaser.Math.Between(0, 100) <= 25) {
+                                this.sound.play('nightBorneTakeLightDamage2')
+                            } else {
+                                this.sound.play('nightBorneTakeLightDamage1')
+                            }
+                        }
+                    }
+
+                    enemy.once('animationcomplete', function (anim, frame) {
                         enemy.emit('animationcomplete_' + anim.key, frame)
                     }, enemy)
-                    enemy.once('animationcomplete_nightBorne_Death',function(){
-                                
-                    enemy.setActive(false)
-                    enemy.setVisible(false)
-                    enemy.x = -screenWidth * 0.25
-                   
-                    },this)
-                } else {
-                    enemy.play('nightBorne_Idle',true)
+                    enemy.once('animationcomplete_nightBorne_Hurt', function () {
+                        enemy.isHit = false
+                        enemy.setVelocityX(0)
+                        if (this.gameMode == 0) {
+                            enemy.hitsTaken += enemy.hitHP
+                        } else {
+
+                            enemy.hitsTaken += this.playerAttackPower
+                        }
+                        if (enemy.hitsTaken >= enemy.hitHP) {
+                            enemy.play('nightBorne_Death', true)
+
+                            this.sound.play('nightBorneTakeHeavyDamage2')
+                            this.physics.add.collider(enemy, this.floor);
+                            this.physics.add.collider(enemy, this.platformGroup);
+                            this.enemyGroup.remove(enemy)
+                            this.gold += Phaser.Math.Between(this.baseGoldDrop * 0.05 * this.level, this.baseGoldDrop * 0.15 * this.level)
+                            enemy.once('animationcomplete', function (anim, frame) {
+                                enemy.emit('animationcomplete_' + anim.key, frame)
+                            }, enemy)
+                            enemy.once('animationcomplete_nightBorne_Death', function () {
+
+                                enemy.setActive(false)
+                                enemy.setVisible(false)
+                                enemy.x = -screenWidth * 0.25
+
+                            }, this)
+                        } else {
+                            enemy.play('nightBorne_Idle', true)
+                        }
+
+                    }, this)
                 }
-                
-            },this)
+
+                this.targetRemainingEnemyHP = enemy.hitHP - enemy.hitsTaken
+
+
+            }
         }
 
     }
-}
 
-}
+    cameraModule() {
 
-cameraModule(){
+        if (this.gameMode == 0) {
 
-    if (this.gameMode == 0){
-
-        if (a1IsDown){
+            if (a1Held) {
 
 
-            this.camera.zoomTo(1.15,500)
-        } else if (a2IsDown){
+                this.camera.zoomTo(1.1, 500)
+            } else if (a2Held) {
 
 
-            this.camera.zoomTo(1,500)
+                this.camera.zoomTo(1, 500)
+            } else if (s1Held ) {
+
+
+                this.camera.zoomTo(1.1, 500)
+            } else {
+
+
+                this.camera.zoomTo(1.05, 250)
+            }
         } else {
 
+            if (this.powerBarSource >= 0.75) {
 
-            this.camera.zoomTo(1.05,250)
+                this.camera.zoomTo(1.15, 25)
+                this.camera.centerOn(this.player.x, screenHeight * 0.5)
+
+            } else if (this.powerBarSource >= 0.5) {
+
+                this.camera.zoomTo(1.1, 50)
+                this.camera.centerOn(this.player.x, screenHeight * 0.5)
+
+            } else {
+                this.camera.zoomTo(1, 100)
+                this.camera.centerOnX(this.player.x)
+
+            }
+
+
+            // if (this.battleCameraActive){
+            //     this.camera.centerOnX(this.player.x)
+            // }
         }
-    } else {
 
-        if(this.powerBarSource >= 0.75) {
-            
-            this.camera.zoomTo(1.2,25)
-            this.camera.centerOn(this.player.x,screenHeight * 0.5)
 
-        } else if(this.powerBarSource >= 0.5) {
-            
-            this.camera.zoomTo(1.1,50)
-            this.camera.centerOn(this.player.x,screenHeight * 0.5)
 
-        } else {
-            this.camera.zoomTo(1,100)
-            this.camera.centerOnX(this.player.x)
 
-        }
-            
-        
-        // if (this.battleCameraActive){
-        //     this.camera.centerOnX(this.player.x)
-        // }
+
     }
 
-    
+    uiModule() {
 
-    
-    
-}
+        // Status Border
 
-uiModule(){
-    
+        if (this.gameMode == 0) {
+            this.r3.setActive(1).setVisible(1)
+
+        } else {
+            this.r3.setActive(0).setVisible(0)
+        }
+
+        this.r3.setScale(1 / this.camera.zoom)
+        this.r3.x = this.camera.scrollX + screenWidth * 0.5
+
+
         this.playerIconBox.x = this.camera.worldView.x + (screenWidth * 0.005)
-        this.playerIconBox.y = this.camera.worldView.y +  (screenHeight * 0.1 )
+        this.playerIconBox.y = this.camera.worldView.y + (screenHeight * 0.1)
 
         this.playerIcon.x = this.playerIconBox.x + (screenWidth * 0.0375)
         this.playerIcon.y = this.playerIconBox.y
 
         // Life
 
-            
-                this.lifeIconHolder.x = this.player.x + (this.player.displayWidth * 0.2) 
-                this.lifeIconHolder.y = this.player.y - (this.player.displayHeight * 0.5) 
-           
 
-                this.lifeIcon.x = this.lifeIconHolder.x
-                this.lifeIcon.y = this.lifeIconHolder.y
+        this.lifeIconHolder.x = this.player.x + (this.player.displayWidth * 0.2)
+        this.lifeIconHolder.y = this.player.y - (this.player.displayHeight * 0.5)
 
-                this.lifeMiddleHolder.x = this.lifeIconHolder.x
-                this.lifeMiddleHolder.y = this.lifeIconHolder.y
-                this.lifeMiddle.x = this.lifeIconHolder.x
-                this.lifeMiddle.y = this.lifeIconHolder.y
 
-                this.lifeRightCapHolder.x = this.lifeMiddleHolder.x + this.lifeMiddleHolder.displayWidth
-                this.lifeRightCapHolder.y = this.lifeMiddleHolder.y 
-                this.lifeRightCap.y = this.lifeMiddle.y
-                
-                this.uiSubModule_setLifePercentageAnimated(this.player.lifeCurrent/this.player.lifeCapacity)
+        this.lifeIcon.x = this.lifeIconHolder.x
+        this.lifeIcon.y = this.lifeIconHolder.y
 
-            // Focus
-                this.focusIconHolder.x = this.lifeIconHolder.x
-                this.focusIconHolder.y = this.lifeIconHolder.y + this.lifeIconHolder.displayHeight
-                this.focusIcon.x = this.focusIconHolder.x
-                this.focusIcon.y = this.focusIconHolder.y
+        this.lifeMiddleHolder.x = this.lifeIconHolder.x
+        this.lifeMiddleHolder.y = this.lifeIconHolder.y
+        this.lifeMiddle.x = this.lifeIconHolder.x
+        this.lifeMiddle.y = this.lifeIconHolder.y
 
-                this.focusMiddleHolder.x = this.focusIconHolder.x
-                this.focusMiddleHolder.y = this.focusIconHolder.y
-                this.focusMiddle.x = this.focusIconHolder.x
-                this.focusMiddle.y = this.focusIconHolder.y
+        this.lifeRightCapHolder.x = this.lifeMiddleHolder.x + this.lifeMiddleHolder.displayWidth
+        this.lifeRightCapHolder.y = this.lifeMiddleHolder.y
+        this.lifeRightCap.y = this.lifeMiddle.y
 
-                this.focusRightCapHolder.x = this.focusMiddleHolder.x + this.focusMiddleHolder.displayWidth
-                this.focusRightCapHolder.y = this.focusMiddleHolder.y 
-                this.focusRightCap.y = this.focusMiddle.y
-                
-                this.uiSubModule_setFocusPercentageAnimated(this.skillPower)
+        this.uiSubModule_setLifePercentageAnimated(this.player.lifeCurrent / this.player.lifeCapacity)
 
-            // Stamina
-                this.staminaIconHolder.x = this.lifeIconHolder.x
-                this.staminaIconHolder.y = this.focusIconHolder.y + this.focusIconHolder.displayHeight
-                this.staminaIcon.x = this.staminaIconHolder.x
-                this.staminaIcon.y = this.staminaIconHolder.y
+        // Focus
+        this.focusIconHolder.x = this.lifeIconHolder.x
+        this.focusIconHolder.y = this.lifeIconHolder.y + this.lifeIconHolder.displayHeight
+        this.focusIcon.x = this.focusIconHolder.x
+        this.focusIcon.y = this.focusIconHolder.y
 
-                this.staminaMiddleHolder.x = this.staminaIconHolder.x
-                this.staminaMiddleHolder.y = this.staminaIconHolder.y
-                this.staminaMiddle.x = this.staminaIconHolder.x
-                this.staminaMiddle.y = this.staminaIconHolder.y
+        this.focusMiddleHolder.x = this.focusIconHolder.x
+        this.focusMiddleHolder.y = this.focusIconHolder.y
+        this.focusMiddle.x = this.focusIconHolder.x
+        this.focusMiddle.y = this.focusIconHolder.y
 
-                this.staminaRightCapHolder.x = this.staminaMiddleHolder.x + this.staminaMiddleHolder.displayWidth
-                this.staminaRightCapHolder.y = this.staminaMiddleHolder.y 
-                this.staminaRightCap.y = this.staminaMiddle.y
-                
-                this.uiSubModule_setStaminaPercentageAnimated(this.actionPower)
+        this.focusRightCapHolder.x = this.focusMiddleHolder.x + this.focusMiddleHolder.displayWidth
+        this.focusRightCapHolder.y = this.focusMiddleHolder.y
+        this.focusRightCap.y = this.focusMiddle.y
 
-       
-            this.gloryIcon.x = this.playerIcon.x + this.playerIcon.displayWidth  
+        this.uiSubModule_setFocusPercentageAnimated(this.skillPower)
 
-                //this.gloryIcon.x = this.playerIcon.x + screenWidth * 0.035  
-                this.gloryIcon.y = this.playerIcon.y + 5
-                this.gloryText.x = this.gloryIcon.x + (screenWidth * 0.0525)
-                this.gloryText.y = this.gloryIcon.y
-                this.gloryText.setText(Math.floor(this.glory))
+        // Stamina
+        this.staminaIconHolder.x = this.lifeIconHolder.x
+        this.staminaIconHolder.y = this.focusIconHolder.y + this.focusIconHolder.displayHeight
+        this.staminaIcon.x = this.staminaIconHolder.x
+        this.staminaIcon.y = this.staminaIconHolder.y
 
-                this.storedRewardsIcon.x = this.gloryIcon.x + (screenWidth * 0.09)
-                this.storedRewardsIcon.y = this.playerIconBox.y - this.skillABox.displayHeight * 0.25//this.gloryIcon.y - this.gloryIcon.displayHeight * 0.25
-                this.storedRewardsText.x = this.storedRewardsIcon.x + (screenWidth * 0.03)
-                this.storedRewardsText.y = this.storedRewardsIcon.y
-                this.storedRewardsText.setText(Math.floor(this.rewards))
+        this.staminaMiddleHolder.x = this.staminaIconHolder.x
+        this.staminaMiddleHolder.y = this.staminaIconHolder.y
+        this.staminaMiddle.x = this.staminaIconHolder.x
+        this.staminaMiddle.y = this.staminaIconHolder.y
 
-                this.goldIcon.x = this.storedRewardsIcon.x + this.storedRewardsIcon.displayWidth * 3
-                this.goldIcon.y = this.storedRewardsIcon.y
-                this.goldText.x = this.goldIcon.x + (screenWidth * 0.03)
-                this.goldText.y = this.goldIcon.y
-                this.goldText.setText(Math.floor(this.gold))
-        
-        
+        this.staminaRightCapHolder.x = this.staminaMiddleHolder.x + this.staminaMiddleHolder.displayWidth
+        this.staminaRightCapHolder.y = this.staminaMiddleHolder.y
+        this.staminaRightCap.y = this.staminaMiddle.y
 
-       
-            this.skillABox.x = this.storedRewardsIcon.x + this.storedRewardsIcon.displayWidth * 1.25
-            this.skillABox.y = this.playerIconBox.y + this.playerIconBox.displayHeight * 0.5//this.gloryIcon.y + this.gloryIcon.displayHeight * 0.25 + this.skillABox.displayHeight * 0.5
-        
+        this.uiSubModule_setStaminaPercentageAnimated(this.actionPower)
 
-            
-            this.skillAIcon.x = this.skillABox.x
-            this.skillAIcon.y = this.skillABox.y
 
-            this.skillBBox.x = this.skillABox.x + 100
-            this.skillBBox.y = this.skillABox.y
+        this.gloryIcon.x = this.playerIcon.x + this.playerIcon.displayWidth
 
-            this.skillBIcon.x = this.skillBBox.x
-            this.skillBIcon.y = this.skillBBox.y
+        //this.gloryIcon.x = this.playerIcon.x + screenWidth * 0.035  
+        this.gloryIcon.y = this.playerIcon.y + 5
+        this.gloryText.x = this.gloryIcon.x + (screenWidth * 0.0525)
+        this.gloryText.y = this.gloryIcon.y
+        this.gloryText.setText(Math.floor(this.glory))
 
-            
+        this.storedRewardsIcon.x = this.gloryIcon.x + (screenWidth * 0.09)
+        this.storedRewardsIcon.y = this.playerIconBox.y - this.skillABox.displayHeight * 0.25//this.gloryIcon.y - this.gloryIcon.displayHeight * 0.25
+        this.storedRewardsText.x = this.storedRewardsIcon.x + (screenWidth * 0.03)
+        this.storedRewardsText.y = this.storedRewardsIcon.y
+        this.storedRewardsText.setText(Math.floor(this.rewards))
+
+        this.goldIcon.x = this.storedRewardsIcon.x + this.storedRewardsIcon.displayWidth * 3
+        this.goldIcon.y = this.storedRewardsIcon.y
+        this.goldText.x = this.goldIcon.x + (screenWidth * 0.03)
+        this.goldText.y = this.goldIcon.y
+        this.goldText.setText(Math.floor(this.gold))
+
+
+
+
+        this.skillABox.x = this.storedRewardsIcon.x + this.storedRewardsIcon.displayWidth * 1.25
+        this.skillABox.y = this.playerIconBox.y + this.playerIconBox.displayHeight * 0.5//this.gloryIcon.y + this.gloryIcon.displayHeight * 0.25 + this.skillABox.displayHeight * 0.5
+
+
+
+        this.skillAIcon.x = this.skillABox.x
+        this.skillAIcon.y = this.skillABox.y
+
+        this.skillBBox.x = this.skillABox.x + 100
+        this.skillBBox.y = this.skillABox.y
+
+        this.skillBIcon.x = this.skillBBox.x
+        this.skillBIcon.y = this.skillBBox.y
+
+
 
         // Player Speed
 
-            
-                this.playerSpeedHolder.x = this.player.x + (this.player.displayWidth * 0.25) 
-                this.playerSpeedHolder.y = this.player.y + (this.player.displayHeight * 0.35) 
-            
-            
-                this.playerSpeedBottom.x = this.playerSpeedHolder.x
-                this.playerSpeedBottom.y = this.playerSpeedHolder.y
-                this.playerSpeedBottom.setAngle(this.playerSpeedHolder.angle)
-                
-                this.playerSpeedMiddle.x = this.playerSpeedHolder.x
-                this.playerSpeedMiddle.y = this.playerSpeedHolder.y
-                this.playerSpeedMiddle.setAngle(this.playerSpeedHolder.angle)
 
-                this.playerSpeedMask.x = this.playerSpeedHolder.x 
-                this.playerSpeedMask.y = this.playerSpeedHolder.y
-                this.playerSpeedMask.setAngle(this.playerSpeedHolder.angle)
+        this.playerSpeedHolder.x = this.player.x + (this.player.displayWidth * 0.25)
+        this.playerSpeedHolder.y = this.player.y + (this.player.displayHeight * 0.35)
 
-                this.playerSpeedTop.x = this.playerSpeedHolder.x
-                this.playerSpeedTop.y = this.playerSpeedHolder.y
-                this.playerSpeedTop.setAngle(this.playerSpeedHolder.angle)
 
-                if(this.gameMode == 0){
-                    this.powerBarSource = this.playerSpeed/this.playerTopSpeed
-                } else {
-                    this.powerBarSource = this.player.momentum / 100
-                }
+        this.playerSpeedBottom.x = this.playerSpeedHolder.x
+        this.playerSpeedBottom.y = this.playerSpeedHolder.y
+        this.playerSpeedBottom.setAngle(this.playerSpeedHolder.angle)
 
-            this.uiSubModule_setPlayerSpeedPercentageAnimated(this.powerBarSource)
+        this.playerSpeedMiddle.x = this.playerSpeedHolder.x
+        this.playerSpeedMiddle.y = this.playerSpeedHolder.y
+        this.playerSpeedMiddle.setAngle(this.playerSpeedHolder.angle)
 
-        
+        this.playerSpeedMask.x = this.playerSpeedHolder.x
+        this.playerSpeedMask.y = this.playerSpeedHolder.y
+        this.playerSpeedMask.setAngle(this.playerSpeedHolder.angle)
+
+        this.playerSpeedTop.x = this.playerSpeedHolder.x
+        this.playerSpeedTop.y = this.playerSpeedHolder.y
+        this.playerSpeedTop.setAngle(this.playerSpeedHolder.angle)
+
+        if (this.gameMode == 0) {
+            this.powerBarSource = this.playerSpeed / this.playerTopSpeed
+        } else {
+            this.powerBarSource = this.player.momentum / 100
+        }
+
+        this.uiSubModule_setPlayerSpeedPercentageAnimated(this.powerBarSource)
+
+
 
         // Stage Progress
-          
-                this.stageProgressIconHolder.x = this.camera.scrollX + (screenWidth * 0.8) - (this.stageProgressMiddleHolder.displayWidth * 0.5)
-                this.stageProgressIconHolder.y = this.playerIconBox.y//(this.camera.scrollY + (screenHeight * 0.95)) - (this.camera.worldView.y - this.camera.scrollY)
-            
-            
 
-                this.levelText.x = this.stageProgressIconHolder.x 
-                this.levelText.y = this.stageProgressIconHolder.y
-                this.levelText.setText(Math.floor(this.level))
+        this.stageProgressIconHolder.x = this.camera.scrollX + (screenWidth * 0.8) - (this.stageProgressMiddleHolder.displayWidth * 0.5)
+        this.stageProgressIconHolder.y = this.playerIconBox.y//(this.camera.scrollY + (screenHeight * 0.95)) - (this.camera.worldView.y - this.camera.scrollY)
 
-                this.stageProgressMiddleHolder.x = this.stageProgressIconHolder.x
-                this.stageProgressMiddleHolder.y = this.stageProgressIconHolder.y
-                this.stageProgressMiddle.x = this.stageProgressIconHolder.x
-                this.stageProgressMiddle.y = this.stageProgressIconHolder.y
 
-                this.stageProgressIconHolderC1.x = this.stageProgressMiddleHolder.x + this.stageProgressMiddleHolder.displayWidth * 0.25
-                this.stageProgressIconHolderC1.y = this.stageProgressMiddleHolder.y
-                this.stageProgressIconC1.x = this.stageProgressIconHolderC1.x
-                this.stageProgressIconC1.y = this.stageProgressIconHolderC1.y
-                if(this.progress < this.progressToNextCheckPoint ){
-                    this.stageProgressIconC1.setVisible(0)
-                } else {
-                    this.stageProgressIconC1.setVisible(1)
-                }
 
-                this.stageProgressIconHolderC2.x = this.stageProgressMiddleHolder.x + this.stageProgressMiddleHolder.displayWidth * 0.5
-                this.stageProgressIconHolderC2.y = this.stageProgressMiddleHolder.y
-                this.stageProgressIconC2.x = this.stageProgressIconHolderC2.x
-                this.stageProgressIconC2.y = this.stageProgressIconHolderC2.y
-                if(this.progress < this.progressToNextCheckPoint * 2){
-                    this.stageProgressIconC2.setVisible(0)
-                } else {
-                    this.stageProgressIconC2.setVisible(1)
-                }
+        this.levelText.x = this.stageProgressIconHolder.x
+        this.levelText.y = this.stageProgressIconHolder.y
+        this.levelText.setText(Math.floor(this.level))
 
-                this.stageProgressIconHolderC3.x = this.stageProgressMiddleHolder.x + this.stageProgressMiddleHolder.displayWidth * 0.75
-                this.stageProgressIconHolderC3.y = this.stageProgressMiddleHolder.y
-                this.stageProgressIconC3.x = this.stageProgressIconHolderC3.x
-                this.stageProgressIconC3.y = this.stageProgressIconHolderC3.y
-                if(this.progress < this.progressToNextCheckPoint * 3){
-                    this.stageProgressIconC3.setVisible(0)
-                } else {
-                    this.stageProgressIconC3.setVisible(1)
-                }
+        this.stageProgressMiddleHolder.x = this.stageProgressIconHolder.x
+        this.stageProgressMiddleHolder.y = this.stageProgressIconHolder.y
+        this.stageProgressMiddle.x = this.stageProgressIconHolder.x
+        this.stageProgressMiddle.y = this.stageProgressIconHolder.y
 
-                this.stageProgressRightCapHolder.x = this.stageProgressMiddleHolder.x + this.stageProgressMiddleHolder.displayWidth
-                this.stageProgressRightCapHolder.y = this.stageProgressMiddleHolder.y 
-                this.stageProgressRightCap.y = this.stageProgressMiddle.y
+        this.stageProgressIconHolderC1.x = this.stageProgressMiddleHolder.x + this.stageProgressMiddleHolder.displayWidth * 0.25
+        this.stageProgressIconHolderC1.y = this.stageProgressMiddleHolder.y
+        this.stageProgressIconC1.x = this.stageProgressIconHolderC1.x
+        this.stageProgressIconC1.y = this.stageProgressIconHolderC1.y
+        if (this.progress < this.progressToNextCheckPoint) {
+            this.stageProgressIconC1.setVisible(0)
+        } else {
+            this.stageProgressIconC1.setVisible(1)
+        }
 
-                this.stageProgressIconHolderFinalCheckPoint.x = this.stageProgressRightCapHolder.x
-                this.stageProgressIconHolderFinalCheckPoint.y = this.stageProgressRightCapHolder.y
-                this.stageProgressIconFinalCheckPoint.x = this.stageProgressIconHolderFinalCheckPoint.x
-                this.stageProgressIconFinalCheckPoint.y = this.stageProgressIconHolderFinalCheckPoint.y 
-                
-                this.uiSubModule_setStageProgressPercentageAnimated(this.progress/this.progressToNextLevel)
-}
+        this.stageProgressIconHolderC2.x = this.stageProgressMiddleHolder.x + this.stageProgressMiddleHolder.displayWidth * 0.5
+        this.stageProgressIconHolderC2.y = this.stageProgressMiddleHolder.y
+        this.stageProgressIconC2.x = this.stageProgressIconHolderC2.x
+        this.stageProgressIconC2.y = this.stageProgressIconHolderC2.y
+        if (this.progress < this.progressToNextCheckPoint * 2) {
+            this.stageProgressIconC2.setVisible(0)
+        } else {
+            this.stageProgressIconC2.setVisible(1)
+        }
 
-    uiSubModule_setLifePercentage(percent = 1){
-            this.width = this.vitalsfullWidth * percent
+        this.stageProgressIconHolderC3.x = this.stageProgressMiddleHolder.x + this.stageProgressMiddleHolder.displayWidth * 0.75
+        this.stageProgressIconHolderC3.y = this.stageProgressMiddleHolder.y
+        this.stageProgressIconC3.x = this.stageProgressIconHolderC3.x
+        this.stageProgressIconC3.y = this.stageProgressIconHolderC3.y
+        if (this.progress < this.progressToNextCheckPoint * 3) {
+            this.stageProgressIconC3.setVisible(0)
+        } else {
+            this.stageProgressIconC3.setVisible(1)
+        }
 
-            this.lifeMiddle.displayWidth = this.width
-            this.lifeRightCap.x = this.lifeMiddle.x + this.lifeMiddle.displayWidth
-        
+        this.stageProgressRightCapHolder.x = this.stageProgressMiddleHolder.x + this.stageProgressMiddleHolder.displayWidth
+        this.stageProgressRightCapHolder.y = this.stageProgressMiddleHolder.y
+        this.stageProgressRightCap.y = this.stageProgressMiddle.y
+
+        this.stageProgressIconHolderFinalCheckPoint.x = this.stageProgressRightCapHolder.x
+        this.stageProgressIconHolderFinalCheckPoint.y = this.stageProgressRightCapHolder.y
+        this.stageProgressIconFinalCheckPoint.x = this.stageProgressIconHolderFinalCheckPoint.x
+        this.stageProgressIconFinalCheckPoint.y = this.stageProgressIconHolderFinalCheckPoint.y
+
+        this.uiSubModule_setStageProgressPercentageAnimated(this.progress / this.progressToNextLevel)
     }
 
-    uiSubModule_setLifePercentageAnimated(percent = 1, duration = 250){
+    initialise_UI() {
+        this.hudDepth = 2
+
+        // Status Border
+
+        this.r3 = this.add.rectangle(screenWidth * 2, screenHeight * 0.5, screenWidth, screenHeight);
+
+        this.r3.setStrokeStyle(screenWidth * 0.01, 0x6d54a9).setDepth(2);
+
+        // Player
+        this.playerIconBoxScaleX = 0.85
+        this.playerIconBoxScaleY = 0.3
+        this.playerIconBox = this.add.image(0, 0, 'playerIconBox').setDepth(3).setScale(this.playerIconBoxScaleX, this.playerIconBoxScaleY).setOrigin(0, 0.5).setAlpha(0.75)
+        this.playerIconScale = 0.06
+        this.playerIcon = this.add.image(0, 0, 'playerIcon').setDepth(3).setScale(this.playerIconScale).setOrigin(0.5, 0.5)
+
+
+        // Vitals Bars
+        this.playerVitalsPosition = 2
+        this.lowVitalsTintColour = 0xE10600
+        this.lowVitalsPercent = 0.35
+
+
+        this.vitalsfullWidth = this.player.displayWidth * 0.5
+        this.vitalsScale = 0.05//0.075
+
+
+        // Life
+
+
+        // Holder
+
+        this.lifeMiddleHolder = this.add.image(0, 0, 'life-middle-holder')
+            .setOrigin(0, 0.5).setDepth(5).setScale(this.vitalsScale)
+
+        this.lifeMiddleHolder.displayWidth = this.vitalsfullWidth
+
+        this.lifeRightCapHolder = this.add.image(0, 0, 'life-right-cap-holder')
+            .setOrigin(0, 0.5).setDepth(5).setScale(this.vitalsScale)
+        // Bar
+
+        this.lifeMiddle = this.add.image(0, 0, 'life-middle')
+            .setOrigin(0, 0.5).setDepth(5).setScale(this.vitalsScale)
+
+        this.lifeMiddle.displayWidth = this.vitalsfullWidth
+
+        this.lifeRightCap = this.add.image(0, 0, 'life-right-cap')
+            .setOrigin(0, 0.5).setDepth(5).setScale(this.vitalsScale)
+
+        this.uiSubModule_setLifePercentage(this.player.lifeCurrent / this.player.lifeCapacity)
+        // Icon Holder
+
+        this.lifeIconHolder = this.add.image(0, 0, 'life-icon-holder').setDepth(6).setScale(this.vitalsScale)
+        this.lifeIcon = this.add.image(0, 0, 'life-icon').setDepth(6).setScale(this.vitalsScale)
+
+        // Focus
+
+
+        // Holder
+
+        this.focusMiddleHolder = this.add.image(0, 0, 'focus-middle-holder')
+            .setOrigin(0, 0.5).setDepth(5).setScale(this.vitalsScale)
+
+        this.focusMiddleHolder.displayWidth = this.vitalsfullWidth
+
+        this.focusRightCapHolder = this.add.image(0, 0, 'focus-right-cap-holder')
+            .setOrigin(0, 0.5).setDepth(5).setScale(this.vitalsScale)
+        // Bar
+
+
+        this.focusMiddle = this.add.image(0, 0, 'focus-middle')
+            .setOrigin(0, 0.5).setDepth(5).setScale(this.vitalsScale)
+
+        this.focusMiddle.displayWidth = this.vitalsfullWidth
+
+        this.focusRightCap = this.add.image(0, 0, 'focus-right-cap')
+            .setOrigin(0, 0.5).setDepth(5).setScale(this.vitalsScale)
+
+        this.uiSubModule_setFocusPercentage(this.skillPower)
+        // Icon Holder
+        this.focusIconHolder = this.add.image(0, 0, 'focus-icon-holder').setDepth(6).setScale(this.vitalsScale).setVisible(1).setOrigin(0.5)
+        this.focusIcon = this.add.image(0, 0, 'focus-icon').setDepth(6).setScale(this.vitalsScale)
+
+        // Stamina
+
+        // Holder
+
+        this.staminaMiddleHolder = this.add.image(0, 0, 'stamina-middle-holder')
+            .setOrigin(0, 0.5).setDepth(5).setScale(this.vitalsScale)
+
+        this.staminaMiddleHolder.displayWidth = this.vitalsfullWidth
+
+        this.staminaRightCapHolder = this.add.image(0, 0, 'stamina-right-cap-holder')
+            .setOrigin(0, 0.5).setDepth(5).setScale(this.vitalsScale)
+        // Bar
+
+        this.staminaMiddle = this.add.image(0, 0, 'stamina-middle')
+            .setOrigin(0, 0.5).setDepth(5).setScale(this.vitalsScale)
+
+        this.staminaMiddle.displayWidth = this.vitalsfullWidth
+
+        this.staminaRightCap = this.add.image(0, 0, 'stamina-right-cap')
+            .setOrigin(0, 0.5).setDepth(5).setScale(this.vitalsScale)
+
+        this.uiSubModule_setStaminaPercentage(this.actionPower)
+
+        // Icon Holder
+
+        this.staminaIconHolder = this.add.image(0, 0, 'stamina-icon-holder').setDepth(6).setScale(this.vitalsScale).setVisible(1).setOrigin(0.5)
+        this.staminaIcon = this.add.image(0, 0, 'stamina-icon').setDepth(6).setScale(this.vitalsScale)
+
+        this.resourcesPosition = 1
+
+
+        this.bigIconScale = 0.85
+        this.bigTextSize = 42
+
+        this.iconScale = 0.45
+        this.textSize = 24
+
+        this.gloryIcon = this.add.image(0, 0, 'gloryIcon').setDepth(4).setScale(this.bigIconScale * (scaleModX))
+        this.gloryText = this.add.text(0, 0, Math.floor(this.glory)).setFontFamily('Arial').setFontSize(this.bigTextSize * (scaleModX)).setColor('#BC3823').setDepth(4).setOrigin(0.5, 0.5);
+
+
+        this.storedRewardsIcon = this.add.image(0, 0, 'storedRewardsIcon').setDepth(4).setScale(this.iconScale * (scaleModX)).setOrigin(0.5, 0.5)
+        this.storedRewardsText = this.add.text(this.storedRewardsIcon.x + 5, this.storedRewardsIcon.y, Math.floor(this.level)).setFontFamily('Arial').setFontSize(this.textSize * (scaleModX)).setColor('#674EA7').setDepth(4).setOrigin(0.5, 0.5)
+
+        this.goldIcon = this.add.image(0, 0, 'goldIcon').setDepth(4).setScale(this.iconScale * (scaleModX)).setOrigin(0.5, 0.5)
+        this.goldText = this.add.text(0, 0, Math.floor(gold)).setFontFamily('Arial').setFontSize(this.textSize * (scaleModX)).setColor('#ffd700').setDepth(4).setOrigin(0.5, 0.5);
+
+        this.skillBoxScale = 0.25
+        this.skillIconScale = 0.3
+
+        this.skillABox = this.add.image(0, 0, 'skillIconBox').setDepth(3).setScale(this.skillBoxScale).setOrigin(0.5, 0.5)
+        this.skillAIcon = this.add.image(0, 0, 'deadlyCombatAssaultIcon').setDepth(3).setScale(this.skillIconScale).setOrigin(0.5, 0.5)
+        this.skillBBox = this.add.image(0, 0, 'skillIconBox').setDepth(3).setScale(this.skillBoxScale).setOrigin(0.5, 0.5)
+        this.skillBIcon = this.add.image(0, 0, 'thunderStrikeIcon').setDepth(3).setScale(this.skillIconScale).setOrigin(0.5, 0.5)
+
+        // Player Speed
+
+        this.playerSpeedPosition = 2
+
+        this.playerSpeedfullWidth = this.vitalsfullWidth * 0.5
+        this.playerSpeedScaleX = 0.05
+        this.playerSpeedScaleY = 0.05
+
+        // Holder
+
+        this.playerSpeedHolder = this.add.image(0, 0, 'playerSpeed-holder')
+            .setOrigin(0, 0.5).setScale(this.playerSpeedScaleX, this.playerSpeedScaleY).setVisible(1)
+
+        this.playerSpeedHolder.displayWidth = this.playerSpeedfullWidth
+
+        // Bar
+
+        this.playerSpeedBottom = this.add.image(0, 0, 'playerSpeed-bottom')
+            .setOrigin(0, 0.5).setScale(this.playerSpeedScaleX, this.playerSpeedScaleY)
+
+
+        this.playerSpeedBottom.displayWidth = this.playerSpeedfullWidth
+
+        this.playerSpeedMiddle = this.add.image(0, 0, 'playerSpeed-middle')
+            .setOrigin(0, 0.5).setScale(this.playerSpeedScaleX, this.playerSpeedScaleY)
+
+
+        this.playerSpeedMiddle.displayWidth = this.playerSpeedfullWidth
+
+        this.playerSpeedTop = this.add.image(0, 0, 'playerSpeed-top')
+            .setOrigin(0, 0.5).setScale(this.playerSpeedScaleX, this.playerSpeedScaleY).setVisible(1)
+
+
+        this.playerSpeedTop.displayWidth = this.playerSpeedfullWidth
+
+        this.playerSpeedMask = this.add.image(0, 0, 'playerSpeed-mask')
+            .setOrigin(0, 0.5).setScale(this.playerSpeedScaleX, this.playerSpeedScaleY)
+            .setVisible(0)
+
+        this.playerSpeedMask.displayWidth = this.playerSpeedfullWidth
+        this.playerSpeedMask.displayHeight = this.playerSpeedHolder.displayHeight
+
+        this.playerSpeedMiddle.mask = new Phaser.Display.Masks.BitmapMask(this, this.playerSpeedMask);
+
+        this.uiSubModule_setPlayerSpeedPercentage(0.5)
+
+
+        // Stage Progress
+
+        this.stageProgressPosition = 2
+
+
+        this.stageProgressfullWidth = this.playerIconBox.displayWidth * 0.8
+        this.StageProgressScale = 0.075
+        this.stageProgressTextSize = 24
+
+
+
+        // Holder
+
+        this.stageProgressMiddleHolder = this.add.image(0, 0, 'stageProgress-middle-holder')
+            .setOrigin(0, 0.5).setScale(this.StageProgressScale)
+
+        this.stageProgressMiddleHolder.displayWidth = this.stageProgressfullWidth
+
+        this.stageProgressRightCapHolder = this.add.image(0, 0, 'stageProgress-right-cap-holder')
+            .setOrigin(0, 0.5).setScale(this.StageProgressScale)
+        // Bar
+
+        this.stageProgressMiddle = this.add.image(0, 0, 'stageProgress-middle')
+            .setOrigin(0, 0.5).setScale(this.StageProgressScale)
+
+        this.stageProgressMiddle.displayWidth = this.stageProgressfullWidth
+
+        this.stageProgressRightCap = this.add.image(0, 0, 'stageProgress-right-cap')
+            .setOrigin(0, 0.5).setScale(this.StageProgressScale)
+
+        this.uiSubModule_setStageProgressPercentage(this.progress / this.progressToNextLevel)
+
+        // Icon Holders
+
+        this.stageProgressIconHolder = this.add.image(0, 0, 'stageProgress-icon-holder').setScale(this.StageProgressScale).setOrigin(0.5)
+        this.levelText = this.add.text(0, 0, Math.floor(this.level)).setFontFamily('Arial').setFontSize(this.stageProgressTextSize * (scaleModX)).setOrigin(0.5)
+
+        this.stageProgressIconHolderC1 = this.add.image(0, 0, 'stageProgress-icon-holder').setScale(this.StageProgressScale).setOrigin(0.5)
+        // if (Phaser.Math.Between(0, 100) <= 30) {
+        this.stageProgressIconC1 = this.add.image(0, 0, 'stageProgress-icon').setScale(this.StageProgressScale)
+        // } else {
+        //     this.stageProgressIconC1 = this.add.image(0, 0, 'horde-checkpoint-icon').setScale(this.StageProgressScale)
+        // }
+
+        this.stageProgressIconHolderC2 = this.add.image(0, 0, 'stageProgress-icon-holder').setScale(this.StageProgressScale).setOrigin(0.5)
+        // if (Phaser.Math.Between(0, 100) <= 60) {
+             this.stageProgressIconC2 = this.add.image(0, 0, 'stageProgress-icon').setScale(this.StageProgressScale)
+        // } else {
+        //     this.stageProgressIconC2 = this.add.image(0, 0, 'horde-checkpoint-icon').setScale(this.StageProgressScale)
+        // }
+
+        this.stageProgressIconHolderC3 = this.add.image(0, 0, 'stageProgress-icon-holder').setScale(this.StageProgressScale).setOrigin(0.5)
+        // if (Phaser.Math.Between(0, 100) <= 30) {
+             this.stageProgressIconC3 = this.add.image(0, 0, 'stageProgress-icon').setScale(this.StageProgressScale)
+        // } else {
+        //     this.stageProgressIconC3 = this.add.image(0, 0, 'horde-checkpoint-icon').setScale(this.StageProgressScale)
+        // }
+
+
+        this.stageProgressIconHolderFinalCheckPoint = this.add.image(0, 0, 'stageProgress-icon-holder').setScale(this.StageProgressScale).setOrigin(0.5)
+        this.stageProgressIconFinalCheckPoint = this.add.image(0, 0, 'stageProgress-icon').setScale(this.StageProgressScale)
+
+
+        this.hudGroup = this.add.group([
+            this.playerIconBox, this.playerIcon, this.storedRewardsIcon, this.storedRewardsText, this.goldIcon,
+            this.goldText, this.skillABox, this.skillAIcon, this.skillBBox, this.skillBIcon,
+            this.gloryIcon, this.gloryText,
+            this.lifeIconHolder, this.lifeIcon, this.lifeMiddleHolder, this.lifeRightCapHolder, this.lifeMiddle, this.lifeRightCap,
+            this.focusIconHolder, this.focusIcon, this.focusMiddleHolder, this.focusRightCapHolder, this.focusMiddle, this.focusRightCap,
+            this.staminaIconHolder, this.staminaIcon, this.staminaMiddleHolder, this.staminaRightCapHolder, this.staminaMiddle, this.staminaRightCap,
+            this.playerSpeedHolder, this.playerSpeedBottom, this.playerSpeedMiddle, this.playerSpeedTop,
+            this.stageProgressIconHolder, this.levelText, this.stageProgressIconHolderC1, this.stageProgressIconC1,
+            this.stageProgressIconHolderC2, this.stageProgressIconC2, this.stageProgressIconHolderC3, this.stageProgressIconC3,
+            this.stageProgressMiddleHolder, this.stageProgressRightCapHolder, this.stageProgressMiddle, this.stageProgressRightCap,
+            this.stageProgressIconHolderFinalCheckPoint, this.stageProgressIconFinalCheckPoint
+        ]
+        )
+
+        this.hudGroup.setDepth(this.hudDepth)
+    }
+
+    uiSubModule_setLifePercentage(percent = 1) {
+        this.width = this.vitalsfullWidth * percent
+
+        this.lifeMiddle.displayWidth = this.width
+        this.lifeRightCap.x = this.lifeMiddle.x + this.lifeMiddle.displayWidth
+
+    }
+
+    uiSubModule_setLifePercentageAnimated(percent = 1, duration = 250) {
         this.width = this.vitalsfullWidth * percent
 
         this.lifeRightCap.x = this.lifeMiddle.x + this.lifeMiddle.displayWidth
@@ -2460,63 +2461,63 @@ uiModule(){
 
         // Alpha Tween
 
-            if (this.player.lifeCurrent / this.player.lifeCapacity < this.lowVitalsPercent || this.playerIsHit || this.emergencyPower){
-                this.tweens.add({
-                    targets: [this.lifeIconHolder,
-                        this.lifeIcon,
-                        this.lifeMiddleHolder,
-                        this.lifeMiddle,
-                        this.lifeRightCapHolder,
-                        this.lifeRightCap],
-                    alpha: 1,
-                    duration:500,
-                    ease: Phaser.Math.Easing.Sine.Out,
-                    onUpdate: () => {
-    
-                    },
-    
-                
-                })
-            } else {
-                this.tweens.add({
-                    targets: [this.lifeIconHolder,
-                        this.lifeIcon,
-                        this.lifeMiddleHolder,
-                        this.lifeMiddle,
-                        this.lifeRightCapHolder,
-                        this.lifeRightCap],
-                    alpha: 0,
-                    duration:500,
-                    ease: Phaser.Math.Easing.Sine.Out,
-                    onUpdate: () => {
-    
-                    },
-    
-                
-                })
-            }
+        if (this.player.lifeCurrent / this.player.lifeCapacity < this.lowVitalsPercent || this.playerIsHit || this.emergencyPower) {
+            this.tweens.add({
+                targets: [this.lifeIconHolder,
+                this.lifeIcon,
+                this.lifeMiddleHolder,
+                this.lifeMiddle,
+                this.lifeRightCapHolder,
+                this.lifeRightCap],
+                alpha: 1,
+                duration: 500,
+                ease: Phaser.Math.Easing.Sine.Out,
+                onUpdate: () => {
 
-            // Tint Tween
-                if (this.player.lifeCurrent/this.player.lifeCapacity > this.lowVitalsPercent){
-                    this.lifeMiddle.setTint()
-                    this.lifeRightCap.setTint()
-                } else {
-                    this.lifeMiddle.setTint(this.lowVitalsTintColour)
-                    this.lifeRightCap.setTint(this.lowVitalsTintColour)
-                }
+                },
+
+
+            })
+        } else {
+            this.tweens.add({
+                targets: [this.lifeIconHolder,
+                this.lifeIcon,
+                this.lifeMiddleHolder,
+                this.lifeMiddle,
+                this.lifeRightCapHolder,
+                this.lifeRightCap],
+                alpha: 0,
+                duration: 500,
+                ease: Phaser.Math.Easing.Sine.Out,
+                onUpdate: () => {
+
+                },
+
+
+            })
+        }
+
+        // Tint Tween
+        if (this.player.lifeCurrent / this.player.lifeCapacity > this.lowVitalsPercent) {
+            this.lifeMiddle.setTint()
+            this.lifeRightCap.setTint()
+        } else {
+            this.lifeMiddle.setTint(this.lowVitalsTintColour)
+            this.lifeRightCap.setTint(this.lowVitalsTintColour)
+        }
 
 
     }
 
-    uiSubModule_setFocusPercentage(percent = 1){
+    uiSubModule_setFocusPercentage(percent = 1) {
         this.width = this.vitalsfullWidth * percent
 
         this.focusMiddle.displayWidth = this.width
         this.focusRightCap.x = this.focusMiddle.x + this.focusMiddle.displayWidth
-    
+
     }
 
-    uiSubModule_setFocusPercentageAnimated(percent = 1, duration = 250){
+    uiSubModule_setFocusPercentageAnimated(percent = 1, duration = 250) {
         this.width = this.vitalsfullWidth * percent
 
         this.focusRightCap.x = this.focusMiddle.x + this.focusMiddle.displayWidth
@@ -2528,7 +2529,7 @@ uiModule(){
             ease: Phaser.Math.Easing.Sine.Out,
             onUpdate: () => {
                 this.focusRightCap.x = this.focusMiddle.x + this.focusMiddle.displayWidth
-    
+
                 //this.lifeLeftCap.visible = this.lifeMiddle.displayWidth > 0
                 this.focusMiddle.visible = this.focusMiddle.displayWidth > 0
                 this.focusRightCap.visible = this.focusMiddle.displayWidth > 0
@@ -2537,88 +2538,88 @@ uiModule(){
 
         // Alpha Tween
 
-        if (this.skillPower < this.lowVitalsPercent && (!a1IsDown && !a2IsDown || this.gameMode == 0)){// || (s1IsDown || s2IsDown)){
+        if (this.skillPower < this.lowVitalsPercent && (!a1Held && !a2Held || this.gameMode == 0)) {// || (s1Held || s2Held)){
             this.tweens.add({
                 targets: [this.focusIconHolder,
-                    this.focusIcon,
-                    this.focusMiddleHolder,
-                    this.focusMiddle,
-                    this.focusRightCapHolder,
-                    this.focusRightCap],
+                this.focusIcon,
+                this.focusMiddleHolder,
+                this.focusMiddle,
+                this.focusRightCapHolder,
+                this.focusRightCap],
                 alpha: 1,
-                duration:500,
+                duration: 500,
                 ease: Phaser.Math.Easing.Sine.Out,
                 onUpdate: () => {
 
                 },
 
-            
+
             })
-        } else if ((s1IsDown || s2IsDown)){//|| (a1IsDown || a2IsDown)){
-            if (this.gameMode == 0){
-            this.tweens.add({
-                targets: [this.focusIconHolder,
+        } else if ((s1Held || s2Held)) {//|| (a1Held || a2Held)){
+            if (this.gameMode == 0) {
+                this.tweens.add({
+                    targets: [this.focusIconHolder,
                     this.focusIcon,
                     this.focusMiddleHolder,
                     this.focusMiddle,
                     this.focusRightCapHolder,
                     this.focusRightCap],
-                alpha: 1,
-                duration:500,
-                ease: Phaser.Math.Easing.Sine.Out,
-                onUpdate: () => {
+                    alpha: 1,
+                    duration: 500,
+                    ease: Phaser.Math.Easing.Sine.Out,
+                    onUpdate: () => {
 
-                },
+                    },
 
-            
-            })
-        } else if (this.gameMode == 1){
-            this.tweens.add({
-                targets: [this.focusIconHolder,
+
+                })
+            } else if (this.gameMode == 1) {
+                this.tweens.add({
+                    targets: [this.focusIconHolder,
                     this.focusIcon],
-                alpha: 1,
-                duration:500,
-                ease: Phaser.Math.Easing.Sine.Out,
-                onUpdate: () => {
+                    alpha: 1,
+                    duration: 500,
+                    ease: Phaser.Math.Easing.Sine.Out,
+                    onUpdate: () => {
 
-                },
+                    },
 
-            
-            })
 
-            this.tweens.add({
-                targets: [
-                    this.focusMiddleHolder,
-                    this.focusMiddle,
-                    this.focusRightCapHolder,
-                    this.focusRightCap],
-                alpha: 0,
-                duration:500,
-                ease: Phaser.Math.Easing.Sine.Out,
-                onUpdate: () => {
+                })
 
-                },
+                this.tweens.add({
+                    targets: [
+                        this.focusMiddleHolder,
+                        this.focusMiddle,
+                        this.focusRightCapHolder,
+                        this.focusRightCap],
+                    alpha: 0,
+                    duration: 500,
+                    ease: Phaser.Math.Easing.Sine.Out,
+                    onUpdate: () => {
 
-            
-            })
-        } 
-        
+                    },
+
+
+                })
+            }
+
         } else {
             this.tweens.add({
                 targets: [this.focusIconHolder,
-                    this.focusIcon,
-                    this.focusMiddleHolder,
-                    this.focusMiddle,
-                    this.focusRightCapHolder,
-                    this.focusRightCap],
+                this.focusIcon,
+                this.focusMiddleHolder,
+                this.focusMiddle,
+                this.focusRightCapHolder,
+                this.focusRightCap],
                 alpha: 0,
-                duration:500,
+                duration: 500,
                 ease: Phaser.Math.Easing.Sine.Out,
                 onUpdate: () => {
 
                 },
 
-            
+
             })
         }
 
@@ -2632,15 +2633,15 @@ uiModule(){
         // }
     }
 
-    uiSubModule_setStaminaPercentage(percent = 1){
+    uiSubModule_setStaminaPercentage(percent = 1) {
         this.width = this.vitalsfullWidth * percent
 
         this.staminaMiddle.displayWidth = this.width
         this.staminaRightCap.x = this.staminaMiddle.x + this.staminaMiddle.displayWidth
-    
+
     }
 
-    uiSubModule_setStaminaPercentageAnimated(percent = 1, duration = 250){
+    uiSubModule_setStaminaPercentageAnimated(percent = 1, duration = 250) {
         this.width = this.vitalsfullWidth * percent
 
         this.staminaRightCap.x = this.staminaMiddle.x + this.staminaMiddle.displayWidth
@@ -2657,58 +2658,58 @@ uiModule(){
                 this.staminaRightCap.visible = this.staminaMiddle.displayWidth > 0
             },
 
-        
+
         })
 
         // Alpha Tween
 
-            if (this.actionPower < this.lowVitalsPercent && (!s1IsDown && !s2IsDown || this.gameMode == 0)){//|| (a1IsDown || a2IsDown)){
+        if (this.actionPower < this.lowVitalsPercent && (!s1Held && !s2Held || this.gameMode == 0)) {//|| (a1Held || a2Held)){
+            this.tweens.add({
+                targets: [this.staminaIconHolder,
+                this.staminaIcon,
+                this.staminaMiddleHolder,
+                this.staminaMiddle,
+                this.staminaRightCapHolder,
+                this.staminaRightCap],
+                alpha: 1,
+                duration: 500,
+                ease: Phaser.Math.Easing.Sine.Out,
+                onUpdate: () => {
+
+                },
+
+
+            })
+        } else if ((a1Held || a2Held)) {//|| (a1Held || a2Held)){
+            if (this.gameMode == 0) {
                 this.tweens.add({
                     targets: [this.staminaIconHolder,
-                        this.staminaIcon,
-                        this.staminaMiddleHolder,
-                        this.staminaMiddle,
-                        this.staminaRightCapHolder,
-                        this.staminaRightCap],
+                    this.staminaIcon,
+                    this.staminaMiddleHolder,
+                    this.staminaMiddle,
+                    this.staminaRightCapHolder,
+                    this.staminaRightCap],
                     alpha: 1,
-                    duration:500,
+                    duration: 500,
                     ease: Phaser.Math.Easing.Sine.Out,
                     onUpdate: () => {
-    
+
                     },
-    
-                
+
+
                 })
-            } else if ((a1IsDown || a2IsDown)){//|| (a1IsDown || a2IsDown)){
-                if (this.gameMode == 0){
+            } else if (this.gameMode == 1) {
                 this.tweens.add({
                     targets: [this.staminaIconHolder,
-                        this.staminaIcon,
-                        this.staminaMiddleHolder,
-                        this.staminaMiddle,
-                        this.staminaRightCapHolder,
-                        this.staminaRightCap],
+                    this.staminaIcon],
                     alpha: 1,
-                    duration:500,
+                    duration: 500,
                     ease: Phaser.Math.Easing.Sine.Out,
                     onUpdate: () => {
-    
+
                     },
-    
-                
-                })
-            } else if (this.gameMode == 1){
-                this.tweens.add({
-                    targets: [this.staminaIconHolder,
-                        this.staminaIcon],
-                    alpha: 1,
-                    duration:500,
-                    ease: Phaser.Math.Easing.Sine.Out,
-                    onUpdate: () => {
-    
-                    },
-    
-                
+
+
                 })
 
                 this.tweens.add({
@@ -2718,65 +2719,65 @@ uiModule(){
                         this.staminaRightCapHolder,
                         this.staminaRightCap],
                     alpha: 0,
-                    duration:500,
+                    duration: 500,
                     ease: Phaser.Math.Easing.Sine.Out,
                     onUpdate: () => {
-    
+
                     },
-    
-                
-                })
-            } 
-            
-            }  else {
-                this.tweens.add({
-                    targets: [this.staminaIconHolder,
-                        this.staminaIcon,
-                        this.staminaMiddleHolder,
-                        this.staminaMiddle,
-                        this.staminaRightCapHolder,
-                        this.staminaRightCap],
-                    alpha: 0,
-                    duration:500,
-                    ease: Phaser.Math.Easing.Sine.Out,
-                    onUpdate: () => {
-    
-                    },
-    
-                
+
+
                 })
             }
 
-            // Tint Tween
-            // if (this.actionPower > this.lowVitalsPercent){
-            //     this.staminaMiddle.setTint()
-            //     this.staminaRightCap.setTint()
-            // } else {
-            //     this.staminaMiddle.setTint(this.lowVitalsTintColour)
-            //     this.staminaRightCap.setTint(this.lowVitalsTintColour)
-                
-            // }
+        } else {
+            this.tweens.add({
+                targets: [this.staminaIconHolder,
+                this.staminaIcon,
+                this.staminaMiddleHolder,
+                this.staminaMiddle,
+                this.staminaRightCapHolder,
+                this.staminaRightCap],
+                alpha: 0,
+                duration: 500,
+                ease: Phaser.Math.Easing.Sine.Out,
+                onUpdate: () => {
+
+                },
+
+
+            })
+        }
+
+        // Tint Tween
+        // if (this.actionPower > this.lowVitalsPercent){
+        //     this.staminaMiddle.setTint()
+        //     this.staminaRightCap.setTint()
+        // } else {
+        //     this.staminaMiddle.setTint(this.lowVitalsTintColour)
+        //     this.staminaRightCap.setTint(this.lowVitalsTintColour)
+
+        // }
 
     }
 
-     uiSubModule_setPlayerSpeedPercentage(percent = 1){
-      
+    uiSubModule_setPlayerSpeedPercentage(percent = 1) {
+
         this.width = this.playerSpeedfullWidth * percent
 
         this.playerSpeedMask.displayWidth = this.width
 
     }
 
-    uiSubModule_setPlayerSpeedPercentageAnimated(percent = 1, duration = 250){
-        this.width = this.playerSpeedfullWidth *  percent
+    uiSubModule_setPlayerSpeedPercentageAnimated(percent = 1, duration = 250) {
+        this.width = this.playerSpeedfullWidth * percent
 
 
-        if ((this.playerSpeed < 0.95 || this.playerSpeed > 1.05)  && this.gameMode == 0 || (a1IsDown || a2IsDown || s1IsDown || s2IsDown) ){
+        if ((this.playerSpeed < 0.95 || this.playerSpeed > 1.05) && this.gameMode == 0 || (a1Held || a2Held || s1Held || s2Held)) {
             this.tweens.add({
                 targets: [this.playerSpeedHolder,
-                    this.playerSpeedBottom,
-                    this.playerSpeedMiddle,
-                    this.playerSpeedTop],
+                this.playerSpeedBottom,
+                this.playerSpeedMiddle,
+                this.playerSpeedTop],
                 alpha: 1,
                 duration,
                 ease: Phaser.Math.Easing.Sine.Out,
@@ -2784,14 +2785,14 @@ uiModule(){
 
                 },
 
-            
+
             })
         } else {
             this.tweens.add({
                 targets: [this.playerSpeedHolder,
-                            this.playerSpeedBottom,
-                            this.playerSpeedMiddle,
-                            this.playerSpeedTop],
+                this.playerSpeedBottom,
+                this.playerSpeedMiddle,
+                this.playerSpeedTop],
                 alpha: 0,
                 duration,
                 ease: Phaser.Math.Easing.Sine.Out,
@@ -2799,12 +2800,12 @@ uiModule(){
 
                 },
 
-            
+
             })
         }
 
-        
-        
+
+
 
         this.tweens.add({
             targets: this.playerSpeedMask,
@@ -2815,19 +2816,19 @@ uiModule(){
 
             },
 
-        
+
         })
     }
 
-    uiSubModule_setStageProgressPercentage(percent = 1){
+    uiSubModule_setStageProgressPercentage(percent = 1) {
         this.width = this.stageProgressfullWidth * percent
 
         this.stageProgressMiddle.displayWidth = this.width
         this.stageProgressRightCap.x = this.stageProgressMiddle.x + this.stageProgressMiddle.displayWidth
-    
+
     }
 
-    uiSubModule_setStageProgressPercentageAnimated(percent = 1, duration = 250){
+    uiSubModule_setStageProgressPercentageAnimated(percent = 1, duration = 250) {
         this.width = this.stageProgressfullWidth * percent
 
         this.stageProgressRightCap.x = this.stageProgressMiddle.x + this.stageProgressMiddle.displayWidth
@@ -2843,7 +2844,7 @@ uiModule(){
                 this.stageProgressRightCap.visible = this.stageProgressMiddle.displayWidth > 0
             },
 
-        
+
         })
     }
 
@@ -2852,7 +2853,7 @@ playerModule(){
     // Return To Default Functions
 
         // Return Player to Default angle 
-        if(!upIsDown && !downIsDown || this.player.body.onFloor()){
+        if(!upHeld && !downHeld || this.player.body.onFloor()){
             this.player.setAngle(0)
             }
                 
@@ -2883,7 +2884,7 @@ playerModule(){
         
             }
             
-            if (!a1IsDown && !s1IsDown){
+            if (!a1Held && !s1Held){
                 this.playerAttackHitBox.body.checkCollision.none = true
             }
 
@@ -3016,11 +3017,11 @@ playerModule(){
         // Player Momentum   (keep - as in BattleSpeed)     
 
             // Lose
-            if (!leftIsDown && !rightIsDown && Math.abs(this.playerBattleSpeed) < 0.05 ){
+            if (!leftHeld && !rightHeld && Math.abs(this.playerBattleSpeed) < 0.05 ){
                 this.playerBattleSpeed = 0
             }
 
-            if (((a1IsDown  || a2IsDown || downIsDown || upIsDown) && this.gameMode == 1) || (!leftIsDown && !rightIsDown)){
+            if (((a1Held  || a2Held || downHeld || upHeld) && this.gameMode == 1) || (!leftHeld && !rightHeld)){
 
                 if (this.gameMode == 0){    
                     if (this.player.body.onFloor()){
@@ -3098,19 +3099,19 @@ playerModule(){
                     }
 
             if (playerInputActive){    
-                if (a1IsDown){
+                if (a1Held){
                     if(this.actionPower > 0){
                         this.player.staminaCurrent -= this.baseCost * this.action1CostModifier
                     } else {
                          //this.player.setTint(0xff7a7a)
                         // this.player.staminaCurrent -= this.baseCost * this.action1CostModifier * this.baseEmergencyEnergyCostPercent
                         // this.player.lifeCurrent -=(this.baseCost * this.baseEmergencyEnergyCostPercent) * this.action1CostModifier
-                        a1IsDown = false
+                        a1Held = false
                     }
                     
                 }
 
-                if (a2IsDown){
+                if (a2Held){
 
 
                     if(this.actionPower > 0 ){
@@ -3119,23 +3120,23 @@ playerModule(){
                         //this.player.setTint(0xff7a7a)
                         // this.player.staminaCurrent -= this.baseCost * this.action2CostModifier * this.baseEmergencyEnergyCostPercent
                         // this.player.lifeCurrent -=(this.baseCost * this.baseEmergencyEnergyCostPercent) * this.action2CostModifier
-                        a2IsDown = false
+                        a2Held = false
                     }
                 }
 
-                if (s1IsDown){
+                if (s1Held){
                     if(this.skillPower > 0 ){
                         this.player.focusCurrent -= this.baseCost * this.skill1CostModifier
                     } else {
                         //this.player.setTint(0xff7a7a)
                         // this.player.focusCurrent -= this.baseCost * this.skill1CostModifier * this.baseEmergencyEnergyCostPercent
                         // this.player.lifeCurrent -=(this.baseCost * this.baseEmergencyEnergyCostPercent) * this.skill1CostModifier
-                        s1IsDown = false
+                        s1Held = false
                     }
                     
                 }
 
-                if (s2IsDown){
+                if (s2Held){
 
 
                     if(this.skillPower > 0 ){
@@ -3144,11 +3145,11 @@ playerModule(){
                         //this.player.setTint(0xff7a7a)
                         // this.player.focusCurrent -= this.baseCost * this.skill2CostModifier * this.baseEmergencyEnergyCostPercent
                         // tthis.player.lifeCurrent -=(this.baseCost * this.baseEmergencyEnergyCostPercent) * this.skill2CostModifier
-                        s2IsDown = false
+                        s2Held = false
                     }
                 }
     
-                if(upIsDown){
+                if(upHeld){
 
 
                     if(this.actionPower > 0 ){
@@ -3160,7 +3161,7 @@ playerModule(){
                     }
                 }
                 
-                if(downIsDown){
+                if(downHeld){
 
                     if(this.actionPower > 0 ){
                         this.player.staminaCurrent -= this.baseCost * this.moveDownCostModifier
@@ -3171,7 +3172,7 @@ playerModule(){
                     }
                 }
                 
-                if(leftIsDown){
+                if(leftHeld){
         
 
                     if(this.actionPower > 0 ){
@@ -3183,7 +3184,7 @@ playerModule(){
                     }
                 }
 
-                if(rightIsDown){
+                if(rightHeld){
                     
 
                     if(this.actionPower > 0 ){
@@ -3339,7 +3340,7 @@ playerModule(){
             } else {
             // A1 Button
                 
-                    if (a1IsDown){
+                    if (a1Held){
                         
                             if(this.gameMode == 0){ // Sprint
 
@@ -3380,7 +3381,7 @@ playerModule(){
                                         }
                                     }
 
-                        } else if (this.gameMode == 1 && (!s1IsDown && !s2IsDown)){ // Attack
+                        } else if (this.gameMode == 1 && (!s1Held && !s2Held)){ // Attack
 
                             // if(this.player.momentum < 100){
                             //     this.player.momentum += 4.2
@@ -3539,14 +3540,14 @@ playerModule(){
                         this.critDamage = 2.5
 
                         // Left/Right Facing
-                        if (leftIsDown){
+                        if (leftHeld){
                             this.player.flipX = true
-                        } else if (rightIsDown){
+                        } else if (rightHeld){
                             this.player.flipX = false
                         }
 
                         // Snap to Locked on Enemy
-
+                        if (this.closestEnemy){
                         if (this.playerLockedOn){
                             if(Math.abs(this.player.x - this.closestEnemy.x) <= screenWidth * 0.025 && Math.abs(this.player.x - this.closestEnemy.x) >= screenWidth * 0.001 ){
                                 if (this.closestEnemy.x > this.player.x){
@@ -3557,10 +3558,11 @@ playerModule(){
                             
                             }
                         }
+                    }
 
                         // Ground 
                         if (this.player.body.onFloor()){
-                            if (upIsDown){ // Launch Attack 
+                            if (upHeld){ // Launch Attack 
 
                                 // Stats
 
@@ -3594,7 +3596,7 @@ playerModule(){
                                 }
                             
                             
-                            } else if (leftIsDown || rightIsDown){ // Side Attack
+                            } else if (leftHeld || rightHeld){ // Side Attack
 
                                 // Stats
 
@@ -3665,7 +3667,7 @@ playerModule(){
                         
 
                         // Aim Up
-                        if (upIsDown){
+                        if (upHeld){
 
                             // Stats
                             this.playerAttackStrengthX = Phaser.Math.Between(0,0) * this.actionPower
@@ -3700,7 +3702,7 @@ playerModule(){
                         } else  
                         
                         // Aim Down
-                        if (downIsDown){
+                        if (downHeld){
                             // Stats
                             this.playerAttackStrengthX = Phaser.Math.Between(0,0) * this.actionPower
                             this.playerAttackStrengthY = Phaser.Math.Between(750,1000) * this.actionPower
@@ -3728,7 +3730,7 @@ playerModule(){
                         } else 
 
                         // Aim Left/Right
-                        if (leftIsDown || rightIsDown){
+                        if (leftHeld || rightHeld){
 
                             // Stats
                             this.playerAttackStrengthX = Phaser.Math.Between(150,200) * this.actionPower
@@ -3774,7 +3776,7 @@ playerModule(){
                     } else 
             // A2 Button 
                 
-                    if (a2IsDown){
+                    if (a2Held){
 
                         if(this.gameMode == 0){
                         // Animation
@@ -3803,7 +3805,7 @@ playerModule(){
                                     this.playerSpeed -= 0.0075  + (0.0075 * Math.max(0,this.actionPower))
                                 }
                             }
-                        } else if (this.gameMode == 1 && (!a1IsDown && !s1IsDown && !s2IsDown)){
+                        } else if (this.gameMode == 1 && (!a1Held && !s1Held && !s2Held)){
 
                             // Sound Effects - Grunt
                             if (this.player.anims.getName() == 'player_Avatar_3_EVADE'){
@@ -3824,12 +3826,12 @@ playerModule(){
 
                             // Ground / Air
                                 
-                            if(leftIsDown || rightIsDown){
+                            if(leftHeld || rightHeld){
                                     
 
-                                    if (leftIsDown){
+                                    if (leftHeld){
                                         this.player.flipX = true
-                                    } else if (rightIsDown) {
+                                    } else if (rightHeld) {
                                         this.player.flipX = false
                                     }
 
@@ -3842,15 +3844,15 @@ playerModule(){
                                     }, this)
                                     
                                     this.player.once('animationcomplete_player_Avatar_3_EVADE', function(){
-                                        //leftIsDown = false
-                                        //rightIsDown = false
+                                        //leftHeld = false
+                                        //rightHeld = false
                                         animationStarted = false
                                         this.player.play({key:'player_Avatar_3_BLOCK',frameRate: 8 + (8 * Math.abs(this.actionPower))},true)
                                     
                                     },this)
                                 }
                                 
-                            } else if (downIsDown){
+                            } else if (downHeld){
                                 if(animationStarted && this.player.y < this.floor.y - this.player.displayHeight){ 
                                 animationStarted = false
                                
@@ -3881,7 +3883,7 @@ playerModule(){
                             // Ground
                             if (this.player.body.onFloor() && animationStarted){
 
-                                if (leftIsDown){
+                                if (leftHeld){
                                     if (this.playerBattleSpeed > 0){
                                         this.playerBattleSpeed -= 0.015 + 0.12 * this.actionPower
                                     }
@@ -3894,7 +3896,7 @@ playerModule(){
                                     this.player.x -= ((screenWidth * (this.baseDashDistance * this.baseDashDistancePercent)) + 
                                                         ((screenWidth * (this.baseDashDistance * (1-this.baseDashDistancePercent))) * this.actionPower)) * this.movementMod
                                     
-                                } else if (rightIsDown){
+                                } else if (rightHeld){
                                     if (this.playerBattleSpeed < 0){
                                         this.playerBattleSpeed += 0.015 + 0.12 * this.actionPower
                                     }
@@ -3918,7 +3920,7 @@ playerModule(){
                             // Air
                             else if (!this.player.body.onFloor() && animationStarted) {
             
-                                if (leftIsDown){
+                                if (leftHeld){
             
                                     if (this.playerBattleSpeed > 0){
                                         this.playerBattleSpeed -= 0.0075 + 0.6 * this.actionPower
@@ -3932,7 +3934,7 @@ playerModule(){
 
                                     this.player.x -= ((screenWidth * (this.baseDashDistance * this.baseDashDistancePercent)) + 
                                                         ((screenWidth * (this.baseDashDistance * (1-this.baseDashDistancePercent))) * this.actionPower)) * 0.75 * this.movementMod
-                                } else if (rightIsDown){
+                                } else if (rightHeld){
             
                                     if (this.playerBattleSpeed < 0){
                                         this.playerBattleSpeed += 0.0075 + 0.06 * this.actionPower
@@ -3960,7 +3962,7 @@ playerModule(){
 
             // S1 Button
 
-                    if (s1IsDown){
+                    if (s1Held){
                         if(this.gameMode == 0){
 
                             this.playerAttackHitSmear = 'deadlyCombatAssaultHitSmear'
@@ -4010,14 +4012,14 @@ playerModule(){
                                 if (this.player.body.onFloor()){
                                     this.player.play({key:'player_Avatar_3_ACTION_2',frameRate: Math.max(this.skillFrameRate1,8)},true)
                                     this.player.once('animationcomplete', function (){
-                                        //s1IsDown = false
+                                        //s1Held = false
                                         animationStarted = true
                                     },this)
                                     
                                 } else {
                                     this.player.play({key:'player_Avatar_3_ACTION_3',frameRate: Math.max(this.skillFrameRate2,8)},true)
                                     this.player.once('animationcomplete', function (){
-                                        //s1IsDown = false
+                                        //s1Held = false
                                         animationStarted = true
                                     },this)
                                 }
@@ -4200,10 +4202,10 @@ playerModule(){
             
             // Up Button 
                 
-                    if (upIsDown){
+                    if (upHeld){
                         if(this.gameMode == 0){
                             this.playerSubModule_Jump()
-                        } else if (this.gameMode == 1 && (!a1IsDown && !a2IsDown)){
+                        } else if (this.gameMode == 1 && (!a1Held && !a2Held)){
                             // if(this.player.momentum < 100){
                             //     this.player.momentum += 0.5
                             // }
@@ -4213,10 +4215,10 @@ playerModule(){
                     } 
             // Down Button
                 
-                    if (downIsDown){
+                    if (downHeld){
                         if(this.gameMode == 0){
                             this.playerSubModule_Crouch() 
-                        } else if (this.gameMode == 1 && (!a1IsDown && !a2IsDown)){
+                        } else if (this.gameMode == 1 && (!a1Held && !a2Held)){
                             // if(this.player.momentum < 100){
                             //     this.player.momentum += 0.5
                             // }
@@ -4228,10 +4230,10 @@ playerModule(){
                     }
             // Left/Right Button
                 
-                    if (leftIsDown || rightIsDown){
+                    if (leftHeld || rightHeld){
                         if(this.gameMode == 0){
                             this.playerSubModule_LateralMovement()
-                        } else if (this.gameMode == 1 && (!a1IsDown && !a2IsDown && !s1IsDown && !s2IsDown)){
+                        } else if (this.gameMode == 1 && (!a1Held && !a2Held && !s1Held && !s2Held)){
                             // if(this.player.momentum < 100){
                             //     this.player.momentum += 2.5
                             // }
@@ -4244,7 +4246,7 @@ playerModule(){
 
                 if(this.gameMode == 0){
                     // No A2, Up or Down
-                if (!this.playerIsHit && !a2IsDown && !s1IsDown && !s2IsDown  && !upIsDown && !downIsDown){
+                if (!this.playerIsHit && !a2Held && !s1Held && !s2Held  && !upHeld && !downHeld){
                     // Animation
 
                         // Variables
@@ -4281,7 +4283,7 @@ playerModule(){
                     
                 }
                 } else if (this.gameMode == 1){
-                    if ((!this.enterBattleAnimation && !upIsDown && !downIsDown && !leftIsDown && !rightIsDown) && (!a1IsDown && !a2IsDown && !s1IsDown && !s2IsDown)){
+                    if ((!this.enterBattleAnimation && !upHeld && !downHeld && !leftHeld && !rightHeld) && (!a1Held && !a2Held && !s1Held && !s2Held)){
                         if(this.player.body.onFloor()){
     
                             if (Math.abs(this.playerBattleSpeed) > 1){
@@ -4300,10 +4302,11 @@ playerModule(){
 
                 // Auto lock - 
                     //Enables Player to automatically face closest enemy
+                    if (this.closestEnemy){
                     if(Math.abs(this.player.x - this.closestEnemy.x) <= screenWidth * 0.25){
                         this.playerLockedOn = true
                         // Should carve out (w/ rotation) to seperate function, driven by playerLockedOn
-                        if (!leftIsDown && !rightIsDown){
+                        if (!leftHeld && !rightHeld){
                             if(this.player.x < this.closestEnemy.x){
                             
                                 this.player.flipX = false
@@ -4318,12 +4321,15 @@ playerModule(){
                     } else {
                         this.playerLockedOn = false
                     }
+                } else {
+                    this.playerLockedOn = false
+                }
 
-                if (!a2IsDown){
+                if (!a2Held){
                     this.a2Held = false
                 }
 
-                if (!downIsDown){
+                if (!downHeld){
                     this.downHeld = false
                 }
 
@@ -4360,7 +4366,7 @@ playerModule(){
             }
 
         // Energy Cost
-        if (this.actionPower <= 0 && (a1IsDown || a2IsDown) || this.skillPower <= 0 && (s1IsDown || s2IsDown)){
+        if (this.actionPower <= 0 && (a1Held || a2Held) || this.skillPower <= 0 && (s1Held || s2Held)){
             this.emergencyPower = true
         } else {
             this.emergencyPower = false
@@ -4368,13 +4374,13 @@ playerModule(){
 
         // Regen
 
-            if (s1IsDown || s2IsDown){
+            if (s1Held || s2Held){
                 this.player.focusRegenActive = false
             } else {
                 this.player.focusRegenActive = true
             }
 
-            if (a1IsDown || a2IsDown){
+            if (a1Held || a2Held){
                 this.player.staminaRegenActive = false
             } else {
                 this.player.staminaRegenActive = true
@@ -4476,8 +4482,8 @@ playerModule(){
     playerSubModule_LateralMovement(){
 
         // Gain Momentum
-        if(!downIsDown){
-            if (leftIsDown){
+        if(!downHeld){
+            if (leftHeld){
                 if (this.playerBattleSpeed > 0){
                     this.playerBattleSpeed -= (this.baseMomentumGainPivot * this.baseMomentumPercentPivot) + 
                                             (this.baseMomentumGainPivot * (1 - this.baseMomentumPercentPivot) * this.actionPower) 
@@ -4487,7 +4493,7 @@ playerModule(){
                     this.playerBattleSpeed -= (this.baseMomentumGain * this.baseMomentumPercent) + 
                                                 (this.baseMomentumGain * (1 - this.baseMomentumPercent) * this.actionPower) 
                 }
-            } else if (rightIsDown){
+            } else if (rightHeld){
                 
                     if (this.playerBattleSpeed < 0){
                         this.playerBattleSpeed += (this.baseMomentumGainPivot * this.baseMomentumPercentPivot) + 
@@ -4504,28 +4510,28 @@ playerModule(){
         // Animation
 
         if (this.gameMode == 1){
-            if (leftIsDown){
+            if (leftHeld){
                 this.player.flipX = true
 
                 
 
-            } else if (rightIsDown) {
+            } else if (rightHeld) {
                 this.player.flipX = false
                 
             }
         }
 
         // Ground
-        if (this.player.body.onFloor() && !downIsDown){
+        if (this.player.body.onFloor() && !downHeld){
 
             if (this.gameMode == 1){
-                if (leftIsDown){
+                if (leftHeld){
                     if (this.playerBattleSpeed > 0.01){
                         this.player.play({key:'player_Avatar_3_EVADE',frameRate: 2,startFrame:5},true)
                     }  else {
                         this.player.play({key:'player_Avatar_3_RUN',frameRate: 8 + (4 * Math.abs(this.playerBattleSpeed))},true)
                     }
-                } else if (rightIsDown) {
+                } else if (rightHeld) {
                     
                     if (this.playerBattleSpeed < 0.01){
                         this.player.play({key:'player_Avatar_3_EVADE',frameRate: 2,startFrame:5},true)
@@ -4551,87 +4557,86 @@ playerModule(){
         }
     }
 
-enterBattle(){
-    if(this.gameMode == 0 && this.player.canBeHit && !this.endRun){
+    enterBattle() {
+        if (this.gameMode == 0 && this.player.canBeHit && !this.endRun) {
 
-        if(this.speedCheckOverride == 1){
-            this.speedCheckThreshold = 3
-        } else {
-            this.speedCheckThreshold = 0.35
+            if (this.speedCheckOverride == 1) {
+                this.speedCheckThreshold = 3
+            } else {
+                this.speedCheckThreshold = 0.25
+            }
+
+            if (this.playerSpeed < this.speedCheckThreshold) {
+                this.playerSpeed = 0
+                this.playerBattleSpeed = 0
+
+                this.camera.flash()
+                this.gameMode = 1
+                this.enterBattleAnimation = true
+
+                this.enemyGroup.children.each(function (e) {
+                    if (e.speedMod == 2) {
+                        e.play('nightBorne_Idle')
+                    }
+
+                }.bind(this));
+
+
+                playerInputActive = false
+                this.player.play({ key: 'player_Avatar_3_SLIDE', frameRate: 10 }, true)
+
+                this.player.once('animationcomplete', function () {
+                    this.enterBattleAnimation = false
+                    this.battleCameraActive = true
+                    playerInputActive = true
+                    this.speedCheckOverride = 0
+
+                }, this)
+
+                this.physics.world.setBounds(screenWidth, 0, screenWidth * 2, screenHeight)
+            } else {
+                this.playerSpeed -= 0.04
+                this.player.lifeCurrent -= 0.5
+                this.glory -= 0.5 * 0.25
+                this.playerIsHit = true
+                //this.camera.flash(175,204,0,0)
+
+            }
         }
+    }
 
-        if(this.playerSpeed < this.speedCheckThreshold){   
-            this.playerSpeed = 0
-            this.playerBattleSpeed = 0
+    exitBattle() {
+        this.gameMode = 0
+        this.playerBattleSpeed = 0
+        this.playerSpeed = 0
+        this.camera.stopFollow()
 
-            this.camera.flash()
-            this.gameMode = 1
-            this.enterBattleAnimation = true
+        this.physics.world.setBounds(this.camera.worldView.x, this.camera.worldView.y, screenWidth, screenHeight)
+    }
 
-            this.enemyGroup.children.each(function(e) {
-                if(e.speedMod == 2){
-                    e.play('nightBorne_Idle')
-                } 
+    update(time, delta) {
 
-            }.bind(this));
-
-
-            playerInputActive = false
-            this.player.play({key:'player_Avatar_3_SLIDE',frameRate: 10},true)
-
-            this.player.once('animationcomplete', function (){
-                this.enterBattleAnimation = false
-                this.battleCameraActive = true
-                playerInputActive = true
-                this.speedCheckOverride = 0
-                
-            },this)
-            this.physics.world.setBounds(screenWidth, 0, screenWidth * 2,  screenHeight)
-        } else {
-            this.playerSpeed -= 0.06 
-            this.player.lifeCurrent -= 0.5
-            this.glory -= 0.5 * 0.25
-            this.playerIsHit = true
-            //this.camera.flash(175,204,0,0)
-
-        }
-    } 
-}
-
-exitBattle(){
-    this.gameMode = 0
-    this.playerBattleSpeed = 0
-    this.playerSpeed = 0
-    this.camera.stopFollow()
-    
-    this.physics.world.setBounds(this.camera.worldView.x,this.camera.worldView.y,screenWidth,screenHeight)
-}
-
-    update (time,delta)
-    {
-
-        console.log(this.playerSpeed)
         // V1 Code
 
         // UI Module
-        this.uiModule()            
- 
+        this.uiModule()
+
         // Camera Module
-            this.cameraModule()
+        this.cameraModule()
 
         // Player/Controls
-            this.playerModule()
+        this.playerModule()
 
         // Environment
-            this.environmentModule()
-            
-            this.platforms(this)
+        this.environmentModule()
+
+        this.platforms(this)
 
         // Enemies
-            this.enemyModule(this)
+        this.enemyModule(this)
 
         // Stage Management
-            this.stageModule()
+        this.stageModule()
 
         // Checkpoints
 
@@ -4649,19 +4654,6 @@ exitBattle(){
             }
 
         // General / Universal
-
-
-                //spotlightPlayerHealth.intensity =  0.5 * (this.currentLife / this.maxLife)
-                
-
-                //spotlightPlayerHealth.radius = (this.player.displayWidth * 10) * (this.currentLife / this.maxLife)
-                
-
-                spotlightPlayerHealth.x = this.player.x + (0 * (scaleModX));
-                spotlightPlayerHealth.y = this.player.y - (10 * (scaleModX));
-
-                
-
 
 
             // Background 

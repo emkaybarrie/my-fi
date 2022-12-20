@@ -16,7 +16,8 @@ class MainMenu extends Phaser.Scene {
         this.selectedOption
         this.selectedMode
         
-
+        
+        this.a1Pressed = false
 
     }
 
@@ -192,7 +193,7 @@ class MainMenu extends Phaser.Scene {
     
     create(){
         
-        
+   
 
         camera = this.cameras.main
         
@@ -249,13 +250,15 @@ class MainMenu extends Phaser.Scene {
                     yoyo: 1,
                     repeat: -1,
                     onUpdate: function (){
-                        if(a1IsDown && gameInitialised){
+                        if(a1Pressed && gameInitialised){
+                            a1Pressed = false
                             menuPrompt.setAlpha(0)
                             tween.stop()
                             camera.flash(500)
                             menuTextGroup.setVisible(1)
                             activeMenuBox.setVisible(1)
                             firstRun = false
+                            
                         }
                     },
                 });
@@ -270,11 +273,14 @@ class MainMenu extends Phaser.Scene {
         
   
     }
+
+    
     
     update(){
       
-        
-        
+
+       
+
         activeMenuBox.tilePositionX += 2.5 * scaleModX
 
         this.tweens.add({
@@ -285,16 +291,16 @@ class MainMenu extends Phaser.Scene {
         });
 
         if (!firstRun && gameInitialised){
-        if(downIsDown && this.selectedOption < 2){
-            downIsDown = false
+        if(downPressed && this.selectedOption < 2){
+            downPressed = false
             console.log(this.selectedMode)
             this.selectedOption += 1
             activeMenuBox.y += (screenHeight * 0.07)
 
             this.confirmSelection = 0.1
             
-        } else if (upIsDown && this.selectedOption > 1){
-            upIsDown = false
+        } else if (upPressed && this.selectedOption > 1){
+            upPressed = false
             console.log(this.selectedMode)
             this.selectedOption -= 1
             activeMenuBox.y -= (screenHeight * 0.07)
@@ -302,7 +308,7 @@ class MainMenu extends Phaser.Scene {
             this.confirmSelection = 0.1
        
                 
-        } else if (a1IsDown  || s1IsDown){
+        } else if (a1Held  || s1Held){
            
 
             if(this.confirmSelection < 1) {
@@ -319,8 +325,8 @@ class MainMenu extends Phaser.Scene {
 
         if(this.confirmSelection >= 1){
             this.confirmSelection = 0
-            a1IsDown = false
-            s1IsDown = false
+            a1Held = false
+            s1Held = false
             if (this.selectedMode != undefined){
                     nextScene = true
             }

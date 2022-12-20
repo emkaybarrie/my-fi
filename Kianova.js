@@ -500,9 +500,9 @@ class Kianova extends Phaser.Scene {
 
         this.selectedSectorIcon.tilePositionX += 5 * scaleModX
 
-        if(leftIsDown && this.controlsEnabled){
+        if(leftHeld && this.controlsEnabled){
             
-            leftIsDown = false
+            leftHeld = false
 
             if(chosenSectorArrayIcon > 0){
                 chosenSectorArrayIcon -= 1
@@ -514,9 +514,9 @@ class Kianova extends Phaser.Scene {
             console.log(selectedSector)
             
             
-        } else if (rightIsDown && this.controlsEnabled){
+        } else if (rightHeld && this.controlsEnabled){
     
-                rightIsDown = false
+                rightHeld = false
 
                 if(chosenSectorArrayIcon < 4){
                     chosenSectorArrayIcon += 1
@@ -531,7 +531,7 @@ class Kianova extends Phaser.Scene {
                 
         }
 
-        if((a1IsDown || s1IsDown) && this.controlsEnabled){
+        if((a1Held || s1Held) && this.controlsEnabled){
         
 
             camera.fadeOut(250)
@@ -550,7 +550,7 @@ class Kianova extends Phaser.Scene {
             
             
             })
-        } if ((s2IsDown || a2IsDown) && this.controlsEnabled){
+        } if ((s2Held || a2Held) && this.controlsEnabled){
             activeUser = null
             this.scene.stop('Kianova')
             this.scene.start('MainMenu')

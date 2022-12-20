@@ -88,7 +88,8 @@ class Boot extends Phaser.Scene {
 
         // Load Modules - run in background
         this.scene.launch('DataModule')
-        this.scene.launch('InputModule')
+         this.scene.launch('InputModule')
+        // this.scene.launch('Input')
 
         // Splash Screen & Animations
             // Add opening animation/splash screen / studio info here

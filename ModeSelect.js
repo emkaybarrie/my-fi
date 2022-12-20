@@ -109,7 +109,7 @@ class ModeSelect extends Phaser.Scene {
       
         this.activeModeBox.tilePositionX += 2.5 * scaleModX
         
-        console.log(this.selectedOption)        
+               
 
         if (this.imageChangeTimer >= 500){
             this.imageChangeTimer = 0
@@ -143,9 +143,10 @@ class ModeSelect extends Phaser.Scene {
   
         });
 
-        if (rightIsDown && this.selectedOption < 2){
+        if (rightHeld && this.selectedOption < 2){
             console.log(this.selectedOption)
-            rightIsDown = false
+            console.log(this.selectedMode)
+            rightHeld = false
             this.selectedOption += 1
 
             this.activeModeBox.x += screenWidth * 0.25 //this.mode2Image.x
@@ -160,9 +161,10 @@ class ModeSelect extends Phaser.Scene {
       
             });
                 
-        } else if (leftIsDown && this.selectedOption > 0){
+        } else if (leftHeld && this.selectedOption > 0){
             console.log(this.selectedOption)
-            leftIsDown = false
+            console.log(this.selectedMode)
+            leftHeld = false
             this.selectedOption -= 1
 
             this.activeModeBox.x -= screenWidth * 0.25//this.mode1Image.x
@@ -177,19 +179,14 @@ class ModeSelect extends Phaser.Scene {
       
             });
                 
-        } else if (a1IsDown  || s1IsDown){
-            //a1IsDown = false
-            //s1IsDown = false
-           
-            // if (this.selectedMode != undefined){
-            //     nextScene = true
-            // }
+        } else if (a1Held  || s1Held){
+
 
             if(this.confirmSelection < 1) {
                 this.confirmSelection += 0.03
             }
             
-        } else if (a2IsDown || s2IsDown){
+        } else if (a2Held || s2Held){
             this.scene.start('MainMenu')
         } else {
             if(this.confirmSelection > 0.1) {
@@ -199,8 +196,8 @@ class ModeSelect extends Phaser.Scene {
 
         if(this.confirmSelection >= 1){
             this.confirmSelection = 0
-            a1IsDown = false
-            s1IsDown = false
+            a1Held = false
+            s1Held = false
             //activeAvatar = avatarData[this.avatarToLoad[this.selectedPatronArray][this.selectedPersonaArray]]
             //activeAvatarID = avatarData[this.avatarToLoad[this.selectedPatronArray][this.selectedPersonaArray]].ID
             nextScene = true
@@ -277,7 +274,7 @@ class ModeSelect extends Phaser.Scene {
         } 
 
 
-        console.log(this.selectedMode)
+        
         if (nextScene){
             nextScene = false
             prologueCompleted = true

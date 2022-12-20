@@ -568,7 +568,8 @@ class SelectAvatar extends Phaser.Scene {
             },250)
 
                 
-        } else if (a1IsDown || s1IsDown){
+        } else if (a1Held || s1IsDown){
+            a1Pressed = false
             this.defaultAnim = Phaser.Math.Between(1,2)
             this.userActive = true
             
@@ -578,9 +579,9 @@ class SelectAvatar extends Phaser.Scene {
             }
 
 
-        } else if (a2IsDown || s2IsDown){
+        } else if (a2Held || s2IsDown){
             activeUser = null
-            a2IsDown = false
+            a2Held = false
             s2IsDown = false
             this.scene.start('ModeSelect')
         } else {
