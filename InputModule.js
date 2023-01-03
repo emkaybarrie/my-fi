@@ -28,7 +28,6 @@ var s2Pressed
 var s2Released
 
 var openMenuHeld
-
 var abortStageHeld
 
 
@@ -207,7 +206,6 @@ class InputModule extends Phaser.Scene {
         // KeyC - Open Game Menu / Mode Switch
         this.keyC.on('down', function () {
             openMenuHeld = true
-            openMenuPressed = true
             openMenuReleased = false
 
             //console.log('Right Pressed: ' +  rightHeld)
@@ -215,7 +213,6 @@ class InputModule extends Phaser.Scene {
 
         this.keyC.on('up', function () {
             openMenuHeld = false
-            openMenuPressed = false
             openMenuReleased = true
             //console.log('Up Pressed: ' +  rightHeld)
         })
@@ -306,10 +303,6 @@ class InputModule extends Phaser.Scene {
                 
                  if (gamePadEnabled){
 
-                    if (gamePad.leftStick.y < -this.Y_THRESHOLD_UP * 0.5 && gamePad.leftStick.y > -this.Y_THRESHOLD_UP * 1.75){ 
-                        upPressed = true
-                    }
-
                     if (gamePad.leftStick.y < -this.Y_THRESHOLD_UP){ 
                         upHeld = true
                     } else if (gamePad.leftStick.y > -this.Y_THRESHOLD_UP){
@@ -317,20 +310,11 @@ class InputModule extends Phaser.Scene {
 
                     }
 
-                    if (gamePad.leftStick.y > this.Y_THRESHOLD_DEFAULT * 0.5 && gamePad.leftStick.y < this.Y_THRESHOLD_DEFAULT * 1.75){ 
-                        downPressed = true
-                    }
-
                     if (gamePad.leftStick.y > this.Y_THRESHOLD_DEFAULT){ 
                         downHeld = true
                     } else if (gamePad.leftStick.y < this.Y_THRESHOLD_DEFAULT){
                         downHeld = false
                        // console.log('Down Held: ' +  downHeld)
-                    }
-
-                    if (gamePad.leftStick.x >  0.25 * 0.5 && gamePad.leftStick.x <  0.25 * 1.5){ 
-                        rightPressed = true
-                
                     }
 
                     if(gamePad.leftStick.x >= 0.25){
@@ -347,11 +331,6 @@ class InputModule extends Phaser.Scene {
                         rightHeld = false
 
                     } 
-
-                    if (gamePad.leftStick.x <  -0.25 * 0.5 && gamePad.leftStick.x >  -0.25 * 1.5){ 
-                        leftPressed = true
-                
-                    }
 
 
                     if(gamePad.leftStick.x <= -0.25){
@@ -374,8 +353,6 @@ class InputModule extends Phaser.Scene {
 
 
                     gamePad.on('down', function (button) {
-
-
 
 
                         // Up = 12, Down = 13
@@ -433,6 +410,15 @@ class InputModule extends Phaser.Scene {
                             animationStarted = true
 
 
+                        } else if (button == 12){
+                            upHeld = true
+                            console.log('Up Held: ' + upHeld)
+                        } else if (button == 13){
+                            downHeld = true
+                        } else if (button == 14){
+                            leftHeld = true
+                        } else if (button == 15){
+                            rightHeld = true
                         }
 
 
@@ -467,6 +453,15 @@ class InputModule extends Phaser.Scene {
 
 
 
+                        } else if (button == 12){
+                            upHeld = false
+                            console.log('Up Held: ' + upHeld)
+                        } else if (button == 13){
+                            downHeld = false
+                        } else if (button == 14){
+                            leftHeld = false
+                        } else if (button == 15){
+                            rightHeld = false
                         }
 
                     }, this);

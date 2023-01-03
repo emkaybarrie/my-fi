@@ -188,10 +188,10 @@ class Region1 extends Phaser.Scene {
 
                // Set Background (BG) & Foregorund (FG) Layers
                game.stageAssetName = 'gForest'
-               game.stageBackgroundLayers = 5
-               game.stageForegroundLayers = 2
-               game.stageBGScrollSpeedModifierSettings = [1.05,1,0.5,0.95,0.9]
-               game.stageFGScrollSpeedModifierSettings = [1.1,1.1]
+               game.stageBackgroundLayers = 7
+               game.stageForegroundLayers = 0
+               game.stageBGScrollSpeedModifierSettings = [1.1,1.1,1.05,1,0.5,0.95,0.9]
+               game.stageFGScrollSpeedModifierSettings = []
                game.stageNormalMaps = []
 
                // Day/Night Settings
@@ -206,8 +206,8 @@ class Region1 extends Phaser.Scene {
 
                 // Floor Settings
         
-                game.floorMin = 0.8
-                game.floorMax = 0.75 
+                game.floorMin = 0.95
+                game.floorMax = 0.9 
                 game.floorColour = 0x310A0B
                 game.floorVisible = true
         

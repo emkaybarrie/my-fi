@@ -104,9 +104,17 @@ class MainMenu extends Phaser.Scene {
         }
 
         // HUD/UI
+
+        // Battle Mode Icon
+            this.load.image('battle-icon', 'assets/UI/ach_00019.png')
         
         // Vitals Bars
             // Life
+
+            this.load.image('life-text-background-left-cap', 'assets/UI/playerVitals/red/meter_text_background_left_red.png')
+            this.load.image('life-text-background-middle', 'assets/UI/playerVitals/red/meter_text_background_center_red.png')
+            this.load.image('life-text-background-right-cap', 'assets/UI/playerVitals/red/meter_text_background_right_red.png')   
+
             this.load.image('life-icon-holder', 'assets/UI/playerVitals/red/meter_icon_holder_red.png')
             this.load.image('life-icon', 'assets/UI/playerVitals/icons/health.png')
 
@@ -119,6 +127,11 @@ class MainMenu extends Phaser.Scene {
             this.load.image('life-right-cap', 'assets/UI/playerVitals/red/meter_bar_right_red.png')
 
         // Focus
+
+            this.load.image('focus-text-background-left-cap', 'assets/UI/playerVitals/yellow/meter_text_background_left_yellow.png')
+            this.load.image('focus-text-background-middle', 'assets/UI/playerVitals/yellow/meter_text_background_center_yellow.png')
+            this.load.image('focus-text-background-right-cap', 'assets/UI/playerVitals/yellow/meter_text_background_right_yellow.png')
+
             this.load.image('focus-icon-holder', 'assets/UI/playerVitals/yellow/meter_icon_holder_yellow.png')
             this.load.image('focus-icon', 'assets/UI/playerVitals/icons/magic.png')
 
@@ -131,6 +144,11 @@ class MainMenu extends Phaser.Scene {
             this.load.image('focus-right-cap', 'assets/UI/playerVitals/yellow/meter_bar_right_yellow.png')
 
         // Stamina
+
+            this.load.image('stamina-text-background-left-cap', 'assets/UI/playerVitals/green/meter_text_background_left_green.png')
+            this.load.image('stamina-text-background-middle', 'assets/UI/playerVitals/green/meter_text_background_center_green.png')
+            this.load.image('stamina-text-background-right-cap', 'assets/UI/playerVitals/green/meter_text_background_right_green.png')
+
             this.load.image('stamina-icon-holder', 'assets/UI/playerVitals/green/meter_icon_holder_green.png')
             this.load.image('stamina-icon', 'assets/UI/playerVitals/icons/stamina.png')
 
@@ -218,7 +236,7 @@ class MainMenu extends Phaser.Scene {
         this.gameTitle = this.add.image(screenWidth * 0.30,screenHeight * 0.2,'gameTitle').setScale(1.25 * scaleModX)
 
         this.menuOption1 = this.add.text(this.gameTitle.x, screenHeight * 0.65 , 'Start', { fontFamily: 'Georgia',align: 'center', fixedWidth:screenWidth * 0.25,fixedHeight:screenHeight * 0.075});
-        this.menuOption2 = this.add.text(this.gameTitle.x,this.menuOption1.y + (screenHeight * 0.07) , 'Test Environment', { fontFamily: 'Georgia',align: 'center', fixedWidth:screenWidth * 0.25,fixedHeight:screenHeight * 0.075});
+        this.menuOption2 = this.add.text(this.gameTitle.x,this.menuOption1.y + (screenHeight * 0.07) , 'Test', { fontFamily: 'Georgia',align: 'center', fixedWidth:screenWidth * 0.25,fixedHeight:screenHeight * 0.075});
         
         this.menuOption1.setFontSize(32 * scaleModX).setOrigin(0.5,0)
         this.menuOption2.setFontSize(32 * scaleModX).setOrigin(0.5,0)//.setAlpha(0.35)
@@ -250,7 +268,7 @@ class MainMenu extends Phaser.Scene {
                     yoyo: 1,
                     repeat: -1,
                     onUpdate: function (){
-                        if(a1Pressed && gameInitialised){
+                        if(a1Pressed){
                             a1Pressed = false
                             menuPrompt.setAlpha(0)
                             tween.stop()
@@ -290,25 +308,25 @@ class MainMenu extends Phaser.Scene {
   
         });
 
-        if (!firstRun && gameInitialised){
-        if(downPressed && this.selectedOption < 2){
-            downPressed = false
-            console.log(this.selectedMode)
+        if (!firstRun ){
+        if(downHeld && this.selectedOption < 2){
+            downHeld = false
+            console.log(this.selectedScene)
             this.selectedOption += 1
             activeMenuBox.y += (screenHeight * 0.07)
 
             this.confirmSelection = 0.1
             
-        } else if (upPressed && this.selectedOption > 1){
-            upPressed = false
-            console.log(this.selectedMode)
+        } else if (upHeld && this.selectedOption > 1){
+            upHeld = false
+            console.log(this.selectedScene)
             this.selectedOption -= 1
             activeMenuBox.y -= (screenHeight * 0.07)
 
             this.confirmSelection = 0.1
        
                 
-        } else if (a1Held  || s1Held){
+        } else if (a1Held){
            
 
             if(this.confirmSelection < 1) {
@@ -326,8 +344,8 @@ class MainMenu extends Phaser.Scene {
         if(this.confirmSelection >= 1){
             this.confirmSelection = 0
             a1Held = false
-            s1Held = false
-            if (this.selectedMode != undefined){
+
+            if (this.selectedScene != undefined){
                     nextScene = true
             }
         }
@@ -336,19 +354,18 @@ class MainMenu extends Phaser.Scene {
       
       
         if (this.selectedOption == 1){
-            this.selectedMode = 'ModeSelect'
+            this.selectedScene = 'ModeSelect'
         } else if (this.selectedOption == 2){
-            this.selectedMode = 'SelectAvatar'//undefined
-            this.data = 'Simulacrum'
+            this.selectedScene = 'Region' + String(Phaser.Math.Between(1,4))
+            this.data = {targetScene:'Simulacrum',targetZone: 0, currentTimePeriod: Phaser.Math.Between(1,4),rarityOverride:null}
         } 
 
         if (nextScene){
             nextScene = false
-           console.log(this.data)
-            this.scene.start(this.selectedMode,{redirect:this.data})
-            this.selectedOption = 1
-            this.selectedSubOption = 0
-            this.selectedMode = undefined
+            this.scene.start(this.selectedScene,this.data)
+            //this.selectedOption = 1
+     
+            //this.selectedMode = undefined
             
         }
             

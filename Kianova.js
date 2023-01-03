@@ -226,21 +226,16 @@ class Kianova extends Phaser.Scene {
         playerIconBox = this.add.image(screenWidth * 0.15 * scaleModifier,screenHeight * 0.17 * scaleModifier,'textBoxL').setScale(playerIconBoxScaleX,playerIconBoxScaleY).setOrigin(0.5).setTint(0x7851a9).setAlpha(0.75)
         playerIcon = this.add.image(playerIconBox.x - screenWidth * 0.06 * scaleModifier ,playerIconBox.y,'playerIcon1').setScale(playerIconScale).setOrigin(0.5)
        
-        if(activeUser == null||undefined||''){
-            this.patronData = freePlayUser
-        } else {
-            this.patronData = activeUser
-        }
-
-        //this.avatarNameBox = this.add.image(playerIconBox.x,playerIconBox.y + (playerIconBox.displayHeight * 0.5),'textBoxL').setScale(playerIconBoxScaleX,playerIconBoxScaleY /4).setOrigin(0.5).setTint(0x7851a9)
+        var actieAvatar = this.scene.get('DataModule').avatarData;
+        
         var avatarName
-        avatarName = this.add.text(playerIcon.x + playerIcon.displayWidth * 1, playerIcon.y - playerIcon.displayHeight * 0.275, activeAvatar.NAME, { fontFamily: 'Georgia', fontStyle: 'italic bold' ,align: 'center', fixedWidth:screenWidth * 0.1,fixedHeight:screenHeight * 0.075});
+        avatarName = this.add.text(playerIcon.x + playerIcon.displayWidth * 1, playerIcon.y - playerIcon.displayHeight * 0.275, actieAvatar.avatarName, { fontFamily: 'Georgia', fontStyle: 'italic bold' ,align: 'center', fixedWidth:screenWidth * 0.1,fixedHeight:screenHeight * 0.075});
         avatarName.setFontSize(this.vitalsHeaderFontSize * scaleModX).setOrigin(0.5,0.5)
 
         
 
         this.loginNameBox = this.add.image(screenWidth * 0.5 * scaleModifier,playerIconBox.y - (playerIconBox.displayHeight * 0.25),'textBoxL').setScale(playerIconBoxScaleX * 0.5,playerIconBoxScaleY /3).setOrigin(0.5).setTint(0x7851a9).setAlpha(0.75)
-        playerLoginName = this.add.text(screenWidth * 0.5,playerIconBox.y - (playerIconBox.displayHeight * 0.25), this.patronData.USERNAME, { fontFamily: 'Georgia', fontStyle: 'italic bold' ,align: 'center', fixedWidth:screenWidth * 0.1,fixedHeight:screenHeight * 0.075});
+        playerLoginName = this.add.text(screenWidth * 0.5,playerIconBox.y - (playerIconBox.displayHeight * 0.25), actieAvatar.playerName, { fontFamily: 'Georgia', fontStyle: 'italic bold' ,align: 'center', fixedWidth:screenWidth * 0.1,fixedHeight:screenHeight * 0.075});
         playerLoginName.setFontSize(24 * scaleModX).setOrigin(0.5,0.5)
 
         this.gloryScoreIcon = this.add.image(playerLoginName.x - 25,playerLoginName.y + screenHeight * 0.0175,'cityStat5Icon').setScale(this.iconScale)
@@ -455,8 +450,13 @@ class Kianova extends Phaser.Scene {
 
         this.sectorUI = this.add.group()
         this.sectorUI.addMultiple([playerIconBox,playerIcon,playerLoginName,avatarName,this.lifeIconHolder,this.lifeIcon,this.lifeMiddleHolder,
-                                    this.lifeRightCapHolder,this.lifeMiddle,this.lifeRightCap,this.focusIconHolder,this.focusIcon,this.focusMiddleHolder,
-                                    this.focusRightCapHolder,this.focusMiddle,this.focusRightCap,this.staminaIconHolder,this.staminaIcon,this.staminaMiddleHolder,
+                                    this.lifeTextBackgroundLeftCap,this.lifeTextBackgroundMiddle,this.lifeTextBackgroundLeftCap,
+                                    this.lifeRightCapHolder,this.lifeMiddle,this.lifeRightCap,
+                                    this.focusTextBackgroundLeftCap,this.focusTextBackgroundMiddle,this.focusTextBackgroundLeftCap,
+                                    this.focusIconHolder,this.focusIcon,this.focusMiddleHolder,
+                                    this.focusRightCapHolder,this.focusMiddle,this.focusRightCap,
+                                    this.staminaTextBackgroundLeftCap,this.staminaTextBackgroundMiddle,this.staminaTextBackgroundLeftCap,
+                                    this.staminaIconHolder,this.staminaIcon,this.staminaMiddleHolder,
                                     this.staminaRightCapHolder,this.staminaMiddle,this.staminaRightCap,this.storedRewardsIcon,this.storedRewardsText,
                                     this.cityIconBox,this.sectorImage,this.sectorNameText,this.sectorGloryScoreText,this.votingPowerIcon,this.votingPowerGrowthIcon,
                                     regionRewardsIcon,regionPowerGrowthIcon,this.gloryScoreIcon,this.gloryScoreText,this.loginNameBox,sector1Icon,sector2Icon,sector0Icon,
@@ -483,6 +483,7 @@ class Kianova extends Phaser.Scene {
 
                     this.sectorUI.setVisible(1)
                     this.controlsEnabled = true
+                    this.uiSubModule_setVitalsPercentageAnimated()
                     this.refreshUI()
                     
                     this.sound.play('kianovaTheme')
@@ -662,7 +663,7 @@ class Kianova extends Phaser.Scene {
 
     refreshUI(){
 
-        this.uiSubModule_setVitalsPercentageAnimated()
+        //this.uiSubModule_setVitalsPercentageAnimated()
 
         // Hide Textbox and Info
 
@@ -922,15 +923,33 @@ class Kianova extends Phaser.Scene {
     }
 
     uiSubModule_setVitalsPercentageAnimated(duration = 4000){
-     
 
-        this.widthLife = this.vitalsfullWidth * Math.min(this.scene.get('DataModule').avatarData.lifeCapacityBonus,1)
-        this.widthFocus = this.vitalsfullWidth * Math.min(this.scene.get('DataModule').avatarData.focusCapacityBonus,1)
-        this.widthStamina = this.vitalsfullWidth * Math.min(this.scene.get('DataModule').avatarData.staminaCapacityBonus,1)
+        this.maxLifeBonus = this.scene.get('DataModule').baseData.lifeCapacityBonusMax
+        this.maxFocusBonus = this.scene.get('DataModule').baseData.focusCapacityBonusMax
+        this.maxStaminaBonus = this.scene.get('DataModule').baseData.staminaCapacityBonusMax
+     
+        this.lifeBonusPercent = this.scene.get('DataModule').avatarData.lifeCapacityBonusPercent
+        this.focusBonusPercent = this.scene.get('DataModule').avatarData.focusCapacityBonusPercent
+        this.staminaBonusPercent = this.scene.get('DataModule').avatarData.staminaCapacityBonusPercent
+
+        this.widthLife = this.vitalsfullWidth * Math.min(this.lifeBonusPercent ,1)
+        this.widthFocus = this.vitalsfullWidth * Math.min(this.focusBonusPercent,1)
+        this.widthStamina = this.vitalsfullWidth * Math.min(this.staminaBonusPercent,1)
 
         this.lifeRightCap.x = this.lifeMiddle.x + this.lifeMiddle.displayWidth
         this.focusRightCap.x = this.focusMiddle.x + this.focusMiddle.displayWidth
         this.staminaRightCap.x = this.staminaMiddle.x + this.staminaMiddle.displayWidth
+
+        // Tweens
+
+        // Life
+        this.lifeBonusTween = this.tweens.addCounter({
+            from: 0,
+            to: this.lifeBonusPercent,
+            duration,
+            ease: Phaser.Math.Easing.Sine.Out,
+
+        })
 
         this.tweens.add({
             targets: this.lifeMiddle,
@@ -941,7 +960,23 @@ class Kianova extends Phaser.Scene {
                 this.lifeRightCap.x = this.lifeMiddle.x + this.lifeMiddle.displayWidth
                 this.lifeMiddle.visible = this.lifeMiddle.displayWidth > 0
                 this.lifeRightCap.visible = this.lifeMiddle.displayWidth > 0
+
+                this.lifeText.setText('Resilience Bonus: ')
+                this.lifeTextNumber.setText('+' + Math.floor(this.maxLifeBonus * this.lifeBonusTween.getValue())).setColor('#00ff00')
+            },
+            onComplete: () => {
+
             }
+        })
+
+        // Focus
+
+        this.focusBonusTween = this.tweens.addCounter({
+            from: 0,
+            to: this.focusBonusPercent,
+            duration,
+            ease: Phaser.Math.Easing.Sine.Out,
+
         })
 
         this.tweens.add({
@@ -953,7 +988,24 @@ class Kianova extends Phaser.Scene {
                 this.focusRightCap.x = this.focusMiddle.x + this.focusMiddle.displayWidth
                 this.focusMiddle.visible = this.focusMiddle.displayWidth > 0
                 this.focusRightCap.visible = this.focusMiddle.displayWidth > 0
+
+                this.focusText.setText('Focus Bonus: ')
+                this.focusTextNumber.setText('+' + Math.floor(this.maxFocusBonus * this.focusBonusTween.getValue())).setColor('#00ff00')
+
+            },
+            onComplete: () => {
+                
             }
+        })
+
+        // Stamina
+
+        this.staminaBonusTween = this.tweens.addCounter({
+            from: 0,
+            to: this.staminaBonusPercent,
+            duration,
+            ease: Phaser.Math.Easing.Sine.Out,
+
         })
 
         this.tweens.add({
@@ -965,7 +1017,14 @@ class Kianova extends Phaser.Scene {
                 this.staminaRightCap.x = this.staminaMiddle.x + this.staminaMiddle.displayWidth
                 this.staminaMiddle.visible = this.staminaMiddle.displayWidth > 0
                 this.staminaRightCap.visible = this.staminaMiddle.displayWidth > 0
+
+                this.staminaText.setText('Stamina Bonus: ')
+                this.staminaTextNumber.setText('+' + Math.floor(this.maxStaminaBonus * this.staminaBonusTween.getValue())).setColor('#00ff00')
             },
+
+            onComplete: () => {
+                
+            }
 
         
         })
@@ -979,14 +1038,33 @@ class Kianova extends Phaser.Scene {
         var anchorPointY = playerIconBox.y - (playerIconBox.displayHeight * this.vitalsIconsHeight)
         this.vitalsfullWidth = playerIconBox.displayWidth * 0.35
         this.vitalsScale = 0.075
+        this.vitalsTextSize = 12
+        this.vitalsTextNumberSize = 14
 
         // Life
 
+            // Text Background
+
+            this.lifeTextBackgroundLeftCap = this.add.image(0, 0, 'life-text-background-left-cap')
+            .setOrigin(0, 0.5).setDepth(5).setScale(this.vitalsScale).setVisible(0)
+
+            this.lifeTextBackgroundMiddle = this.add.image(0, 0, 'life-text-background-middle')
+            .setOrigin(0, 0.5).setDepth(5).setScale(this.vitalsScale).setVisible(0)
+
+            this.lifeTextBackgroundMiddle.displayWidth = this.vitalsfullWidth * 0.85
+
+            this.lifeTextBackgroundRightCap = this.add.image(0, 0, 'life-text-background-right-cap')
+            .setOrigin(0, 0.5).setDepth(5).setScale(this.vitalsScale).setVisible(0)
+
+            this.lifeText = this.add.text(0, 0)
+            .setFontFamily('Arial').setFontSize(this.vitalsTextSize * (scaleModX)).setDepth(5).setOrigin(0, 0.5);
+            this.lifeTextNumber = this.add.text(0, 0)
+            .setFontFamily('Arial').setFontSize(this.vitalsTextNumberSize * (scaleModX)).setDepth(5).setOrigin(0.5, 0.5); 
                     
             // Holder
 
-                    this.lifeMiddleHolder = this.add.image(anchorPointX ,anchorPointY, 'life-middle-holder')
-                    .setOrigin(0, 0.5).setDepth(5).setScale(this.vitalsScale)
+                this.lifeMiddleHolder = this.add.image(anchorPointX ,anchorPointY, 'life-middle-holder')
+                .setOrigin(0, 0.5).setDepth(5).setScale(this.vitalsScale)
 
                 this.lifeMiddleHolder.displayWidth = this.vitalsfullWidth
 
@@ -1007,9 +1085,43 @@ class Kianova extends Phaser.Scene {
             this.lifeIconHolder = this.add.image(anchorPointX,anchorPointY, 'life-icon-holder').setDepth(6).setScale(this.vitalsScale)
             this.lifeIcon = this.add.image(anchorPointX,anchorPointY, 'life-icon').setDepth(6).setScale(this.vitalsScale)
 
+            // Text Reposition
+                // Background 
+                this.lifeTextBackgroundLeftCap.x = this.lifeMiddleHolder.x + this.lifeMiddleHolder.displayWidth * 0.15
+                this.lifeTextBackgroundLeftCap.y = this.lifeMiddleHolder.y + 15
+
+                this.lifeTextBackgroundMiddle.x = this.lifeTextBackgroundLeftCap.x + this.lifeTextBackgroundLeftCap.displayWidth
+                this.lifeTextBackgroundMiddle.y = this.lifeTextBackgroundLeftCap.y
+
+                this.lifeTextBackgroundRightCap.x = this.lifeTextBackgroundMiddle.x + this.lifeTextBackgroundMiddle.displayWidth
+                this.lifeTextBackgroundRightCap.y = this.lifeTextBackgroundMiddle.y
+                // Text
+                this.lifeText.x = this.lifeTextBackgroundMiddle.x + this.lifeTextBackgroundMiddle.displayWidth * 0.05
+                this.lifeText.y = this.lifeTextBackgroundMiddle.y + 3.5
+
+                this.lifeTextNumber.x = this.lifeTextBackgroundMiddle.x + this.lifeTextBackgroundMiddle.displayWidth * 0.85
+                this.lifeTextNumber.y = this.lifeText.y
+
         // Focus
 
-            
+            // Text Background
+
+            this.focusTextBackgroundLeftCap = this.add.image(0, 0, 'focus-text-background-left-cap')
+            .setOrigin(0, 0.5).setDepth(5).setScale(this.vitalsScale).setVisible(0)
+
+            this.focusTextBackgroundMiddle = this.add.image(0, 0, 'focus-text-background-middle')
+            .setOrigin(0, 0.5).setDepth(5).setScale(this.vitalsScale).setVisible(0)
+
+            this.focusTextBackgroundMiddle.displayWidth = this.vitalsfullWidth * 0.85
+
+            this.focusTextBackgroundRightCap = this.add.image(0, 0, 'focus-text-background-right-cap')
+            .setOrigin(0, 0.5).setDepth(5).setScale(this.vitalsScale).setVisible(0)
+
+            this.focusText = this.add.text(0, 0)
+            .setFontFamily('Arial').setFontSize(this.vitalsTextSize * (scaleModX)).setDepth(5).setOrigin(0, 0.5);
+            this.focusTextNumber = this.add.text(0, 0)
+            .setFontFamily('Arial').setFontSize(this.vitalsTextNumberSize * (scaleModX)).setDepth(5).setOrigin(0.5, 0.5); 
+
             // Holder
 
                 this.focusMiddleHolder = this.add.image(anchorPointX,this.lifeMiddleHolder.y + this.lifeMiddleHolder.displayHeight * 1.65, 'focus-middle-holder')
@@ -1033,7 +1145,44 @@ class Kianova extends Phaser.Scene {
                 this.focusIconHolder = this.add.image(anchorPointX,this.focusMiddleHolder.y, 'focus-icon-holder').setDepth(6).setScale(this.vitalsScale).setOrigin(0.5)
                 this.focusIcon = this.add.image(anchorPointX,this.focusMiddleHolder.y, 'focus-icon').setDepth(6).setScale(this.vitalsScale) 
 
+            // Text Reposition
+
+                // Background
+                this.focusTextBackgroundLeftCap.x = this.focusMiddleHolder.x + this.focusMiddleHolder.displayWidth * 0.15
+                this.focusTextBackgroundLeftCap.y = this.focusMiddleHolder.y + 15
+
+                this.focusTextBackgroundMiddle.x = this.focusTextBackgroundLeftCap.x + this.focusTextBackgroundLeftCap.displayWidth
+                this.focusTextBackgroundMiddle.y = this.focusTextBackgroundLeftCap.y
+
+                this.focusTextBackgroundRightCap.x = this.focusTextBackgroundMiddle.x + this.focusTextBackgroundMiddle.displayWidth
+                this.focusTextBackgroundRightCap.y = this.focusTextBackgroundMiddle.y
+
+                // Text
+                this.focusText.x = this.focusTextBackgroundMiddle.x + this.focusTextBackgroundMiddle.displayWidth * 0.05
+                this.focusText.y = this.focusTextBackgroundMiddle.y + 3.5
+
+                this.focusTextNumber.x = this.focusTextBackgroundMiddle.x + this.focusTextBackgroundMiddle.displayWidth * 0.85
+                this.focusTextNumber.y = this.focusText.y
+
         // Stamina
+
+            // Text Background
+
+            this.staminaTextBackgroundLeftCap = this.add.image(0, 0, 'stamina-text-background-left-cap')
+            .setOrigin(0, 0.5).setDepth(5).setScale(this.vitalsScale).setVisible(0)
+    
+            this.staminaTextBackgroundMiddle = this.add.image(0, 0, 'stamina-text-background-middle')
+            .setOrigin(0, 0.5).setDepth(5).setScale(this.vitalsScale).setVisible(0)
+    
+            this.staminaTextBackgroundMiddle.displayWidth = this.vitalsfullWidth * 0.85
+    
+            this.staminaTextBackgroundRightCap = this.add.image(0, 0, 'stamina-text-background-right-cap')
+            .setOrigin(0, 0.5).setDepth(5).setScale(this.vitalsScale).setVisible(0)
+
+            this.staminaText = this.add.text(0, 0)
+            .setFontFamily('Arial').setFontSize(this.vitalsTextSize * (scaleModX)).setDepth(5).setOrigin(0, 0.5);
+            this.staminaTextNumber = this.add.text(0, 0)
+            .setFontFamily('Arial').setFontSize(this.vitalsTextNumberSize * (scaleModX)).setDepth(5).setOrigin(0.5, 0.5); 
 
             // Holder
 
@@ -1058,6 +1207,24 @@ class Kianova extends Phaser.Scene {
 
                 this.staminaIconHolder = this.add.image(anchorPointX,this.staminaMiddleHolder.y, 'stamina-icon-holder').setDepth(6).setScale(this.vitalsScale).setOrigin(0.5)
                 this.staminaIcon = this.add.image(anchorPointX,this.staminaMiddleHolder.y, 'stamina-icon').setDepth(6).setScale(this.vitalsScale)
+
+            // Text Reposition
+
+            this.staminaTextBackgroundLeftCap.x = this.staminaMiddleHolder.x + this.staminaMiddleHolder.displayWidth * 0.15
+            this.staminaTextBackgroundLeftCap.y = this.staminaMiddleHolder.y + 15
+    
+            this.staminaTextBackgroundMiddle.x = this.staminaTextBackgroundLeftCap.x + this.staminaTextBackgroundLeftCap.displayWidth
+            this.staminaTextBackgroundMiddle.y = this.staminaTextBackgroundLeftCap.y
+    
+            this.staminaTextBackgroundRightCap.x = this.staminaTextBackgroundMiddle.x + this.staminaTextBackgroundMiddle.displayWidth
+            this.staminaTextBackgroundRightCap.y = this.staminaTextBackgroundMiddle.y
+    
+            // Text
+            this.staminaText.x = this.staminaTextBackgroundMiddle.x + this.staminaTextBackgroundMiddle.displayWidth * 0.05
+            this.staminaText.y = this.staminaTextBackgroundMiddle.y + 3.5
+
+            this.staminaTextNumber.x = this.staminaTextBackgroundMiddle.x + this.staminaTextBackgroundMiddle.displayWidth * 0.85
+            this.staminaTextNumber.y = this.staminaText.y
 
     }
 

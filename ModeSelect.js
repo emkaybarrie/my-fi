@@ -149,7 +149,7 @@ class ModeSelect extends Phaser.Scene {
             rightHeld = false
             this.selectedOption += 1
 
-            this.activeModeBox.x += screenWidth * 0.25 //this.mode2Image.x
+            this.activeModeBox.x += screenWidth * 0.25
 
             this.activeModeBox.setAlpha(0).setScale(0,1)
             
@@ -167,7 +167,7 @@ class ModeSelect extends Phaser.Scene {
             leftHeld = false
             this.selectedOption -= 1
 
-            this.activeModeBox.x -= screenWidth * 0.25//this.mode1Image.x
+            this.activeModeBox.x -= screenWidth * 0.25
 
             this.activeModeBox.setAlpha(0).setScale(0,1)
             
@@ -179,14 +179,14 @@ class ModeSelect extends Phaser.Scene {
       
             });
                 
-        } else if (a1Held  || s1Held){
+        } else if (a1Held){
 
 
             if(this.confirmSelection < 1) {
                 this.confirmSelection += 0.03
             }
             
-        } else if (a2Held || s2Held){
+        } else if (a2Held){
             this.scene.start('MainMenu')
         } else {
             if(this.confirmSelection > 0.1) {
@@ -197,9 +197,6 @@ class ModeSelect extends Phaser.Scene {
         if(this.confirmSelection >= 1){
             this.confirmSelection = 0
             a1Held = false
-            s1Held = false
-            //activeAvatar = avatarData[this.avatarToLoad[this.selectedPatronArray][this.selectedPersonaArray]]
-            //activeAvatarID = avatarData[this.avatarToLoad[this.selectedPatronArray][this.selectedPersonaArray]].ID
             nextScene = true
         }
         
@@ -250,8 +247,7 @@ class ModeSelect extends Phaser.Scene {
             });
         } else if (this.selectedOption == 2){
             
-            this.selectedMode = 'SelectAvatar'
-            this.data = 'Kianova'
+            this.selectedMode = 'Kianova'
             this.mode0Image.setTint(0x808080)
             this.mode1Image.setTint(0x808080)
             this.mode2Image.setTint()
@@ -278,7 +274,7 @@ class ModeSelect extends Phaser.Scene {
         if (nextScene){
             nextScene = false
             prologueCompleted = true
-            this.scene.start(this.selectedMode,{redirect:this.data})
+            this.scene.start(this.selectedMode)
             this.selectedOption = 1
             this.selectedMode = undefined
             

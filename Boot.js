@@ -7,7 +7,8 @@ class Boot extends Phaser.Scene {
     constructor() {
         
         super("Boot")
-
+    
+      
     }
 
     // loadBar(){
@@ -69,27 +70,24 @@ class Boot extends Phaser.Scene {
 
 
 
-        if(!this.sys.game.device.os.desktop){
-            for(var i = 1; i < 6; i++){
+        if(this.sys.game.device.os.desktop){
+            for(var i = 0; i < 5; i++){
                 this.load.image('r' + i + 'Icon', ['assets/r' + i +'Icon.png','assets/r' + i +'Icon_n.png']);
             }
     
             this.load.video('techDemo', 'assets/video/techDemo.mp4', 'loadeddata', false, false);
         }
-
-        // // Fake Loading - adds time for visual clarity 
-        // for (var i = 0; i < 25; i++) {
-        //     this.load.image('loadingSplashScreen' + i, 'assets/TitleScreenD.png')
-        // }
         
     }
     
-    create(){
+  async create(){
 
         // Load Modules - run in background
-        this.scene.launch('DataModule')
+         this.scene.launch('DataModule')
          this.scene.launch('InputModule')
-        // this.scene.launch('Input')
+        
+         
+         this.button = this.add.image(screenWidth * 0.5, screenHeight * 0.5, 'r0Icon').setScale(1.5).setVisible(0).setActive(0).setInteractive()//.setPipeline('Light2D');
 
         // Splash Screen & Animations
             // Add opening animation/splash screen / studio info here
@@ -120,6 +118,18 @@ class Boot extends Phaser.Scene {
                 },
             });
 
+            
+
+            this.button.once('pointerdown', function (){
+                this.button.setActive(0).setVisible(0)
+                this.vid = this.add.video(screenWidth * 0.5, screenHeight * 0.5, 'techDemo');
+                this.vid.displayWidth = screenWidth
+                this.vid.displayHeight = screenHeight
+                this.vid.play();
+            // Prevents video freeze when game is out of focus (i.e. user changes tab on the browser)
+                this.vid.setPaused(false);
+            }, this);
+
     }
     
     update(){
@@ -129,22 +139,7 @@ class Boot extends Phaser.Scene {
             if(this.sys.game.device.os.desktop){
                 nextScene = true
             } else {
-                // Allow player to start video showing demo of game in Mobile version - temp until mobile fixed/ported
-                
-                this.lights.enable();
-                this.buttonLight = this.lights.addLight(screenWidth * 0.5, screenHeight * 0.5, screenWidth,0xFFFFFF, 1.25);
-                
-                this.button = this.add.image(screenWidth * 0.5, screenHeight * 0.5, 'r0Icon').setInteractive().setScale(1.5).setPipeline('Light2D');
-
-                this.button.on('pointerup', function (){
-                    this.vid = this.add.video(screenWidth * 0.5, screenHeight * 0.5, 'techDemo');
-                    this.vid.displayWidth = screenWidth
-                    this.vid.displayHeight = screenHeight
-                    this.vid.play();
-                // Prevents video freeze when game is out of focus (i.e. user changes tab on the browser)
-                    this.vid.setPaused(false);
-            }, this);
-
+                this.button.setActive(1).setVisible(1)
             }
 
        }

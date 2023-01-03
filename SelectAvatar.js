@@ -79,11 +79,11 @@ class SelectAvatar extends Phaser.Scene {
 
         this.activeUserNameText = this.add.text(screenWidth * 0.1, screenHeight * 0.1, '', { fontFamily: 'Georgia', fontStyle: 'bold' ,align: 'center', fixedWidth:screenWidth * 0.25,fixedHeight:screenHeight * 0.075});
         this.activeUserNameText.setFontSize(54 * scaleModX).setOrigin(0.5,0)
-        if(activeUser != null || undefined || ''){
-            this.activeUserNameText.setText(activeUser.USERNAME)
-        } else {
-            this.activeUserNameText.setText(freePlayUser.USERNAME)
-        }
+        // if(activeUser != null || undefined || ''){
+        //     this.activeUserNameText.setText(activeUser.USERNAME)
+        // } else {
+        //     this.activeUserNameText.setText(freePlayUser.USERNAME)
+        // }
 
         this.avatarTitle = this.add.text(screenWidth * 0.5, screenHeight * 0.2, 'Choose your Avatar', { fontFamily: 'Georgia', fontStyle: 'italic' ,align: 'center', fixedWidth:screenWidth * 0.25,fixedHeight:screenHeight * 0.075});
 
@@ -142,11 +142,11 @@ class SelectAvatar extends Phaser.Scene {
         this.selectedPersonaArray = 0
         this.selectedAvatar = 3
 
-        this.baseDamage = avatarData[this.avatarToLoad[this.selectedPatronArray][this.selectedPersonaArray]].BASE_DAMAGE
-        this.baseArmour = avatarData[this.avatarToLoad[this.selectedPatronArray][this.selectedPersonaArray]].BASE_ARMOUR
-        this.baseAgility = avatarData[this.avatarToLoad[this.selectedPatronArray][this.selectedPersonaArray]].BASE_AGILITY
-        this.primaryStat = avatarData[this.avatarToLoad[this.selectedPatronArray][this.selectedPersonaArray]].PRIMARY_STAT
-        this.primaryStatBonus = avatarData[this.avatarToLoad[this.selectedPatronArray][this.selectedPersonaArray]].PRIMARY_STAT_BONUS
+        this.baseDamage //= //avatarData[this.avatarToLoad[this.selectedPatronArray][this.selectedPersonaArray]].BASE_DAMAGE
+        this.baseArmour //= //avatarData[this.avatarToLoad[this.selectedPatronArray][this.selectedPersonaArray]].BASE_ARMOUR
+        this.baseAgility// = //avatarData[this.avatarToLoad[this.selectedPatronArray][this.selectedPersonaArray]].BASE_AGILITY
+        this.primaryStat //= //avatarData[this.avatarToLoad[this.selectedPatronArray][this.selectedPersonaArray]].PRIMARY_STAT
+        this.primaryStatBonus// = //avatarData[this.avatarToLoad[this.selectedPatronArray][this.selectedPersonaArray]].PRIMARY_STAT_BONUS
 
         // Base Damage
         this.baseDamageRating = this.add.group()
@@ -210,10 +210,6 @@ class SelectAvatar extends Phaser.Scene {
         this.userActive = true
         },1000)
 
-        this.ashaSound1 = this.sound.add('ashaATK1')
-        //this.ashaSound1.setVolume(0.75)
-        this.ashaSound2 = this.sound.add('ashaATK2')
-        this.ashaSound2.setVolume(50)
     }
 
         
