@@ -392,20 +392,18 @@ class InputModule extends Phaser.Scene {
                             console.log('A1 Pressed: ' +  a1Held)
 
 
-                        } else if (button == 5){
+                        } else if (button == 5){ // RB
 
                             s1Held = true
-                            s1Pressed = true
                             animationStarted = true
 
 
-                        } else if (button == 6){
+                        } else if (button == 6){ // LT
 
                             a2Held = true
-                            a2Pressed = true
                             animationStarted = true
-                        } else if (button == 4){
-                            s2Pressed = true
+                        } else if (button == 4){ // LB
+
                             s2Held = true
                             animationStarted = true
 
@@ -436,18 +434,18 @@ class InputModule extends Phaser.Scene {
                         // Y = 3
                         // Back = 8 ; Start = 9
                         // LS = 10 ; RS = 11 
-                        if (button == 7){
+                        if (button == 7){ // RT
 
                             a1Held = false
 
-                        } else if (button == 5){
+                        } else if (button == 5){ // RB
                             s1Held = false
 
-                        } else if (button == 6){
+                        } else if (button == 6){ // LT
 
                             a2Held = false
 
-                        } else if (button == 4){
+                        } else if (button == 4){ // LB
                             s2Held = false
 
 

@@ -272,8 +272,16 @@ class Badlands extends Phaser.Scene {
         // Not need - test env only
         // HUD/UI
 
+        // Battle Mode Icon
+        this.load.image('battle-icon', 'assets/UI/ach_00019.png')
+
         // Vitals Bars
         // Life
+
+        this.load.image('life-text-background-left-cap', 'assets/UI/playerVitals/red/meter_text_background_left_red.png')
+        this.load.image('life-text-background-middle', 'assets/UI/playerVitals/red/meter_text_background_center_red.png')
+        this.load.image('life-text-background-right-cap', 'assets/UI/playerVitals/red/meter_text_background_right_red.png')        
+
         this.load.image('life-icon-holder', 'assets/UI/playerVitals/red/meter_icon_holder_red.png')
         this.load.image('life-icon', 'assets/UI/playerVitals/icons/health.png')
 
@@ -286,6 +294,11 @@ class Badlands extends Phaser.Scene {
         this.load.image('life-right-cap', 'assets/UI/playerVitals/red/meter_bar_right_red.png')
 
         // Focus
+
+        this.load.image('focus-text-background-left-cap', 'assets/UI/playerVitals/yellow/meter_text_background_left_yellow.png')
+        this.load.image('focus-text-background-middle', 'assets/UI/playerVitals/yellow/meter_text_background_center_yellow.png')
+        this.load.image('focus-text-background-right-cap', 'assets/UI/playerVitals/yellow/meter_text_background_right_yellow.png')
+
         this.load.image('focus-icon-holder', 'assets/UI/playerVitals/yellow/meter_icon_holder_yellow.png')
         this.load.image('focus-icon', 'assets/UI/playerVitals/icons/magic.png')
 
@@ -298,6 +311,11 @@ class Badlands extends Phaser.Scene {
         this.load.image('focus-right-cap', 'assets/UI/playerVitals/yellow/meter_bar_right_yellow.png')
 
         // Stamina
+
+        this.load.image('stamina-text-background-left-cap', 'assets/UI/playerVitals/green/meter_text_background_left_green.png')
+        this.load.image('stamina-text-background-middle', 'assets/UI/playerVitals/green/meter_text_background_center_green.png')
+        this.load.image('stamina-text-background-right-cap', 'assets/UI/playerVitals/green/meter_text_background_right_green.png')
+
         this.load.image('stamina-icon-holder', 'assets/UI/playerVitals/green/meter_icon_holder_green.png')
         this.load.image('stamina-icon', 'assets/UI/playerVitals/icons/stamina.png')
 
@@ -354,6 +372,10 @@ class Badlands extends Phaser.Scene {
         this.load.image('stageProgress-middle', 'assets/UI/playerVitals/purple/meter_bar_center_purple.png')
         this.load.image('stageProgress-right-cap', 'assets/UI/playerVitals/purple/meter_bar_right_purple.png')
 
+        // Skill Effects
+        this.loadSkillSpriteSheets()
+
+
         // Sound Effects
         this.load.audio("enemyTakeMeleeHit", ["assets/sFX/sliceFlesh.wav"]);
         this.load.audio("nightBorneTakeLightDamage1", ["assets/sFX/Enemy/nightBorneTakeLightDamage1.wav"]);
@@ -387,7 +409,6 @@ class Badlands extends Phaser.Scene {
         this.load.audio("playerHit6", ["assets/sFX/Player/playerHit6.wav"]);
         this.load.audio("playerHit7", ["assets/sFX/Player/playerHit7.wav"]);
 
-        this.load.atlas('avatar3', ['assets/Avatars/3/avatar3.png', 'assets/Avatars/3/avatar3_n.png'], 'assets/Avatars/3/avatar3.json');
         this.load.spritesheet('whiteHitSmear', 'assets/whiteHitSmear.png', { frameWidth: 1024, frameHeight: 1024 });
         this.load.spritesheet('whiteHitSmear2', 'assets/whiteHitSmear2.png', { frameWidth: 1048, frameHeight: 1048 });
         this.load.image('playerIconBox', 'assets/vFX/textBox3a.png');
@@ -402,22 +423,35 @@ class Badlands extends Phaser.Scene {
         this.load.spritesheet('deadlyCombatAssaultHitSmear', 'assets/skills/deadlyCombatAssaultHitSmear.png', { frameWidth: 1024, frameHeight: 1024 });
         this.load.spritesheet('thunderStrikeIcon', 'assets/skills/thunderStrikeIcon.png', { frameWidth: 256, frameHeight: 256 });
 
+        this.load.image('thunderBoltIcon', 'assets/skills/thunderBoltIcon.png');
+        this.load.image('fireBoltIcon', 'assets/skills/fireBoltIcon.png');
+
         this.load.image('floor', 'assets/floorNeutral.png');
+        //Platforms
+        this.load.image('platformR1_1', 'assets/platforms/Pad_R1_1A.png');
+        this.load.image('platformR1_2', 'assets/platforms/Pad_R1_2A.png');
+        this.load.image('platformR2_1', 'assets/platforms/Pad_R2_1A.png');
+        this.load.image('platformR2_2', 'assets/platforms/Pad_R2_2A.png');
+        this.load.image('platformR3_1', 'assets/platforms/Pad_R3_1A.png');
+        this.load.image('platformR3_2', 'assets/platforms/Pad_R3_2A.png');
+        this.load.image('platformR4_1', 'assets/platforms/Pad_R4_1A.png');
+        this.load.image('platformR4_2', 'assets/platforms/Pad_R4_2A.png');
+
         this.load.atlas('doomsayer', ['assets/doomsayer.png', 'assets/doomsayer_n.png'], 'assets/doomsayersprites.json');
         this.load.spritesheet('nightBorne', ['assets/nightBorne.png', 'assets/nightBorne.png'], { frameWidth: 80, frameHeight: 80 });
 
 
         this.load.audio("bgMusic1", ["assets/music/The_Apartment.mp3"]);
-        this.load.audio("bgMusic2", ["assets/music/Arbol.mp3"]);
+        //this.load.audio("bgMusic2", ["assets/music/Arbol.mp3"]);
         this.load.audio("bgMusic3", ["assets/music/Nine_Levels.mp3"]);
         this.load.audio("bgMusic4", ["assets/music/Katana.mp3"]);
-        this.load.audio("bgMusic5", ["assets/music/Fate_I.mp3"]);
+        //this.load.audio("bgMusic5", ["assets/music/Fate_I.mp3"]);
         this.load.audio("bgMusic6", ["assets/music/Talk_Like_Thunder.mp3"]);
         this.load.audio("bgMusic7", ["assets/music/Thundering_Voices.mp3"]);
-        this.load.audio("bgMusic8", ["assets/music/Riptide.mp3"]);
+        //this.load.audio("bgMusic8", ["assets/music/Riptide.mp3"]);
         this.load.audio("bgMusic9", ["assets/music/Legend_Has_It.mp3"]);
         this.load.audio("bgMusic10", ["assets/music/Gumshield.mp3"]);
-        this.load.audio("bgMusic11", ["assets/music/Throw_Me_To_The_Wolves.mp3"]);
+        //this.load.audio("bgMusic11", ["assets/music/Throw_Me_To_The_Wolves.mp3"]);
         this.load.audio("bgMusic12", ["assets/music/Wide_Eyes.mp3"]);
         this.load.audio("bgMusic13", ["assets/music/Dynasties_&_Dystopia.mp3"]);
         this.load.audio("bgMusic14", ["assets/music/Come_Down.mp3"]);
@@ -552,7 +586,7 @@ class Badlands extends Phaser.Scene {
         // Platforms
 
         this.platformGroup = this.physics.add.group({
-            defaultKey: 'floor',
+            defaultKey: 'platformR' + this.stageData.regionID + '_' + Phaser.Math.Between(1,2),
             maxSize: 8
         });
 
@@ -611,14 +645,22 @@ class Badlands extends Phaser.Scene {
         this.physics.add.overlap(this.player, this.enemyGroup, this.enterBattle, null, this)
         this.physics.add.overlap(this.player, this.enemyChaserGroup, this.enterBattle, null, this)
 
+        this.playerProjectiles = this.physics.add.group({
+            defaultKey: '',
+            maxSize: 3
+        });
+
         this.playerAttackHitBox = this.add.sprite(this.player.x, this.player.y)
         this.physics.add.existing(this.playerAttackHitBox, false)
         this.playerAttackHitBox.body.setAllowGravity(false).setSize(175, 100)
         this.playerAttackHitBox.body.checkCollision.none = true
         this.physics.add.overlap(this.playerAttackHitBox, this.enemyGroup, this.enemyTakeHit, null, this)
+        this.physics.add.overlap(this.playerProjectiles, this.enemyGroup, this.enemyTakeProjectileHit, null, this)
         this.playerAttackHitBox.damage = 0
         this.playerAttackHitBoxVFX = this.add.sprite(this.playerAttackHitBox.x, this.playerAttackHitBox.y)
         this.playerAttackHitBoxVFX.setSize(175, 100).setDepth(2)
+
+        
         this.playerIsHit = false
         this.playerInAir = false
 
@@ -800,7 +842,6 @@ class Badlands extends Phaser.Scene {
             showOnStart: 1,
             hideOnComplete: 1
         });
-
 
         // V1 Code End
 
@@ -1088,8 +1129,10 @@ class Badlands extends Phaser.Scene {
         // Get the base data and avatar data from the DataModule Scene
         var baseData = this.scene.get('DataModule').baseData;
         var avatarData = this.scene.get('DataModule').avatarData;
-        // var skillData = this.scene.get('DataModule').skillData;
+        var skillData = this.scene.get('DataModule').skillData; 
+        
         console.log(avatarData)
+        console.log(skillData)
 
         // Render Avatar with final stats ahead of run
 
@@ -1121,23 +1164,7 @@ class Badlands extends Phaser.Scene {
 
             this.player.animations = importedAnimationData;
 
-        // this.player.animations.idle = avatarData.animations.idle
-        // this.player.animations.walk = avatarData.animations.walk
-        // this.player.animations.run = avatarData.animations.run
-        // this.player.animations.evade = avatarData.animations.evade
-        // this.player.animations.slide = avatarData.animations.slide
-        // this.player.animations.crouch = avatarData.animations.crouch
-        // this.player.animations.jump = avatarData.animations.jump
-        // this.player.animations.edge_grab = avatarData.animations.edge_grab
-        // this.player.animations.edge_idle = avatarData.animations.edge_idle
-        // this.player.animations.fall = avatarData.animations.fall
-        // this.player.animations.tumble = avatarData.animations.tumble
-        // this.player.animations.block = avatarData.animations.block
-        // this.player.animations.take_hit = avatarData.animations.take_hit
-        // this.player.animations.downed = avatarData.animations.downed
-        // this.player.animations.jump_action = avatarData.animations.jump_action
-        // this.player.animations.action_neutral = avatarData.animations.action_neutral
-        // this.player.animations.skill_neutral = avatarData.animations.skill_neutral
+
 
 
         // Life
@@ -1173,6 +1200,18 @@ class Badlands extends Phaser.Scene {
 
         this.player.goldGenerationModifier = avatarData.goldGenerationModifier;
 
+        // Load Skills
+
+            // Skill 1
+
+            // Skill 2
+            if(Phaser.Math.Between(1,2) == 1){
+                this.loadSkill(2,'Firebolt',skillData)
+            } else {
+                this.loadSkill(2,'Thunderbolt',skillData)
+            }
+                
+
         // States
 
         this.player.canBeHit = true
@@ -1192,6 +1231,123 @@ class Badlands extends Phaser.Scene {
 
         console.log(this.player)
 
+    }
+
+    loadSkillSpriteSheets(){
+        var skillDataList = this.scene.get('DataModule').skillData
+        for(var i = 0; i < skillDataList.length; i++) {
+            var targetSkillData = skillDataList[i]
+            console.log('Creating Spritesheet for ' + targetSkillData.NAME)
+            if(targetSkillData.ANIMATION_SOURCE_COMBINED == 'TRUE'){
+                console.log('Creating Combined Skill Spritesheet')
+                this.load.spritesheet(targetSkillData.ANIMATION_SOURCE_MAIN_KEY, targetSkillData.ANIMATION_SOURCE_MAIN_FILEPATH, 
+                    { frameWidth: parseInt(targetSkillData.ANIMATION_SOURCE_MAIN_FRAMEWIDTH), 
+                    frameHeight: parseInt(targetSkillData.ANIMATION_SOURCE_MAIN_FRAMEHEIGHT) });
+            } else {
+                console.log('Creating Non-Combined Skill Spritesheets')
+                this.load.spritesheet(targetSkillData.ANIMATION_SOURCE_MAIN_KEY, targetSkillData.ANIMATION_SOURCE_MAIN_FILEPATH, 
+                    { frameWidth: parseInt(targetSkillData.ANIMATION_SOURCE_MAIN_FRAMEWIDTH), 
+                    frameHeight: parseInt(targetSkillData.ANIMATION_SOURCE_MAIN_FRAMEHEIGHT) });
+
+                this.load.spritesheet(targetSkillData.ANIMATION_SOURCE_IMPACT_KEY, targetSkillData.ANIMATION_SOURCE_IMPACT_FILEPATH, 
+                    { frameWidth: parseInt(targetSkillData.ANIMATION_SOURCE_IMPACT_FRAMEWIDTH), 
+                    frameHeight: parseInt(targetSkillData.ANIMATION_SOURCE_IMPACT_FRAMEHEIGHT) });
+            }
+
+            this.load.image(targetSkillData.ICON_KEY,targetSkillData.ICON_FILEPATH)
+            
+        }  
+
+    }
+
+    loadSkill(skillSlot,name,skillData){
+
+         // Find Skill
+         for (var i = 0; i < skillData.length; i++) {
+            if (name == skillData[i].NAME) {
+                console.log("Skill Data Found!")
+
+                var targetSkillData = skillData[i]
+
+                // Create Animation
+                if (targetSkillData.ANIMATION_SOURCE_COMBINED == 'TRUE'){
+                    if (targetSkillData.ANIMATION_SOURCE_MAIN_TYPE == 'spritesheet'){
+                                                        
+                                 console.log('Creating animations')
+                                this.anims.create({
+                                    key: targetSkillData.ANIMATION_MAIN_KEY,
+                                    frames: this.anims.generateFrameNumbers(targetSkillData.ANIMATION_SOURCE_MAIN_KEY, { start: targetSkillData.ANIMATION_MAIN_START_FRAME, end: targetSkillData.ANIMATION_MAIN_END_FRAME }),
+                                    frameRate: 10,
+                                    repeat: -1,
+                                    showOnStart: 1,
+                                    hideOnComplete: 0
+                                });
+                        
+                                this.anims.create({
+                                    key: targetSkillData.ANIMATION_IMPACT_KEY,
+                                    frames: this.anims.generateFrameNumbers(targetSkillData.ANIMATION_SOURCE_MAIN_KEY, { start: targetSkillData.ANIMATION_IMPACT_START_FRAME, end: targetSkillData.ANIMATION_IMPACT_END_FRAME }),
+                                    frameRate: 10,
+                                    repeat: 0,
+                                    showOnStart: 1,
+                                    hideOnComplete: 1
+                                });
+                           
+                            
+                    }
+                } else {
+                    if (targetSkillData.ANIMATION_SOURCE_MAIN_TYPE == 'spritesheet'){
+                                                        
+                        console.log('Creating animations - main')
+                       this.anims.create({
+                           key: targetSkillData.ANIMATION_MAIN_KEY,
+                           frames: this.anims.generateFrameNumbers(targetSkillData.ANIMATION_SOURCE_MAIN_KEY, { start: targetSkillData.ANIMATION_MAIN_START_FRAME, end: targetSkillData.ANIMATION_MAIN_END_FRAME }),
+                           frameRate: 10,
+                           repeat: -1,
+                           showOnStart: 1,
+                           hideOnComplete: 0
+                       });
+                       console.log('Creating animations - impact')
+                       this.anims.create({
+                           key: targetSkillData.ANIMATION_IMPACT_KEY,
+                           frames: this.anims.generateFrameNumbers(targetSkillData.ANIMATION_SOURCE_IMPACT_KEY, { start: targetSkillData.ANIMATION_IMPACT_START_FRAME, end: targetSkillData.ANIMATION_IMPACT_END_FRAME }),
+                           frameRate: 10,
+                           repeat: 0,
+                           showOnStart: 1,
+                           hideOnComplete: 1
+                       });
+                  
+                   
+                    }
+                }
+            
+                
+                
+
+                var importedSkillData = {
+                    id: parseInt(targetSkillData.ID),
+                    name: targetSkillData.NAME,
+                    type: targetSkillData.TYPE,
+                    main_animation: targetSkillData.ANIMATION_MAIN_KEY,
+                    impact_animation: targetSkillData.ANIMATION_IMPACT_KEY,
+                    projectile_speed: targetSkillData.PROJECTILE_SPEED,
+                    projectile_range: targetSkillData.PROJECTILE_RANGE,
+                    projectile_gravity: parseInt(targetSkillData.PROJECTILE_GRAVITY),
+                
+                }
+
+                if(skillSlot == 1){
+                    this.player.skill1 = importedSkillData
+                    console.log(this.player.skill1)
+                } else if (skillSlot == 2){
+                    this.player.skill2 = importedSkillData
+                    console.log(this.player.skill2)
+                }
+
+                this.activeskillBIcon = targetSkillData.ICON_KEY
+                
+                return
+            }
+        }
     }
 
     stageModule() {
@@ -1476,28 +1632,28 @@ class Badlands extends Phaser.Scene {
 
                 if (game.speedLevel == 1) {
 
-                    this.platformScaleXMin = 2.125
-                    this.platformScaleXMax = 2.125
+                    this.platformScaleXMin = 1//2.125
+                    this.platformScaleXMax = 1.25//2.125
 
                     this.platformPositionYMin = screenHeight * 0.5
-                    this.platformPositionYMax = screenHeight * 0.7
+                    this.platformPositionYMax = screenHeight * 0.65
 
                 } else
                     // Level 2
                     if (game.speedLevel == 2) {
-                        this.platformScaleXMin = 2
-                        this.platformScaleXMax = 2.25
+                        this.platformScaleXMin = 0.75//2
+                        this.platformScaleXMax = 1.5//2.25
 
                         this.platformPositionYMin = screenHeight * 0.4
-                        this.platformPositionYMax = screenHeight * 0.725
+                        this.platformPositionYMax = screenHeight * 0.675
                     } else
                         // Level 3
                         if (game.speedLevel == 3) {
-                            this.platformScaleXMin = 1.75
-                            this.platformScaleXMax = 2.5
+                            this.platformScaleXMin = 0.5//1.75
+                            this.platformScaleXMax = 1.75//2.5
 
                             this.platformPositionYMin = screenHeight * 0.3
-                            this.platformPositionYMax = screenHeight * 0.75
+                            this.platformPositionYMax = screenHeight * 0.7
                         }
 
 
@@ -1506,7 +1662,7 @@ class Badlands extends Phaser.Scene {
                     platform.setTint(this.floorColour)
                     platform.x = Phaser.Math.FloatBetween(screenWidth * 3.25 + (screenWidth * 0.6 * i), screenWidth * 3.35 + (screenWidth * 0.6 * i)) //screenWidth * 2
                     platform.y = Phaser.Math.FloatBetween(this.platformPositionYMin, this.platformPositionYMax)
-                    platform.setScale(Phaser.Math.FloatBetween(this.platformScaleXMin, this.platformScaleXMax), Phaser.Math.FloatBetween(1, 1.25))
+                    platform.setScale(Phaser.Math.FloatBetween(this.platformScaleXMin, this.platformScaleXMax), Phaser.Math.FloatBetween(0.15, 0.35))
                     platform.setActive(true)
                     platform.setPipeline('Light2D')
                     platform.setImmovable(true)
@@ -1904,9 +2060,6 @@ class Badlands extends Phaser.Scene {
 
     enemyTakeHit(playerAttackHitBox, enemy) {
 
-
-
-
         if (!enemy.isHit) {
             enemy.isHit = true
 
@@ -2095,6 +2248,186 @@ class Badlands extends Phaser.Scene {
         }
 
     }
+
+    enemyTakeProjectileHit(projectile, enemy) {
+
+        this.impactProjectile(projectile)
+        
+        if (!enemy.isHit) {
+            enemy.isHit = true
+
+                // Damage Calc
+
+
+                // Momentum Gain
+
+
+
+
+                if (!enemy.body.onFloor()) {
+                    enemy.setVelocity(0)
+                }
+
+                if (!projectile.flipX) {
+                    enemy.setVelocityX(enemy.body.velocity.x + (Phaser.Math.Between((this.player.momentum / 100) * 0, (this.player.momentum / 100) * 250) ))
+                } else {
+                    enemy.setVelocityX(enemy.body.velocity.x - (Phaser.Math.Between((this.player.momentum / 100) * 0, (this.player.momentum / 100) * 250) ))
+                }
+
+
+                if (enemy.type == 1) {
+                    enemy.play('nightBorneMinion_Hurt', true)
+
+                    // Sound Effect of Hit
+                    // Hit connected
+
+
+                    enemy.once('animationcomplete', function (anim, frame) {
+                        enemy.emit('animationcomplete_' + anim.key, frame)
+                    }, enemy)
+                    enemy.once('animationcomplete_nightBorneMinion_Hurt', function () {
+                        enemy.isHit = false
+                        enemy.setVelocityX(0)
+                        if (this.gameMode == 0) {
+                            enemy.hitsTaken += enemy.hitHP
+                        } else {
+
+                            enemy.hitsTaken += this.player.skill2Power
+                        }
+
+                        if (enemy.hitsTaken >= enemy.hitHP) {
+                            enemy.play('nightBorneMinion_Death', true)
+                            this.physics.add.collider(enemy, this.floor);
+                            this.physics.add.collider(enemy, this.platformGroup);
+                            this.enemyGroup.remove(enemy)
+                            this.gold += Phaser.Math.Between(0, this.baseGoldDrop * 0.075 * this.level)
+
+                            enemy.once('animationcomplete', function (anim, frame) {
+                                enemy.emit('animationcomplete_' + anim.key, frame)
+                            }, enemy)
+                            enemy.once('animationcomplete_nightBorneMinion_Death', function () {
+
+                                enemy.setActive(false)
+                                enemy.setVisible(false)
+                                enemy.x = -screenWidth * 0.25
+
+                            }, this)
+                        } else {
+                            enemy.play('nightBorneMinion_Idle', true)
+                        }
+
+                    }, this)
+                } else if (enemy.type == 2) {
+                    enemy.play('nightBorne_Hurt', true)
+
+                    if (Phaser.Math.Between(0, 100) <= 15) {
+                        
+                            if (Phaser.Math.Between(0, 100) <= 10) {
+                                this.sound.play('nightBorneTakeHeavyDamage3')
+                            } else if (Phaser.Math.Between(0, 100) <= 25) {
+                                this.sound.play('nightBorneTakeHeavyDamage2')
+                            } else {
+                                this.sound.play('nightBorneTakeHeavyDamage1')
+                            }
+                        } else {
+                            if (Phaser.Math.Between(0, 100) <= 10) {
+                                this.sound.play('nightBorneTakeLightDamage3')
+                            } else if (Phaser.Math.Between(0, 100) <= 25) {
+                                this.sound.play('nightBorneTakeLightDamage2')
+                            } else {
+                                this.sound.play('nightBorneTakeLightDamage1')
+                            }
+                        }
+                    
+
+                    enemy.once('animationcomplete', function (anim, frame) {
+                        enemy.emit('animationcomplete_' + anim.key, frame)
+                    }, enemy)
+                    enemy.once('animationcomplete_nightBorne_Hurt', function () {
+                        enemy.isHit = false
+                        enemy.setVelocityX(0)
+                        if (this.gameMode == 0) {
+                            enemy.hitsTaken += enemy.hitHP
+                        } else {
+
+                            enemy.hitsTaken += this.player.skill2Power
+                        }
+                        if (enemy.hitsTaken >= enemy.hitHP) {
+                            enemy.play('nightBorne_Death', true)
+
+                            this.sound.play('nightBorneTakeHeavyDamage2')
+                            this.physics.add.collider(enemy, this.floor);
+                            this.physics.add.collider(enemy, this.platformGroup);
+                            this.enemyGroup.remove(enemy)
+                            this.gold += Phaser.Math.Between(this.baseGoldDrop * 0.05 * this.level, this.baseGoldDrop * 0.15 * this.level)
+                            enemy.once('animationcomplete', function (anim, frame) {
+                                enemy.emit('animationcomplete_' + anim.key, frame)
+                            }, enemy)
+                            enemy.once('animationcomplete_nightBorne_Death', function () {
+
+                                enemy.setActive(false)
+                                enemy.setVisible(false)
+                                enemy.x = -screenWidth * 0.25
+
+                            }, this)
+                        } else {
+                            enemy.play('nightBorne_Idle', true)
+                        }
+
+                    }, this)
+                }
+
+                this.targetRemainingEnemyHP = enemy.hitHP - enemy.hitsTaken
+
+
+            
+        }
+    }
+
+    playerProjectileCleanUp(){
+        this.playerProjectiles.children.iterate(function (p) {
+
+            if (p.active) {
+                if (Math.abs(p.x - this.player.x) >= p.maxRange) {
+                    this.impactProjectile(p,0.75)   
+                }
+            }
+
+
+        }.bind(this));
+    }
+
+    fireProjectile(source,projectile,animation,impactAnimation,speed,range,affectedByGravity){
+        projectile.x = source.x + 50
+        projectile.y = source.y - 15
+        projectile.maxRange = screenWidth * range
+        projectile.mainAnimation = animation
+        projectile.impactAnimation = impactAnimation
+        projectile.setScale(4)
+        projectile.setDepth(2)
+        projectile.body.setAllowGravity(affectedByGravity)
+
+        if (source.flipX){
+            this.dir = -1
+            projectile.flipX = true
+        } else {
+            this.dir = 1
+            projectile.flipX = false
+        }
+
+        projectile.play({key:projectile.mainAnimation,frameRate: 10},true)
+        projectile.setVelocityX(this.dir * screenWidth * speed) 
+    }
+
+    impactProjectile(projectile, velocityReductionPercent = 0.1){
+        projectile.play({key:projectile.impactAnimation,frameRate: 10},true)
+        projectile.body.checkCollision.none = true
+        projectile.setVelocityX(projectile.body.velocity.x * velocityReductionPercent)
+        projectile.once('animationcomplete', function(){
+            projectile.destroy()
+        },this)
+    }
+
 
     cameraModule() {
 
@@ -2589,7 +2922,7 @@ class Badlands extends Phaser.Scene {
         this.skillABox = this.add.image(0, 0, 'skillIconBox').setDepth(3).setScale(this.skillBoxScale).setOrigin(0.5, 0.5)
         this.skillAIcon = this.add.image(0, 0, 'deadlyCombatAssaultIcon').setDepth(3).setScale(this.skillIconScale).setOrigin(0.5, 0.5)
         this.skillBBox = this.add.image(0, 0, 'skillIconBox').setDepth(3).setScale(this.skillBoxScale).setOrigin(0.5, 0.5)
-        this.skillBIcon = this.add.image(0, 0, 'thunderStrikeIcon').setDepth(3).setScale(this.skillIconScale).setOrigin(0.5, 0.5)
+        this.skillBIcon = this.add.image(0, 0, this.activeskillBIcon).setDepth(3).setScale(this.skillIconScale).setOrigin(0.5, 0.5)
 
         // Player Speed
 
@@ -3303,7 +3636,7 @@ class Badlands extends Phaser.Scene {
                     this.skill1CostModifier = 1.2
                     this.skill2CostModifier = 1.2
     
-                    this.moveUpCostModifier = 2.2
+                    this.moveUpCostModifier = 1.7
                     this.moveDownCostModifier = 1
                     this.moveLeftCostModifier = 0.6
                     this.moveRightCostModifier = 0.6
@@ -3316,7 +3649,7 @@ class Badlands extends Phaser.Scene {
                     this.skill2CostModifier = 1
     
                     if (this.player.staminaRegenActive){
-                        this.moveUpCostModifier = 2
+                        this.moveUpCostModifier = 1.5
                         this.moveDownCostModifier = 0.8
                         this.moveLeftCostModifier = 0.4
                         this.moveRightCostModifier = 0.4
@@ -3965,9 +4298,22 @@ class Badlands extends Phaser.Scene {
                                     this.player.state.casting = true
                                     this.player.once('animationcomplete', function(){
                                        this.player.state.casting = false
-                                   },this)
-                                    this.skillFrameRate = 6 + 2 * this.skillPower
+                                    },this)
+                                    this.skillFrameRate = 6 + 6 * this.skillPower
                                     this.player.play({key:this.player.animations.cast,yoyo: true,frameRate: this.skillFrameRate},true)
+
+                                   // Load Skill Parameters
+                                    this.skillType = this.player.skill2.type
+                                    this.skillMainAnimation =  this.player.skill2.main_animation
+                                    this.skillImpactAnimation =  this.player.skill2.impact_animation
+                                    this.skillProjectileSpeed =  this.player.skill2.projectile_speed
+                                    this.skillProjectileRange =  this.player.skill2.projectile_range
+                                    this.skillProjectileGravity =  this.player.skill2.projectile_gravity
+
+                                   if(this.playerProjectiles.getTotalFree() > 0){
+                                    this.fireProjectile(this.player,this.playerProjectiles.get(),this.skillMainAnimation,this.skillImpactAnimation,this.skillProjectileSpeed,this.skillProjectileRange,this.skillProjectileGravity)
+                                   }
+
                                 }
                             } 
 
@@ -4323,6 +4669,7 @@ class Badlands extends Phaser.Scene {
 
         // Player/Controls
         this.playerModule()
+        this.playerProjectileCleanUp()
 
         // Environment
         this.environmentModule()

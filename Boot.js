@@ -62,13 +62,11 @@ class Boot extends Phaser.Scene {
     // }
 
 
-    preload(){
+    async preload(){
 
         //this.loadBar()
        
         //Add Splash Screen, etc preloads
-
-
 
         if(this.sys.game.device.os.desktop){
             for(var i = 0; i < 5; i++){
@@ -79,12 +77,15 @@ class Boot extends Phaser.Scene {
         }
         
     }
+
+   
     
   async create(){
 
         // Load Modules - run in background
-         this.scene.launch('DataModule')
+         
          this.scene.launch('InputModule')
+         this.scene.launch('DataModule')
         
          
          this.button = this.add.image(screenWidth * 0.5, screenHeight * 0.5, 'r0Icon').setScale(1.5).setVisible(0).setActive(0).setInteractive()//.setPipeline('Light2D');

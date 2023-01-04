@@ -143,12 +143,28 @@ class DataModule extends Phaser.Scene {
 
     }
 
-    preload() {
-        this.load.atlas('activeAvatar', ['assets/Avatars/3/avatar3.png','assets/Avatars/3/avatar3_n.png' ],
-                            'assets/Avatars/3/avatar3.json'
-                            );
+    async loadAvatarAtlas(avatarID){
+        
+        this.load.atlas('activeAvatar', 
+                        ['assets/Avatars/'+ avatarID + '/avatar' + avatarID + '.png','assets/Avatars/'+ avatarID + '/avatar' + avatarID + '_n.png' ],
+                        'assets/Avatars/' + avatarID + '/avatar' + avatarID + '.json'
+                        );
+        console.log('Loading Avatar Atlas' + avatarID)
+  
 
     }
+
+    // // Load & Package Skill Data
+    async loadSkillData_Projectiles(){
+        var skillList = fetch("https://opensheet.elk.sh/1Tdh0tV-EapNYWqOS9GzKarnt_b4ZVy1YXPN4dq85H5o/Skill_Projectiles_Data_EndPoint")
+
+            var skillListContent = await (await skillList).json()
+            console.log(skillListContent)
+            this.skillData = skillListContent
+
+    }
+
+    
 
     // Import All Sprite Data
 
@@ -335,7 +351,7 @@ class DataModule extends Phaser.Scene {
 
 
             }
-
+        // Update Capacity Bonus Stats
             updateAvatar_CapacityData() {
 
                 // Get the values for lifeEnergyPool, lifeTargetEnergyPool, focus, and stamina from the this.playerData object
@@ -434,187 +450,132 @@ class DataModule extends Phaser.Scene {
 
             }
 
-    // Load Avatar animation data based on selected Avatar
-    async loadAvatarAnimations(avatarID){
-        await this.createAvatarAnimations(avatarID)
-        await this.getAvatarAnimations(avatarID)
+        // Avatars Animations
+
+            async createAvatarAnimations(avatarID){
+            
+                //this.load.start()
+                this.load.atlas('activeAvatar', 
+                                ['assets/Avatars/'+ avatarID + '/avatar' + avatarID + '.png','assets/Avatars/'+ avatarID + '/avatar' + avatarID + '_n.png' ],
+                                'assets/Avatars/' + avatarID + '/avatar' + avatarID + '.json'
+                                );
+                console.log('Loading Avatar ' + avatarID)
+        
+            // this.load.once(Phaser.Loader.Events.COMPLETE, () => {
+                    //Load Avatar Animations
+                    console.log('Loaded Successfully')
+                    // Prepare Variables for Load
+                    var prefixes = ['IDLE','WALK','RUN','EVADE','SLIDE','CROUCH','JUMP','EDGE_GRAB','EDGE_IDLE','FALL','TUMBLE',
+                                    'BLOCK','TAKE_HIT','DOWNED','JUMP_ACTION','ACTION_A','ACTION_B','ACTION_C','SKILL','CAST'] 
+                    var prefix
+
+                    var endFrameField
+                    var endFrameIndex
+                
+                    // Load Animations
+                
+                    for (var i = 0; i < prefixes.length; i++){
+
+
+                                var startFrameIndex = 1
+                                
+                                    endFrameField = prefixes[i] + '_FRAME_END'
+                                    prefix = prefixes[i]
+                                
+                                console.log('Creating Animation For: ' + prefixes[i])
+                        
+                                endFrameIndex = this.avatarSpriteData[avatarID][endFrameField]                           
+                                
+                                    if(endFrameIndex == (undefined || null || '')){
+                                        console.log('No animation for: ' + prefixes[i] + '. Defaulted to Idle animation')
+                                        this.anims.create({
+                                            key: 'player_' + prefix,
+                                            frames: this.anims.generateFrameNames('activeAvatar',{prefix: 'IDLE' + '_', start: startFrameIndex, end: this.avatarSpriteData[avatarID].IDLE_FRAME_END}),
+                                            frameRate: this.avatarSpriteData[avatarID].IDLE_FRAME_END,
+                                            repeat: -1
+                                        });
+
+
+                                    } else {
+
+                                        this.anims.create({
+                                            key: 'player_' + prefix,
+                                        
+                                            frames: this.anims.generateFrameNames('activeAvatar',{prefix: prefix + '_', start: startFrameIndex, end: endFrameIndex}),// suffix: '.png'}),
+                                            frameRate: endFrameIndex
+                                        });
+
+                                        console.log('player_' + prefix)
+                                    }
+
+                        
+                    }
+
+                    console.log('Animations Created for ' + this.avatarSpriteData[avatarID].NAME)
+                    return avatarID
+
+            }
+
+            async getAvatarAnimationData(avatarID){
+                // ['IDLE','WALK','RUN','EVADE','SLIDE','CROUCH','JUMP','EDGE_GRAB','EDGE_IDLE','FALL','TUMBLE','BLOCK','TAKE_HIT','DOWNED','JUMP_ACTION', ACTION_A, ACTION_B,ACTION_C,SKILL, CAST]
+
+                this.avatarData.avatarName = this.avatarSpriteData[avatarID].NAME
+
+                var createdAnimations = {
+                                idle: 'player_IDLE',
+                                walk: 'player_WALK',
+                                run: 'player_RUN',
+                                evade: 'player_EVADE',
+                                slide: 'player_SLIDE',
+                                crouch: 'player_CROUCH',
+                                jump: 'player_JUMP',
+                                edge_grab: 'player_EDGE_GRAB',
+                                edge_idle: 'player_EDGE_IDLE',
+                                fall: 'player_FALL',
+                                tumble: 'player_TUMBLE',
+                                block: 'player_BLOCK',
+                                take_hit: 'player_TAKE_HIT',
+                                downed: 'player_DOWNED',
+                                jump_action: 'player_JUMP_ACTION',
+                                action_a: 'player_ACTION_A',
+                                action_b: 'player_ACTION_B',
+                                action_c: 'player_ACTION_C',
+                                skill: 'player_SKILL',
+                                cast: 'player_CAST'
+                            };
+
+                this.avatarData.animations = createdAnimations
+                console.log(this.avatarData)
+            }
+
+            loadAndSetAvatarImage(id){
+                
+
+                    game.load.start()
+                    game.load.image('avatarIcon' + id, 'assets/Avatars/'+ id + '/avatar' + id + 'Icon.png');
+
+        
+                
+            }
+
+   async preload() {
+        
+        await this.loadAvatarAtlas(3)
+        await this.loadSkillData_Projectiles()
+
     }
-        // Avatars
-
-    async createAvatarAnimations(avatarID){
-        
-            this.load.start()
-            this.load.atlas('activeAvatar', 
-                            ['assets/Avatars/'+ avatarID + '/avatar' + avatarID + '.png','assets/Avatars/'+ avatarID + '/avatar' + avatarID + '_n.png' ],
-                            'assets/Avatars/' + avatarID + '/avatar' + avatarID + '.json'
-                            );
-            console.log('Loading Avatar ' + avatarID)
-      
-           // this.load.once(Phaser.Loader.Events.COMPLETE, () => {
-                //Load Avatar Animations
-                console.log('Loaded Successfully')
-                // Prepare Variables for Load
-                var prefixes = ['IDLE','WALK','RUN','EVADE','SLIDE','CROUCH','JUMP','EDGE_GRAB','EDGE_IDLE','FALL','TUMBLE',
-                                'BLOCK','TAKE_HIT','DOWNED','JUMP_ACTION','ACTION_A','ACTION_B','ACTION_C','SKILL','CAST'] 
-                var prefix
-
-                var endFrameField
-                var endFrameIndex
-            
-                // Load Animations
-            
-                for (var i = 0; i < prefixes.length; i++){
-
-
-                            var startFrameIndex = 1
-                             
-                                endFrameField = prefixes[i] + '_FRAME_END'
-                                prefix = prefixes[i]
-                            
-                            console.log('Creating Animation For: ' + prefixes[i])
-                    
-                            endFrameIndex = this.avatarSpriteData[avatarID][endFrameField]                           
-                            
-                                if(endFrameIndex == (undefined || null || '')){
-                                    console.log('No animation for: ' + prefixes[i] + '. Defaulted to Idle animation')
-                                    this.anims.create({
-                                        key: 'player_' + prefix,
-                                        frames: this.anims.generateFrameNames('activeAvatar',{prefix: 'IDLE' + '_', start: startFrameIndex, end: this.avatarSpriteData[avatarID].IDLE_FRAME_END}),
-                                        frameRate: this.avatarSpriteData[avatarID].IDLE_FRAME_END,
-                                        repeat: -1
-                                    });
-
-
-                                } else {
-
-                                    this.anims.create({
-                                        key: 'player_' + prefix,
-                                    
-                                        frames: this.anims.generateFrameNames('activeAvatar',{prefix: prefix + '_', start: startFrameIndex, end: endFrameIndex}),// suffix: '.png'}),
-                                        frameRate: endFrameIndex
-                                    });
-
-                                    console.log('player_' + prefix)
-                                }
-
-                    
-                }
-
-                console.log('Animations Created for ' + this.avatarSpriteData[avatarID].NAME)
-                return avatarID
-
-        }
-
-        async getAvatarAnimations(avatarID){
-            // ['IDLE','WALK','RUN','EVADE','SLIDE','CROUCH','JUMP','EDGE_GRAB','EDGE_IDLE','FALL','TUMBLE','BLOCK','TAKE_HIT','DOWNED','JUMP_ACTION', ACTION_A, ACTION_B,ACTION_C,SKILL, CAST]
-
-            this.avatarData.avatarName = this.avatarSpriteData[avatarID].NAME
-
-            var createdAnimations = {
-                            idle: 'player_IDLE',
-                            walk: 'player_WALK',
-                            run: 'player_RUN',
-                            evade: 'player_EVADE',
-                            slide: 'player_SLIDE',
-                            crouch: 'player_CROUCH',
-                            jump: 'player_JUMP',
-                            edge_grab: 'player_EDGE_GRAB',
-                            edge_idle: 'player_EDGE_IDLE',
-                            fall: 'player_FALL',
-                            tumble: 'player_TUMBLE',
-                            block: 'player_BLOCK',
-                            take_hit: 'player_TAKE_HIT',
-                            downed: 'player_DOWNED',
-                            jump_action: 'player_JUMP_ACTION',
-                            action_a: 'player_ACTION_A',
-                            action_b: 'player_ACTION_B',
-                            action_c: 'player_ACTION_C',
-                            skill: 'player_SKILL',
-                            cast: 'player_CAST'
-                        };
-
-            this.avatarData.animations = createdAnimations
-            console.log(this.avatarData)
-        }
-
-        //getAvatarImage
-
-
-        loadAndSetAvatarImage(id){
-            
-
-                game.load.start()
-                game.load.image('avatarIcon' + id, 'assets/Avatars/'+ id + '/avatar' + id + 'Icon.png');
-
-    
-            
-        }
-
-
-    // loadAvatarStats(){
-    //     // Pull Selected Avatar Stats
-    //     this.baseDamage = avatarData[this.avatarToLoad[this.selectedPatronArray][this.selectedPersonaArray]].BASE_DAMAGE
-    //     this.baseArmour = avatarData[this.avatarToLoad[this.selectedPatronArray][this.selectedPersonaArray]].BASE_ARMOUR
-    //     this.baseAgility = avatarData[this.avatarToLoad[this.selectedPatronArray][this.selectedPersonaArray]].BASE_AGILITY
-    //     this.primaryStat = avatarData[this.avatarToLoad[this.selectedPatronArray][this.selectedPersonaArray]].PRIMARY_STAT
-    //     this.primaryStatBonus = avatarData[this.avatarToLoad[this.selectedPatronArray][this.selectedPersonaArray]].PRIMARY_STAT_BONUS
-    
-    //     // Damage
-    //     for (var i = 0; i < this.baseDamage; i++){
-    //         this.baseDamageRating.getChildren()[i].setTint().play('star',true)
-    //     }
-
-    //     for (var i = this.baseDamage; i < 5; i++){
-    //         this.baseDamageRating.getChildren()[i].setTint(0x000000).stop() 
-    //     }
-
-    //     // Armour
-    //     for (var i = 0; i < this.baseArmour; i++){
-    //         this.baseArmourRating.getChildren()[i].setTint().play('star',true)
-    //     }
-
-    //     for (var i = this.baseArmour; i < 5; i++){
-    //         this.baseArmourRating.getChildren()[i].setTint(0x000000).stop() 
-    //     }
-
-    //     // Agility
-    //     for (var i = 0; i < this.baseAgility; i++){
-    //         this.baseAgilityRating.getChildren()[i].setTint().play('star',true)
-    //     }
-
-    //     for (var i = this.baseAgility; i < 5; i++){
-    //         this.baseAgilityRating.getChildren()[i].setTint(0x000000).stop() 
-    //     }
-
-    //     // Primary Stat
-    //     if (this.primaryStat == 1){
-    //         this.primaryStatText = 'Resilience'
-    //         this.primaryStatTextColour = 0xcc0000
-    //     } else if (this.primaryStat == 2){
-    //         this.primaryStatText = 'Focus'
-    //         this.primaryStatTextColour = 0xf1c232
-    //     } else if (this.primaryStat == 3){
-    //         this.primaryStatText = 'Stamina'
-    //         this.primaryStatTextColour = 0x00a86b
-    //     } else {
-    //         this.primaryStatText = 'Balance'  
-    //         this.primaryStatTextColour = 0xA865C9 
-    //     }
-        
-    //     this.avatarStat4Value.setText(this.primaryStatText).setTint(this.primaryStatTextColour)
-    // }
-
 
 
     async create() {
-        await this.importAvatarSpriteData()
+        
         await this.loadPlayerData('Azakai','myfi')
-        await this.loadAvatarAnimations(3)
+        await this.importAvatarSpriteData()
+        await this.createAvatarAnimations(3)
+        await this.getAvatarAnimationData(3)
+
+        
         
         console.log('Data Module Online')
-
-
-
 
     }
 
