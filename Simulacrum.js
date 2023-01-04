@@ -3397,7 +3397,7 @@ class Simulacrum extends Phaser.Scene {
                 this.baseEmergencyEnergyCostPercent = 0.1
                 this.baseActionSpeedPercent = 0.75
                 this.baseTopSpeedPercent = 0.75
-                this.baseJumpHeightPercent = 0.75
+                this.baseJumpHeightPercent = 0.85
                 this.baseDashDistancePercent = 0.75
             
             // Regen
