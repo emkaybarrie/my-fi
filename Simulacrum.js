@@ -384,15 +384,7 @@ class Simulacrum extends Phaser.Scene {
             maxSize: 20
         });
 
-        this.enemyHordeGroup = this.physics.add.group({
-            defaultKey: 'doomsayer',
-            maxSize: 20
-        });
 
-        this.enemyChaserGroup = this.physics.add.group({
-            defaultKey: 'doomsayer',
-            maxSize: 5
-        });
 
         this.closestEnemyOutline = this.add.sprite()
         this.closestEnemyOutline.setTintFill(0x7851a9).setAlpha(0.75)
@@ -400,16 +392,10 @@ class Simulacrum extends Phaser.Scene {
 
         this.spawningEnemy = false
         this.spawningChaserEnemy = false
-        this.enemyTimer = this.time.addEvent({ delay: this.baseEnemySpawnTime * (60 / this.musicBPM) * 1000, callback: this.spawnEnemy, args: [], callbackScope: this, loop: true });
+        this.enemyTimer = this.time.addEvent({ delay: this.baseEnemySpawnTime * (60 / this.musicBPM) * 2000, callback: this.spawnEnemy, args: [], callbackScope: this, loop: true });
 
         this.physics.add.collider(this.enemyGroup, this.floor);
         this.physics.add.collider(this.enemyGroup, this.platformGroup);
-
-        this.physics.add.collider(this.enemyChaserGroup, this.floor);
-        this.physics.add.collider(this.enemyChaserGroup, this.platformGroup);
-
-        this.physics.add.collider(this.enemyHordeGroup, this.floor);
-        this.physics.add.collider(this.enemyHordeGroup, this.platformGroup);
 
         // Player - To be updated
 
@@ -421,7 +407,6 @@ class Simulacrum extends Phaser.Scene {
         this.physics.add.collider(this.player, this.floor);
         this.physics.add.collider(this.player, this.platformGroup)
         this.physics.add.overlap(this.player, this.enemyGroup, this.enterBattle, null, this)
-        this.physics.add.overlap(this.player, this.enemyChaserGroup, this.enterBattle, null, this)
 
         this.playerProjectiles = this.physics.add.group({
             defaultKey: '',
@@ -432,11 +417,9 @@ class Simulacrum extends Phaser.Scene {
         this.physics.add.existing(this.playerAttackHitBox, false)
         this.playerAttackHitBox.body.setAllowGravity(false).setSize(175, 100)
         this.playerAttackHitBox.body.checkCollision.none = true
+
         this.physics.add.overlap(this.playerAttackHitBox, this.enemyGroup, this.enemyTakeHit, null, this)
         this.physics.add.overlap(this.playerProjectiles, this.enemyGroup, this.enemyTakeHit, null, this)
-
-        this.physics.add.overlap(this.playerAttackHitBox, this.enemyHordeGroup, this.enemyTakeHit, null, this)
-        this.physics.add.overlap(this.playerProjectiles, this.enemyHordeGroup, this.enemyTakeHit, null, this)
 
         
         this.playerAttackHitBox.damage = 0
@@ -455,11 +438,11 @@ class Simulacrum extends Phaser.Scene {
 
         // Stage 
         this.stage.nextCheckPoint = 1
-        this.stage.chaserTimer = 60000
+        this.stage.chaserTimer = 8000
         this.stage.hordeTimer = 8000
         this.stage.maxHordeSize = 20
         this.stage.hordeDifficultyModifier = 1
-        this.stage.enemyHordeDefeated = 0
+        this.stage.enemiesDefeated = 0
 
         var importedEnemyData = {
             common: 'nightBorneMinion',
@@ -472,7 +455,7 @@ class Simulacrum extends Phaser.Scene {
 
         console.log(this.stage.enemyAnimationsKey)
 
-        this.stageData.availableCheckPoints = [2]//[1,2]
+        this.stageData.availableCheckPoints = [1]//[1,2]
        
 
         this.checkPointTimer = this.time.addEvent({ delay: 0, callback: this.updateCheckPointStatus, args: [], callbackScope: this, repeat: 0 });
@@ -1149,6 +1132,14 @@ class Simulacrum extends Phaser.Scene {
     }
 
     stageModule() {
+
+        // Mode Switch
+        if (this.gameMode == 1) {
+            if (this.enemyGroup.countActive() == 0 && this.stage.checkPointType === 0) {
+                this.exitBattle()
+            }
+        }
+
         // Stage Progress
 
         if (this.gameMode == 0 && this.stageProgressEnabled) {
@@ -1262,8 +1253,8 @@ class Simulacrum extends Phaser.Scene {
         // Set this.gameMode based on the value of this.stage.checkPointType
         if (this.stage.checkPointType === 1) {
             this.gameMode = 0;
-            this.spawningChaserEnemy = true
             this.checkPointIcon = 'chaser-checkpoint-icon'
+            this.spawnChaser()
         } else if (this.stage.checkPointType === 2) {
             //this.spawningHordeEnemy = true
             this.speedCheckOverride = 1
@@ -1287,7 +1278,7 @@ class Simulacrum extends Phaser.Scene {
         // Update the delay and repeat properties of this.checkPointTimer
         if (this.stage.checkPointType === 1) {
             this.checkPointTimer.delay = this.stage.chaserTimer;
-            this.checkPointTimer.repeat = 0;
+            this.checkPointTimer.repeat = -1;
         } else if (this.stage.checkPointType === 2) {
             this.checkPointTimer.delay = this.stage.hordeTimer;
             this.checkPointTimer.repeat = -1;
@@ -1328,75 +1319,85 @@ class Simulacrum extends Phaser.Scene {
 
     updateCheckPointStatus() {
         if (this.stage.checkPointType === 1) {
-            //this.camera.flash(500,0,255,0)
-            this.camera.flash(500)
-            // If this.stage.checkPointType = 1, change this.stage.checkPointType to 0,
-            // add 1 to this.stage.nextCheckPoint (if it is less than 4),
-            // and set this.stageProgressEnabled to true
 
-            this.enemyChaserGroup.children.each(function (e) {
-
-                 e.setVelocityX(-this.baseSpeed * e.baseSpeedMod * this.playerSpeed)
-
-            }.bind(this))
-
-            this.rewards += Phaser.Math.Between(5,10) * (1 + (0.25 * this.level)) // Stub for gaining Rewards in checkpoint
-
-            this.stage.checkPointType = 0;
-            this.checkPointTimer.repeat = 0;
-            this.checkPointTimer.delay = 0;
-            if (this.stage.nextCheckPoint < 4) {
-                this.stage.nextCheckPoint += 1;
-            }
-            this.stageProgressEnabled = true;
-        } else if (this.stage.checkPointType === 2) {
-           // if (this.stage.maxHordeSize > 0 && this.enemyHordeGroup.countActive() > 0.6 * this.stage.maxHordeSize) {
-                if (this.enemyHordeGroup.maxSize > 1) { // Stub
-                // If this.stage.checkPointType = 2, and this.stage.maxHordeSize > 0 and
-                // this.enemyHordeGroup.active > 60% of this.stage.maxHordeSize,
-                // increase this.stage.hordeDifficultyModifier by 10%
-                if(this.enemyHordeGroup.getTotalUsed() > 0.5 * this.enemyHordeGroup.maxSize || this.stage.enemyHordeDefeated < this.enemyHordeGroup.maxSize ){
+            if (this.enemyGroup.maxSize > 1) { 
+                if(this.player.x < this.camera.scrollX + screenWidth * 0.55 || this.playerSpeed <= 1){
                     if (this.stage.hordeDifficultyModifier < 10){
-                        if (this.enemyHordeGroup.getTotalUsed() > 0.8 * this.enemyHordeGroup.maxSize){
+                        if (this.player.x < this.camera.scrollX + screenWidth * 0.35){
                             this.stage.hordeDifficultyModifier *= Phaser.Math.FloatBetween(1.1,1.15);
                         } else {
                             this.stage.hordeDifficultyModifier *= Phaser.Math.FloatBetween(1.05,1.1);
                         }
                     }
                 } else {
-                    if (this.enemyHordeGroup.getTotalUsed() < 0.25 * this.enemyHordeGroup.maxSize){
-                        this.enemyHordeGroup.maxSize -= 2 
+                    if (this.player.x > this.camera.scrollX + screenWidth * 0.75 || this.playerSpeed >= 1.5){
+                        this.enemyGroup.maxSize -= 2 
                     } else {
-                        this.enemyHordeGroup.maxSize -= 1 
+                        this.enemyGroup.maxSize -= 1 
                     }
                 }
-                if(this.enemyHordeGroup.getTotalFree() > 0){
-                this.spawnHorde()
-                }
-            //} else if (this.enemyHordeGroup.countActive() === 0) {
-            } else if (this.enemyHordeGroup.getTotalUsed() == 0) { // Stub
-                //this.camera.flash(500,0,255,0)
-                this.camera.flash(500)
-                this.rewards += Phaser.Math.Between(5,10) * (1 + (0.25 * this.level)) // Stub for gaining Rewards in checkpoint
-                // If this.stage.checkPointType = 2 and this.enemyHordeGroup.active = 0,
-                // reset this.stage.hordeDifficultyModifier to 1,
-                // change this.stage.checkPointType to 0,
-                // change this.gameMode to 0, and
-                // set the repeat property of this.checkPointTimer to 0
-                // updates this.stage.nextCheckPoint and enables progression
-                
-                
 
+                if(this.enemyGroup.getTotalFree() > 0){
+                    this.spawnChaser()
+                }
+            } else if (this.enemyGroup.getTotalUsed() == 0) { // Stub
+                // Checkpoint complete
+                this.camera.flash(500)
+                this.enemyGroup.children.each(function (enemy) {
+                    if (enemy.type == 'Chaser'){
+                        enemy.setVelocityX(-this.baseSpeed * this.playerSpeed)
+                    }
+                }.bind(this))
+
+                // Reset
+                this.rewards += Phaser.Math.Between(5,10) * (1 + (0.25 * this.level)) // Stub for gaining Rewards in checkpoint
                 this.stage.checkPointType = 0;
                 this.checkPointTimer.repeat = 0;
                 this.checkPointTimer.delay = 0;
-                this.stage.enemyHordeDefeated = 0
-                this.enemyHordeGroup.maxSize = this.stage.maxHordeSize
+                this.enemyGroup.maxSize = this.stage.maxHordeSize
                 if (this.stage.nextCheckPoint < 4) {
                     this.stage.nextCheckPoint += 1;
                 }
                 this.stage.hordeDifficultyModifier = 1;
+                this.stageProgressEnabled = true;
+            }
+
+        } else if (this.stage.checkPointType === 2) {
+            if (this.enemyGroup.maxSize > 1) { 
+                if(this.enemyGroup.getTotalUsed() > 0.5 * this.enemyGroup.maxSize || this.stage.enemiesDefeated < this.enemyGroup.maxSize ){
+                    if (this.stage.hordeDifficultyModifier < 10){
+                        if (this.enemyGroup.getTotalUsed() > 0.8 * this.enemyGroup.maxSize){
+                            this.stage.hordeDifficultyModifier *= Phaser.Math.FloatBetween(1.1,1.15);
+                        } else {
+                            this.stage.hordeDifficultyModifier *= Phaser.Math.FloatBetween(1.05,1.1);
+                        }
+                    }
+                } else {
+                    if (this.enemyGroup.getTotalUsed() < 0.25 * this.enemyGroup.maxSize){
+                        this.enemyGroup.maxSize -= 2 
+                    } else {
+                        this.enemyGroup.maxSize -= 1 
+                    }
+                }
+
+                if(this.enemyGroup.getTotalFree() > 0){
+                    this.spawnHorde()
+                }
+            } else if (this.enemyGroup.getTotalUsed() == 0) { // Stub
+                // Checkpoint complete
+                this.camera.flash(500)
                 this.exitBattle()
+
+                // Reset
+                this.rewards += Phaser.Math.Between(5,10) * (1 + (0.25 * this.level)) // Stub for gaining Rewards in checkpoint
+                this.stage.checkPointType = 0;
+                this.checkPointTimer.repeat = 0;
+                this.checkPointTimer.delay = 0;
+                this.enemyGroup.maxSize = this.stage.maxHordeSize
+                if (this.stage.nextCheckPoint < 4) {
+                    this.stage.nextCheckPoint += 1;
+                }
+                this.stage.hordeDifficultyModifier = 1;
                 this.stageProgressEnabled = true;
             }
 
@@ -1515,236 +1516,6 @@ class Simulacrum extends Phaser.Scene {
         }
     }
 
-    enemyModule(game) {
-
-
-        game.enemyGroup.children.each(function (e) {
-
-            // Alternate Depth
-
-            if (e.active) {
-                if (e.x > this.player.x + screenWidth * 0.1) {
-                    e.setDepth(0)//(Phaser.Math.Between(0,2))
-                } else if (e.x < this.player.x - screenWidth * 0.1) {
-                    e.setDepth(0)//(Phaser.Math.Between(0,2))
-                }
-            }
-
-            // Lock on Code
-            if (e.active) {
-                // Enables enemy to automatically face and move towards player
-                if (Math.abs(e.x - this.player.x) <= screenWidth * 0.15) {
-                    //&& Math.abs(e.y - this.player.y) <= screenHeight * 0.25 
-                    //enemyLockedOn = true
-                    if (e.x < this.player.x) {
-                        if (e.type == 1) {
-                            e.flipX = true
-                        } else {
-                            e.flipX = false
-                        }
-
-                    } else {
-                        if (e.type == 1) {
-                            e.flipX = false
-                        } else {
-                            e.flipX = true
-                        }
-                    }
-                } else {
-                    //enemyLockedOn = false
-                }
-            }
-
-        }.bind(game));
-
-        if (this.gameMode == 0) {
-
-            
-            if (game.spawningChaserEnemy && this.stage.checkPointType === 1){ // Checkpoint Type = 1 Spawn Code
-                this.enemiesSpawned = Phaser.Math.Between(1, Math.min(this.enemyChaserGroup.getTotalFree(), 3))
-                this.targetSpot = Phaser.Math.FloatBetween(0.25, 0.5) 
-
-                for (var i = 0; i < this.enemiesSpawned; i++) {
-
-                    this.enemy = game.enemyChaserGroup.get()
-                    
-                    var enemyType
-                    // Type
-                    if (Phaser.Math.Between(0, 100) <= 40) {
-                        enemyType = 2
-                    } else {
-                        enemyType = 1
-                    }
-
-
-                    if (this.enemy) {
-
-                        if (enemyType == 1) { // Common Enemy
-                            this.enemy.setTexture('doomsayer')
-                            this.enemy.play('nightBorneMinion_Move')
-
-                            this.enemy.type = 1
-                            this.enemy.flipX = true
-                            this.creepScale = Phaser.Math.FloatBetween(2.5, 3) 
-
-                        } else if (enemyType == 2) { // Uncommon Enemy
-                            this.enemy.setTexture('nightBorne')
-                            this.enemy.play({ key: 'nightBorne_Move', frameRate: 8 }, true)
-
-                            this.enemy.type = 2
-                            this.enemy.setOrigin(0.5, 1)
-                            this.enemy.body.setSize(25, 25).setOffset(25, 37.5)
-                            this.creepScale = Phaser.Math.FloatBetween(7.5, 8.5) 
-                            this.enemy.flipX = false
-                            
-                        }
-
-                        this.enemy.x = this.camera.scrollX //+ (screenWidth * Phaser.Math.Between(0.55,0.65))
-                        //this.enemy.x = Phaser.Math.FloatBetween((screenHeight * 1.5)  + (screenWidth * 0.2 * i), (screenHeight * 1.5)  + (screenWidth * 0.4 * i))
-                        this.enemy.y = Phaser.Math.FloatBetween(screenHeight * 0.5, screenHeight * 0.75)
-                        this.enemy.setScale(this.creepScale)
-                        this.enemy.setVisible(true)
-                        this.enemy.setActive(true).setPipeline('Light2D')
-                        this.enemy.baseSpeedMod = Phaser.Math.FloatBetween(0.75, 2)
-                        this.enemy.chaserDistance = Phaser.Math.FloatBetween(0.25 + (0.01 * this.level), 0.65)
-                        if (Phaser.Math.Between(0, 100) < 25) {
-                            this.enemy.setDepth(1)
-                        } else {
-                            this.enemy.setDepth(0)
-                        }
-                        this.enemy.body.setAllowGravity(true)
-                        this.enemy.isHit = false
-                        this.enemy.hitsTaken = 0
-                        if (this.enemy.type == 1) {
-                            this.enemy.hitHP = Phaser.Math.Between(2, 4) * (1 + (0.1 * this.level))
-                        } else if (this.enemy.type == 2) {
-                            this.enemy.hitHP = Phaser.Math.Between(4, 8) * (1 + (0.2 * this.level))
-                        }
-
-
-                    }
-                }
-
-                game.spawningChaserEnemy = false
-            }
-
-            // Checkpoint Type = 0 Move Code
-            game.enemyGroup.children.each(function (eStandard) {
-
-
-                if (eStandard.x >= this.player.x - screenWidth * 0.1) {
-                    eStandard.x -= this.baseSpeed  * this.playerSpeed
-                } else {
-                    if (eStandard.anims.getName() != 'nightBorne_Move') {
-                        eStandard.x -= this.baseSpeed  * this.playerSpeed
-                    } else {
-                        if (this.player.x < (this.camera.scrollX + screenWidth * 0.55) && this.progress <= this.progressToNextLevel * 0.96) {
-                            eStandard.x += this.baseSpeed  / this.playerSpeed
-                        } else {
-                            eStandard.x -= this.baseSpeed  * this.playerSpeed
-                        }
-                    }
-
-                }
-
-
-                if (eStandard.active) {
-                    if (eStandard.x < screenWidth * 0.75 || eStandard.y > screenHeight * 1.25) {
-                        eStandard.destroy();
-                    }
-                }
-
-
-            }.bind(game));
-
-            
-
-            this.enemyChaserGroup.children.each(function (e) {
-                // 1 Move Cod
-                if (e.active) {
-                if(this.stage.checkPointType === 1){
-
-                    if(a1Held){
-                        e.x -= this.baseSpeed * (e.baseSpeedMod / 4.5) * this.playerSpeed
-                    }
-
-                    if (e.x < this.player.x && !this.playerIsHit && this.player.x < this.camera.scrollX + screenWidth * 0.65){
-                    e.x += this.baseSpeed * (e.baseSpeedMod / 4) * this.playerSpeed
-                    } else {
-                    e.x -= this.baseSpeed * (e.baseSpeedMod / 10) * this.playerSpeed
-                    }
-                } else {
-                    e.x -= this.baseSpeed * (e.baseSpeedMod / 2) * this.playerSpeed
-                }
-
-               // 1 Attack Code
-                if(Math.abs(this.player.x - e.x) <= this.player.displayWidth * 1.25 || e.chaserAttacking){
-
-                    e.chaserAttacking = true
-
-                    e.on('animationstop',function(){
-                        e.chaserAttacking = false
-                    })
-
-                    e.on('animationcomplete',function(){
-                        e.chaserAttacking = false
-                    })
-
-                    if(e.type == 1){
-                        if (e.y > screenHeight * 0.75){
-                            e.setVelocityY(-150)
-                            e.setVelocityX(150)
-                        } else {
-                            e.setVelocityY(0)
-                            e.setVelocityX(0)
-                        }
-                        e.play('nightBorneMinion_Attack', true)
-                    } else {
-                        e.play('nightBorne_Attack', true)
-                    }
-                } else if (!e.chaserAttacking) {
-                    if(e.type == 1){
-                        e.play('nightBorneMinion_Move', true)
-                    } else {
-                        e.play('nightBorne_Move', true)
-                    }
-                }
-
-               
-                   if (e.x < this.camera.scrollX - screenWidth * 0.25 || e.y > screenHeight * 1.25) {
-                       e.setActive(false);
-                       e.setVisible(false)
-                   } 
-               }
-
-           }.bind(this))
-
-    
-
-        } else if (game.gameMode == 1) {
-
-            game.enemyGroup.children.each(function (e) {
-
-                if (e.active) {
-                    if (e.x <= screenWidth * 1.25) {
-                        e.x += 10
-                    } else if (e.x >= screenWidth * 2.75) {
-                        e.x -= 10
-                    }
-                }
-
-
-            }.bind(game));
-
-
-            if (game.enemyGroup.countActive() == 0 && this.stage.checkPointType === 0) {
-                game.exitBattle()
-            }
-        }
-
-
-    }
-
     spawnHorde(){
         
         var rarityChanceArray
@@ -1760,9 +1531,11 @@ class Simulacrum extends Phaser.Scene {
         }
 
         // Spawns Random X number ranging from 0 to remaining space in horde maxSize 
-        for (var i = 0; i < Phaser.Math.Between(1,this.enemyHordeGroup.getTotalFree()); i++){
+        for (var i = 0; i < Phaser.Math.Between(1,this.enemyGroup.getTotalFree()); i++){
     
-            var hordeMember = this.enemyHordeGroup.get()
+            var hordeMember = this.enemyGroup.get()
+            // Set Enemy Type
+            hordeMember.type = 'Horde'
 
             // Set Difficulty Mod
             hordeMember.difficultyMod = this.stage.hordeDifficultyModifier
@@ -1844,7 +1617,13 @@ class Simulacrum extends Phaser.Scene {
     spawnEnemy(){
 
         if (this.enemyGroup.getTotalFree() > 0 && this.gameMode == 0) {
-        this.enemyTimer.delay = Phaser.Math.Between((this.baseEnemySpawnTime * (60 / this.musicBPM) * 1000) * 0.8, (this.baseEnemySpawnTime * (60 / this.musicBPM) * 1000) * 1.2)
+            if (this.stage.checkPointType == 1){
+                this.enemyTimer.delay = Phaser.Math.Between((this.baseEnemySpawnTime * (60 / this.musicBPM) * 8000) * 0.8, (this.baseEnemySpawnTime * (60 / this.musicBPM) * 8000) * 1.2)   
+            } else {
+                this.enemyTimer.delay = Phaser.Math.Between((this.baseEnemySpawnTime * (60 / this.musicBPM) * 2000) * 0.8, (this.baseEnemySpawnTime * (60 / this.musicBPM) * 2000) * 1.2)   
+            }
+        
+        
         
         var rarityChanceArray
 
@@ -1862,6 +1641,8 @@ class Simulacrum extends Phaser.Scene {
         for (var i = 0; i < Phaser.Math.Between(0,this.enemyGroup.getTotalFree() * 0.25); i++){
     
             var normalMember = this.enemyGroup.get()
+            // Set Enemy Type
+            normalMember.type = 'Normal'
 
             // Set Difficulty Mod
             normalMember.difficultyMod = this.stage.hordeDifficultyModifier
@@ -1935,6 +1716,101 @@ class Simulacrum extends Phaser.Scene {
     }
     }
 
+    // Stub - to be merged with Horde and Chaser
+    spawnChaser(){
+
+        if (this.enemyGroup.getTotalFree() > 0 && this.gameMode == 0) {
+        
+        var rarityChanceArray
+
+        if (Math.round(this.stage.hordeDifficultyModifier) < 2){
+            rarityChanceArray = [0,5,15]
+        } else if (Math.round(this.stage.hordeDifficultyModifier) < 3){
+            rarityChanceArray = [0,15,35]
+        } else if (Math.round(this.stage.hordeDifficultyModifier) < 4){
+            rarityChanceArray = [5,35,75]
+        } else {
+            rarityChanceArray = [15,75,100]
+        }
+
+        // Spawns Random X number ranging from 0 to remaining space in horde maxSize 
+        for (var i = 0; i < Phaser.Math.Between(0,Math.min(this.enemyGroup.getTotalFree(),2)); i++){
+    
+            var chaserEnemy = this.enemyGroup.get()
+            // Set Enemy Type
+            chaserEnemy.type = 'Chaser'
+
+            // Set Difficulty Mod
+            chaserEnemy.difficultyMod = this.stage.hordeDifficultyModifier
+
+            // Set Rarity
+            // Roll for Mythical (Rarity 4)
+            if(Phaser.Math.Between(0,100) <= rarityChanceArray[1]){
+                chaserEnemy.rarity = 4
+                chaserEnemy.animationKey = this.stage.enemyAnimationsKey.mythical
+                chaserEnemy.setOrigin(0.5, 1)
+                chaserEnemy.body.setSize(25, 25).setOffset(25, 37.5)
+                chaserEnemy.setScale(Phaser.Math.FloatBetween(7.5, 8.5)) 
+                chaserEnemy.resilienceCapacity = Phaser.Math.Between(400, 800) * (1 + (0.1 * chaserEnemy.difficultyMod))
+ 
+            } else 
+            // Roll for Rare (Rarity 3)
+            if(Phaser.Math.Between(0,100) <= rarityChanceArray[2]){
+                chaserEnemy.rarity = 3
+                chaserEnemy.animationKey = this.stage.enemyAnimationsKey.rare
+                chaserEnemy.setOrigin(0.5, 1)
+                chaserEnemy.body.setSize(25, 25).setOffset(25, 37.5)
+                chaserEnemy.setScale(Phaser.Math.FloatBetween(7.5, 8.5)) 
+                chaserEnemy.resilienceCapacity = Phaser.Math.Between(400, 800) * (1 + (0.1 * chaserEnemy.difficultyMod))
+
+            } else 
+            // Roll for Uncommon (Rarity 2)
+            if(Phaser.Math.Between(0,100) <= rarityChanceArray[3]){
+                chaserEnemy.rarity = 2
+                chaserEnemy.animationKey = this.stage.enemyAnimationsKey.uncommon
+                chaserEnemy.setOrigin(0.5,0.5)
+                chaserEnemy.body.setSize(25, 25).setOffset(25, 37.5)
+                chaserEnemy.setScale(Phaser.Math.FloatBetween(2.5, 3)) 
+                chaserEnemy.resilienceCapacity = Phaser.Math.Between(200, 400) * (1 + (0.1 * chaserEnemy.difficultyMod))
+      
+            } else 
+            // Set to Common (Rarity 1)
+            {
+                chaserEnemy.rarity = 1
+                chaserEnemy.animationKey = this.stage.enemyAnimationsKey.common
+                chaserEnemy.setOrigin(0.5, 0.5)
+                chaserEnemy.setScale(Phaser.Math.FloatBetween(2.5, 3)) 
+                chaserEnemy.resilienceCapacity = Phaser.Math.Between(100, 300) * (1 + (0.1 * chaserEnemy.difficultyMod))
+                
+            }
+
+            
+
+            // Set Start Position
+      
+            chaserEnemy.x = this.camera.scrollX - Phaser.Math.Between((screenWidth * 0.05), (screenWidth * 0.75) )  
+            chaserEnemy.y = Phaser.Math.Between(screenHeight * 0.25,screenHeight * 0.75)
+                
+            chaserEnemy.play(chaserEnemy.animationKey + '_Move',true)
+            chaserEnemy.setPipeline('Light2D')
+            chaserEnemy.body.setAllowGravity(true)
+            chaserEnemy.isHit = false
+            chaserEnemy.hitsTaken = 0
+            chaserEnemy.canAct = true
+            chaserEnemy.resilienceCurrent = chaserEnemy.resilienceCapacity
+            chaserEnemy.staminaCapacity = 100
+            chaserEnemy.staminaCurrent = 100
+            chaserEnemy.enragedLevel = 0
+            chaserEnemy.attackRange = screenWidth * 0.1
+            chaserEnemy.targetRange = this.player.x
+            chaserEnemy.aggroRange = Phaser.Math.FloatBetween(chaserEnemy.attackRange * 0.5,chaserEnemy.attackRange * 1.5)
+
+        
+        }
+
+    }
+    }
+
 
     enemyTakeHit(damageSource, enemy) {
 
@@ -1993,9 +1869,9 @@ class Simulacrum extends Phaser.Scene {
                             enemy.once('animationcomplete_' + enemy.animationKey +'_Death', function () {
 
                                 enemy.destroy()
-                                if(this.stage.checkPointType === 2){
-                                    this.stage.enemyHordeDefeated += 1
-                                }
+                              
+                                this.stage.enemiesDefeated += 1
+                                
 
                             }, this)
                         } else {
@@ -2014,8 +1890,8 @@ class Simulacrum extends Phaser.Scene {
     }
 
     enemyController(){
-        // Horde
-        this.enemyHordeGroup.children.each(function (enemy) {
+        // Base
+        this.enemyGroup.children.each(function (enemy) {
 
             // Enemy can be in states: Enraged,Aggressive,Neutral, Defensive, Fearful
             
@@ -2104,7 +1980,7 @@ class Simulacrum extends Phaser.Scene {
 
             // Animations
 
-            if(Math.abs(enemy.body.velocity.x) > 5 && !enemy.isHit){
+            if(Math.abs(enemy.body.velocity.x) > 5 && !enemy.isHit || enemy.type == 'Chaser' && this.gameMode == 0){
                 enemy.play(enemy.animationKey + '_Move',true)
             } else if (!enemy.isHit && !enemy.attacking) {
                 
@@ -2118,12 +1994,119 @@ class Simulacrum extends Phaser.Scene {
 
         }.bind(this));
 
-        this.enemyHordeGroup.children.each(function (enemy) {
-            if(enemy.state == 'Enraged'){
-                this.enemyEnragedCode(enemy)
-            } else {
-                this.enemyEnragedCode(enemy)
+        this.enemyGroup.children.each(function (enemy) {
+            // Travel Mode
+            if (this.gameMode == 0){
+                    // Normal
+                        if(enemy.type == 'Normal'){
+                            if (enemy.x >= this.player.x - screenWidth * 0.1) {
+                                enemy.x -= this.baseSpeed  * this.playerSpeed
+                            } else {
+                                if (enemy.anims.getName() != 'nightBorne_Move') {
+                                    enemy.x -= this.baseSpeed  * this.playerSpeed
+                                } else {
+                                    if (this.player.x < (this.camera.scrollX + screenWidth * 0.55) && this.progress <= this.progressToNextLevel * 0.96) {
+                                        enemy.x += this.baseSpeed  / this.playerSpeed
+                                    } else {
+                                        enemy.x -= this.baseSpeed  * this.playerSpeed
+                                    }
+                                }
+
+                            }
+
+
+                            if (enemy.active) {
+                                if (enemy.x < screenWidth * 0.75 || enemy.y > screenHeight * 1.25) {
+                                    enemy.destroy();
+                                }
+                            }
+                        }
+                    // Chaser
+                    if(enemy.type == 'Chaser'){
+
+
+                        if (enemy.x < this.player.x + screenWidth * 0.05 && enemy.chaserStatus != 'recovering' && enemy.staminaCurrent > 15){
+                            if (enemy.x < this.camera.scrollX){
+                                enemy.x += this.baseSpeed * (0.75 * this.stage.hordeDifficultyModifier) + (this.baseSpeed * (1 - this.playerSpeed))
+                            } else {
+                                enemy.x += this.baseSpeed * (0.25 * this.stage.hordeDifficultyModifier) + (this.baseSpeed * (1 - this.playerSpeed))
+                            }
+
+                            enemy.staminaCurrent -= 0.25
+                        } else {
+                            enemy.x -= this.baseSpeed * 1 * this.playerSpeed
+                            enemy.staminaCurrent += 0.15
+                        }
+
+                        if (enemy.x < this.camera.scrollX - screenWidth || enemy.x < this.camera.scrollX && enemy.staminaCurrent <= 0 || enemy.y > screenHeight * 1.25) {
+                            enemy.destroy()
+                        }
+
+                        if (enemy.x < this.camera.scrollX - (screenWidth * (0.1 * this.stage.hordeDifficultyModifier))) {
+                            if(this.enemyGroup.maxSize > 5){
+                                enemy.chaserStatus = 'chasing'
+                                enemy.staminaCurrent -= 0.125
+
+                            }
+                            
+                        }
+                    }
+                    // Horde
+                        if(enemy.type == 'Horde'){
+                            if (enemy.x >= this.player.x - screenWidth * 0.1) {
+                                enemy.x -= this.baseSpeed  * this.playerSpeed
+                            } else {
+                                if (enemy.anims.getName() != 'nightBorne_Move') {
+                                    enemy.x -= this.baseSpeed  * this.playerSpeed
+                                } else {
+                                    if (this.player.x < (this.camera.scrollX + screenWidth * 0.55) && this.progress <= this.progressToNextLevel * 0.96) {
+                                        enemy.x += this.baseSpeed  / this.playerSpeed
+                                    } else {
+                                        enemy.x -= this.baseSpeed  * this.playerSpeed
+                                    }
+                                }
+
+                            }
+
+
+                            if (enemy.active) {
+                                if (enemy.x < screenWidth * 0.75 || enemy.y > screenHeight * 1.25) {
+                                    enemy.destroy();
+                                }
+                            }
+                        }
+
+            } else if (this.gameMode == 1){
+                // Normal
+                    if(enemy.type == 'Normal'){
+                        if(enemy.state == 'Enraged'){
+                            this.enemyEnragedCode(enemy)
+                        } else {
+                            this.enemyEnragedCode(enemy)
+                        }
+                    }
+                // Chaser
+                    if(enemy.type == 'Chaser'){
+                        if(enemy.state == 'Enraged'){
+                            this.enemyEnragedCode(enemy)
+                        } else {
+                            this.enemyEnragedCode(enemy)
+                        }
+                    }
+                // Horde
+                    if(enemy.type == 'Horde'){
+                        if(enemy.state == 'Enraged'){
+                            this.enemyEnragedCode(enemy)
+                        } else {
+                            this.enemyEnragedCode(enemy)
+                        }
+                    }
             }
+
+       
+
+            
+
         }.bind(this));
 
     }
@@ -3425,7 +3408,7 @@ class Simulacrum extends Phaser.Scene {
         })
     }
 
-    enterBattle() {
+    enterBattle(player,enemy) {
         if (this.gameMode == 0 && this.player.canBeHit && !this.endRun) {
 
             if (this.speedCheckOverride == 1) {
@@ -3434,32 +3417,13 @@ class Simulacrum extends Phaser.Scene {
                 this.speedCheckThreshold = 0.25
             }
 
-            if (this.playerSpeed < this.speedCheckThreshold) {
+            if (this.playerSpeed < this.speedCheckThreshold && this.stage.checkPointType != 1) {
                 this.playerSpeed = 0
                 this.playerBattleSpeed = 0
 
                 this.camera.flash()
                 this.gameMode = 1
-                this.enterBattleAnimation = true
-
-                this.enemyGroup.children.each(function (e) {
-                    if (e.speedMod == 2) {
-                        e.play('nightBorne_Idle')
-                    }
-
-                }.bind(this));
-
-
-                playerInputActive = false
-                this.player.play({ key: this.player.animations.slide, frameRate: 10 }, true)
-
-                this.player.once('animationcomplete', function () {
-                    this.enterBattleAnimation = false
-                    this.battleCameraActive = true
-                    playerInputActive = true
-                    this.speedCheckOverride = 0
-
-                }, this)
+                this.speedCheckOverride = 0
 
                 this.physics.world.setBounds(screenWidth, 0, screenWidth * 2, screenHeight)
             } else {
@@ -3469,7 +3433,11 @@ class Simulacrum extends Phaser.Scene {
                 this.player.lifeCurrent -= 0.5
                 this.glory -= 0.5
                 this.playerIsHit = true
-                //this.camera.flash(175,204,0,0)
+
+                if(enemy.type == 'Chaser'){
+                    enemy.chaserStatus = 'recovering'
+                    this.stage.hordeDifficultyModifier *= 1.005
+                }
 
             }
         }
@@ -4480,7 +4448,7 @@ class Simulacrum extends Phaser.Scene {
     
             // Closest Enemy
     
-                this.closestEnemy = this.physics.closest(this.player,this.enemyHordeGroup.getMatching('active',true)) 
+                this.closestEnemy = this.physics.closest(this.player,this.enemyGroup.getMatching('active',true)) 
     
                 // Lock on VFX
                 if(this.closestEnemy && this.gameMode == 1){
@@ -4706,7 +4674,6 @@ class Simulacrum extends Phaser.Scene {
         this.platforms(this)
 
         // Enemies
-        this.enemyModule(this)
         this.enemyController()
 
         // Stage Management
@@ -4723,51 +4690,28 @@ class Simulacrum extends Phaser.Scene {
         this.debugText.x = this.camera.scrollX + screenWidth * 0.05
         this.debugText.y = screenHeight * 0.25
 
+        if(this.gameMode == 0 && this.stage.checkPointType != 1){
         this.debugText.setText('Stage Name: ' + this.stageData.stageName
-            //+ '\nTime Period: ' + this.stageData.timeText
-            //+ '\nMusic Duration: ' + Math.floor(bgMusic.duration / 60) + ':' + Phaser.Math.RoundTo((((bgMusic.duration / 60) - Math.floor(bgMusic.duration / 60)) * 60),-2)
-            //+'\nCamera Scroll X : ' + this.camera.scrollX + ' Player X: ' + this.player.x
-            // + '\n Next CheckPoint: ' + this.stage.nextCheckPoint + ' CheckPoint Timer Delay: ' + this.checkPointTimer.delay
-            // +'\nCheckPoint Timer Remaining Time: ' + this.checkPointTimer.getRemaining()
-            // +'\nCheckpoint Type: ' + this.stage.checkPointType
-           // +'\nHorde Difficulty Modifier: ' + this.stage.hordeDifficultyModifier
-            //+ '\nPlayer Life Max: ' + this.player.lifeCapacity + '\nPlayer Life Regen: ' + Phaser.Math.RoundTo(this.player.lifeRegen,-2)
-            //+ '\nPlayer Focus Max: ' + this.player.focusCapacity + '\nPlayer Focus Regen: ' + Phaser.Math.RoundTo(this.player.focusRegen,-2)
-            //+ '\nPlayer Stamina Max: ' + this.player.staminaCapacity + '\nPlayer Stamina Regen: ' + Phaser.Math.RoundTo(this.player.staminaRegen,-2)
-            //+ '\nEnd Run Status ' + this.endRun
-            // + '\nPlayer Speed: ' + Math.round(this.playerSpeed * 100) + '%' 
-            // +'\nPlayer Battle Speed: ' + Math.round(this.playerBattleSpeed * 100) + '%'
-            //+ '\nPlayer Momentum: ' + this.player.momentum 
-            // + '\nStandard Enemies: ' + this.enemyGroup.countActive()
-            // + '\nChaser Enemies: ' + this.enemyChaserGroup.countActive()
-            // + '\nEnemy HP: ' + this.targetRemainingEnemyHP
-            // + '\nPlayer Projectile (Total Free): ' + this.playerProjectiles.getTotalFree()
-            // + '\nPlayer Projectile (Length): ' + this.playerProjectiles.getLength()
-            // + '\nPlayer Projectile (Total Used): ' + this.playerProjectiles.getTotalUsed()
-
-            + '\nStandard Enemies: ' + this.enemyGroup.getTotalFree()
-            // + '\nPlayer Attack Power: ' + Math.round(this.playerAttackPower) 
-           // + '\nLeft Pressed: ' + leftPressed + ' Right Pressed: ' + rightPressed
-            //+ '\n A2 Pressed: ' + a2Pressed
-            // + '\nPlayer Crit Roll: ' + this.playerAttackCrit
+            + '\nTime Period: ' + this.stageData.timeText
+            + '\nMusic Duration: ' + Math.floor(bgMusic.duration / 60) + ':' + Phaser.Math.RoundTo((((bgMusic.duration / 60) - Math.floor(bgMusic.duration / 60)) * 60),-2)
+            + '\nPlayer Speed: ' + Math.round(this.playerSpeed * 100) + '%' 
         )
-        if(this.closestEnemy){
+        } else
+        if(this.gameMode == 1 || this.stage.checkPointType == 1){
         this.debugText.setText(
-
-        'Enemy Horde (In Area): ' + this.enemyHordeGroup.getTotalUsed()
-         
-        + '\nEnemy Horde Strength: ' + Math.round(this.enemyHordeGroup.maxSize/this.stage.maxHordeSize * 100) + '%'
+        'Stage Name: ' + this.stageData.stageName
+        +'\nEnemies In Area: ' + this.enemyGroup.countActive()
+        + '\nEnemy Horde Strength: ' + Math.round(this.enemyGroup.maxSize/this.stage.maxHordeSize * 100) + '%'
         + '\nEnemy Horde Difficulty: ' + Phaser.Math.RoundTo(this.stage.hordeDifficultyModifier, -1)
-        + '\nEnemies Defeated: ' + this.stage.enemyHordeDefeated
-        
-
+        + '\nEnemies Defeated: ' + this.stage.enemiesDefeated
         +'\nPlayer Attack Damage: ' + Math.round(this.player.attackPower)
         +'\nPlayer Skill Damage: ' + Math.round(this.player.skillPower)
+         + '\nPlayer Projectile (Total Free): ' + this.playerProjectiles.getTotalFree()
+         + '\nPlayer Crit Roll: ' + this.playerAttackCrit
         + '\nDamage Dealt: ' + Math.round(this.playerAttackPower)
-            
-            + '\nTarget Enemy Enraged Level: ' + this.closestEnemy.enragedLevel
-            + '\nTarget Enemy Attacking: ' + this.closestEnemy.attacking
-           
+         + '\nEnemy HP: ' + this.targetRemainingEnemyHP
+        // +'\nPlayer Battle Speed: ' + Math.round(this.playerBattleSpeed * 100) + '%'
+        //+ '\nPlayer Momentum: ' + this.player.momentum 
           
         )
     }
