@@ -384,6 +384,10 @@ class Simulacrum extends Phaser.Scene {
             maxSize: 20
         });
 
+        
+
+        
+
 
 
         this.closestEnemyOutline = this.add.sprite()
@@ -396,6 +400,7 @@ class Simulacrum extends Phaser.Scene {
 
         this.physics.add.collider(this.enemyGroup, this.floor);
         this.physics.add.collider(this.enemyGroup, this.platformGroup);
+       
 
         // Player - To be updated
 
@@ -407,9 +412,17 @@ class Simulacrum extends Phaser.Scene {
         this.physics.add.collider(this.player, this.floor);
         this.physics.add.collider(this.player, this.platformGroup)
         this.physics.add.overlap(this.player, this.enemyGroup, this.enterBattle, null, this)
+        
+
+        this.enemyMeleeAttack = this.physics.add.group({
+            //defaultKey: '',
+            //maxSize: 
+        });
+
+        this.physics.add.overlap(this.enemyMeleeAttack,this.player, this.playerTakeHit, null, this)
 
         this.playerProjectiles = this.physics.add.group({
-            defaultKey: '',
+            //defaultKey: '',
             maxSize: 3
         });
 
@@ -455,7 +468,7 @@ class Simulacrum extends Phaser.Scene {
 
         console.log(this.stage.enemyAnimationsKey)
 
-        this.stageData.availableCheckPoints = [1]//[1,2]
+        this.stageData.availableCheckPoints = [1,2]
        
 
         this.checkPointTimer = this.time.addEvent({ delay: 0, callback: this.updateCheckPointStatus, args: [], callbackScope: this, repeat: 0 });
@@ -951,7 +964,7 @@ class Simulacrum extends Phaser.Scene {
         // Life
         this.player.lifeCapacity = baseData.lifeCapacity + (baseData.lifeCapacityBonusMax * avatarData.lifeCapacityBonusPercent);
 
-        this.player.lifeCurrent = this.player.lifeCapacity;
+        this.player.resilienceCurrent = this.player.lifeCapacity;
 
         this.player.lifeRegen = baseData.lifeRegen * avatarData.lifeRegenModifier;
         // Focus
@@ -1549,6 +1562,10 @@ class Simulacrum extends Phaser.Scene {
                 hordeMember.body.setSize(25, 25).setOffset(25, 37.5)
                 hordeMember.setScale(Phaser.Math.FloatBetween(7.5, 8.5)) 
                 hordeMember.resilienceCapacity = Phaser.Math.Between(400, 800) * (1 + (0.1 * hordeMember.difficultyMod))
+
+                // stub
+                hordeMember.attackCollisionStartFrame = 10
+                hordeMember.attackCollisionEndFrame = 11
  
             } else 
             // Roll for Rare (Rarity 3)
@@ -1560,6 +1577,10 @@ class Simulacrum extends Phaser.Scene {
                 hordeMember.setScale(Phaser.Math.FloatBetween(7.5, 8.5)) 
                 hordeMember.resilienceCapacity = Phaser.Math.Between(400, 800) * (1 + (0.1 * hordeMember.difficultyMod))
 
+                // stub
+                hordeMember.attackCollisionStartFrame = 10
+                hordeMember.attackCollisionEndFrame = 11
+
             } else 
             // Roll for Uncommon (Rarity 2)
             if(Phaser.Math.Between(0,100) <= rarityChanceArray[3]){
@@ -1569,6 +1590,10 @@ class Simulacrum extends Phaser.Scene {
                 hordeMember.body.setSize(25, 25).setOffset(25, 37.5)
                 hordeMember.setScale(Phaser.Math.FloatBetween(2.5, 3)) 
                 hordeMember.resilienceCapacity = Phaser.Math.Between(200, 400) * (1 + (0.1 * hordeMember.difficultyMod))
+
+                // stub
+                hordeMember.attackCollisionStartFrame = 5
+                hordeMember.attackCollisionEndFrame = 7
       
             } else 
             // Set to Common (Rarity 1)
@@ -1578,6 +1603,10 @@ class Simulacrum extends Phaser.Scene {
                 hordeMember.setOrigin(0.5, 0.5)
                 hordeMember.setScale(Phaser.Math.FloatBetween(2.5, 3)) 
                 hordeMember.resilienceCapacity = Phaser.Math.Between(100, 300) * (1 + (0.1 * hordeMember.difficultyMod))
+
+                // stub
+                hordeMember.attackCollisionStartFrame = 5
+                hordeMember.attackCollisionEndFrame = 7
                 
             }
 
@@ -1656,6 +1685,10 @@ class Simulacrum extends Phaser.Scene {
                 normalMember.body.setSize(25, 25).setOffset(25, 37.5)
                 normalMember.setScale(Phaser.Math.FloatBetween(7.5, 8.5)) 
                 normalMember.resilienceCapacity = Phaser.Math.Between(400, 800) * (1 + (0.1 * normalMember.difficultyMod))
+
+                // stub
+                normalMember.attackCollisionStartFrame = 10
+                normalMember.attackCollisionEndFrame = 11
  
             } else 
             // Roll for Rare (Rarity 3)
@@ -1667,6 +1700,10 @@ class Simulacrum extends Phaser.Scene {
                 normalMember.setScale(Phaser.Math.FloatBetween(7.5, 8.5)) 
                 normalMember.resilienceCapacity = Phaser.Math.Between(400, 800) * (1 + (0.1 * normalMember.difficultyMod))
 
+                // stub
+                normalMember.attackCollisionStartFrame = 10
+                normalMember.attackCollisionEndFrame = 11
+
             } else 
             // Roll for Uncommon (Rarity 2)
             if(Phaser.Math.Between(0,100) <= rarityChanceArray[3]){
@@ -1676,6 +1713,10 @@ class Simulacrum extends Phaser.Scene {
                 normalMember.body.setSize(25, 25).setOffset(25, 37.5)
                 normalMember.setScale(Phaser.Math.FloatBetween(2.5, 3)) 
                 normalMember.resilienceCapacity = Phaser.Math.Between(200, 400) * (1 + (0.1 * normalMember.difficultyMod))
+
+                // stub
+                normalMember.attackCollisionStartFrame = 5
+                normalMember.attackCollisionEndFrame = 7
       
             } else 
             // Set to Common (Rarity 1)
@@ -1685,6 +1726,10 @@ class Simulacrum extends Phaser.Scene {
                 normalMember.setOrigin(0.5, 0.5)
                 normalMember.setScale(Phaser.Math.FloatBetween(2.5, 3)) 
                 normalMember.resilienceCapacity = Phaser.Math.Between(100, 300) * (1 + (0.1 * normalMember.difficultyMod))
+
+                // stub
+                normalMember.attackCollisionStartFrame = 5
+                normalMember.attackCollisionEndFrame = 7
                 
             }
 
@@ -1752,6 +1797,10 @@ class Simulacrum extends Phaser.Scene {
                 chaserEnemy.body.setSize(25, 25).setOffset(25, 37.5)
                 chaserEnemy.setScale(Phaser.Math.FloatBetween(7.5, 8.5)) 
                 chaserEnemy.resilienceCapacity = Phaser.Math.Between(400, 800) * (1 + (0.1 * chaserEnemy.difficultyMod))
+
+                // stub
+                chaserEnemy.attackCollisionStartFrame = 10
+                chaserEnemy.attackCollisionEndFrame = 11
  
             } else 
             // Roll for Rare (Rarity 3)
@@ -1763,6 +1812,10 @@ class Simulacrum extends Phaser.Scene {
                 chaserEnemy.setScale(Phaser.Math.FloatBetween(7.5, 8.5)) 
                 chaserEnemy.resilienceCapacity = Phaser.Math.Between(400, 800) * (1 + (0.1 * chaserEnemy.difficultyMod))
 
+                // stub
+                chaserEnemy.attackCollisionStartFrame = 10
+                chaserEnemy.attackCollisionEndFrame = 11
+
             } else 
             // Roll for Uncommon (Rarity 2)
             if(Phaser.Math.Between(0,100) <= rarityChanceArray[3]){
@@ -1772,6 +1825,10 @@ class Simulacrum extends Phaser.Scene {
                 chaserEnemy.body.setSize(25, 25).setOffset(25, 37.5)
                 chaserEnemy.setScale(Phaser.Math.FloatBetween(2.5, 3)) 
                 chaserEnemy.resilienceCapacity = Phaser.Math.Between(200, 400) * (1 + (0.1 * chaserEnemy.difficultyMod))
+
+                // stub
+                chaserEnemy.attackCollisionStartFrame = 5
+                chaserEnemy.attackCollisionEndFrame = 7
       
             } else 
             // Set to Common (Rarity 1)
@@ -1781,6 +1838,10 @@ class Simulacrum extends Phaser.Scene {
                 chaserEnemy.setOrigin(0.5, 0.5)
                 chaserEnemy.setScale(Phaser.Math.FloatBetween(2.5, 3)) 
                 chaserEnemy.resilienceCapacity = Phaser.Math.Between(100, 300) * (1 + (0.1 * chaserEnemy.difficultyMod))
+
+                // stub
+                chaserEnemy.attackCollisionStartFrame = 5
+                chaserEnemy.attackCollisionEndFrame = 7
                 
             }
 
@@ -1885,6 +1946,139 @@ class Simulacrum extends Phaser.Scene {
 
                 this.targetRemainingEnemyHP = enemy.resilienceCurrent
 
+        }
+
+    }
+
+    playerTakeHit(player, damageSource) {
+
+
+        if (damageSource.type == 'projectile'){
+            this.impactProjectile(damageSource)
+        }
+
+        if ((!player.isHit || !this.playerIsHit) && !this.player.state.defending) {
+            
+            player.isHit = true
+            this.playerIsHit = true
+            player.canAct = false
+
+                // Crit Check
+
+                var critDamage 
+                if (Phaser.Math.Between(0, 100) <= this.critChance) {
+                    var critDamage = damageSource.critDamage
+
+                } else {
+                    critDamage = 1
+                }
+
+                // Damage Calc
+                var damage 
+                damage = damageSource.baseDamage * critDamage
+
+                if (damageSource.type != 'projectile'){
+                    damageSource.play(damageSource.hitSmear, true)
+                }
+
+                // Momentum Loss
+
+                player.momentum -= Math.min(damage * 0.05,100 - player.momentum)
+
+                if (!player.body.onFloor()) {
+                    player.setVelocity(0)
+                }
+
+                    player.play({key:player.animations.take_hit,frameRate:10}, true)
+                    player.setVelocityX(0)
+
+                    player.once('animationcomplete', function (anim, frame) {
+                        player.emit('animationcomplete_' + anim.key, frame)
+                    }, player)
+                    player.once('animationcomplete_' + player.animations.take_hit, function () {
+
+                        player.resilienceCurrent -= damage
+   
+                        if (player.resilienceCurrent <= 0) {
+                            player.play(player.animations.downed, true)
+
+                            player.once('animationcomplete', function (anim, frame) {
+                                player.emit('animationcomplete_' + anim.key, frame)
+                            }, player)
+                            player.once('animationcomplete_' + player.animations.downed, function () {
+
+                              
+                                
+
+                            }, this)
+                        } else {
+                            player.isHit = false
+                            this.playerIsHit = false
+                            player.canAct = true
+                            player.play(player.animations.idle, true)
+                        }
+
+                    }, this)
+         
+
+        } else {
+            // Crit Check
+
+            var critDamage 
+            if (Phaser.Math.Between(0, 100) <= this.critChance) {
+                var critDamage = damageSource.critDamage
+
+            } else {
+                critDamage = 1
+            }
+
+            // Damage Calc
+            var damage 
+            damage = damageSource.baseDamage * critDamage
+
+            if (damageSource.type != 'projectile'){
+                damageSource.setTint()
+                damageSource.play(damageSource.hitSmear, true)
+            }
+
+             // Momentum Loss
+
+             player.momentum -= Math.min(damage * 0.025,100 - player.momentum)
+
+             if (!player.body.onFloor()) {
+                 player.setVelocity(0)
+             }
+
+             player.play({key:player.animations.block,frameRate:10}, true)
+                    player.setVelocityX(0)
+
+                    player.once('animationcomplete', function (anim, frame) {
+                        player.emit('animationcomplete_' + anim.key, frame)
+                    }, player)
+                    player.once('animationcomplete_' + player.animations.take_hit, function () {
+
+                        player.staminaCurrent -= damage * 0.4
+   
+                        if (player.resilienceCurrent <= 0) {
+                            player.play(player.animations.downed, true)
+
+                            player.once('animationcomplete', function (anim, frame) {
+                                player.emit('animationcomplete_' + anim.key, frame)
+                            }, player)
+                            player.once('animationcomplete_' + player.animations.downed, function () {
+
+                              
+                                
+
+                            }, this)
+                        } else {
+                            //player.isHit = false
+                            //this.playerIsHit = false
+                            player.canAct = true
+                           // player.play(player.animations.idle, true)
+                        }
+
+                    }, this)
         }
 
     }
@@ -2181,6 +2375,41 @@ class Simulacrum extends Phaser.Scene {
                             } else {
                             // Attack
                                 enemy.play({key:enemy.animationKey + '_Attack',frameRate: Phaser.Math.Between(10,20) , delay: Phaser.Math.Between(0,50)},true)
+                                enemy.on('animationupdate', function(){
+                                    if (enemy.anims.getName() == enemy.animationKey + '_Attack'){
+                                        if (enemy.anims.currentFrame.index >= enemy.attackCollisionStartFrame &&  enemy.anims.currentFrame.index <= enemy.attackCollisionEndFrame){        
+                                            meleeAttackHitbox.collisionActive = true                                      
+                                        } else {
+                                            meleeAttackHitbox.collisionActive = false 
+                                        }   
+                                    }
+                                })
+                                
+                                var meleeAttackHitbox = this.enemyMeleeAttack.get()
+                                var dir
+                                
+                                if (enemy.x > this.player.x){
+                                    dir = -1
+                                } else {
+                                    dir = 1
+                                }
+                                meleeAttackHitbox.x = enemy.x + 50 * dir
+                                meleeAttackHitbox.y = enemy.body.y + 100 
+                                meleeAttackHitbox.body.setAllowGravity(false).setSize(200,100)
+                                meleeAttackHitbox.type = 'melee'
+                                meleeAttackHitbox.critDamage = 1.25
+                                meleeAttackHitbox.baseDamage = 5
+                                meleeAttackHitbox.hitSmear = 'whiteHitSmear'
+                                meleeAttackHitbox.body.checkCollision.none = true
+                                meleeAttackHitbox.setTexture()
+                                meleeAttackHitbox.setTint(0x620024)
+
+                                
+                                
+                                enemy.once('animationcomplete', function(){
+                                    meleeAttackHitbox.destroy() 
+                                })
+
                             }
                             // Stamina cost
                             enemy.staminaCurrent -= Phaser.Math.Between(25,50)
@@ -2192,6 +2421,17 @@ class Simulacrum extends Phaser.Scene {
                             }
                         }
                     }
+
+                    this.enemyMeleeAttack.children.each(function (attack) {
+                        if(attack){
+                        if(attack.collisionActive){
+                            attack.body.checkCollision.none = false
+                        } else {
+                            attack.body.checkCollision.none = true
+                        }
+                        }
+                    })
+                    
 
             }
 
@@ -2525,7 +2765,7 @@ class Simulacrum extends Phaser.Scene {
         this.lifeRightCapHolder.y = this.lifeMiddleHolder.y
         this.lifeRightCap.y = this.lifeMiddle.y
 
-        this.uiSubModule_setLifePercentageAnimated(this.player.lifeCurrent / this.player.lifeCapacity)
+        this.uiSubModule_setLifePercentageAnimated(this.player.resilienceCurrent / this.player.lifeCapacity)
 
         this.lifeTextBackgroundLeftCap.x = this.lifeMiddleHolder.x + this.lifeMiddleHolder.displayWidth * 0.5
         this.lifeTextBackgroundLeftCap.y = this.lifeMiddleHolder.y + 12.5
@@ -2788,7 +3028,7 @@ class Simulacrum extends Phaser.Scene {
         this.lifeTextBackgroundRightCap = this.add.image(0, 0, 'life-text-background-right-cap')
         .setOrigin(0, 0.5).setDepth(5).setScale(this.vitalsScale)
 
-        this.lifeText = this.add.text(0, 0, Math.floor(this.player.lifeCurrent) + ' / ' + Math.floor(this.player.lifeCapacity) )
+        this.lifeText = this.add.text(0, 0, Math.floor(this.player.resilienceCurrent) + ' / ' + Math.floor(this.player.lifeCapacity) )
         .setFontFamily('Arial').setFontSize(this.vitalsTextSize * (scaleModX)).setDepth(5).setOrigin(0.5, 0.5);
 
         // Holder
@@ -2810,7 +3050,7 @@ class Simulacrum extends Phaser.Scene {
         this.lifeRightCap = this.add.image(0, 0, 'life-right-cap')
             .setOrigin(0, 0.5).setDepth(5).setScale(this.vitalsScale)
 
-        this.uiSubModule_setLifePercentage(this.player.lifeCurrent / this.player.lifeCapacity)
+        this.uiSubModule_setLifePercentage(this.player.resilienceCurrent / this.player.lifeCapacity)
         // Icon Holder
 
         this.lifeIconHolder = this.add.image(0, 0, 'life-icon-holder').setDepth(6).setScale(this.vitalsScale)
@@ -3085,14 +3325,14 @@ class Simulacrum extends Phaser.Scene {
                 this.lifeMiddle.visible = this.lifeMiddle.displayWidth > 0
                 this.lifeRightCap.visible = this.lifeMiddle.displayWidth > 0
 
-                this.lifeText.setText(Math.floor(this.player.lifeCurrent) + ' / ' + Math.floor(this.player.lifeCapacity))
+                this.lifeText.setText(Math.floor(this.player.resilienceCurrent) + ' / ' + Math.floor(this.player.lifeCapacity))
 
             }
         })
 
         // Alpha Tween
 
-        if (this.player.lifeCurrent / this.player.lifeCapacity < this.lowVitalsPercent || this.playerIsHit || this.emergencyPower) {
+        if (this.player.resilienceCurrent / this.player.lifeCapacity < this.lowVitalsPercent || this.playerIsHit || this.emergencyPower) {
             this.tweens.add({
                 targets: [this.lifeIconHolder,
                 this.lifeIcon,
@@ -3137,7 +3377,7 @@ class Simulacrum extends Phaser.Scene {
         }
 
         // Tint Tween
-        if (this.player.lifeCurrent / this.player.lifeCapacity > this.lowVitalsPercent) {
+        if (this.player.resilienceCurrent / this.player.lifeCapacity > this.lowVitalsPercent) {
             this.lifeMiddle.setTint()
             this.lifeRightCap.setTint()
         } else {
@@ -3430,7 +3670,7 @@ class Simulacrum extends Phaser.Scene {
                 if(this.playerSpeed > this.speedCheckThreshold){
                 this.playerSpeed -= 0.04
                 }
-                this.player.lifeCurrent -= 0.5
+                this.player.resilienceCurrent -= 0.5
                 this.glory -= 0.5
                 this.playerIsHit = true
 
@@ -3560,7 +3800,7 @@ class Simulacrum extends Phaser.Scene {
     
     
         // Function Variables
-            this.vitalityPower = this.player.lifeCurrent/this.player.lifeCapacity 
+            this.vitalityPower = this.player.resilienceCurrent/this.player.lifeCapacity 
             this.skillPower = this.player.focusCurrent/this.player.focusCapacity 
             this.actionPower = this.player.staminaCurrent/this.player.staminaCapacity  
         
@@ -3725,7 +3965,7 @@ class Simulacrum extends Phaser.Scene {
                         if (this.player.lifeRegenActive){
     
                             if(this.vitalityPower < 1 && this.vitalityPower > 0){
-                                    this.player.lifeCurrent += this.player.lifeRegen 
+                                    this.player.resilienceCurrent += this.player.lifeRegen 
                             }
                         }
     
@@ -3790,7 +4030,7 @@ class Simulacrum extends Phaser.Scene {
                         } else {
                             this.player.setTint(0xff7a7a)
                             this.player.staminaCurrent -= this.baseCost * this.moveUpCostModifier * this.baseEmergencyEnergyCostPercent
-                            this.player.lifeCurrent -=(this.baseCost * this.baseEmergencyEnergyCostPercent) * this.moveUpCostModifier
+                            this.player.resilienceCurrent -=(this.baseCost * this.baseEmergencyEnergyCostPercent) * this.moveUpCostModifier
                         }
                     }
                     
@@ -3801,7 +4041,7 @@ class Simulacrum extends Phaser.Scene {
                         } else {
                             this.player.setTint(0xff7a7a)
                             this.player.staminaCurrent -= this.baseCost * this.moveDownCostModifier * this.baseEmergencyEnergyCostPercent
-                            this.player.lifeCurrent -=(this.baseCost * this.baseEmergencyEnergyCostPercent) * this.moveDownCostModifier
+                            this.player.resilienceCurrent -=(this.baseCost * this.baseEmergencyEnergyCostPercent) * this.moveDownCostModifier
                         }
                     }
                     
@@ -3813,7 +4053,7 @@ class Simulacrum extends Phaser.Scene {
                         } else {
                             this.player.setTint(0xff7a7a)
                             this.player.staminaCurrent -= this.baseCost * this.moveLeftCostModifier * this.baseEmergencyEnergyCostPercent
-                            this.player.lifeCurrent -=(this.baseCost * this.baseEmergencyEnergyCostPercent) * this.moveLeftCostModifier
+                            this.player.resilienceCurrent -=(this.baseCost * this.baseEmergencyEnergyCostPercent) * this.moveLeftCostModifier
                         }
                     }
     
@@ -3825,7 +4065,7 @@ class Simulacrum extends Phaser.Scene {
                         } else {
                             this.player.setTint(0xff7a7a)
                             this.player.staminaCurrent -= this.baseCost * this.moveRightCostModifier * this.baseEmergencyEnergyCostPercent
-                            this.player.lifeCurrent -=(this.baseCost * this.baseEmergencyEnergyCostPercent) * this.moveRightCostModifier
+                            this.player.resilienceCurrent -=(this.baseCost * this.baseEmergencyEnergyCostPercent) * this.moveRightCostModifier
                         }
                     }
                 }
@@ -3833,7 +4073,7 @@ class Simulacrum extends Phaser.Scene {
             // Player Sprite Controls
     
             // Defeat animation
-                if (this.player.lifeCurrent <= 0){
+                if (this.player.resilienceCurrent <= 0){
     
                     this.stageProgressEnabled = false
                     //playerInputActive = false
