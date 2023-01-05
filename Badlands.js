@@ -655,12 +655,17 @@ class Badlands extends Phaser.Scene {
         this.playerAttackHitBox.body.setAllowGravity(false).setSize(175, 100)
         this.playerAttackHitBox.body.checkCollision.none = true
         this.physics.add.overlap(this.playerAttackHitBox, this.enemyGroup, this.enemyTakeHit, null, this)
-        this.physics.add.overlap(this.playerProjectiles, this.enemyGroup, this.enemyTakeProjectileHit, null, this)
-        this.playerAttackHitBox.damage = 0
-        this.playerAttackHitBoxVFX = this.add.sprite(this.playerAttackHitBox.x, this.playerAttackHitBox.y)
-        this.playerAttackHitBoxVFX.setSize(175, 100).setDepth(2)
+        this.physics.add.overlap(this.playerProjectiles, this.enemyGroup, this.enemyTakeHit, null, this)
+
+        this.physics.add.overlap(this.playerAttackHitBox, this.enemyHordeGroup, this.enemyTakeHit, null, this)
+        this.physics.add.overlap(this.playerProjectiles, this.enemyHordeGroup, this.enemyTakeHit, null, this)
 
         
+        this.playerAttackHitBox.damage = 0
+        this.playerAttackHitBoxVFX = this.add.sprite(this.playerAttackHitBox.x, this.playerAttackHitBox.y)
+        this.playerAttackHitBoxVFX.setDepth(2).setScale(0.5)
+
+
         this.playerIsHit = false
         this.playerInAir = false
 
@@ -672,10 +677,25 @@ class Badlands extends Phaser.Scene {
 
         // Stage 
         this.stage.nextCheckPoint = 1
-        this.stage.chaserTimer = 15000
-        this.stage.hordeTimer = 2000
+        this.stage.chaserTimer = 60000
+        this.stage.hordeTimer = 8000
+        this.stage.maxHordeSize = 20
         this.stage.hordeDifficultyModifier = 1
-        this.stageData.availableCheckPoints = [1,2]
+        this.stage.enemyHordeDefeated = 0
+
+        var importedEnemyData = {
+            common: 'nightBorneMinion',
+            uncommon: 'nightBorneMinion',
+            rare: 'nightBorne',
+            mythical: 'nightBorne'
+        }
+
+        this.stage.enemyAnimationsKey = importedEnemyData
+
+        console.log(this.stage.enemyAnimationsKey)
+
+        this.stageData.availableCheckPoints = [2]//[1,2]
+       
 
         this.checkPointTimer = this.time.addEvent({ delay: 0, callback: this.updateCheckPointStatus, args: [], callbackScope: this, repeat: 0 });
 
@@ -1188,9 +1208,8 @@ class Badlands extends Phaser.Scene {
 
         // Damage
 
-        this.player.actionPower = baseData.actionPower * avatarData.actionPowerModifier
-        this.player.skill1Power = (baseData.skillPower * avatarData.skillPowerModifier) * 1//avatarData.skill1Modifier  
-        this.player.skill2Power = (baseData.skillPower * avatarData.skillPowerModifier) * 0.65//avatarData.skill2Modifier  
+        this.player.attackPower = baseData.actionPower * this.player.staminaCapacity
+        this.player.skillPower = baseData.skillPower * this.player.focusCapacity
         this.player.critChance = baseData.critChance * avatarData.critChanceModifier
         this.player.critDamage = baseData.critDamage * avatarData.critDamageModifier
 
@@ -1332,6 +1351,7 @@ class Badlands extends Phaser.Scene {
                     projectile_speed: targetSkillData.PROJECTILE_SPEED,
                     projectile_range: targetSkillData.PROJECTILE_RANGE,
                     projectile_gravity: parseInt(targetSkillData.PROJECTILE_GRAVITY),
+                    damage_modifier: targetSkillData.DAMAGE_MODIFIER
                 
                 }
 
@@ -1467,10 +1487,11 @@ class Badlands extends Phaser.Scene {
             this.spawningChaserEnemy = true
             this.checkPointIcon = 'chaser-checkpoint-icon'
         } else if (this.stage.checkPointType === 2) {
-            this.spawningHordeEnemy = true
+            //this.spawningHordeEnemy = true
             this.speedCheckOverride = 1
             this.enterBattle()
             this.checkPointIcon = 'horde-checkpoint-icon'
+            this.spawnHorde()
         }
 
         // Render Checkpoint Icon
@@ -1492,6 +1513,7 @@ class Badlands extends Phaser.Scene {
         } else if (this.stage.checkPointType === 2) {
             this.checkPointTimer.delay = this.stage.hordeTimer;
             this.checkPointTimer.repeat = -1;
+            
         } 
         
         this.checkPointTimer.callback = this.updateCheckPointStatus
@@ -1551,13 +1573,30 @@ class Badlands extends Phaser.Scene {
             this.stageProgressEnabled = true;
         } else if (this.stage.checkPointType === 2) {
            // if (this.stage.maxHordeSize > 0 && this.enemyHordeGroup.countActive() > 0.6 * this.stage.maxHordeSize) {
-                if (this.enemyGroup.countActive() > 0) { // Stub
+                if (this.enemyHordeGroup.maxSize > 1) { // Stub
                 // If this.stage.checkPointType = 2, and this.stage.maxHordeSize > 0 and
                 // this.enemyHordeGroup.active > 60% of this.stage.maxHordeSize,
-                // increase this.stage.hordeDifficultyModifier by 2%
-                this.stage.hordeDifficultyModifier *= 1.02;
+                // increase this.stage.hordeDifficultyModifier by 10%
+                if(this.enemyHordeGroup.getTotalUsed() > 0.5 * this.enemyHordeGroup.maxSize || this.stage.enemyHordeDefeated < this.enemyHordeGroup.maxSize ){
+                    if (this.stage.hordeDifficultyModifier < 10){
+                        if (this.enemyHordeGroup.getTotalUsed() > 0.8 * this.enemyHordeGroup.maxSize){
+                            this.stage.hordeDifficultyModifier *= Phaser.Math.FloatBetween(1.1,1.15);
+                        } else {
+                            this.stage.hordeDifficultyModifier *= Phaser.Math.FloatBetween(1.05,1.1);
+                        }
+                    }
+                } else {
+                    if (this.enemyHordeGroup.getTotalUsed() < 0.25 * this.enemyHordeGroup.maxSize){
+                        this.enemyHordeGroup.maxSize -= 2 
+                    } else {
+                        this.enemyHordeGroup.maxSize -= 1 
+                    }
+                }
+                if(this.enemyHordeGroup.getTotalFree() > 0){
+                this.spawnHorde()
+                }
             //} else if (this.enemyHordeGroup.countActive() === 0) {
-            } else if (this.enemyGroup.countActive() == 0) { // Stub
+            } else if (this.enemyHordeGroup.getTotalUsed() == 0) { // Stub
                 //this.camera.flash(500,0,255,0)
                 this.camera.flash(500)
                 this.rewards += Phaser.Math.Between(5,10) * (1 + (0.25 * this.level)) // Stub for gaining Rewards in checkpoint
@@ -1573,6 +1612,8 @@ class Badlands extends Phaser.Scene {
                 this.stage.checkPointType = 0;
                 this.checkPointTimer.repeat = 0;
                 this.checkPointTimer.delay = 0;
+                this.stage.enemyHordeDefeated = 0
+                this.enemyHordeGroup.maxSize = this.stage.maxHordeSize
                 if (this.stage.nextCheckPoint < 4) {
                     this.stage.nextCheckPoint += 1;
                 }
@@ -1586,7 +1627,6 @@ class Badlands extends Phaser.Scene {
   
         }
     }
-
 
     environmentModule() {
         if (this.gameMode == 0) {
@@ -1662,12 +1702,14 @@ class Badlands extends Phaser.Scene {
                     platform.setTint(this.floorColour)
                     platform.x = Phaser.Math.FloatBetween(screenWidth * 3.25 + (screenWidth * 0.6 * i), screenWidth * 3.35 + (screenWidth * 0.6 * i)) //screenWidth * 2
                     platform.y = Phaser.Math.FloatBetween(this.platformPositionYMin, this.platformPositionYMax)
-                    platform.setScale(Phaser.Math.FloatBetween(this.platformScaleXMin, this.platformScaleXMax), Phaser.Math.FloatBetween(0.15, 0.35))
+                    platform.setScale(Phaser.Math.FloatBetween(this.platformScaleXMin, this.platformScaleXMax), Phaser.Math.FloatBetween(0.2, 0.35))
                     platform.setActive(true)
                     platform.setPipeline('Light2D')
                     platform.setImmovable(true)
                     platform.body.setAllowGravity(false)
                     platform.body.checkCollision.down = false
+                    platform.body.checkCollision.left = false
+                    platform.body.checkCollision.right = false
 
                 }
             }
@@ -1739,94 +1781,6 @@ class Badlands extends Phaser.Scene {
 
         if (this.gameMode == 0) {
 
-            // Checkpoint Type = 0 Spawn Code
-            if (game.spawningEnemy && this.stage.checkPointType === 0) {
-
-                this.enemiesSpawned = Phaser.Math.Between(1, Math.min(this.enemyGroup.getTotalFree(), 2))
-
-                for (var i = 0; i < this.enemiesSpawned; i++) {
-
-                    this.enemy = game.enemyGroup.get()
-                    // Type
-                    if (Phaser.Math.Between(0, 100) <= 30) {
-                        this.enemiesType = 2
-                    } else {
-                        this.enemiesType = 1
-                    }
-                    // Scaling
-
-                    if (this.enemiesType == 1) {
-                        // Common Enemy
-                        this.creepScale = Phaser.Math.FloatBetween(2.5, 3) //* (scaleModX) 
-                    } else {
-                        // Uncommon Enemy
-                        this.creepScale = Phaser.Math.FloatBetween(7.5, 8.5) //* (scaleModX) 
-
-                    }
-
-                    this.enemyOrientation = Phaser.Math.Between(1, 2)
-
-                    if (this.enemyOrientation == 1) {
-                        this.enemy.flipX = true
-                    } else {
-                        this.enemy.flipX = false
-                    }
-
-                    if (this.enemy) {
-
-                        if (this.enemiesType == 1) {
-                            this.enemy.setTexture('doomsayer')
-                            this.enemy.type = 1
-                            this.enemy.play('nightBorneMinion_Idle')
-                            this.enemy.baseSpeedMod = 1
-
-                        } else {
-                            this.enemy.setTexture('nightBorne')
-                            this.enemy.type = 2
-                            this.enemy.setOrigin(0.5, 1)
-                            this.enemy.body.setSize(25, 25).setOffset(25, 37.5)
-                            if (this.enemyOrientation == 1) {
-                                this.spawnChance = Phaser.Math.Between(0, 100)
-                                if (this.spawnChance < 15) {
-                                    this.enemy.play({ key: 'nightBorne_Move', frameRate: 8 }, true)
-                                    this.enemy.baseSpeedMod = 1.5
-                                } else {
-                                    this.enemy.play('nightBorne_Idle')
-                                    this.enemy.baseSpeedMod = 1
-                                }
-
-                            } else {
-                                this.enemy.play('nightBorne_Idle')
-                                this.enemy.baseSpeedMod = 1
-                            }
-
-
-                        }
-                        this.enemy.x = Phaser.Math.FloatBetween(screenWidth * 4 + (screenWidth * 0.3 * i), screenWidth * 4 + (screenWidth * 0.3 * i)) 
-                        this.enemy.y = Phaser.Math.FloatBetween(0, screenHeight * 0.5)
-                        this.enemy.setScale(this.creepScale)
-                        this.enemy.setVisible(true)
-                        this.enemy.setActive(true).setPipeline('Light2D')
-                        if (Phaser.Math.Between(0, 100) < 25) {
-                            this.enemy.setDepth(1)
-                        } else {
-                            this.enemy.setDepth(0)
-                        }
-                        this.enemy.body.setAllowGravity(true)
-                        this.enemy.isHit = false
-                        this.enemy.hitsTaken = 0
-                        if (this.enemy.type == 1) {
-                            this.enemy.hitHP = Phaser.Math.Between(2, 4) * (1 + (0.1 * this.level))
-                        } else if (this.enemy.type == 2) {
-                            this.enemy.hitHP = Phaser.Math.Between(4, 8) * (1 + (0.2 * this.level))
-                        }
-
-
-                    }
-                }
-
-                game.spawningEnemy = false
-            } 
             
             if (game.spawningChaserEnemy && this.stage.checkPointType === 1){ // Checkpoint Type = 1 Spawn Code
                 this.enemiesSpawned = Phaser.Math.Between(1, Math.min(this.enemyChaserGroup.getTotalFree(), 3))
@@ -1901,15 +1855,15 @@ class Badlands extends Phaser.Scene {
 
 
                 if (eStandard.x >= this.player.x - screenWidth * 0.1) {
-                    eStandard.x -= this.baseSpeed * eStandard.baseSpeedMod * this.playerSpeed
+                    eStandard.x -= this.baseSpeed  * this.playerSpeed
                 } else {
                     if (eStandard.anims.getName() != 'nightBorne_Move') {
-                        eStandard.x -= this.baseSpeed * eStandard.baseSpeedMod * this.playerSpeed
+                        eStandard.x -= this.baseSpeed  * this.playerSpeed
                     } else {
                         if (this.player.x < (this.camera.scrollX + screenWidth * 0.55) && this.progress <= this.progressToNextLevel * 0.96) {
-                            eStandard.x += this.baseSpeed * (eStandard.baseSpeedMod / 5) / this.playerSpeed
+                            eStandard.x += this.baseSpeed  / this.playerSpeed
                         } else {
-                            eStandard.x -= this.baseSpeed * (eStandard.baseSpeedMod / 3) * this.playerSpeed
+                            eStandard.x -= this.baseSpeed  * this.playerSpeed
                         }
                     }
 
@@ -1918,8 +1872,7 @@ class Badlands extends Phaser.Scene {
 
                 if (eStandard.active) {
                     if (eStandard.x < screenWidth * 0.75 || eStandard.y > screenHeight * 1.25) {
-                        eStandard.setActive(false);
-                        eStandard.setVisible(false)
+                        eStandard.destroy();
                     }
                 }
 
@@ -2005,6 +1958,7 @@ class Badlands extends Phaser.Scene {
 
             }.bind(game));
 
+
             if (game.enemyGroup.countActive() == 0 && this.stage.checkPointType === 0) {
                 game.exitBattle()
             }
@@ -2013,79 +1967,208 @@ class Badlands extends Phaser.Scene {
 
     }
 
-    spawnEnemy() {
-        // Standard Enemies
-        if (this.enemyGroup.getTotalFree() > 0 && this.stage.checkPointType == 0) {
-            if (this.progress >= this.progressToNextLevel * 0.225 && this.progress <= this.progressToNextLevel * 0.275
-                || this.progress >= this.progressToNextLevel * 0.475 && this.progress <= this.progressToNextLevel * 0.525
-                || this.progress >= this.progressToNextLevel * 0.725 && this.progress <= this.progressToNextLevel * 0.775
-                || this.progress >= this.progressToNextLevel * 0.95) {
+    spawnHorde(){
+        
+        var rarityChanceArray
 
+        if (Math.round(this.stage.hordeDifficultyModifier) < 2){
+            rarityChanceArray = [0,5,15]
+        } else if (Math.round(this.stage.hordeDifficultyModifier) < 3){
+            rarityChanceArray = [0,15,35]
+        } else if (Math.round(this.stage.hordeDifficultyModifier) < 4){
+            rarityChanceArray = [5,35,75]
+        } else {
+            rarityChanceArray = [15,75,100]
+        }
+
+        // Spawns Random X number ranging from 0 to remaining space in horde maxSize 
+        for (var i = 0; i < Phaser.Math.Between(1,this.enemyHordeGroup.getTotalFree()); i++){
+    
+            var hordeMember = this.enemyHordeGroup.get()
+
+            // Set Difficulty Mod
+            hordeMember.difficultyMod = this.stage.hordeDifficultyModifier
+
+            // Set Rarity
+            // Roll for Mythical (Rarity 4)
+            if(Phaser.Math.Between(0,100) <= rarityChanceArray[1]){
+                hordeMember.rarity = 4
+                hordeMember.animationKey = this.stage.enemyAnimationsKey.mythical
+                hordeMember.setOrigin(0.5, 1)
+                hordeMember.body.setSize(25, 25).setOffset(25, 37.5)
+                hordeMember.setScale(Phaser.Math.FloatBetween(7.5, 8.5)) 
+                hordeMember.resilienceCapacity = Phaser.Math.Between(400, 800) * (1 + (0.1 * hordeMember.difficultyMod))
+ 
+            } else 
+            // Roll for Rare (Rarity 3)
+            if(Phaser.Math.Between(0,100) <= rarityChanceArray[2]){
+                hordeMember.rarity = 3
+                hordeMember.animationKey = this.stage.enemyAnimationsKey.rare
+                hordeMember.setOrigin(0.5, 1)
+                hordeMember.body.setSize(25, 25).setOffset(25, 37.5)
+                hordeMember.setScale(Phaser.Math.FloatBetween(7.5, 8.5)) 
+                hordeMember.resilienceCapacity = Phaser.Math.Between(400, 800) * (1 + (0.1 * hordeMember.difficultyMod))
+
+            } else 
+            // Roll for Uncommon (Rarity 2)
+            if(Phaser.Math.Between(0,100) <= rarityChanceArray[3]){
+                hordeMember.rarity = 2
+                hordeMember.animationKey = this.stage.enemyAnimationsKey.uncommon
+                hordeMember.setOrigin(0.5,0.5)
+                hordeMember.body.setSize(25, 25).setOffset(25, 37.5)
+                hordeMember.setScale(Phaser.Math.FloatBetween(2.5, 3)) 
+                hordeMember.resilienceCapacity = Phaser.Math.Between(200, 400) * (1 + (0.1 * hordeMember.difficultyMod))
+      
+            } else 
+            // Set to Common (Rarity 1)
+            {
+                hordeMember.rarity = 1
+                hordeMember.animationKey = this.stage.enemyAnimationsKey.common
+                hordeMember.setOrigin(0.5, 0.5)
+                hordeMember.setScale(Phaser.Math.FloatBetween(2.5, 3)) 
+                hordeMember.resilienceCapacity = Phaser.Math.Between(100, 300) * (1 + (0.1 * hordeMember.difficultyMod))
                 
-
-                this.spawningEnemy = false
-            } else {
-                this.spawningEnemy = true
-                this.enemyTimer.delay = Phaser.Math.Between((this.baseEnemySpawnTime * (60 / this.musicBPM) * 1000) * 0.8, (this.baseEnemySpawnTime * (60 / this.musicBPM) * 1000) * 1.2)
             }
 
-        }
-        // Checkpoint - Chaser Enemies
-        if (this.enemyChaserGroup.getTotalFree() > 0 && this.stage.checkPointType == 1) {
-  
-                this.spawningChaserEnemy = true
-                this.enemyTimer.delay = Phaser.Math.Between((this.baseEnemySpawnTime * (60 / this.musicBPM) * 2000) * 0.8, (this.baseEnemySpawnTime * (60 / this.musicBPM) * 2000) * 1.2)
+            
 
-        }
-        // Checkpoint - Horde Enemies
-        // if (this.gameMode == 1 && this.enemyHordeGroup.getTotalFree() > 0 && this.stage.checkPointType == 2) {
-        //     // Potentially redundant
-        //     if (this.progress >= this.progressToNextLevel * 0.225 && this.progress <= this.progressToNextLevel * 0.275
-        //         || this.progress >= this.progressToNextLevel * 0.475 && this.progress <= this.progressToNextLevel * 0.525
-        //         || this.progress >= this.progressToNextLevel * 0.725 && this.progress <= this.progressToNextLevel * 0.775
-        //         || this.progress >= this.progressToNextLevel * 0.95) {
+            // Set Start Position
+            if (Phaser.Math.Between(1,100) < 35){
+                hordeMember.x = Phaser.Math.Between(0, screenWidth + (this.player.x -  (screenWidth * 2)))  
+            } else {
+                hordeMember.x = Phaser.Math.Between(screenWidth * 3 + (this.player.x -  (screenWidth * 2)), screenWidth * 4 )  
+            }
+            
+            hordeMember.y = Phaser.Math.Between(screenHeight * 0.25,screenHeight * 0.75)
 
-        //         this.spawningHordeEnemy = true
-        //         this.enemyTimer.delay = Phaser.Math.Between((this.baseEnemySpawnTime * (60 / this.musicBPM) * 2000) * 0.8, (this.baseEnemySpawnTime * (60 / this.musicBPM) * 2000) * 1.2)
-        //     } else {
-        //         this.spawningHordeEnemy = false
-
-        //     }
-
-            // Enemies defeated reduce maxHordeSize.  If maxHordeSize = 0  then timer set to 0 delay (i.e repeat instantly)
+                
+                hordeMember.play(hordeMember.animationKey + '_Idle',true)
+                hordeMember.setPipeline('Light2D')
+                hordeMember.body.setAllowGravity(true)
+                hordeMember.isHit = false
+                hordeMember.hitsTaken = 0
+                hordeMember.canAct = true
+                hordeMember.resilienceCurrent = hordeMember.resilienceCapacity
+                hordeMember.staminaCapacity = 100
+                hordeMember.staminaCurrent = 100
+                hordeMember.enragedLevel = 0
+                hordeMember.attackRange = screenWidth * 0.1
+                hordeMember.targetRange = this.player.x
+                hordeMember.aggroRange = Phaser.Math.FloatBetween(hordeMember.attackRange * 0.5,hordeMember.attackRange * 1.5)
 
         
+        }
+
+
+    }
+
+    // Stub - to be merged with Horde and Chaser
+    spawnEnemy(){
+
+        if (this.enemyGroup.getTotalFree() > 0 && this.gameMode == 0) {
+        this.enemyTimer.delay = Phaser.Math.Between((this.baseEnemySpawnTime * (60 / this.musicBPM) * 1000) * 0.8, (this.baseEnemySpawnTime * (60 / this.musicBPM) * 1000) * 1.2)
+        
+        var rarityChanceArray
+
+        if (Math.round(this.stage.hordeDifficultyModifier) < 2){
+            rarityChanceArray = [0,5,15]
+        } else if (Math.round(this.stage.hordeDifficultyModifier) < 3){
+            rarityChanceArray = [0,15,35]
+        } else if (Math.round(this.stage.hordeDifficultyModifier) < 4){
+            rarityChanceArray = [5,35,75]
+        } else {
+            rarityChanceArray = [15,75,100]
+        }
+
+        // Spawns Random X number ranging from 0 to remaining space in horde maxSize 
+        for (var i = 0; i < Phaser.Math.Between(0,this.enemyGroup.getTotalFree() * 0.25); i++){
+    
+            var normalMember = this.enemyGroup.get()
+
+            // Set Difficulty Mod
+            normalMember.difficultyMod = this.stage.hordeDifficultyModifier
+
+            // Set Rarity
+            // Roll for Mythical (Rarity 4)
+            if(Phaser.Math.Between(0,100) <= rarityChanceArray[1]){
+                normalMember.rarity = 4
+                normalMember.animationKey = this.stage.enemyAnimationsKey.mythical
+                normalMember.setOrigin(0.5, 1)
+                normalMember.body.setSize(25, 25).setOffset(25, 37.5)
+                normalMember.setScale(Phaser.Math.FloatBetween(7.5, 8.5)) 
+                normalMember.resilienceCapacity = Phaser.Math.Between(400, 800) * (1 + (0.1 * normalMember.difficultyMod))
+ 
+            } else 
+            // Roll for Rare (Rarity 3)
+            if(Phaser.Math.Between(0,100) <= rarityChanceArray[2]){
+                normalMember.rarity = 3
+                normalMember.animationKey = this.stage.enemyAnimationsKey.rare
+                normalMember.setOrigin(0.5, 1)
+                normalMember.body.setSize(25, 25).setOffset(25, 37.5)
+                normalMember.setScale(Phaser.Math.FloatBetween(7.5, 8.5)) 
+                normalMember.resilienceCapacity = Phaser.Math.Between(400, 800) * (1 + (0.1 * normalMember.difficultyMod))
+
+            } else 
+            // Roll for Uncommon (Rarity 2)
+            if(Phaser.Math.Between(0,100) <= rarityChanceArray[3]){
+                normalMember.rarity = 2
+                normalMember.animationKey = this.stage.enemyAnimationsKey.uncommon
+                normalMember.setOrigin(0.5,0.5)
+                normalMember.body.setSize(25, 25).setOffset(25, 37.5)
+                normalMember.setScale(Phaser.Math.FloatBetween(2.5, 3)) 
+                normalMember.resilienceCapacity = Phaser.Math.Between(200, 400) * (1 + (0.1 * normalMember.difficultyMod))
+      
+            } else 
+            // Set to Common (Rarity 1)
+            {
+                normalMember.rarity = 1
+                normalMember.animationKey = this.stage.enemyAnimationsKey.common
+                normalMember.setOrigin(0.5, 0.5)
+                normalMember.setScale(Phaser.Math.FloatBetween(2.5, 3)) 
+                normalMember.resilienceCapacity = Phaser.Math.Between(100, 300) * (1 + (0.1 * normalMember.difficultyMod))
+                
+            }
+
+            
+
+            // Set Start Position
+      
+            normalMember.x = Phaser.Math.Between(screenWidth * 3 + (this.player.x -  (screenWidth * 2)), screenWidth * 4 )  
+            normalMember.y = Phaser.Math.Between(screenHeight * 0.25,screenHeight * 0.75)
+
+                
+            normalMember.play(normalMember.animationKey + '_Idle',true)
+            normalMember.setPipeline('Light2D')
+            normalMember.body.setAllowGravity(true)
+            normalMember.isHit = false
+            normalMember.hitsTaken = 0
+            normalMember.canAct = true
+            normalMember.resilienceCurrent = normalMember.resilienceCapacity
+            normalMember.staminaCapacity = 100
+            normalMember.staminaCurrent = 100
+            normalMember.enragedLevel = 0
+            normalMember.attackRange = screenWidth * 0.1
+            normalMember.targetRange = this.player.x
+            normalMember.aggroRange = Phaser.Math.FloatBetween(normalMember.attackRange * 0.5,normalMember.attackRange * 1.5)
+
+        
+        }
+
+    }
     }
 
 
-    enemyTakeHit(playerAttackHitBox, enemy) {
+    enemyTakeHit(damageSource, enemy) {
+
+        if (damageSource.type == 'projectile'){
+            this.impactProjectile(damageSource)
+        }
 
         if (!enemy.isHit) {
+
+            
             enemy.isHit = true
-
-            // Dodge Check Test
-            if (Phaser.Math.Between(0, 100) <= 30) {
-
-                if (enemy.type == 2) {
-                    if (Phaser.Math.Between(0, 100) <= 20) {
-                        this.sound.play('nightBorneEvade2')
-                    } else {
-                        this.sound.play('nightBorneEvade1')
-                    }
-                }
-
-
-                if (enemy.x >= this.player.x) {
-                    enemy.x += Phaser.Math.Between(100, 125)
-                    enemy.isHit = false
-                } else {
-                    enemy.x -= Phaser.Math.Between(100, 125)
-                    enemy.isHit = false
-                }
-
-            } else {
-
-
+            enemy.canAct = false
 
                 // Crit Check
                 if (Phaser.Math.Between(0, 100) <= this.critChance) {
@@ -2095,294 +2178,263 @@ class Badlands extends Phaser.Scene {
                     this.playerAttackCrit = 1
                 }
 
-
-
                 // Damage Calc
 
-                this.playerAttackPower = playerAttackHitBox.damage * this.playerAttackCrit
+                this.playerAttackPower = damageSource.damage * this.playerAttackCrit
 
+                if (damageSource.type != 'projectile'){
                 this.playerAttackHitBoxVFX.play(this.playerAttackHitSmear, true)
+                }
 
                 // Momentum Gain
 
-                this.player.momentum += this.playerAttackPower * 10 * 2
-
+                this.player.momentum += Math.min(this.playerAttackPower * 0.05,100 - this.player.momentum)
 
                 if (!enemy.body.onFloor()) {
                     enemy.setVelocity(0)
                 }
 
-
-                enemy.setVelocityY(enemy.body.velocity.y + (Phaser.Math.Between((this.player.momentum / 100) * -2500, (this.player.momentum / 100) * 2500) * (Math.max(1, this.playerAttackCrit / 2))))
-
-
-                if (enemy.x >= this.player.x) {
-                    enemy.setVelocityX(enemy.body.velocity.x + (Phaser.Math.Between((this.player.momentum / 100) * 0, (this.player.momentum / 100) * 250) * this.playerAttackCrit))
-                } else {
-                    enemy.setVelocityX(enemy.body.velocity.x - (Phaser.Math.Between((this.player.momentum / 100) * 0, (this.player.momentum / 100) * 250) * this.playerAttackCrit))
-                }
-
-                if (this.player.momentum / 100 > 0.4) {
-                    this.camera.shake(500, 0.01)
-
-                }
-
-                if (this.playerAttackCrit > 1.5) {
-                    this.camera.flash()
-                    this.camera.shake(100, 0.005)
-                    this.sound.stopByKey('playerAttack1')
-                    this.sound.stopByKey('playerAttack2')
-                    this.sound.stopByKey('playerAttack3')
-                    this.sound.stopByKey('playerAttack4')
-                    this.sound.stopByKey('playerAttack5')
-                    this.sound.play('playerCriticalStrike' + Phaser.Math.Between(1, 2))
-
-                }
-
-                if (enemy.type == 1) {
-                    enemy.play('nightBorneMinion_Hurt', true)
-
-                    // Sound Effect of Hit
-                    // Hit connected
-
+                    enemy.play(enemy.animationKey + '_Hurt', true)
+                    enemy.setVelocityX(0)
 
                     enemy.once('animationcomplete', function (anim, frame) {
                         enemy.emit('animationcomplete_' + anim.key, frame)
                     }, enemy)
-                    enemy.once('animationcomplete_nightBorneMinion_Hurt', function () {
-                        enemy.isHit = false
-                        enemy.setVelocityX(0)
-                        if (this.gameMode == 0) {
-                            enemy.hitsTaken += enemy.hitHP
-                        } else {
+                    enemy.once('animationcomplete_' + enemy.animationKey +'_Hurt', function () {
 
-                            enemy.hitsTaken += this.playerAttackPower
-                        }
+                            enemy.resilienceCurrent -= this.playerAttackPower
+   
+                        if (enemy.resilienceCurrent <= 0) {
+                            enemy.play(enemy.animationKey + '_Death', true)
 
-                        if (enemy.hitsTaken >= enemy.hitHP) {
-                            enemy.play('nightBorneMinion_Death', true)
-                            this.physics.add.collider(enemy, this.floor);
-                            this.physics.add.collider(enemy, this.platformGroup);
-                            this.enemyGroup.remove(enemy)
-                            this.gold += Phaser.Math.Between(0, this.baseGoldDrop * 0.075 * this.level)
+                            this.gold += Phaser.Math.Between(0, this.baseGoldDrop * 0.075 * enemy.difficultyMod)
 
                             enemy.once('animationcomplete', function (anim, frame) {
                                 enemy.emit('animationcomplete_' + anim.key, frame)
                             }, enemy)
-                            enemy.once('animationcomplete_nightBorneMinion_Death', function () {
+                            enemy.once('animationcomplete_' + enemy.animationKey +'_Death', function () {
 
-                                enemy.setActive(false)
-                                enemy.setVisible(false)
-                                enemy.x = -screenWidth * 0.25
+                                enemy.destroy()
+                                if(this.stage.checkPointType === 2){
+                                    this.stage.enemyHordeDefeated += 1
+                                }
 
                             }, this)
                         } else {
-                            enemy.play('nightBorneMinion_Idle', true)
+                            enemy.isHit = false
+                            enemy.canAct = true
+                            enemy.play(enemy.animationKey + '_Idle', true)
                         }
 
                     }, this)
-                } else if (enemy.type == 2) {
-                    enemy.play('nightBorne_Hurt', true)
+         
 
-                    if (Phaser.Math.Between(0, 100) <= 15) {
-                        if (this.playerAttackCrit > 1) {
-                            if (Phaser.Math.Between(0, 100) <= 10) {
-                                this.sound.play('nightBorneTakeHeavyDamage3')
-                            } else if (Phaser.Math.Between(0, 100) <= 25) {
-                                this.sound.play('nightBorneTakeHeavyDamage2')
-                            } else {
-                                this.sound.play('nightBorneTakeHeavyDamage1')
-                            }
+                this.targetRemainingEnemyHP = enemy.resilienceCurrent
+
+        }
+
+    }
+
+    enemyController(){
+        // Horde
+        this.enemyHordeGroup.children.each(function (enemy) {
+
+            // Enemy can be in states: Enraged,Aggressive,Neutral, Defensive, Fearful
+            
+            // State determines priority order of actions
+            // States determined by factors: hp%, stamina%, hordeStrength, hordeSize 
+            // Factors have pre-req for contributing to respective state meter (e.g low life means Enraged, Defensive meters tick up), when not in pre-req, ticks down to baseline (temprement)
+            // Enraged
+                // HP
+                    // Increases
+                    if(enemy.resilienceCurrent / enemy.resilienceCapacity <= 0.15){
+                        if(enemy.enragedLevel < 100){
+                            enemy.enragedLevel += 0.1
+                        }
+                    }
+                    // Decreases
+                    if(enemy.resilienceCurrent / enemy.resilienceCapacity >= 0.75 && enemy.staminaCurrent /  enemy.staminaCapacity <= 0.3){
+                        if(enemy.enragedLevel < 100){
+                            enemy.enragedLevel -= 0.1
+                        }
+                    }
+                // Stamina
+                    // Increases
+
+                    // Decreases
+                // Horde Strength
+                    // Increases
+
+                    // Decreases
+                // Horde Size
+                    // Increases
+
+                    // Decreases
+            
+                // e.state.enragedLevel += 1
+                // e.state.aggressiveLevel -= 1
+                // e.state.neutralLevel += 1
+                // e.state.defensiveLevel += 1
+                // e.state.fearfulLevel += 1
+           
+
+            // Enemy constantly rolls to see which state they're in (probabalitic, chekc order based on tempreament)
+
+            // Each State (i.e if (enemy.state = enraged)) has functions for actions to take e.g move towards player and attack - provideded no contraints present (i.e canAct = true)
+            // On loop complete for action, canAct = true and loop re-run (or loop for new state if state changes)
+
+            // Floor lift - temp
+
+            if (enemy.body.y + (enemy.body.height * 0.5) >= this.floor.body.y - (this.floor.body.height * 0.5)){
+                enemy.body.y = this.floor.body.y - (this.floor.body.height * 0.5) - (enemy.body.height * 0.5)
+            }
+
+            // Alternate Depth
+
+            if (enemy) {
+                if (enemy.x > this.player.x + screenWidth * 0.1) {
+                    enemy.setDepth(0)//(Phaser.Math.Between(0,2))
+                } else if (enemy.x < this.player.x - screenWidth * 0.1) {
+                    enemy.setDepth(0)//(Phaser.Math.Between(0,2))
+                }
+            }
+
+            // Lock on Code
+            if (enemy) {
+                // Enables enemy to automatically face and move towards player
+               // if (Math.abs(e.x - this.player.x) <= screenWidth * 0.1) {
+                    //&& Math.abs(e.y - this.player.y) <= screenHeight * 0.25 
+                    //enemyLockedOn = true
+                    if (enemy.x < this.player.x) {
+                        if (enemy.rarity < 2) {
+                            enemy.flipX = true
                         } else {
-                            if (Phaser.Math.Between(0, 100) <= 10) {
-                                this.sound.play('nightBorneTakeLightDamage3')
-                            } else if (Phaser.Math.Between(0, 100) <= 25) {
-                                this.sound.play('nightBorneTakeLightDamage2')
+                            enemy.flipX = false
+                        }
+
+                    } else {
+                        if (enemy.rarity < 2) {
+                            enemy.flipX = false
+                        } else {
+                            enemy.flipX = true
+                        }
+                    }
+               //} else {
+                    //enemyLockedOn = false
+                //}
+            }
+
+            // Animations
+
+            if(Math.abs(enemy.body.velocity.x) > 5 && !enemy.isHit){
+                enemy.play(enemy.animationKey + '_Move',true)
+            } else if (!enemy.isHit && !enemy.attacking) {
+                
+                enemy.play(enemy.animationKey + '_Idle',true)
+                if (enemy.staminaCurrent < enemy.staminaCapacity){
+                    enemy.staminaCurrent += 5
+                }
+            }
+
+            
+
+        }.bind(this));
+
+        this.enemyHordeGroup.children.each(function (enemy) {
+            if(enemy.state == 'Enraged'){
+                this.enemyEnragedCode(enemy)
+            } else {
+                this.enemyEnragedCode(enemy)
+            }
+        }.bind(this));
+
+    }
+
+        enemyEnragedCode(enemy){
+            
+            // Move to Attack Range
+                this.enemyMoveToAttackRange(enemy)
+
+            // Attack in Attack Range
+                this.enemyAttack(enemy)
+
+    
+        }
+
+            enemyMoveToAttackRange(enemy){
+                // Move to Attack Range
+            
+                    // Move to Aggro Range
+                    // If Enemy can act, enemy aims for player's current position and charges
+                    if(Math.abs(enemy.x - this.player.x) > enemy.aggroRange && enemy.canAct && !enemy.isHit){
+                        enemy.canAct = false
+                        enemy.targetRange = this.player.x + Phaser.Math.FloatBetween(-enemy.attackRange,enemy.attackRange)
+                        if (this.player.x - enemy.x > 0){
+                            this.dir = 1
+                        } else {
+                            this.dir = -1
+                        }
+                        enemy.setVelocityX(this.dir * Phaser.Math.Between(250,1000))
+
+                    }
+
+                    // Adjust target
+                    // Enemy tracks player whilst moving, and updates target location if player moves out of aggroRange (new temp roll).  Enemy accelerates/decelerates based on if player moved closer or further
+                    if(Math.abs(enemy.targetRange - this.player.x)  >  Phaser.Math.FloatBetween(enemy.attackRange * 0.5,enemy.attackRange * 1.5)){
+                        enemy.targetRange = this.player.x + Phaser.Math.FloatBetween(-enemy.attackRange,enemy.attackRange)
+                    }
+
+                    
+                    // Stop in aggroRange
+                    if (!enemy.isHit && !enemy.canAct && !enemy.attacking)
+                    {
+                        if(Math.abs(enemy.x - enemy.targetRange) < enemy.aggroRange)
+                        {
+                            enemy.canAct = true
+                            enemy.aggroRange = Phaser.Math.FloatBetween(enemy.attackRange * 0.5,enemy.attackRange * 1.5)
+                            enemy.setVelocityX(0)
+                        
+                        }
+                    }
+
+            }
+
+            enemyAttack(enemy){
+                // Attack
+                    // If Enemy can act and is in range, enemy attacks
+                    if(Math.abs(enemy.x - this.player.x) < enemy.aggroRange && enemy.canAct && !enemy.isHit){
+
+                        enemy.attacking = true
+                        enemy.canAct = false
+                        enemy.once('animationcomplete',function(){
+                            enemy.canAct = true
+                            enemy.attacking = false
+                        })
+                        // Hesitation / Rest Roll
+                        if(Phaser.Math.Between(0,100) < 85 && enemy.staminaCurrent > Phaser.Math.Between(50,95)){
+                            // Jump attempt if out of y range
+                            if (enemy.body.y > this.player.y && this.player.body.velocity.y <= 0){
+                                enemy.setVelocityY(Phaser.Math.Between(-1250,-2000))
+                                enemy.canAct = true
+                                enemy.attacking = false
                             } else {
-                                this.sound.play('nightBorneTakeLightDamage1')
+                            // Attack
+                                enemy.play({key:enemy.animationKey + '_Attack',frameRate: Phaser.Math.Between(10,20) , delay: Phaser.Math.Between(0,50)},true)
+                            }
+                            // Stamina cost
+                            enemy.staminaCurrent -= Phaser.Math.Between(25,50)
+                        } else {
+                            // Hesitation / Recovery
+                            enemy.play({key:enemy.animationKey + '_Idle',repeat:0})
+                            if (enemy.staminaCurrent < enemy.staminaCapacity){
+                            enemy.staminaCurrent += 5
                             }
                         }
                     }
 
-                    enemy.once('animationcomplete', function (anim, frame) {
-                        enemy.emit('animationcomplete_' + anim.key, frame)
-                    }, enemy)
-                    enemy.once('animationcomplete_nightBorne_Hurt', function () {
-                        enemy.isHit = false
-                        enemy.setVelocityX(0)
-                        if (this.gameMode == 0) {
-                            enemy.hitsTaken += enemy.hitHP
-                        } else {
-
-                            enemy.hitsTaken += this.playerAttackPower
-                        }
-                        if (enemy.hitsTaken >= enemy.hitHP) {
-                            enemy.play('nightBorne_Death', true)
-
-                            this.sound.play('nightBorneTakeHeavyDamage2')
-                            this.physics.add.collider(enemy, this.floor);
-                            this.physics.add.collider(enemy, this.platformGroup);
-                            this.enemyGroup.remove(enemy)
-                            this.gold += Phaser.Math.Between(this.baseGoldDrop * 0.05 * this.level, this.baseGoldDrop * 0.15 * this.level)
-                            enemy.once('animationcomplete', function (anim, frame) {
-                                enemy.emit('animationcomplete_' + anim.key, frame)
-                            }, enemy)
-                            enemy.once('animationcomplete_nightBorne_Death', function () {
-
-                                enemy.setActive(false)
-                                enemy.setVisible(false)
-                                enemy.x = -screenWidth * 0.25
-
-                            }, this)
-                        } else {
-                            enemy.play('nightBorne_Idle', true)
-                        }
-
-                    }, this)
-                }
-
-                this.targetRemainingEnemyHP = enemy.hitHP - enemy.hitsTaken
-
-
             }
-        }
 
-    }
-
-    enemyTakeProjectileHit(projectile, enemy) {
-
-        this.impactProjectile(projectile)
-        
-        if (!enemy.isHit) {
-            enemy.isHit = true
-
-                // Damage Calc
-
-
-                // Momentum Gain
-
-
-
-
-                if (!enemy.body.onFloor()) {
-                    enemy.setVelocity(0)
-                }
-
-                if (!projectile.flipX) {
-                    enemy.setVelocityX(enemy.body.velocity.x + (Phaser.Math.Between((this.player.momentum / 100) * 0, (this.player.momentum / 100) * 250) ))
-                } else {
-                    enemy.setVelocityX(enemy.body.velocity.x - (Phaser.Math.Between((this.player.momentum / 100) * 0, (this.player.momentum / 100) * 250) ))
-                }
-
-
-                if (enemy.type == 1) {
-                    enemy.play('nightBorneMinion_Hurt', true)
-
-                    // Sound Effect of Hit
-                    // Hit connected
-
-
-                    enemy.once('animationcomplete', function (anim, frame) {
-                        enemy.emit('animationcomplete_' + anim.key, frame)
-                    }, enemy)
-                    enemy.once('animationcomplete_nightBorneMinion_Hurt', function () {
-                        enemy.isHit = false
-                        enemy.setVelocityX(0)
-                        if (this.gameMode == 0) {
-                            enemy.hitsTaken += enemy.hitHP
-                        } else {
-
-                            enemy.hitsTaken += this.player.skill2Power
-                        }
-
-                        if (enemy.hitsTaken >= enemy.hitHP) {
-                            enemy.play('nightBorneMinion_Death', true)
-                            this.physics.add.collider(enemy, this.floor);
-                            this.physics.add.collider(enemy, this.platformGroup);
-                            this.enemyGroup.remove(enemy)
-                            this.gold += Phaser.Math.Between(0, this.baseGoldDrop * 0.075 * this.level)
-
-                            enemy.once('animationcomplete', function (anim, frame) {
-                                enemy.emit('animationcomplete_' + anim.key, frame)
-                            }, enemy)
-                            enemy.once('animationcomplete_nightBorneMinion_Death', function () {
-
-                                enemy.setActive(false)
-                                enemy.setVisible(false)
-                                enemy.x = -screenWidth * 0.25
-
-                            }, this)
-                        } else {
-                            enemy.play('nightBorneMinion_Idle', true)
-                        }
-
-                    }, this)
-                } else if (enemy.type == 2) {
-                    enemy.play('nightBorne_Hurt', true)
-
-                    if (Phaser.Math.Between(0, 100) <= 15) {
-                        
-                            if (Phaser.Math.Between(0, 100) <= 10) {
-                                this.sound.play('nightBorneTakeHeavyDamage3')
-                            } else if (Phaser.Math.Between(0, 100) <= 25) {
-                                this.sound.play('nightBorneTakeHeavyDamage2')
-                            } else {
-                                this.sound.play('nightBorneTakeHeavyDamage1')
-                            }
-                        } else {
-                            if (Phaser.Math.Between(0, 100) <= 10) {
-                                this.sound.play('nightBorneTakeLightDamage3')
-                            } else if (Phaser.Math.Between(0, 100) <= 25) {
-                                this.sound.play('nightBorneTakeLightDamage2')
-                            } else {
-                                this.sound.play('nightBorneTakeLightDamage1')
-                            }
-                        }
-                    
-
-                    enemy.once('animationcomplete', function (anim, frame) {
-                        enemy.emit('animationcomplete_' + anim.key, frame)
-                    }, enemy)
-                    enemy.once('animationcomplete_nightBorne_Hurt', function () {
-                        enemy.isHit = false
-                        enemy.setVelocityX(0)
-                        if (this.gameMode == 0) {
-                            enemy.hitsTaken += enemy.hitHP
-                        } else {
-
-                            enemy.hitsTaken += this.player.skill2Power
-                        }
-                        if (enemy.hitsTaken >= enemy.hitHP) {
-                            enemy.play('nightBorne_Death', true)
-
-                            this.sound.play('nightBorneTakeHeavyDamage2')
-                            this.physics.add.collider(enemy, this.floor);
-                            this.physics.add.collider(enemy, this.platformGroup);
-                            this.enemyGroup.remove(enemy)
-                            this.gold += Phaser.Math.Between(this.baseGoldDrop * 0.05 * this.level, this.baseGoldDrop * 0.15 * this.level)
-                            enemy.once('animationcomplete', function (anim, frame) {
-                                enemy.emit('animationcomplete_' + anim.key, frame)
-                            }, enemy)
-                            enemy.once('animationcomplete_nightBorne_Death', function () {
-
-                                enemy.setActive(false)
-                                enemy.setVisible(false)
-                                enemy.x = -screenWidth * 0.25
-
-                            }, this)
-                        } else {
-                            enemy.play('nightBorne_Idle', true)
-                        }
-
-                    }, this)
-                }
-
-                this.targetRemainingEnemyHP = enemy.hitHP - enemy.hitsTaken
-
-
-            
-        }
-    }
+    
 
     playerProjectileCleanUp(){
         this.playerProjectiles.children.iterate(function (p) {
@@ -2397,12 +2449,14 @@ class Badlands extends Phaser.Scene {
         }.bind(this));
     }
 
-    fireProjectile(source,projectile,animation,impactAnimation,speed,range,affectedByGravity){
+    fireProjectile(source,projectile,animation,impactAnimation,speed,range,affectedByGravity,damageModifier){
+        projectile.type = 'projectile'
         projectile.x = source.x + 50
         projectile.y = source.y - 15
         projectile.maxRange = screenWidth * range
         projectile.mainAnimation = animation
         projectile.impactAnimation = impactAnimation
+        projectile.damage = this.player.skillPower * damageModifier
         projectile.setScale(4)
         projectile.setDepth(2)
         projectile.body.setAllowGravity(affectedByGravity)
@@ -2427,7 +2481,6 @@ class Badlands extends Phaser.Scene {
             projectile.destroy()
         },this)
     }
-
 
     cameraModule() {
 
@@ -3411,7 +3464,7 @@ class Badlands extends Phaser.Scene {
                 this.speedCheckThreshold = 0.25
             }
 
-            if (this.playerSpeed < this.speedCheckThreshold && this.stage.checkPointType == 0) {
+            if (this.playerSpeed < this.speedCheckThreshold) {
                 this.playerSpeed = 0
                 this.playerBattleSpeed = 0
 
@@ -3524,6 +3577,7 @@ class Badlands extends Phaser.Scene {
             if (this.player.anims.getName() != this.player.animations.action_a && this.player.anims.getName() != this.player.animations.action_b  && this.player.anims.getName() != this.player.animations.action_c && this.player.anims.getName() != this.player.animations.skill ){
                 this.playerAttackHitBox.body.checkCollision.none = true
                 this.playerAttackHitSmear = 'whiteHitSmear'
+                this.playerAttackHitBox.setScale(0.5)
             }
 
             // Attack (A)
@@ -3609,7 +3663,7 @@ class Badlands extends Phaser.Scene {
                 this.baseAttack1Speed = 16
                 this.baseAttack2Speed = 12
                 this.baseAttack3Speed = 10
-                this.baseJumpHeight = -1500
+                this.baseJumpHeight = -1600
                 this.baseHangTime = 0.15
                 this.baseMinHangHeight = 0.2
                 this.baseDashDistance = screenWidth * 0.2
@@ -3619,7 +3673,7 @@ class Badlands extends Phaser.Scene {
                 this.baseEmergencyEnergyCostPercent = 0.1
                 this.baseActionSpeedPercent = 0.75
                 this.baseTopSpeedPercent = 0.75
-                this.baseJumpHeightPercent = 0.85
+                this.baseJumpHeightPercent = 0.75
                 this.baseDashDistancePercent = 0.75
             
             // Regen
@@ -4095,11 +4149,12 @@ class Badlands extends Phaser.Scene {
                                 }
 
                                 // Set Damage
-                                this.playerAttackHitBox.damage = this.player.actionPower
+                                this.playerAttackHitBox.damage = this.player.attackPower
                                 this.critChance = 25
                                 this.critDamage = 2.5
                                 // Set VFX
                                 this.playerAttackHitSmear = 'whiteHitSmear'
+                                this.playerAttackHitBox.setScale(0.5)
 
                                     if(this.player.state.attackCounter == 1){
                                         this.player.play({key:this.player.animations.action_a,frameRate: (
@@ -4206,10 +4261,11 @@ class Badlands extends Phaser.Scene {
                                    },this)
 
                                    // Set Damage
-                                    this.playerAttackHitBox.damage = this.player.skill1Power
+                                    this.playerAttackHitBox.damage = this.player.skillPower * 0.75
                                     this.critDamage = 1.25
                                     // Set VFX
                                     this.playerAttackHitSmear = 'deadlyCombatAssaultHitSmear'  
+                                    this.playerAttackHitBox.setScale(1)
                                     this.player.state.skillCounter += 1
                                     this.skillFrameRate = (8 + 2 * this.skillPower) * (1 + (this.player.state.skillCounter * 0.25))
                                     this.critChance = 0.05 * (1 + (this.player.state.skillCounter * 0.05))
@@ -4309,9 +4365,10 @@ class Badlands extends Phaser.Scene {
                                     this.skillProjectileSpeed =  this.player.skill2.projectile_speed
                                     this.skillProjectileRange =  this.player.skill2.projectile_range
                                     this.skillProjectileGravity =  this.player.skill2.projectile_gravity
+                                    this.skillDamageModifier = this.player.skill2.damage_modifier
 
                                    if(this.playerProjectiles.getTotalFree() > 0){
-                                    this.fireProjectile(this.player,this.playerProjectiles.get(),this.skillMainAnimation,this.skillImpactAnimation,this.skillProjectileSpeed,this.skillProjectileRange,this.skillProjectileGravity)
+                                    this.fireProjectile(this.player,this.playerProjectiles.get(),this.skillMainAnimation,this.skillImpactAnimation,this.skillProjectileSpeed,this.skillProjectileRange,this.skillProjectileGravity,this.skillDamageModifier)
                                    }
 
                                 }
@@ -4453,7 +4510,7 @@ class Badlands extends Phaser.Scene {
     
             // Closest Enemy
     
-                this.closestEnemy = this.physics.closest(this.player,this.enemyGroup.getMatching('active',true)) 
+                this.closestEnemy = this.physics.closest(this.player,this.enemyHordeGroup.getMatching('active',true)) 
     
                 // Lock on VFX
                 if(this.closestEnemy && this.gameMode == 1){
@@ -4678,6 +4735,7 @@ class Badlands extends Phaser.Scene {
 
         // Enemies
         this.enemyModule(this)
+        this.enemyController()
 
         // Stage Management
         this.stageModule()
