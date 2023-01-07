@@ -2443,7 +2443,17 @@ class Badlands extends Phaser.Scene {
                             } else {
                                 enemy.x += this.baseSpeed * (0.5 * this.stage.hordeDifficultyModifier) + (this.baseSpeed * (1 - this.playerSpeed))
                             }
-                            enemy.staminaCurrent -= 0.2
+
+                            if (this.progress >= this.progressToNextLevel * 0.225 && this.progress <= this.progressToNextLevel * 0.25
+                                || this.progress >= this.progressToNextLevel * 0.475 && this.progress <= this.progressToNextLevel * 0.5
+                                || this.progress >= this.progressToNextLevel * 0.725 && this.progress <= this.progressToNextLevel * 0.75
+                                || this.progress >= this.progressToNextLevel * 0.95) {
+                                enemy.staminaCurrent -= 0.6  
+                            } else {
+                                enemy.staminaCurrent -= 0.2  
+                                
+                            }
+                            
                         } else {
                             enemy.chaserStatus = 'recovering'
                             enemy.x -= this.baseSpeed * 1 * this.playerSpeed
@@ -2944,7 +2954,7 @@ class Badlands extends Phaser.Scene {
 
         // Status Border
 
-        if (this.gameMode == 0) {
+        if (!this.stageProgressEnabled) {
             this.r3.setActive(1).setVisible(1)
 
         } else {
@@ -3194,8 +3204,9 @@ class Badlands extends Phaser.Scene {
         this.battleModeIcon = this.add.image(0, 0, 'battle-icon')
         this.battleModeIcon.setAlpha(0)
         this.battleModeIcon.setScale(1.5)
+
         this.tweens.add({
-            targets: this.battleModeIcon,
+            targets: [this.battleModeIcon],
             alpha: 1,
             yoyo: true,
             repeat: -1,
@@ -3205,6 +3216,7 @@ class Badlands extends Phaser.Scene {
 
             }
         })
+        
         // Status Border
 
         this.r3 = this.add.rectangle(screenWidth * 2, screenHeight * 0.5, screenWidth, screenHeight);

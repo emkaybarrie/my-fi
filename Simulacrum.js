@@ -1258,7 +1258,7 @@ class Simulacrum extends Phaser.Scene {
         // Set stageProgressEnabled to false
         this.stageProgressEnabled = false;
         //this.camera.flash(500,255,0,0)
-        this.camera.flash(500)
+        this.camera.flash(1000)
 
         // Choose a random entry from this.stageData.availableCheckPoints
         const randomIndex = Math.floor(Math.random() * this.stageData.availableCheckPoints.length);
@@ -2238,7 +2238,17 @@ class Simulacrum extends Phaser.Scene {
                             } else {
                                 enemy.x += this.baseSpeed * (0.5 * this.stage.hordeDifficultyModifier) + (this.baseSpeed * (1 - this.playerSpeed))
                             }
-                            enemy.staminaCurrent -= 0.2
+
+                            if (this.progress >= this.progressToNextLevel * 0.225 && this.progress <= this.progressToNextLevel * 0.25
+                                || this.progress >= this.progressToNextLevel * 0.475 && this.progress <= this.progressToNextLevel * 0.5
+                                || this.progress >= this.progressToNextLevel * 0.725 && this.progress <= this.progressToNextLevel * 0.75
+                                || this.progress >= this.progressToNextLevel * 0.9) {
+                                enemy.staminaCurrent -= 0.6  
+                            } else {
+                                enemy.staminaCurrent -= 0.2  
+                                
+                            }
+                            
                         } else {
                             enemy.chaserStatus = 'recovering'
                             enemy.x -= this.baseSpeed * 1 * this.playerSpeed
@@ -2739,7 +2749,7 @@ class Simulacrum extends Phaser.Scene {
 
         // Status Border
 
-        if (this.gameMode == 0) {
+        if (!this.stageProgressEnabled) {
             this.r3.setActive(1).setVisible(1)
 
         } else {
@@ -2989,8 +2999,9 @@ class Simulacrum extends Phaser.Scene {
         this.battleModeIcon = this.add.image(0, 0, 'battle-icon')
         this.battleModeIcon.setAlpha(0)
         this.battleModeIcon.setScale(1.5)
+
         this.tweens.add({
-            targets: this.battleModeIcon,
+            targets: [this.battleModeIcon],
             alpha: 1,
             yoyo: true,
             repeat: -1,
@@ -3000,11 +3011,14 @@ class Simulacrum extends Phaser.Scene {
 
             }
         })
+        
         // Status Border
 
         this.r3 = this.add.rectangle(screenWidth * 2, screenHeight * 0.5, screenWidth, screenHeight);
 
-        this.r3.setStrokeStyle(screenWidth * 0.01, 0x6d54a9).setDepth(2);
+        this.r3.setStrokeStyle(screenWidth * 0.015, 0x6d54a9).setDepth(2);
+
+        
 
         // Player
         this.playerIconBoxScaleX = 0.85
