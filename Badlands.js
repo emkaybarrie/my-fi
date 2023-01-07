@@ -2096,18 +2096,50 @@ class Badlands extends Phaser.Scene {
         }
 
         if (!enemy.isHit) {
-
-            
             enemy.isHit = true
+            // Dodge Check
+            if (Phaser.Math.Between(0, 100) <= 30) {
+
+                            if (enemy.rarity > 2) {
+                                if (Phaser.Math.Between(0, 100) <= 20) {
+                                    this.sound.play('nightBorneEvade2')
+                                } else {
+                                    this.sound.play('nightBorneEvade1')
+                                }
+                            }
+            
+            
+                            if (enemy.x >= this.player.x) {
+                                enemy.x += Phaser.Math.Between(100, 125)
+                                enemy.isHit = false
+                            } else {
+                                enemy.x -= Phaser.Math.Between(100, 125)
+                                enemy.isHit = false
+                            }
+            
+            } else {
+
             enemy.canAct = false
 
                 // Crit Check
                 if (Phaser.Math.Between(0, 100) <= this.critChance) {
                     this.playerAttackCrit = this.player.critDamage
+                    this.playerAttackHitBoxVFX.setTint(0xE2A4C6)
+                    //this.camera.flash(100,226, 164, 198)
+                                    this.camera.shake(250, 0.005)
+                                    this.sound.stopByKey('playerAttack1')
+                                    this.sound.stopByKey('playerAttack2')
+                                    this.sound.stopByKey('playerAttack3')
+                                    this.sound.stopByKey('playerAttack4')
+                                    this.sound.stopByKey('playerAttack5')
+                                    this.sound.play('playerCriticalStrike' + Phaser.Math.Between(1, 2))
 
                 } else {
                     this.playerAttackCrit = 1
+                    this.playerAttackHitBoxVFX.setTint()
                 }
+
+             
 
                 // Damage Calc
 
@@ -2126,6 +2158,29 @@ class Badlands extends Phaser.Scene {
                 }
 
                     enemy.play(enemy.animationKey + '_Hurt', true)
+
+                    if(enemy.rarity > 2){
+                                      if (Phaser.Math.Between(0, 100) <= 15) {
+                        if (this.playerAttackCrit > 1) {
+                            if (Phaser.Math.Between(0, 100) <= 10) {
+                                this.sound.play('nightBorneTakeHeavyDamage3')
+                            } else if (Phaser.Math.Between(0, 100) <= 25) {
+                                this.sound.play('nightBorneTakeHeavyDamage2')
+                            } else {
+                                this.sound.play('nightBorneTakeHeavyDamage1')
+                            }
+                        } else {
+                            if (Phaser.Math.Between(0, 100) <= 10) {
+                                this.sound.play('nightBorneTakeLightDamage3')
+                            } else if (Phaser.Math.Between(0, 100) <= 25) {
+                                this.sound.play('nightBorneTakeLightDamage2')
+                            } else {
+                                this.sound.play('nightBorneTakeLightDamage1')
+                            }
+                        }
+                    }
+                    }
+
                     enemy.setVelocityX(0)
 
                     enemy.once('animationcomplete', function (anim, frame) {
@@ -2137,6 +2192,10 @@ class Badlands extends Phaser.Scene {
    
                         if (enemy.resilienceCurrent <= 0) {
                             enemy.play(enemy.animationKey + '_Death', true)
+
+                            if(enemy.rarity > 2){
+                            this.sound.play('nightBorneTakeHeavyDamage2')
+                            }
 
                             this.gold += Phaser.Math.Between(0, this.baseGoldDrop * 0.075 * enemy.difficultyMod)
 
@@ -2161,6 +2220,7 @@ class Badlands extends Phaser.Scene {
          
 
                 this.targetRemainingEnemyHP = enemy.resilienceCurrent
+            }
 
         }
 
@@ -2664,57 +2724,9 @@ class Badlands extends Phaser.Scene {
 
     // enemyTakeHit(playerAttackHitBox, enemy) {
 
-    //     if (!enemy.isHit) {
-    //         enemy.isHit = true
-
-    //         // Dodge Check Test
-    //         if (Phaser.Math.Between(0, 100) <= 30) {
-
-    //             if (enemy.type == 2) {
-    //                 if (Phaser.Math.Between(0, 100) <= 20) {
-    //                     this.sound.play('nightBorneEvade2')
-    //                 } else {
-    //                     this.sound.play('nightBorneEvade1')
-    //                 }
-    //             }
+   
 
 
-    //             if (enemy.x >= this.player.x) {
-    //                 enemy.x += Phaser.Math.Between(100, 125)
-    //                 enemy.isHit = false
-    //             } else {
-    //                 enemy.x -= Phaser.Math.Between(100, 125)
-    //                 enemy.isHit = false
-    //             }
-
-    //         } else {
-
-
-
-    //             // Crit Check
-    //             if (Phaser.Math.Between(0, 100) <= this.critChance) {
-    //                 this.playerAttackCrit = this.player.critDamage
-
-    //             } else {
-    //                 this.playerAttackCrit = 1
-    //             }
-
-
-
-    //             // Damage Calc
-
-    //             this.playerAttackPower = playerAttackHitBox.damage * this.playerAttackCrit
-
-    //             this.playerAttackHitBoxVFX.play(this.playerAttackHitSmear, true)
-
-    //             // Momentum Gain
-
-    //             this.player.momentum += this.playerAttackPower * 10 * 2
-
-
-    //             if (!enemy.body.onFloor()) {
-    //                 enemy.setVelocity(0)
-    //             }
 
 
     //             enemy.setVelocityY(enemy.body.velocity.y + (Phaser.Math.Between((this.player.momentum / 100) * -2500, (this.player.momentum / 100) * 2500) * (Math.max(1, this.playerAttackCrit / 2))))
@@ -2728,133 +2740,11 @@ class Badlands extends Phaser.Scene {
 
     //             if (this.player.momentum / 100 > 0.4) {
     //                 this.camera.shake(500, 0.01)
-
     //             }
-
-    //             if (this.playerAttackCrit > 1.5) {
-    //                 this.camera.flash()
-    //                 this.camera.shake(100, 0.005)
-    //                 this.sound.stopByKey('playerAttack1')
-    //                 this.sound.stopByKey('playerAttack2')
-    //                 this.sound.stopByKey('playerAttack3')
-    //                 this.sound.stopByKey('playerAttack4')
-    //                 this.sound.stopByKey('playerAttack5')
-    //                 this.sound.play('playerCriticalStrike' + Phaser.Math.Between(1, 2))
-
-    //             }
-
-    //             if (enemy.type == 1) {
-    //                 enemy.play('nightBorneMinion_Hurt', true)
-
-    //                 // Sound Effect of Hit
-    //                 // Hit connected
+        //}
 
 
-    //                 enemy.once('animationcomplete', function (anim, frame) {
-    //                     enemy.emit('animationcomplete_' + anim.key, frame)
-    //                 }, enemy)
-    //                 enemy.once('animationcomplete_nightBorneMinion_Hurt', function () {
-    //                     enemy.isHit = false
-    //                     enemy.setVelocityX(0)
-    //                     if (this.gameMode == 0) {
-    //                         enemy.hitsTaken += enemy.hitHP
-    //                     } else {
-
-    //                         enemy.hitsTaken += this.playerAttackPower
-    //                     }
-
-    //                     if (enemy.hitsTaken >= enemy.hitHP) {
-    //                         enemy.play('nightBorneMinion_Death', true)
-    //                         this.physics.add.collider(enemy, this.floor);
-    //                         this.physics.add.collider(enemy, this.platformGroup);
-    //                         this.enemyGroup.remove(enemy)
-    //                         this.gold += Phaser.Math.Between(0, this.baseGoldDrop * 0.075 * this.level)
-
-    //                         enemy.once('animationcomplete', function (anim, frame) {
-    //                             enemy.emit('animationcomplete_' + anim.key, frame)
-    //                         }, enemy)
-    //                         enemy.once('animationcomplete_nightBorneMinion_Death', function () {
-
-    //                             //enemy.setActive(false)
-    //                             //enemy.setVisible(false)
-    //                             //enemy.x = -screenWidth * 0.25
-    //                             enemy.destroy()
-
-    //                         }, this)
-    //                     } else {
-    //                         enemy.play('nightBorneMinion_Idle', true)
-    //                     }
-
-    //                 }, this)
-    //             } else if (enemy.type == 2) {
-    //                 enemy.play('nightBorne_Hurt', true)
-
-    //                 if (Phaser.Math.Between(0, 100) <= 15) {
-    //                     if (this.playerAttackCrit > 1) {
-    //                         if (Phaser.Math.Between(0, 100) <= 10) {
-    //                             this.sound.play('nightBorneTakeHeavyDamage3')
-    //                         } else if (Phaser.Math.Between(0, 100) <= 25) {
-    //                             this.sound.play('nightBorneTakeHeavyDamage2')
-    //                         } else {
-    //                             this.sound.play('nightBorneTakeHeavyDamage1')
-    //                         }
-    //                     } else {
-    //                         if (Phaser.Math.Between(0, 100) <= 10) {
-    //                             this.sound.play('nightBorneTakeLightDamage3')
-    //                         } else if (Phaser.Math.Between(0, 100) <= 25) {
-    //                             this.sound.play('nightBorneTakeLightDamage2')
-    //                         } else {
-    //                             this.sound.play('nightBorneTakeLightDamage1')
-    //                         }
-    //                     }
-    //                 }
-
-    //                 enemy.once('animationcomplete', function (anim, frame) {
-    //                     enemy.emit('animationcomplete_' + anim.key, frame)
-    //                 }, enemy)
-    //                 enemy.once('animationcomplete_nightBorne_Hurt', function () {
-    //                     enemy.isHit = false
-    //                     enemy.setVelocityX(0)
-    //                     if (this.gameMode == 0) {
-    //                         enemy.hitsTaken += enemy.hitHP
-    //                     } else {
-
-    //                         enemy.hitsTaken += this.playerAttackPower
-    //                     }
-    //                     if (enemy.hitsTaken >= enemy.hitHP) {
-    //                         enemy.play('nightBorne_Death', true)
-
-    //                         this.sound.play('nightBorneTakeHeavyDamage2')
-    //                         this.physics.add.collider(enemy, this.floor);
-    //                         this.physics.add.collider(enemy, this.platformGroup);
-    //                         this.enemyGroup.remove(enemy)
-    //                         this.gold += Phaser.Math.Between(this.baseGoldDrop * 0.05 * this.level, this.baseGoldDrop * 0.15 * this.level)
-    //                         enemy.once('animationcomplete', function (anim, frame) {
-    //                             enemy.emit('animationcomplete_' + anim.key, frame)
-    //                         }, enemy)
-    //                         enemy.once('animationcomplete_nightBorne_Death', function () {
-
-    //                             // enemy.setActive(false)
-    //                             // enemy.setVisible(false)
-    //                             // enemy.x = -screenWidth * 0.25
-
-    //                             enemy.destroy()
-
-    //                         }, this)
-    //                     } else {
-    //                         enemy.play('nightBorne_Idle', true)
-    //                     }
-
-    //                 }, this)
-    //             }
-
-    //             this.targetRemainingEnemyHP = enemy.hitHP - enemy.hitsTaken
-
-
-    //         }
-    //     }
-
-    // }
+                     
 
     playerProjectileCleanUp(){
         this.playerProjectiles.children.iterate(function (p) {
