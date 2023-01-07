@@ -2747,9 +2747,23 @@ class Simulacrum extends Phaser.Scene {
             this.battleModeIcon.y = this.camera.worldView.y + (screenHeight * 0.1)
         }
 
+        // Objective Text
+        this.objectiveText.x = this.battleModeIcon.x
+        this.objectiveText.y = this.battleModeIcon.y + this.battleModeIcon.displayHeight * 0.75
+        if(this.stage.checkPointType == 2){
+            this.objectiveText.setText('Survive the Horde')
+            this.battleModeIcon.setActive(1).setVisible(1)
+        } else if (this.gameMode == 1){
+            this.objectiveText.setText('Clear all enemies')
+            this.battleModeIcon.setActive(1).setVisible(1)
+        } else {
+            this.objectiveText.setText()
+            this.battleModeIcon.setActive(0).setVisible(0)
+        }
+
         // Status Border
 
-        if (!this.stageProgressEnabled) {
+        if (this.stageProgressEnabled) {
             this.r3.setActive(1).setVisible(1)
 
         } else {
@@ -3011,6 +3025,10 @@ class Simulacrum extends Phaser.Scene {
 
             }
         })
+
+        // Objective Text
+        this.objectiveText = this.add.text(0, 0)
+        .setFontFamily('Arial').setFontSize(24 * (scaleModX)).setDepth(5).setOrigin(0.5, 0.5);
         
         // Status Border
 
