@@ -657,7 +657,7 @@ class Badlands extends Phaser.Scene {
         // Stage 
         this.stage.nextCheckPoint = 1
         this.stage.chaserTimer = 8000
-        this.stage.hordeTimer = 8000
+        this.stage.hordeTimer = 4000
         this.stage.maxHordeSize = 20
         this.stage.hordeDifficultyModifier = 1
         this.stage.enemiesDefeated = 0
@@ -673,7 +673,7 @@ class Badlands extends Phaser.Scene {
 
         console.log(this.stage.enemyAnimationsKey)
 
-        this.stageData.availableCheckPoints = [1,2]
+        this.stageData.availableCheckPoints = [2]
        
 
         this.checkPointTimer = this.time.addEvent({ delay: 0, callback: this.updateCheckPointStatus, args: [], callbackScope: this, repeat: 0 });
@@ -1367,7 +1367,7 @@ class Badlands extends Phaser.Scene {
         if (this.gameMode == 0 && this.stageProgressEnabled) {
 
             this.baseProgressRate = (this.baseZoneLength / this.baseZoneClearTime) / 60
-            this.progress += this.baseProgressRate * this.playerSpeed * 4
+            this.progress += this.baseProgressRate * this.playerSpeed * 1
 
             // Glory Modifier
             if (this.player.x > this.camera.scrollX + (screenWidth * 0.6)) {
@@ -1476,7 +1476,7 @@ class Badlands extends Phaser.Scene {
         if (this.stage.checkPointType === 1) {
             this.gameMode = 0;
             this.checkPointIcon = 'chaser-checkpoint-icon'
-            this.spawnChaser()
+            //this.spawnChaser()
         } else if (this.stage.checkPointType === 2) {
             //this.spawningHordeEnemy = true
             this.speedCheckOverride = 1
@@ -1560,7 +1560,7 @@ class Badlands extends Phaser.Scene {
                 }
 
                 if(this.enemyGroup.getTotalFree() > 0){
-                    this.spawnChaser()
+                    //this.spawnChaser()
                 }
             } else { // Stub
                 // Checkpoint complete
@@ -1586,24 +1586,25 @@ class Badlands extends Phaser.Scene {
 
         } else if (this.stage.checkPointType === 2) {
             if (this.enemyGroup.maxSize > 1) { 
-                if(this.enemyGroup.getTotalUsed() > 0.5 * this.enemyGroup.maxSize || this.stage.enemiesDefeated < this.enemyGroup.maxSize ){
+                if(this.enemyGroup.getTotalUsed() > 0.5 * this.enemyGroup.maxSize || this.stage.enemiesDefeated < this.enemyGroup.maxSize){
                     if (this.stage.hordeDifficultyModifier < 10){
                         if (this.enemyGroup.getTotalUsed() > 0.8 * this.enemyGroup.maxSize){
-                            this.stage.hordeDifficultyModifier *= Phaser.Math.FloatBetween(1.1,1.15);
+                            this.stage.hordeDifficultyModifier *= Phaser.Math.FloatBetween(1.05,1.075);
                         } else {
-                            this.stage.hordeDifficultyModifier *= Phaser.Math.FloatBetween(1.05,1.1);
+                            this.stage.hordeDifficultyModifier *= Phaser.Math.FloatBetween(1.025,1.05);
                         }
                     }
                 } else {
                     if (this.enemyGroup.getTotalUsed() < 0.25 * this.enemyGroup.maxSize){
-                        this.enemyGroup.maxSize -= 3 
+                        this.enemyGroup.maxSize -= Math.min(2,this.enemyGroup.maxSize) 
                     } else {
-                        this.enemyGroup.maxSize -= 2 
+                        this.enemyGroup.maxSize -= Math.min(1,this.enemyGroup.maxSize)  
                     }
                 }
 
                 if(this.enemyGroup.getTotalFree() > 0){
                     this.spawnHorde()
+                    this.stage.hordeDifficultyModifier *= Phaser.Math.FloatBetween(1.025,1.05);
                 }
             } else if (this.enemyGroup.getTotalUsed() == 0) { // Stub
                 // Checkpoint complete
@@ -1752,8 +1753,8 @@ class Badlands extends Phaser.Scene {
             rarityChanceArray = [15,75,100]
         }
 
-        // Spawns Random X number ranging from 0 to remaining space in horde maxSize 
-        for (var i = 0; i < Phaser.Math.Between(1,this.enemyGroup.getTotalFree()); i++){
+        // Spawns Random X number ranging from 0 to 50% of remaining space in horde maxSize 
+        for (var i = 0; i < Phaser.Math.Between(1,this.enemyGroup.getTotalFree() * 0.25); i++){
     
             var hordeMember = this.enemyGroup.get()
             // Set Enemy Type
@@ -1851,7 +1852,6 @@ class Badlands extends Phaser.Scene {
 
     }
 
-    // Stub - to be merged with Horde and Chaser
     spawnEnemy(){
 
         if (this.enemyGroup.getTotalFree() > 0 && this.gameMode == 0) {
@@ -1860,9 +1860,7 @@ class Badlands extends Phaser.Scene {
             } else {
                 this.enemyTimer.delay = Phaser.Math.Between((this.baseEnemySpawnTime * (60 / this.musicBPM) * 2000) * 0.8, (this.baseEnemySpawnTime * (60 / this.musicBPM) * 2000) * 1.2)   
             }
-        
-        
-        
+
         var rarityChanceArray
 
         if (Math.round(this.stage.hordeDifficultyModifier) < 2){
@@ -1878,91 +1876,100 @@ class Badlands extends Phaser.Scene {
         // Spawns Random X number ranging from 0 to remaining space in horde maxSize 
         for (var i = 0; i < Phaser.Math.Between(0,this.enemyGroup.getTotalFree() * 0.25); i++){
     
-            var normalMember = this.enemyGroup.get()
+            var spawnedEnemy = this.enemyGroup.get()
             // Set Enemy Type
-            normalMember.type = 'Normal'
+            if(Phaser.Math.Between(0,100) <= 30){
+                spawnedEnemy.type = 'Chaser'
+            } else {
+                spawnedEnemy.type = 'Normal'
+            }
+
 
             // Set Difficulty Mod
-            normalMember.difficultyMod = this.stage.hordeDifficultyModifier
+            spawnedEnemy.difficultyMod = this.stage.hordeDifficultyModifier
 
             // Set Rarity
             // Roll for Mythical (Rarity 4)
             if(Phaser.Math.Between(0,100) <= rarityChanceArray[1]){
-                normalMember.rarity = 4
-                normalMember.animationKey = this.stage.enemyAnimationsKey.mythical
-                normalMember.setOrigin(0.5, 1)
-                normalMember.body.setSize(25, 25).setOffset(25, 37.5)
-                normalMember.setScale(Phaser.Math.FloatBetween(7.5, 8.5)) 
-                normalMember.resilienceCapacity = Phaser.Math.Between(400, 800) * (1 + (0.1 * normalMember.difficultyMod))
+                spawnedEnemy.rarity = 4
+                spawnedEnemy.animationKey = this.stage.enemyAnimationsKey.mythical
+                spawnedEnemy.setOrigin(0.5, 1)
+                spawnedEnemy.body.setSize(25, 25).setOffset(25, 37.5)
+                spawnedEnemy.setScale(Phaser.Math.FloatBetween(7.5, 8.5)) 
+                spawnedEnemy.resilienceCapacity = Phaser.Math.Between(650, 1300) * (1 + (0.1 * spawnedEnemy.difficultyMod))
 
                 // stub
-                normalMember.attackCollisionStartFrame = 10
-                normalMember.attackCollisionEndFrame = 11
+                spawnedEnemy.attackCollisionStartFrame = 10
+                spawnedEnemy.attackCollisionEndFrame = 11
  
             } else 
             // Roll for Rare (Rarity 3)
             if(Phaser.Math.Between(0,100) <= rarityChanceArray[2]){
-                normalMember.rarity = 3
-                normalMember.animationKey = this.stage.enemyAnimationsKey.rare
-                normalMember.setOrigin(0.5, 1)
-                normalMember.body.setSize(25, 25).setOffset(25, 37.5)
-                normalMember.setScale(Phaser.Math.FloatBetween(7.5, 8.5)) 
-                normalMember.resilienceCapacity = Phaser.Math.Between(400, 800) * (1 + (0.1 * normalMember.difficultyMod))
+                spawnedEnemy.rarity = 3
+                spawnedEnemy.animationKey = this.stage.enemyAnimationsKey.rare
+                spawnedEnemy.setOrigin(0.5, 1)
+                spawnedEnemy.body.setSize(25, 25).setOffset(25, 37.5)
+                spawnedEnemy.setScale(Phaser.Math.FloatBetween(7.5, 8.5)) 
+                spawnedEnemy.resilienceCapacity = Phaser.Math.Between(500, 1000) * (1 + (0.1 * spawnedEnemy.difficultyMod))
 
                 // stub
-                normalMember.attackCollisionStartFrame = 10
-                normalMember.attackCollisionEndFrame = 11
+                spawnedEnemy.attackCollisionStartFrame = 10
+                spawnedEnemy.attackCollisionEndFrame = 11
 
             } else 
             // Roll for Uncommon (Rarity 2)
             if(Phaser.Math.Between(0,100) <= rarityChanceArray[3]){
-                normalMember.rarity = 2
-                normalMember.animationKey = this.stage.enemyAnimationsKey.uncommon
-                normalMember.setOrigin(0.5,0.5)
-                normalMember.body.setSize(25, 25).setOffset(25, 37.5)
-                normalMember.setScale(Phaser.Math.FloatBetween(2.5, 3)) 
-                normalMember.resilienceCapacity = Phaser.Math.Between(200, 400) * (1 + (0.1 * normalMember.difficultyMod))
+                spawnedEnemy.rarity = 2
+                spawnedEnemy.animationKey = this.stage.enemyAnimationsKey.uncommon
+                spawnedEnemy.setOrigin(0.5,0.5)
+                spawnedEnemy.body.setSize(25, 25).setOffset(25, 37.5)
+                spawnedEnemy.setScale(Phaser.Math.FloatBetween(2.5, 3)) 
+                spawnedEnemy.resilienceCapacity = Phaser.Math.Between(300, 600) * (1 + (0.1 * spawnedEnemy.difficultyMod))
 
                 // stub
-                normalMember.attackCollisionStartFrame = 5
-                normalMember.attackCollisionEndFrame = 7
+                spawnedEnemy.attackCollisionStartFrame = 5
+                spawnedEnemy.attackCollisionEndFrame = 7
       
             } else 
             // Set to Common (Rarity 1)
             {
-                normalMember.rarity = 1
-                normalMember.animationKey = this.stage.enemyAnimationsKey.common
-                normalMember.setOrigin(0.5, 0.5)
-                normalMember.setScale(Phaser.Math.FloatBetween(2.5, 3)) 
-                normalMember.resilienceCapacity = Phaser.Math.Between(100, 300) * (1 + (0.1 * normalMember.difficultyMod))
+                spawnedEnemy.rarity = 1
+                spawnedEnemy.animationKey = this.stage.enemyAnimationsKey.common
+                spawnedEnemy.setOrigin(0.5, 0.5)
+                spawnedEnemy.setScale(Phaser.Math.FloatBetween(2.5, 3)) 
+                spawnedEnemy.resilienceCapacity = Phaser.Math.Between(150, 300) * (1 + (0.1 * spawnedEnemy.difficultyMod))
 
                 // stub
-                normalMember.attackCollisionStartFrame = 5
-                normalMember.attackCollisionEndFrame = 7
+                spawnedEnemy.attackCollisionStartFrame = 5
+                spawnedEnemy.attackCollisionEndFrame = 7
                 
             }
 
             
 
             // Set Start Position
+            if(spawnedEnemy.type == 'Normal'){
+                spawnedEnemy.x = Phaser.Math.Between(screenWidth * 3 + (this.player.x -  (screenWidth * 2)), screenWidth * 4 )  
+                spawnedEnemy.y = Phaser.Math.Between(screenHeight * 0.25,screenHeight * 0.75)
+                spawnedEnemy.play(spawnedEnemy.animationKey + '_Idle',true)
+            } else if (spawnedEnemy.type == 'Chaser') {
+                spawnedEnemy.x = this.camera.scrollX - Phaser.Math.Between((screenWidth * 0.05), (screenWidth * 0.75) )  
+                spawnedEnemy.y = Phaser.Math.Between(screenHeight * 0.25,screenHeight * 0.75)
+                spawnedEnemy.play(spawnedEnemy.animationKey + '_Move',true)
+            }
       
-            normalMember.x = Phaser.Math.Between(screenWidth * 3 + (this.player.x -  (screenWidth * 2)), screenWidth * 4 )  
-            normalMember.y = Phaser.Math.Between(screenHeight * 0.25,screenHeight * 0.75)
-
-                
-            normalMember.play(normalMember.animationKey + '_Idle',true)
-            normalMember.setPipeline('Light2D')
-            normalMember.body.setAllowGravity(true)
-            normalMember.isHit = false
-            normalMember.hitsTaken = 0
-            normalMember.canAct = true
-            normalMember.resilienceCurrent = normalMember.resilienceCapacity
-            normalMember.staminaCapacity = 100
-            normalMember.staminaCurrent = 100
-            normalMember.enragedLevel = 0
-            normalMember.attackRange = screenWidth * 0.1
-            normalMember.targetRange = this.player.x
-            normalMember.aggroRange = Phaser.Math.FloatBetween(normalMember.attackRange * 0.5,normalMember.attackRange * 1.5)
+            spawnedEnemy.setPipeline('Light2D')
+            spawnedEnemy.body.setAllowGravity(true)
+            spawnedEnemy.isHit = false
+            spawnedEnemy.hitsTaken = 0
+            spawnedEnemy.canAct = true
+            spawnedEnemy.resilienceCurrent = spawnedEnemy.resilienceCapacity
+            spawnedEnemy.staminaCapacity = 100
+            spawnedEnemy.staminaCurrent = 100
+            spawnedEnemy.enragedLevel = 0
+            spawnedEnemy.attackRange = screenWidth * 0.1
+            spawnedEnemy.targetRange = this.player.x
+            spawnedEnemy.aggroRange = Phaser.Math.FloatBetween(spawnedEnemy.attackRange * 0.5,spawnedEnemy.attackRange * 1.5)
 
         
         }
@@ -1971,115 +1978,115 @@ class Badlands extends Phaser.Scene {
     }
 
     // Stub - to be merged with Horde and Chaser
-    spawnChaser(){
+    // spawnChaser(){
 
-        if (this.enemyGroup.getTotalFree() > 0 && this.gameMode == 0) {
+    //     if (this.enemyGroup.getTotalFree() > 0 && this.gameMode == 0) {
         
-        var rarityChanceArray
+    //     var rarityChanceArray
 
-        if (Math.round(this.stage.hordeDifficultyModifier) < 2){
-            rarityChanceArray = [0,5,15]
-        } else if (Math.round(this.stage.hordeDifficultyModifier) < 3){
-            rarityChanceArray = [0,15,35]
-        } else if (Math.round(this.stage.hordeDifficultyModifier) < 4){
-            rarityChanceArray = [5,35,75]
-        } else {
-            rarityChanceArray = [15,75,100]
-        }
+    //     if (Math.round(this.stage.hordeDifficultyModifier) < 2){
+    //         rarityChanceArray = [0,5,15]
+    //     } else if (Math.round(this.stage.hordeDifficultyModifier) < 3){
+    //         rarityChanceArray = [0,15,35]
+    //     } else if (Math.round(this.stage.hordeDifficultyModifier) < 4){
+    //         rarityChanceArray = [5,35,75]
+    //     } else {
+    //         rarityChanceArray = [15,75,100]
+    //     }
 
-        // Spawns Random X number ranging from 0 to remaining space in horde maxSize 
-        for (var i = 0; i < Phaser.Math.Between(1,Math.min(this.enemyGroup.getTotalFree(),2)); i++){
+    //     // Spawns Random X number ranging from 0 to remaining space in horde maxSize 
+    //     for (var i = 0; i < Phaser.Math.Between(1,Math.min(this.enemyGroup.getTotalFree(),2)); i++){
     
-            var chaserEnemy = this.enemyGroup.get()
-            // Set Enemy Type
-            chaserEnemy.type = 'Chaser'
+    //         var chaserEnemy = this.enemyGroup.get()
+    //         // Set Enemy Type
+    //         chaserEnemy.type = 'Chaser'
 
-            // Set Difficulty Mod
-            chaserEnemy.difficultyMod = this.stage.hordeDifficultyModifier
+    //         // Set Difficulty Mod
+    //         chaserEnemy.difficultyMod = this.stage.hordeDifficultyModifier
 
-            // Set Rarity
-            // Roll for Mythical (Rarity 4)
-            if(Phaser.Math.Between(0,100) <= rarityChanceArray[1]){
-                chaserEnemy.rarity = 4
-                chaserEnemy.animationKey = this.stage.enemyAnimationsKey.mythical
-                chaserEnemy.setOrigin(0.5, 1)
-                chaserEnemy.body.setSize(25, 25).setOffset(25, 37.5)
-                chaserEnemy.setScale(Phaser.Math.FloatBetween(7.5, 8.5)) 
-                chaserEnemy.resilienceCapacity = Phaser.Math.Between(400, 800) * (1 + (0.1 * chaserEnemy.difficultyMod))
+    //         // Set Rarity
+    //         // Roll for Mythical (Rarity 4)
+    //         if(Phaser.Math.Between(0,100) <= rarityChanceArray[1]){
+    //             chaserEnemy.rarity = 4
+    //             chaserEnemy.animationKey = this.stage.enemyAnimationsKey.mythical
+    //             chaserEnemy.setOrigin(0.5, 1)
+    //             chaserEnemy.body.setSize(25, 25).setOffset(25, 37.5)
+    //             chaserEnemy.setScale(Phaser.Math.FloatBetween(7.5, 8.5)) 
+    //             chaserEnemy.resilienceCapacity = Phaser.Math.Between(400, 800) * (1 + (0.1 * chaserEnemy.difficultyMod))
 
-                // stub
-                chaserEnemy.attackCollisionStartFrame = 10
-                chaserEnemy.attackCollisionEndFrame = 11
+    //             // stub
+    //             chaserEnemy.attackCollisionStartFrame = 10
+    //             chaserEnemy.attackCollisionEndFrame = 11
  
-            } else 
-            // Roll for Rare (Rarity 3)
-            if(Phaser.Math.Between(0,100) <= rarityChanceArray[2]){
-                chaserEnemy.rarity = 3
-                chaserEnemy.animationKey = this.stage.enemyAnimationsKey.rare
-                chaserEnemy.setOrigin(0.5, 1)
-                chaserEnemy.body.setSize(25, 25).setOffset(25, 37.5)
-                chaserEnemy.setScale(Phaser.Math.FloatBetween(7.5, 8.5)) 
-                chaserEnemy.resilienceCapacity = Phaser.Math.Between(400, 800) * (1 + (0.1 * chaserEnemy.difficultyMod))
+    //         } else 
+    //         // Roll for Rare (Rarity 3)
+    //         if(Phaser.Math.Between(0,100) <= rarityChanceArray[2]){
+    //             chaserEnemy.rarity = 3
+    //             chaserEnemy.animationKey = this.stage.enemyAnimationsKey.rare
+    //             chaserEnemy.setOrigin(0.5, 1)
+    //             chaserEnemy.body.setSize(25, 25).setOffset(25, 37.5)
+    //             chaserEnemy.setScale(Phaser.Math.FloatBetween(7.5, 8.5)) 
+    //             chaserEnemy.resilienceCapacity = Phaser.Math.Between(400, 800) * (1 + (0.1 * chaserEnemy.difficultyMod))
 
-                // stub
-                chaserEnemy.attackCollisionStartFrame = 10
-                chaserEnemy.attackCollisionEndFrame = 11
+    //             // stub
+    //             chaserEnemy.attackCollisionStartFrame = 10
+    //             chaserEnemy.attackCollisionEndFrame = 11
 
-            } else 
-            // Roll for Uncommon (Rarity 2)
-            if(Phaser.Math.Between(0,100) <= rarityChanceArray[3]){
-                chaserEnemy.rarity = 2
-                chaserEnemy.animationKey = this.stage.enemyAnimationsKey.uncommon
-                chaserEnemy.setOrigin(0.5,0.5)
-                chaserEnemy.body.setSize(25, 25).setOffset(25, 37.5)
-                chaserEnemy.setScale(Phaser.Math.FloatBetween(2.5, 3)) 
-                chaserEnemy.resilienceCapacity = Phaser.Math.Between(200, 400) * (1 + (0.1 * chaserEnemy.difficultyMod))
+    //         } else 
+    //         // Roll for Uncommon (Rarity 2)
+    //         if(Phaser.Math.Between(0,100) <= rarityChanceArray[3]){
+    //             chaserEnemy.rarity = 2
+    //             chaserEnemy.animationKey = this.stage.enemyAnimationsKey.uncommon
+    //             chaserEnemy.setOrigin(0.5,0.5)
+    //             chaserEnemy.body.setSize(25, 25).setOffset(25, 37.5)
+    //             chaserEnemy.setScale(Phaser.Math.FloatBetween(2.5, 3)) 
+    //             chaserEnemy.resilienceCapacity = Phaser.Math.Between(200, 400) * (1 + (0.1 * chaserEnemy.difficultyMod))
 
-                // stub
-                chaserEnemy.attackCollisionStartFrame = 5
-                chaserEnemy.attackCollisionEndFrame = 7
+    //             // stub
+    //             chaserEnemy.attackCollisionStartFrame = 5
+    //             chaserEnemy.attackCollisionEndFrame = 7
       
-            } else 
-            // Set to Common (Rarity 1)
-            {
-                chaserEnemy.rarity = 1
-                chaserEnemy.animationKey = this.stage.enemyAnimationsKey.common
-                chaserEnemy.setOrigin(0.5, 0.5)
-                chaserEnemy.setScale(Phaser.Math.FloatBetween(2.5, 3)) 
-                chaserEnemy.resilienceCapacity = Phaser.Math.Between(100, 300) * (1 + (0.1 * chaserEnemy.difficultyMod))
+    //         } else 
+    //         // Set to Common (Rarity 1)
+    //         {
+    //             chaserEnemy.rarity = 1
+    //             chaserEnemy.animationKey = this.stage.enemyAnimationsKey.common
+    //             chaserEnemy.setOrigin(0.5, 0.5)
+    //             chaserEnemy.setScale(Phaser.Math.FloatBetween(2.5, 3)) 
+    //             chaserEnemy.resilienceCapacity = Phaser.Math.Between(100, 300) * (1 + (0.1 * chaserEnemy.difficultyMod))
 
-                // stub
-                chaserEnemy.attackCollisionStartFrame = 5
-                chaserEnemy.attackCollisionEndFrame = 7
+    //             // stub
+    //             chaserEnemy.attackCollisionStartFrame = 5
+    //             chaserEnemy.attackCollisionEndFrame = 7
                 
-            }
+    //         }
 
             
 
-            // Set Start Position
+    //         // Set Start Position
       
-            chaserEnemy.x = this.camera.scrollX - Phaser.Math.Between((screenWidth * 0.05), (screenWidth * 0.75) )  
-            chaserEnemy.y = Phaser.Math.Between(screenHeight * 0.25,screenHeight * 0.75)
-                
-            chaserEnemy.play(chaserEnemy.animationKey + '_Move',true)
-            chaserEnemy.setPipeline('Light2D')
-            chaserEnemy.body.setAllowGravity(true)
-            chaserEnemy.isHit = false
-            chaserEnemy.hitsTaken = 0
-            chaserEnemy.canAct = true
-            chaserEnemy.resilienceCurrent = chaserEnemy.resilienceCapacity
-            chaserEnemy.staminaCapacity = 100
-            chaserEnemy.staminaCurrent = 100
-            chaserEnemy.enragedLevel = 0
-            chaserEnemy.attackRange = screenWidth * 0.1
-            chaserEnemy.targetRange = this.player.x
-            chaserEnemy.aggroRange = Phaser.Math.FloatBetween(chaserEnemy.attackRange * 0.5,chaserEnemy.attackRange * 1.5)
+    //         chaserEnemy.x = this.camera.scrollX - Phaser.Math.Between((screenWidth * 0.05), (screenWidth * 0.75) )  
+    //         chaserEnemy.y = Phaser.Math.Between(screenHeight * 0.25,screenHeight * 0.75)
+    //         chaserEnemy.play(chaserEnemy.animationKey + '_Move',true)
+
+    //         chaserEnemy.setPipeline('Light2D')
+    //         chaserEnemy.body.setAllowGravity(true)
+    //         chaserEnemy.isHit = false
+    //         chaserEnemy.hitsTaken = 0
+    //         chaserEnemy.canAct = true
+    //         chaserEnemy.resilienceCurrent = chaserEnemy.resilienceCapacity
+    //         chaserEnemy.staminaCapacity = 100
+    //         chaserEnemy.staminaCurrent = 100
+    //         chaserEnemy.enragedLevel = 0
+    //         chaserEnemy.attackRange = screenWidth * 0.1
+    //         chaserEnemy.targetRange = this.player.x
+    //         chaserEnemy.aggroRange = Phaser.Math.FloatBetween(chaserEnemy.attackRange * 0.5,chaserEnemy.attackRange * 1.5)
 
         
-        }
+    //     }
 
-    }
-    }
+    // }
+    // }
 
 
     enemyTakeHit(damageSource, enemy) {
@@ -2446,15 +2453,6 @@ class Badlands extends Phaser.Scene {
                         if (enemy.x < this.camera.scrollX - screenWidth || enemy.x < this.camera.scrollX && enemy.staminaCurrent <= 0 || enemy.y > screenHeight * 1.25) {
                             enemy.destroy()
                         }
-
-                        // if (enemy.x < this.camera.scrollX - (screenWidth * (0.1 * this.stage.hordeDifficultyModifier))) {
-                        //     if(this.enemyGroup.maxSize > 5){
-                        //         enemy.chaserStatus = 'chasing'
-                        //         enemy.staminaCurrent -= 0.125
-
-                        //     }
-                            
-                        // }
 
                         if (enemy.staminaCurrent > 95) {
     
@@ -4064,7 +4062,7 @@ class Badlands extends Phaser.Scene {
                 this.baseJumpHeight = -1500 - 100 * this.player.staminaBonusPercent
                 this.baseHangTime = 0.12 + 3  * this.player.staminaBonusPercent
                 this.baseMinHangHeight = 0.2
-                this.baseDashDistance = screenWidth * 0.2
+                this.baseDashDistance = screenWidth * 0.15
                 this.baseDashTime = 500
     
             // Energy Efficency Parameters
@@ -5111,7 +5109,6 @@ class Badlands extends Phaser.Scene {
                                         this.movementMod * 0.5
             }
         }
-
 
 
     update(time, delta) {
