@@ -189,9 +189,15 @@ class DataModule extends Phaser.Scene {
         // Get Base Stats from DB - Base_Data_EndPoint
             async getBaseStats() {
 
-                var baseVitals = 100
-                var maxBonus = baseVitals * 1
-                var lifeMod = 0.5
+                var baseVitals_Resilience = 300
+                var maxBonus_Resilience = baseVitals_Resilience * 0.5
+
+                var baseVitals_Focus = 100
+                var maxBonus_Focus = baseVitals_Focus * 1
+
+                var baseVitals_Stamina = 100
+                var maxBonus_Stamina = baseVitals_Stamina * 1
+
                 var timeToFillVitals = 4 // Seconds
 
                 var baseActionPower = 1
@@ -201,15 +207,15 @@ class DataModule extends Phaser.Scene {
 
 
                 var importedBaseData = {
-                    lifeCapacity: baseVitals * lifeMod,
-                    lifeCapacityBonusMax: maxBonus * lifeMod,
+                    lifeCapacity: baseVitals_Resilience, //* lifeMod,
+                    lifeCapacityBonusMax: maxBonus_Resilience,
                     lifeRegen: 0,
-                    focusCapacity: baseVitals,
-                    focusCapacityBonusMax: maxBonus,
-                    focusRegen: (baseVitals / (timeToFillVitals * 60)) * 0.3,
-                    staminaCapacity: baseVitals,
-                    staminaCapacityBonusMax: maxBonus,
-                    staminaRegen: baseVitals / (timeToFillVitals * 60),
+                    focusCapacity: baseVitals_Focus,
+                    focusCapacityBonusMax: maxBonus_Focus,
+                    focusRegen: (baseVitals_Focus / (timeToFillVitals * 60)) * 0.3,
+                    staminaCapacity: baseVitals_Stamina,
+                    staminaCapacityBonusMax: maxBonus_Stamina,
+                    staminaRegen: baseVitals_Stamina / (timeToFillVitals * 60),
                     actionPower: baseActionPower,
                     skillPower: baseSkillPower,
                     critChance: baseCritChance,

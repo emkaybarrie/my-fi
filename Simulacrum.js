@@ -973,12 +973,16 @@ class Simulacrum extends Phaser.Scene {
         this.player.focusCurrent = this.player.focusCapacity * Math.min(1, avatarData.focusCapacityBonusPercent)
 
         this.player.focusRegen = baseData.focusRegen * avatarData.focusRegenModifier;
+
+        this.player.focusBonusPercent = avatarData.focusCapacityBonusPercent
         // Stamina
         this.player.staminaCapacity = baseData.staminaCapacity + (baseData.staminaCapacityBonusMax * avatarData.staminaCapacityBonusPercent);
 
         this.player.staminaCurrent = this.player.staminaCapacity * Math.min(1, avatarData.staminaCapacityBonusPercent)
 
         this.player.staminaRegen = baseData.staminaRegen * avatarData.staminaRegenModifier;
+
+        this.player.staminaBonusPercent = avatarData.staminaCapacityBonusPercent
 
         // Damage
 
@@ -1334,9 +1338,9 @@ class Simulacrum extends Phaser.Scene {
         if (this.stage.checkPointType === 1) {
 
             if (this.enemyGroup.maxSize > 1) { 
-                if(this.player.x < this.camera.scrollX + screenWidth * 0.55 || this.playerSpeed <= 1){
+                if(this.playerSpeed <= 1.05){
                     if (this.stage.hordeDifficultyModifier < 10){
-                        if (this.player.x < this.camera.scrollX + screenWidth * 0.35){
+                        if (this.player.x < this.camera.scrollX + screenWidth * 0.55){
                             this.stage.hordeDifficultyModifier *= Phaser.Math.FloatBetween(1.1,1.15);
                         } else {
                             this.stage.hordeDifficultyModifier *= Phaser.Math.FloatBetween(1.05,1.1);
@@ -1344,16 +1348,16 @@ class Simulacrum extends Phaser.Scene {
                     }
                 } else {
                     if (this.player.x > this.camera.scrollX + screenWidth * 0.75 || this.playerSpeed >= 1.5){
-                        this.enemyGroup.maxSize -= 2 
+                        this.enemyGroup.maxSize -= 3 
                     } else {
-                        this.enemyGroup.maxSize -= 1 
+                        this.enemyGroup.maxSize -= 2 
                     }
                 }
 
                 if(this.enemyGroup.getTotalFree() > 0){
                     this.spawnChaser()
                 }
-            } else if (this.enemyGroup.getTotalUsed() == 0) { // Stub
+            } else { // Stub
                 // Checkpoint complete
                 this.camera.flash(500)
                 this.enemyGroup.children.each(function (enemy) {
@@ -1387,9 +1391,9 @@ class Simulacrum extends Phaser.Scene {
                     }
                 } else {
                     if (this.enemyGroup.getTotalUsed() < 0.25 * this.enemyGroup.maxSize){
-                        this.enemyGroup.maxSize -= 2 
+                        this.enemyGroup.maxSize -= 3 
                     } else {
-                        this.enemyGroup.maxSize -= 1 
+                        this.enemyGroup.maxSize -= 2 
                     }
                 }
 
@@ -1779,7 +1783,7 @@ class Simulacrum extends Phaser.Scene {
         }
 
         // Spawns Random X number ranging from 0 to remaining space in horde maxSize 
-        for (var i = 0; i < Phaser.Math.Between(0,Math.min(this.enemyGroup.getTotalFree(),2)); i++){
+        for (var i = 0; i < Phaser.Math.Between(1,Math.min(this.enemyGroup.getTotalFree(),2)); i++){
     
             var chaserEnemy = this.enemyGroup.get()
             // Set Enemy Type
@@ -1991,13 +1995,14 @@ class Simulacrum extends Phaser.Scene {
 
                     player.play({key:player.animations.take_hit,frameRate:10}, true)
                     player.setVelocityX(0)
+                    player.resilienceCurrent -= damage
 
                     player.once('animationcomplete', function (anim, frame) {
-                        player.emit('animationcomplete_' + anim.key, frame)
+                        player.emit('animationcomplete' + anim.key, frame)
                     }, player)
-                    player.once('animationcomplete_' + player.animations.take_hit, function () {
+                    player.once('animationcomplete' + player.animations.take_hit, function () {
 
-                        player.resilienceCurrent -= damage
+                        
    
                         if (player.resilienceCurrent <= 0) {
                             player.play(player.animations.downed, true)
@@ -2050,14 +2055,15 @@ class Simulacrum extends Phaser.Scene {
              }
 
              player.play({key:player.animations.block,frameRate:10}, true)
-                    player.setVelocityX(0)
+             player.setVelocityX(0)
+            player.staminaCurrent -= damage * 0.4
 
-                    player.once('animationcomplete', function (anim, frame) {
-                        player.emit('animationcomplete_' + anim.key, frame)
+                    player.once('animationstart', function (anim, frame) {
+                        player.emit('animationstart' + anim.key, frame)
                     }, player)
-                    player.once('animationcomplete_' + player.animations.take_hit, function () {
+                    player.once('animationstart' + player.animations.block, function () {
 
-                        player.staminaCurrent -= damage * 0.4
+                        
    
                         if (player.resilienceCurrent <= 0) {
                             player.play(player.animations.downed, true)
@@ -2219,15 +2225,15 @@ class Simulacrum extends Phaser.Scene {
                     if(enemy.type == 'Chaser'){
 
 
-                        if (enemy.x < this.player.x + screenWidth * 0.05 && enemy.chaserStatus != 'recovering' && enemy.staminaCurrent > 15){
+                        if (enemy.x < this.player.x + screenWidth * 0.05 && enemy.chaserStatus != 'recovering' && enemy.staminaCurrent > 0){
                             if (enemy.x < this.camera.scrollX){
                                 enemy.x += this.baseSpeed * (0.75 * this.stage.hordeDifficultyModifier) + (this.baseSpeed * (1 - this.playerSpeed))
                             } else {
-                                enemy.x += this.baseSpeed * (0.25 * this.stage.hordeDifficultyModifier) + (this.baseSpeed * (1 - this.playerSpeed))
+                                enemy.x += this.baseSpeed * (0.5 * this.stage.hordeDifficultyModifier) + (this.baseSpeed * (1 - this.playerSpeed))
                             }
-
-                            enemy.staminaCurrent -= 0.25
+                            enemy.staminaCurrent -= 0.2
                         } else {
+                            enemy.chaserStatus = 'recovering'
                             enemy.x -= this.baseSpeed * 1 * this.playerSpeed
                             enemy.staminaCurrent += 0.15
                         }
@@ -2236,12 +2242,20 @@ class Simulacrum extends Phaser.Scene {
                             enemy.destroy()
                         }
 
-                        if (enemy.x < this.camera.scrollX - (screenWidth * (0.1 * this.stage.hordeDifficultyModifier))) {
-                            if(this.enemyGroup.maxSize > 5){
-                                enemy.chaserStatus = 'chasing'
-                                enemy.staminaCurrent -= 0.125
+                        // if (enemy.x < this.camera.scrollX - (screenWidth * (0.1 * this.stage.hordeDifficultyModifier))) {
+                        //     if(this.enemyGroup.maxSize > 5){
+                        //         enemy.chaserStatus = 'chasing'
+                        //         enemy.staminaCurrent -= 0.125
 
-                            }
+                        //     }
+                            
+                        // }
+
+                        if (enemy.staminaCurrent > 95) {
+    
+                                enemy.chaserStatus = 'chasing'
+                                //enemy.staminaCurrent -= 0.125
+
                             
                         }
                     }
@@ -2398,7 +2412,7 @@ class Simulacrum extends Phaser.Scene {
                                 meleeAttackHitbox.body.setAllowGravity(false).setSize(200,100)
                                 meleeAttackHitbox.type = 'melee'
                                 meleeAttackHitbox.critDamage = 1.25
-                                meleeAttackHitbox.baseDamage = 5
+                                meleeAttackHitbox.baseDamage = 25
                                 meleeAttackHitbox.hitSmear = 'whiteHitSmear'
                                 meleeAttackHitbox.body.checkCollision.none = true
                                 meleeAttackHitbox.setTexture()
@@ -3676,6 +3690,7 @@ class Simulacrum extends Phaser.Scene {
 
                 if(enemy.type == 'Chaser'){
                     enemy.chaserStatus = 'recovering'
+                    enemy.staminaCurrent = 0
                     this.stage.hordeDifficultyModifier *= 1.005
                 }
 
@@ -3837,12 +3852,12 @@ class Simulacrum extends Phaser.Scene {
                     this.baseMomentumPercent = 0.5   
     
             // Base Stats
-                this.baseTopSpeed = 0.005
-                this.baseAttack1Speed = 16
-                this.baseAttack2Speed = 12
-                this.baseAttack3Speed = 10
-                this.baseJumpHeight = -1600
-                this.baseHangTime = 0.15
+                this.baseTopSpeed = 0.005 + 0.00125  * this.player.staminaBonusPercent
+                this.baseAttack1Speed = 16 + 4  * this.player.staminaBonusPercent
+                this.baseAttack2Speed = 12 + 4  * this.player.staminaBonusPercent
+                this.baseAttack3Speed = 10 + 4  * this.player.staminaBonusPercent
+                this.baseJumpHeight = -1500 - 100 * this.player.staminaBonusPercent
+                this.baseHangTime = 0.12 + 3  * this.player.staminaBonusPercent
                 this.baseMinHangHeight = 0.2
                 this.baseDashDistance = screenWidth * 0.2
                 this.baseDashTime = 500
@@ -4371,7 +4386,7 @@ class Simulacrum extends Phaser.Scene {
                             if(a2Held){
                                 if (!this.player.state.defending){
                                     this.player.state.defending = true
-                                    this.player.play({key:this.player.animations.block,frameRate: 8 + (8 * Math.abs(this.actionPower))},true)
+                                    this.player.play({key:this.player.animations.block,frameRate: 8 + (8  * Math.abs(this.actionPower))},true)
                                 } 
 
                                 if ((leftHeld || rightHeld) && !this.player.state.evading){
@@ -4389,7 +4404,7 @@ class Simulacrum extends Phaser.Scene {
                                         this.tweens.add({
                                             targets: this.player,
                                             x: this.player.x - ((this.baseDashDistance * this.baseDashDistancePercent) + (this.baseDashDistance * (1-this.baseDashDistancePercent) * this.actionPower)),
-                                            duration: ((this.baseDashTime * this.baseDashDistancePercent) + (this.baseDashTime * (1-this.baseDashDistancePercent) * (1-this.actionPower))),
+                                            duration: ((this.baseDashTime * this.baseDashDistancePercent) + (this.baseDashTime * (1-this.baseDashDistancePercent) * (1-this.player.staminaBonusPercent))),
                                             ease: Phaser.Math.Easing.Sine.Out,
                                             onUpdate: () => {
 
@@ -4401,7 +4416,7 @@ class Simulacrum extends Phaser.Scene {
                                         this.tweens.add({
                                             targets: this.player,
                                             x: this.player.x + ((this.baseDashDistance * this.baseDashDistancePercent) + (this.baseDashDistance * (1-this.baseDashDistancePercent) * this.actionPower)),
-                                            duration: ((this.baseDashTime * this.baseDashDistancePercent) + (this.baseDashTime * (1-this.baseDashDistancePercent) * (1-this.actionPower))),
+                                            duration: ((this.baseDashTime * this.baseDashDistancePercent) + (this.baseDashTime * (1-this.baseDashDistancePercent) * (1-this.player.staminaBonusPercent))),
                                             ease: Phaser.Math.Easing.Sine.Out,
                                             onUpdate: () => {
 
@@ -4410,7 +4425,7 @@ class Simulacrum extends Phaser.Scene {
                                     } 
 
                                     this.player.once('animationcomplete', function(){
-                                        this.player.play({key:this.player.animations.block,frameRate: 4 + (4 * Math.abs(this.actionPower))},true)
+                                        this.player.play({key:this.player.animations.block,frameRate: 4 + (4 * this.player.staminaBonusPercent)},true)
                                          this.player.once('animationcomplete', function(){
                                              this.player.state.evading = false
                                          },this)
@@ -4445,7 +4460,7 @@ class Simulacrum extends Phaser.Scene {
                                     this.playerAttackHitSmear = 'deadlyCombatAssaultHitSmear'  
                                     this.playerAttackHitBox.setScale(1)
                                     this.player.state.skillCounter += 1
-                                    this.skillFrameRate = (8 + 2 * this.skillPower) * (1 + (this.player.state.skillCounter * 0.25))
+                                    this.skillFrameRate = (8 + 4  * this.player.focusBonusPercent) * (1 + (this.player.state.skillCounter * 0.25))
                                     this.critChance = 0.05 * (1 + (this.player.state.skillCounter * 0.05))
                                     if(this.player.flipX){
                                         this.nextXDest = this.player.x - screenWidth * 0.1
@@ -4533,7 +4548,7 @@ class Simulacrum extends Phaser.Scene {
                                     this.player.once('animationcomplete', function(){
                                        this.player.state.casting = false
                                     },this)
-                                    this.skillFrameRate = 6 + 6 * this.skillPower
+                                    this.skillFrameRate = 6 + 6 * this.player.focusBonusPercent
                                     this.player.play({key:this.player.animations.cast,yoyo: true,frameRate: this.skillFrameRate},true)
 
                                    // Load Skill Parameters
@@ -4821,23 +4836,23 @@ class Simulacrum extends Phaser.Scene {
                 if (leftHeld){
                     if (this.playerBattleSpeed > 0){
                         this.playerBattleSpeed -= (this.baseMomentumGainPivot * this.baseMomentumPercentPivot) + 
-                                                (this.baseMomentumGainPivot * (1 - this.baseMomentumPercentPivot) * this.actionPower) 
+                                                (this.baseMomentumGainPivot * (1 - this.baseMomentumPercentPivot) * this.player.staminaBonusPercent) 
                     } else 
     
                     if (this.playerBattleSpeed > -1.5){
                         this.playerBattleSpeed -= (this.baseMomentumGain * this.baseMomentumPercent) + 
-                                                    (this.baseMomentumGain * (1 - this.baseMomentumPercent) * this.actionPower) 
+                                                    (this.baseMomentumGain * (1 - this.baseMomentumPercent) * this.player.staminaBonusPercent) 
                     }
                 } else if (rightHeld){
                     
                         if (this.playerBattleSpeed < 0){
                             this.playerBattleSpeed += (this.baseMomentumGainPivot * this.baseMomentumPercentPivot) + 
-                                                    (this.baseMomentumGainPivot * (1 - this.baseMomentumPercentPivot) * this.actionPower) 
+                                                    (this.baseMomentumGainPivot * (1 - this.baseMomentumPercentPivot) * this.player.staminaBonusPercent) 
                         } else 
     
                         if (this.playerBattleSpeed < 1.5){
                             this.playerBattleSpeed += (this.baseMomentumGain * this.baseMomentumPercent) + 
-                                                        (this.baseMomentumGain * (1 - this.baseMomentumPercent) * this.actionPower) 
+                                                        (this.baseMomentumGain * (1 - this.baseMomentumPercent) * this.player.staminaBonusPercent) 
                         }
                     
                 }
