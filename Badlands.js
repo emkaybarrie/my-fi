@@ -2366,7 +2366,7 @@ class Badlands extends Phaser.Scene {
             }
 
             // Lock on Code
-            if (enemy) {
+            if (enemy.attacking) {
                 // Enables enemy to automatically face and move towards player
                // if (Math.abs(e.x - this.player.x) <= screenWidth * 0.1) {
                     //&& Math.abs(e.y - this.player.y) <= screenHeight * 0.25 
