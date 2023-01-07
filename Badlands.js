@@ -3914,17 +3914,21 @@ class Badlands extends Phaser.Scene {
 
                 this.physics.world.setBounds(screenWidth, 0, screenWidth * 2, screenHeight)
             } else {
-                if(this.playerSpeed > this.speedCheckThreshold){
-                this.playerSpeed -= 0.04
-                }
-                this.player.resilienceCurrent -= 0.5
-                this.glory -= 0.5
                 this.playerIsHit = true
 
                 if(enemy.type == 'Chaser'){
+
+                    this.playerSpeed -= 0.25
+                    this.player.resilienceCurrent -= 25
+                    this.glory -= 25
+
                     enemy.chaserStatus = 'recovering'
                     enemy.staminaCurrent = 0
                     this.stage.hordeDifficultyModifier *= 1.005
+                } else {
+                    this.playerSpeed -= 0.04
+                    this.player.resilienceCurrent -= 0.5
+                    this.glory -= 0.5
                 }
 
             }
