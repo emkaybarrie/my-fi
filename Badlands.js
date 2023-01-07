@@ -1463,7 +1463,7 @@ class Badlands extends Phaser.Scene {
         // Set stageProgressEnabled to false
         this.stageProgressEnabled = false;
         //this.camera.flash(500,255,0,0)
-        this.camera.flash(500)
+        this.camera.flash(1000)
 
         // Choose a random entry from this.stageData.availableCheckPoints
         const randomIndex = Math.floor(Math.random() * this.stageData.availableCheckPoints.length);
