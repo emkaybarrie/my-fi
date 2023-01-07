@@ -189,6 +189,8 @@ class DataModule extends Phaser.Scene {
         // Get Base Stats from DB - Base_Data_EndPoint
             async getBaseStats() {
 
+                var averageCashInterestRate = 0.02
+
                 var baseVitals_Resilience = 300
                 var maxBonus_Resilience = baseVitals_Resilience * 0.5
 
@@ -209,7 +211,8 @@ class DataModule extends Phaser.Scene {
                 var importedBaseData = {
                     lifeCapacity: baseVitals_Resilience, //* lifeMod,
                     lifeCapacityBonusMax: maxBonus_Resilience,
-                    lifeRegen: 0,
+                    lifeRegen: (baseVitals_Resilience / (timeToFillVitals * 60)) * (averageCashInterestRate/12),
+                    lifeEmergencyRegen:(baseVitals_Resilience / (timeToFillVitals * 60)) * (0.6/12),
                     focusCapacity: baseVitals_Focus,
                     focusCapacityBonusMax: maxBonus_Focus,
                     focusRegen: (baseVitals_Focus / (timeToFillVitals * 60)) * 0.3,

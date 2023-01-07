@@ -391,6 +391,20 @@ class Badlands extends Phaser.Scene {
         this.load.audio("playerHit5", ["assets/sFX/Player/playerHit5.wav"]);
         this.load.audio("playerHit6", ["assets/sFX/Player/playerHit6.wav"]);
         this.load.audio("playerHit7", ["assets/sFX/Player/playerHit7.wav"]);
+        this.load.audio("playerDowned1", ["assets/sFX/Player/playerDowned1.wav"]);
+        this.load.audio("playerDowned2", ["assets/sFX/Player/playerDowned2.wav"]);
+        this.load.audio("playerDowned3", ["assets/sFX/Player/playerDowned3.wav"]);
+
+        this.load.audio("enterBattle1", ["assets/sFX/Player/enterBattle1.wav"]);
+        this.load.audio("enterBattle2", ["assets/sFX/Player/enterBattle2.wav"]);
+        this.load.audio("enterBattle3", ["assets/sFX/Player/enterBattle3.wav"]);
+        this.load.audio("enterBattle4", ["assets/sFX/Player/enterBattle4.wav"]);
+        this.load.audio("exitBattle1", ["assets/sFX/Player/exitBattle1.wav"]);
+        this.load.audio("exitBattle2", ["assets/sFX/Player/exitBattle2.wav"]);
+        this.load.audio("enterCheckPoint1", ["assets/sFX/Player/enterCheckPoint1.wav"]);
+        this.load.audio("enterCheckPoint2", ["assets/sFX/Player/enterCheckPoint2.wav"]);
+        this.load.audio("exitCheckPoint1", ["assets/sFX/Player/exitCheckPoint1.wav"]);
+
 
         this.load.spritesheet('whiteHitSmear', 'assets/whiteHitSmear.png', { frameWidth: 1024, frameHeight: 1024 });
         this.load.spritesheet('whiteHitSmear2', 'assets/whiteHitSmear2.png', { frameWidth: 1048, frameHeight: 1048 });
@@ -423,7 +437,9 @@ class Badlands extends Phaser.Scene {
         this.load.atlas('doomsayer', ['assets/doomsayer.png', 'assets/doomsayer_n.png'], 'assets/doomsayersprites.json');
         this.load.spritesheet('nightBorne', ['assets/nightBorne.png', 'assets/nightBorne.png'], { frameWidth: 80, frameHeight: 80 });
 
-
+        this.load.audio("hordeMusic", ["assets/music/The_Horror.mp3"]);
+        this.load.audio("hordeMusic_Overdrive", ["assets/music/She's_Back.mp3"]);
+        this.load.audio("tutorialMusic", ["assets/music/Three_Portraits.mp3"]);
         this.load.audio("bgMusic1", ["assets/music/The_Apartment.mp3"]);
         //this.load.audio("bgMusic2", ["assets/music/Arbol.mp3"]);
         this.load.audio("bgMusic3", ["assets/music/Nine_Levels.mp3"]);
@@ -456,7 +472,8 @@ class Badlands extends Phaser.Scene {
         this.sound.stopAll();
         bgMusicArray = []
 
-        Phaser.Utils.Array.Add(bgMusicArray, ['bgMusic1', 
+        Phaser.Utils.Array.Add(bgMusicArray, [
+                                                'bgMusic1', 
                                                 //'bgMusic2', 
                                                 'bgMusic3', 
                                                 'bgMusic4', 
@@ -473,13 +490,20 @@ class Badlands extends Phaser.Scene {
                                                   'bgMusic15'
         ])
 
-        bgMusic = this.sound.add(Phaser.Utils.Array.GetRandom(bgMusicArray), { volume: 0.5 })
+        if(this.tutorialsCompleted){
+            bgMusic = this.sound.add(Phaser.Utils.Array.GetRandom(bgMusicArray), { volume: 0.5})
+        } else {
+            bgMusic = this.sound.add('tutorialMusic', { volume: 0.5})
+        }
+        
+        
+       
 
         // Base Variables
 
         this.musicBPM = 131
         this.baseScreenClearTime = 4 // Beats
-        this.basePlatformSpawnTime = 8 // Beats 
+        this.basePlatformSpawnTime = 6 // Beats 
         this.baseEnemySpawnTime = 4 // Beats 
 
         this.gameMode = 0 // Starting Game Mode - 0 = Run, 1 = Battle
@@ -532,6 +556,7 @@ class Badlands extends Phaser.Scene {
                 //     Phaser.Utils.Array.Add(bgMusicArray,"bgMusic" + songChoice)
                 bgMusic.destroy()
                 bgMusic = this.sound.add(Phaser.Utils.Array.GetRandom(bgMusicArray))
+                bgMusic.setVolume(0.5)
                 bgMusic.play()
             }, this)
 
@@ -1367,7 +1392,12 @@ class Badlands extends Phaser.Scene {
         if (this.gameMode == 0 && this.stageProgressEnabled) {
 
             this.baseProgressRate = (this.baseZoneLength / this.baseZoneClearTime) / 60
-            this.progress += this.baseProgressRate * this.playerSpeed * 1
+            if (this.tutorialMode0Completed){
+                this.progress += this.baseProgressRate * this.playerSpeed * 1
+            } else {
+                this.progress += this.baseProgressRate * this.playerSpeed * 0.25
+            }
+            
 
             // Glory Modifier
             if (this.player.x > this.camera.scrollX + (screenWidth * 0.6)) {
@@ -1378,7 +1408,11 @@ class Badlands extends Phaser.Scene {
                 this.gloryModifier = 1
             }
             // Glory Accumulation
-            this.glory += this.baseProgressRate * this.playerSpeed * this.gloryModifier
+            if (this.tutorialMode0Completed){
+            this.glory += this.baseProgressRate * this.playerSpeed * this.gloryModifier * 1
+            } else {
+                this.glory += this.baseProgressRate * this.playerSpeed * this.gloryModifier * 0.25
+            }
         }
 
         if (this.progress >= this.stage.nextCheckPoint * this.progressToNextCheckPoint && this.stageProgressEnabled && !this.stage.complete) {
@@ -1481,6 +1515,44 @@ class Badlands extends Phaser.Scene {
             //this.spawningHordeEnemy = true
             this.speedCheckOverride = 1
             this.enterBattle()
+            this.tweens.add({
+                targets: bgMusic,
+                volume: 0,
+                repeat: 0,
+                duration: 2000,
+                ease: Phaser.Math.Easing.Sine.Out,
+                onStart: () => {
+                    
+                    this.sound.play("enterCheckPoint" + Phaser.Math.Between(1,2));
+                    
+                    this.stage.checkPointMusicPlayer = this.sound.add('hordeMusic')
+                    this.stage.checkPointMusicPlayer.setVolume(0)
+                    this.stage.checkPointMusicPlayer.play()
+                    this.stage.checkPointMusicPlayer.once('complete',function(){
+                        //this.stage.checkPointMusicPlayer.destroy()
+                        this.stage.checkPointMusicPlayer = this.sound.add('hordeMusic_Overdrive')
+                        this.stage.checkPointMusicPlayer.play()
+                        this.stage.hordeDifficultyModifier *= 2
+                    },this)
+                    this.tweens.add({
+                        targets: this.stage.checkPointMusicPlayer,
+                        volume: 0.75,
+                        repeat: 0,
+                        duration: 2000,
+                        ease: Phaser.Math.Easing.Sine.Out,
+                        onComplete: () => {
+
+                        }
+        
+                    })
+                },
+                onComplete: () => {
+                    bgMusic.pause()
+    
+                }
+
+            })
+
             this.checkPointIcon = 'horde-checkpoint-icon'
             this.spawnHorde()
         }
@@ -1586,12 +1658,12 @@ class Badlands extends Phaser.Scene {
 
         } else if (this.stage.checkPointType === 2) {
             if (this.enemyGroup.maxSize > 1) { 
-                if(this.enemyGroup.getTotalUsed() > 0.5 * this.enemyGroup.maxSize || this.stage.enemiesDefeated < this.enemyGroup.maxSize){
+                if(this.enemyGroup.getTotalUsed() > 0.5 * this.enemyGroup.maxSize || this.stage.enemiesDefeated < this.enemyGroup.maxSize * 0.5){
                     if (this.stage.hordeDifficultyModifier < 10){
                         if (this.enemyGroup.getTotalUsed() > 0.8 * this.enemyGroup.maxSize){
-                            this.stage.hordeDifficultyModifier *= Phaser.Math.FloatBetween(1.05,1.075);
-                        } else {
                             this.stage.hordeDifficultyModifier *= Phaser.Math.FloatBetween(1.025,1.05);
+                        } else {
+                            this.stage.hordeDifficultyModifier *= Phaser.Math.FloatBetween(1.01,1.025);
                         }
                     }
                 } else {
@@ -1604,12 +1676,44 @@ class Badlands extends Phaser.Scene {
 
                 if(this.enemyGroup.getTotalFree() > 0){
                     this.spawnHorde()
-                    this.stage.hordeDifficultyModifier *= Phaser.Math.FloatBetween(1.025,1.05);
+                    this.stage.hordeDifficultyModifier *= Phaser.Math.FloatBetween(1,1.01);
                 }
             } else if (this.enemyGroup.getTotalUsed() == 0) { // Stub
                 // Checkpoint complete
                 this.camera.flash(500)
-                this.exitBattle()
+                this.tweens.add({
+                    targets: this.stage.checkPointMusicPlayer,
+                    volume: 0,
+                    repeat: 0,
+                    duration: 2000,
+                    ease: Phaser.Math.Easing.Sine.Out,
+                    onStart: () => {
+                        this.sound.play("exitCheckPoint" + Phaser.Math.Between(1,1));
+                        bgMusic.resume()
+                        this.tweens.add({
+                            targets: bgMusic,
+                            volume: 0.5,
+                            repeat: 0,
+                            duration: 2000,
+                            ease: Phaser.Math.Easing.Sine.Out,
+                            onComplete: () => {
+        
+                            }
+            
+                        })
+                        
+                    },
+                    onComplete: () => {
+                        this.stage.checkPointMusicPlayer.stop()
+                        
+                    }
+    
+                })
+       
+                
+                
+                //
+
 
                 // Reset
                 this.rewards += Phaser.Math.Between(5,10) * (1 + (0.25 * this.level)) // Stub for gaining Rewards in checkpoint
@@ -1621,6 +1725,7 @@ class Badlands extends Phaser.Scene {
                     this.stage.nextCheckPoint += 1;
                 }
                 this.stage.hordeDifficultyModifier = 1;
+                this.exitBattle()
                 this.stageProgressEnabled = true;
             }
 
@@ -1702,7 +1807,7 @@ class Badlands extends Phaser.Scene {
                 if (platform) {
                     platform.setOrigin(1, 0)
                     platform.setTint(this.floorColour)
-                    platform.x = Phaser.Math.FloatBetween(screenWidth * 3.25 + (screenWidth * 0.6 * i), screenWidth * 3.35 + (screenWidth * 0.6 * i)) //screenWidth * 2
+                    platform.x = Phaser.Math.FloatBetween(screenWidth * 4.25 + (screenWidth * 0.6 * i), screenWidth * 4.35 + (screenWidth * 0.6 * i)) //screenWidth * 2
                     platform.y = Phaser.Math.FloatBetween(this.platformPositionYMin, this.platformPositionYMax)
                     platform.setScale(Phaser.Math.FloatBetween(this.platformScaleXMin, this.platformScaleXMax), Phaser.Math.FloatBetween(0.2, 0.35))
                     platform.setActive(true)
@@ -1754,7 +1859,7 @@ class Badlands extends Phaser.Scene {
         }
 
         // Spawns Random X number ranging from 0 to 50% of remaining space in horde maxSize 
-        for (var i = 0; i < Phaser.Math.Between(1,this.enemyGroup.getTotalFree() * 0.25); i++){
+        for (var i = 0; i < Phaser.Math.Between(1,Math.min(this.level * this.stage.hordeDifficultyModifier,this.enemyGroup.getTotalFree())); i++){
     
             var hordeMember = this.enemyGroup.get()
             // Set Enemy Type
@@ -1776,6 +1881,7 @@ class Badlands extends Phaser.Scene {
                 // stub
                 hordeMember.attackCollisionStartFrame = 10
                 hordeMember.attackCollisionEndFrame = 11
+                hordeMember.attackRange = screenWidth * 0.1
  
             } else 
             // Roll for Rare (Rarity 3)
@@ -1790,6 +1896,7 @@ class Badlands extends Phaser.Scene {
                 // stub
                 hordeMember.attackCollisionStartFrame = 10
                 hordeMember.attackCollisionEndFrame = 11
+                hordeMember.attackRange = screenWidth * 0.1
 
             } else 
             // Roll for Uncommon (Rarity 2)
@@ -1804,6 +1911,7 @@ class Badlands extends Phaser.Scene {
                 // stub
                 hordeMember.attackCollisionStartFrame = 5
                 hordeMember.attackCollisionEndFrame = 7
+                hordeMember.attackRange = screenWidth * 0.15
       
             } else 
             // Set to Common (Rarity 1)
@@ -1817,6 +1925,7 @@ class Badlands extends Phaser.Scene {
                 // stub
                 hordeMember.attackCollisionStartFrame = 5
                 hordeMember.attackCollisionEndFrame = 7
+                hordeMember.attackRange = screenWidth * 0.15
                 
             }
 
@@ -1842,7 +1951,6 @@ class Badlands extends Phaser.Scene {
                 hordeMember.staminaCapacity = 100
                 hordeMember.staminaCurrent = 100
                 hordeMember.enragedLevel = 0
-                hordeMember.attackRange = screenWidth * 0.1
                 hordeMember.targetRange = this.player.x
                 hordeMember.aggroRange = Phaser.Math.FloatBetween(hordeMember.attackRange * 0.5,hordeMember.attackRange * 1.5)
 
@@ -1854,12 +1962,27 @@ class Badlands extends Phaser.Scene {
 
     spawnEnemy(){
 
-        if (this.enemyGroup.getTotalFree() > 0 && this.gameMode == 0) {
+        if (this.enemyGroup.getTotalFree() > 0 && this.gameMode == 0 ) {
+            if(this.tutorialsCompleted){
             if (this.stage.checkPointType == 1){
-                this.enemyTimer.delay = Phaser.Math.Between((this.baseEnemySpawnTime * (60 / this.musicBPM) * 8000) * 0.8, (this.baseEnemySpawnTime * (60 / this.musicBPM) * 8000) * 1.2)   
+                this.stage.enemyMinSpawn = 1 
+                this.stage.enemyMaxSpawn = Math.min(this.level * this.stage.hordeDifficultyModifier,this.enemyGroup.getTotalFree())
+                this.enemyTimer.delay = Phaser.Math.Between((this.baseEnemySpawnTime * (60 / this.musicBPM) * 30000) * 0.8, (this.baseEnemySpawnTime * (60 / this.musicBPM) * 30000) * 1.2)   
             } else {
+                this.stage.enemyMinSpawn = 0 
+                this.stage.enemyMaxSpawn = Math.min(1 + (this.level * 0.5) * this.stage.hordeDifficultyModifier,this.enemyGroup.getTotalFree())
                 this.enemyTimer.delay = Phaser.Math.Between((this.baseEnemySpawnTime * (60 / this.musicBPM) * 2000) * 0.8, (this.baseEnemySpawnTime * (60 / this.musicBPM) * 2000) * 1.2)   
             }
+            } else {
+                if(!this.tutorialMode0Completed){
+                    this.stage.enemyMinSpawn = 0 
+                    this.stage.enemyMaxSpawn = 0
+                } else {
+                    this.stage.enemyMinSpawn = 1 
+                    this.stage.enemyMaxSpawn = 2
+                }
+                
+            } 
 
         var rarityChanceArray
 
@@ -1874,7 +1997,7 @@ class Badlands extends Phaser.Scene {
         }
 
         // Spawns Random X number ranging from 0 to remaining space in horde maxSize 
-        for (var i = 0; i < Phaser.Math.Between(0,this.enemyGroup.getTotalFree() * 0.25); i++){
+        for (var i = 0; i < Phaser.Math.Between(this.stage.enemyMinSpawn,this.stage.enemyMaxSpawn); i++){
     
             var spawnedEnemy = this.enemyGroup.get()
             // Set Enemy Type
@@ -1901,6 +2024,7 @@ class Badlands extends Phaser.Scene {
                 // stub
                 spawnedEnemy.attackCollisionStartFrame = 10
                 spawnedEnemy.attackCollisionEndFrame = 11
+                spawnedEnemy.attackRange = screenWidth * 0.1
  
             } else 
             // Roll for Rare (Rarity 3)
@@ -1915,6 +2039,7 @@ class Badlands extends Phaser.Scene {
                 // stub
                 spawnedEnemy.attackCollisionStartFrame = 10
                 spawnedEnemy.attackCollisionEndFrame = 11
+                spawnedEnemy.attackRange = screenWidth * 0.1
 
             } else 
             // Roll for Uncommon (Rarity 2)
@@ -1929,6 +2054,7 @@ class Badlands extends Phaser.Scene {
                 // stub
                 spawnedEnemy.attackCollisionStartFrame = 5
                 spawnedEnemy.attackCollisionEndFrame = 7
+                spawnedEnemy.attackRange = screenWidth * 0.15
       
             } else 
             // Set to Common (Rarity 1)
@@ -1942,6 +2068,7 @@ class Badlands extends Phaser.Scene {
                 // stub
                 spawnedEnemy.attackCollisionStartFrame = 5
                 spawnedEnemy.attackCollisionEndFrame = 7
+                spawnedEnemy.attackRange = screenWidth * 0.15
                 
             }
 
@@ -1967,7 +2094,7 @@ class Badlands extends Phaser.Scene {
             spawnedEnemy.staminaCapacity = 100
             spawnedEnemy.staminaCurrent = 100
             spawnedEnemy.enragedLevel = 0
-            spawnedEnemy.attackRange = screenWidth * 0.1
+  
             spawnedEnemy.targetRange = this.player.x
             spawnedEnemy.aggroRange = Phaser.Math.FloatBetween(spawnedEnemy.attackRange * 0.5,spawnedEnemy.attackRange * 1.5)
 
@@ -2098,7 +2225,7 @@ class Badlands extends Phaser.Scene {
         if (!enemy.isHit) {
             enemy.isHit = true
             // Dodge Check
-            if (Phaser.Math.Between(0, 100) <= 30) {
+            if (damageSource.type != 'projectile' && Phaser.Math.Between(0, 100) <= 15) {
 
                             if (enemy.rarity > 2) {
                                 if (Phaser.Math.Between(0, 100) <= 20) {
@@ -2142,8 +2269,11 @@ class Badlands extends Phaser.Scene {
              
 
                 // Damage Calc
-
-                this.playerAttackPower = damageSource.damage * this.playerAttackCrit
+                if(this.tutorialMode1Completed){
+                    this.playerAttackPower = damageSource.damage * this.playerAttackCrit
+                } else {
+                    this.playerAttackPower = damageSource.damage * this.playerAttackCrit * 0.05
+                }
 
                 if (damageSource.type != 'projectile'){
                 this.playerAttackHitBoxVFX.play(this.playerAttackHitSmear, true)
@@ -2251,7 +2381,12 @@ class Badlands extends Phaser.Scene {
 
                 // Damage Calc
                 var damage 
-                damage = damageSource.baseDamage * critDamage
+                if(this.tutorialMode1Completed){
+                    damage = damageSource.baseDamage * critDamage * 1
+                } else {
+                    damage = damageSource.baseDamage * critDamage * 0.25
+                }
+                
 
                 if (damageSource.type != 'projectile'){
                     damageSource.play(damageSource.hitSmear, true)
@@ -2278,13 +2413,15 @@ class Badlands extends Phaser.Scene {
    
                         if (player.resilienceCurrent <= 0) {
                             player.play(player.animations.downed, true)
+                            
 
                             player.once('animationstart', function (anim, frame) {
                                 player.emit('animationstart' + anim.key, frame)
                             }, player)
                             player.once('animationstart' + player.animations.downed, function () {
 
-                        
+                                
+                                
                                 
 
                             }, this)
@@ -2452,7 +2589,7 @@ class Badlands extends Phaser.Scene {
 
             // Animations
 
-            if(Math.abs(enemy.body.velocity.x) > 5 && !enemy.isHit || enemy.type == 'Chaser' && this.gameMode == 0){
+            if((Math.abs(enemy.body.velocity.x) > 5 && !enemy.isHit || enemy.type == 'Chaser' && this.gameMode == 0) && !enemy.attacking ){
                 enemy.play(enemy.animationKey + '_Move',true)
             } else if (!enemy.isHit && !enemy.attacking) {
                 
@@ -2461,6 +2598,16 @@ class Badlands extends Phaser.Scene {
                     enemy.staminaCurrent += 5
                 }
             }
+
+            // Clean up
+
+            if (enemy.active) {
+                if (enemy.x < 0 || enemy.x > screenWidth * 4  || enemy.y > screenHeight * 1.25) {
+                    enemy.destroy();
+                }
+            }
+
+
 
             
 
@@ -2661,11 +2808,43 @@ class Badlands extends Phaser.Scene {
                                 enemy.attacking = false
                             } else {
                             // Attack
-                                enemy.play({key:enemy.animationKey + '_Attack',frameRate: Phaser.Math.Between(10,20) , delay: Phaser.Math.Between(0,50)},true)
+                            enemy.play({key:enemy.animationKey + '_Attack',frameRate: Phaser.Math.Between(10,20) , delay: Phaser.Math.Between(0,0)},true)
+
+                                if (enemy.rarity < 3){
+                                    if(Phaser.Math.Between(0,100) < 75 && enemy.body.y >= this.player.y * 0.8){
+                                    enemy.setVelocityY(Phaser.Math.Between(-1250,-1750))
+                                    if(enemy.flipX){
+                                        enemy.dir = 1
+                                    } else {
+                                        enemy.dir = -1
+                                    }
+                                    enemy.setVelocityX(enemy.dir * Phaser.Math.Between(350,500))
+                                    enemy.once('animationcomplete', function(){
+                                        enemy.setVelocityX(0)
+                                    })
+                                }
+                                   
+                                } else {
+                                    if(Phaser.Math.Between(0,100) < 10 && enemy.body.y >= this.player.y * 0.8){
+                                    enemy.setVelocityY(Phaser.Math.Between(-1500,-1750))
+                                        if(enemy.flipX){
+                                            enemy.dir = -1
+                                        } else {
+                                            enemy.dir = 1
+                                        }
+                                        enemy.setVelocityX(enemy.dir * Phaser.Math.Between(0,150))
+                                        enemy.once('animationcomplete', function(){
+                                            enemy.setVelocityX(0)
+                                        })
+                                    }
+                                }
+                                
+                                
                                 enemy.on('animationupdate', function(){
                                     if (enemy.anims.getName() == enemy.animationKey + '_Attack'){
                                         if (enemy.anims.currentFrame.index >= enemy.attackCollisionStartFrame &&  enemy.anims.currentFrame.index <= enemy.attackCollisionEndFrame){        
-                                            meleeAttackHitbox.collisionActive = true                                      
+                                            meleeAttackHitbox.collisionActive = true 
+                              
                                         } else {
                                             meleeAttackHitbox.collisionActive = false 
                                         }   
@@ -2831,6 +3010,13 @@ class Badlands extends Phaser.Scene {
 
     uiModule() {
 
+        // Tutorial Text Box
+
+        this.tutorialTextBox.x = (this.player.x - 200) 
+        this.tutorialTextBox.y = (this.player.y - 100) 
+        this.tutorialText.x = this.tutorialTextBox.x
+        this.tutorialText.y = this.tutorialTextBox.y 
+
         // Battle Mode Icon
 
         if (this.gameMode == 0) {
@@ -2897,7 +3083,7 @@ class Badlands extends Phaser.Scene {
         this.lifeRightCap.y = this.lifeMiddle.y
 
         this.uiSubModule_setLifePercentageAnimated(this.player.resilienceCurrent / this.player.lifeCapacity)
-
+      
         this.lifeTextBackgroundLeftCap.x = this.lifeMiddleHolder.x + this.lifeMiddleHolder.displayWidth * 0.5
         this.lifeTextBackgroundLeftCap.y = this.lifeMiddleHolder.y + 12.5
 
@@ -2926,6 +3112,7 @@ class Badlands extends Phaser.Scene {
         this.focusRightCap.y = this.focusMiddle.y
 
         this.uiSubModule_setFocusPercentageAnimated(this.skillPower)
+        
 
         this.focusTextBackgroundLeftCap.x = this.focusMiddleHolder.x + this.focusMiddleHolder.displayWidth * 0.5
         this.focusTextBackgroundLeftCap.y = this.focusMiddleHolder.y + 12.5
@@ -2955,7 +3142,9 @@ class Badlands extends Phaser.Scene {
         this.staminaRightCapHolder.y = this.staminaMiddleHolder.y
         this.staminaRightCap.y = this.staminaMiddle.y
 
+        
         this.uiSubModule_setStaminaPercentageAnimated(this.actionPower)
+
 
         this.staminaTextBackgroundLeftCap.x = this.staminaMiddleHolder.x + this.staminaMiddleHolder.displayWidth * 0.5
         this.staminaTextBackgroundLeftCap.y = this.staminaMiddleHolder.y + 12.5
@@ -3102,8 +3291,16 @@ class Badlands extends Phaser.Scene {
     }
 
     initialise_UI() {
+
         this.hudDepth = 2
 
+        // Tutorial Text Box
+        this.tutorialTextBox = this.add.image(0, 0, 'playerIconBox')
+        .setDepth(5).setScale(0.25,0.35).setOrigin(0.5).setAlpha(0)
+
+        this.tutorialFontSize = 20
+        this.tutorialText = this.add.text(0,0)
+            .setFontFamily('Arial').setAlign('center').setFontSize(this.tutorialFontSize).setDepth(5).setOrigin(0.5).setAlpha(0);
         // Battle Mode Icon
         this.battleModeIcon = this.add.image(0, 0, 'battle-icon')
         this.battleModeIcon.setAlpha(0)
@@ -3129,7 +3326,7 @@ class Badlands extends Phaser.Scene {
 
         this.r3 = this.add.rectangle(screenWidth * 2, screenHeight * 0.5, screenWidth, screenHeight);
 
-        this.r3.setStrokeStyle(screenWidth * 0.015, 0x6d54a9).setDepth(2);
+        this.r3.setStrokeStyle(screenWidth * 0.0075, 0x6d54a9).setDepth(2);
 
         
 
@@ -3558,7 +3755,7 @@ class Badlands extends Phaser.Scene {
 
         // Alpha Tween
 
-        if (this.skillPower < this.lowVitalsPercent || (s1Held || s2Held) ) {
+        if (this.skillPower < this.lowVitalsPercent || ((s1Held || s2Held) && !this.tutorialsCompleted)) {
             this.tweens.add({
                 targets: [this.focusIconHolder,
                 this.focusIcon,
@@ -3642,7 +3839,7 @@ class Badlands extends Phaser.Scene {
 
         // Alpha Tween
 
-        if (this.actionPower < this.lowVitalsPercent || (a1Held || a2Held)) {
+        if (this.actionPower < this.lowVitalsPercent || ((a1Held || a2Held) && !this.tutorialsCompleted)) {
             this.tweens.add({
                 targets: [this.staminaIconHolder,
                 this.staminaIcon,
@@ -3799,7 +3996,23 @@ class Badlands extends Phaser.Scene {
             if (this.playerSpeed < this.speedCheckThreshold) {
                 this.playerSpeed = 0
                 this.playerBattleSpeed = 0
+                if(this.stage.checkPointType === 0){
+                this.tweens.add({
+                    targets: bgMusic,
+                    volume: 0.35,
+                    repeat: 0,
+                    duration: 4000,
+                    ease: Phaser.Math.Easing.Sine.Out,
+                    onStart: () => {
+                        
+                        if(this.stage.checkPointType == 0){
+                            this.sound.play("enterBattle" + Phaser.Math.Between(1,4));
+                        } 
 
+                    }
+    
+                })
+                }
                 this.camera.flash()
                 this.gameMode = 1
                 this.speedCheckOverride = 0
@@ -3829,6 +4042,22 @@ class Badlands extends Phaser.Scene {
     }
 
     exitBattle() {
+        if(this.stage.checkPointType === 0){
+            this.tweens.add({
+                targets: bgMusic,
+                volume: 0.5,
+                repeat: 0,
+                duration: 2000,
+                ease: Phaser.Math.Easing.Sine.Out,
+                onStart: () => {
+                    if(this.stage.checkPointType == 0){
+                        this.sound.play("exitBattle" + Phaser.Math.Between(1,2));
+                    } 
+
+                }
+
+            })
+        }
         this.gameMode = 0
         this.playerBattleSpeed = 0
         this.playerSpeed = 0
@@ -4116,6 +4345,12 @@ class Badlands extends Phaser.Scene {
                             if(this.vitalityPower < 1 && this.vitalityPower > 0){
                                     this.player.resilienceCurrent += this.player.lifeRegen 
                             }
+
+                            if(this.vitalityPower < this.lowVitalsPercent && this.vitalityPower > 0){
+                                this.player.resilienceCurrent += this.scene.get('DataModule').baseData.lifeEmergencyRegen
+                                this.player.focusCurrent -= this.player.focusRegen * 0.5
+                                this.player.staminaCurrent -= this.player.staminaRegen * 0.25
+                            }
                         }
     
                         if (this.player.focusRegenActive){    
@@ -4282,10 +4517,41 @@ class Badlands extends Phaser.Scene {
                         }
                         
                         this.player.anims.play({key:this.player.animations.downed,frameRate: 8},true);
+                                
+                        if(!this.deathRattle){
+                            this.deathRattle = true
+                            this.sound.stopByKey('playerAttack1')
+                                this.sound.stopByKey('playerAttack2')
+                                this.sound.stopByKey('playerAttack3')
+                                this.sound.stopByKey('playerAttack4')
+                                this.sound.stopByKey('playerAttack5')
+                                this.sound.stopByKey('playerCriticalStrike1')
+                                this.sound.stopByKey('playerCriticalStrike2')
+                                this.sound.stopByKey('playerEvade1')
+                                this.sound.stopByKey('playerEvade2')
+                                this.sound.stopByKey('playerHit1')
+                                this.sound.stopByKey('playerHit2')
+                                this.sound.stopByKey('playerHit3')
+                                this.sound.stopByKey('playerHit4')
+                                this.sound.stopByKey('playerHit5')
+                                this.sound.stopByKey('playerHit6')
+                                this.sound.stopByKey('playerHit7')
+                                this.sound.stopByKey('playerDowned3')
+                                this.sound.stopByKey('playerDowned2')
+                                this.sound.stopByKey('playerDowned1')
+                                if (Phaser.Math.Between(0, 100) <= 10) {
+                                    this.sound.play('playerDowned3')
+                                } else if (Phaser.Math.Between(0, 100) <= 35) {
+                                    this.sound.play('playerDowned2')
+                                } else {
+                                    this.sound.play('playerDowned1')
+                                }
+                        }
                         
                         this.player.once('animationcomplete', function () {
                             this.endRun = true
                             this.player.setActive(0)
+                            this.deathRattle = false
     
                         }, this);
     
@@ -4594,8 +4860,8 @@ class Badlands extends Phaser.Scene {
                                     this.playerAttackHitSmear = 'deadlyCombatAssaultHitSmear'  
                                     this.playerAttackHitBox.setScale(1)
                                     this.player.state.skillCounter += 1
-                                    this.skillFrameRate = (8 + 4  * this.player.focusBonusPercent) * (1 + (this.player.state.skillCounter * 0.25))
-                                    this.critChance = 0.05 * (1 + (this.player.state.skillCounter * 0.05))
+                                    this.skillFrameRate = (10 + 4  * this.player.focusBonusPercent) * (1 + (this.player.state.skillCounter * 0.125))
+                                    this.critChance = 10 * (1 + (this.player.state.skillCounter * 0.25))
                                     if(this.player.flipX){
                                         this.nextXDest = this.player.x - screenWidth * 0.1
                                     } else {
@@ -4603,7 +4869,7 @@ class Badlands extends Phaser.Scene {
                                     }
 
                                     if ( this.player.state.skillCounter <= 1){
-                                        this.player.play({key:this.player.animations.skill,frameRate: this.skillFrameRate},true)
+                                        this.player.play({key:this.player.animations.skill,frameRate: Math.min(this.skillFrameRate,24)},true)
                                     } else {
                                         this.player.play({key:this.player.animations.skill,frameRate: Math.max(this.skillFrameRate,8),startFrame: 8},true)
                                     }
@@ -4628,7 +4894,7 @@ class Badlands extends Phaser.Scene {
                                         this.tweens.add({
                                             targets: this.player,
                                             x: this.nextXDest,
-                                            duration: ((this.baseDashTime * this.baseDashDistancePercent) + (this.baseDashTime * (1-this.baseDashDistancePercent) * (1-this.skillPower))),
+                                            duration: ((this.baseDashTime / 2 * this.baseDashDistancePercent) + (this.baseDashTime / 2 * (1-this.baseDashDistancePercent) * (1-this.skillPower))),
                                             ease: Phaser.Math.Easing.Sine.Out,
                                             onUpdate: () => {
                                                 if(this.closestEnemy){
@@ -5041,33 +5307,170 @@ class Badlands extends Phaser.Scene {
             }
         }
 
+        adaptiveTutorial_Mode0(){
 
-    update(time, delta) {
+            if(!this.tutorialMode0Started){
+                this.tutorialMode0Started = true
+                this.tutorialTimeToLoadSegment = 1000
+                this.tutorialTimeBetweenSegments = 2000
+                this.tutorialSegmentReadTime = 4000
+                this.tutorialTotalSegments = 2
+                // Start Segment
+                this.tutorialSegment = 1
 
-        // V1 Code
+                this.tweens.add({
+                    delay: this.tutorialTimeBetweenSegments,
+                    targets: [this.tutorialText,this.tutorialTextBox],
+                    alpha: { start: 0, to: 1 },
+                    yoyo: true,
+                    hold: this.tutorialSegmentReadTime,
+                    loop: this.tutorialTotalSegments - 1,
+                    duration: this.tutorialTimeToLoadSegment,
+                    ease: Phaser.Math.Easing.Sine.Out,
 
-        // UI Module
-        this.uiModule()
+                    onStart: ()=> {
+                        
+                        this.tutorialText.setText('Hold D \nto \nSlow Down')
+                      
+                        
+                    },
 
-        // Camera Module
-        this.cameraModule()
+                    onUpdate: () => {
+                        
+                            if(this.tutorialSegment == 2){
+                                this.tutorialText.setText('Hold A \nto \nAccelerate')
+                            } 
+                            // if(this.tutorialSegment == 3){
+                            //     this.tutorialText.setText('Press/Hold A \nto \nAttack')
+                            // } else if (this.tutorialSegment == 4){
+                            //     this.tutorialText.setText('Press/Hold Space \nto use\nSignature Skill')
+                            // } else if (this.tutorialSegment == 5){
+                            //     this.tutorialText.setText('Press/Hold F \nto use\nSecondary Skill')
+                            // }
+                        
+                    },
 
-        // Player/Controls
-        this.playerModule()
-        this.playerProjectileCleanUp()
+                    onLoop: () => {
+                        this.tutorialSegment += 1
+                        
+                    },
 
-        // Environment
-        this.environmentModule()
+                    onComplete: () => {
+                         this.tutorialMode0Completed = true
+                    }
+                })
 
-        this.platforms(this)
+ 
+            }
 
-        // Enemies
-        this.enemyController()
+            
 
-        // Stage Management
-        this.stageModule()
+            
+        }
 
-        // Checkpoints
+        adaptiveTutorial_Mode1(){
+
+            if(!this.tutorialMode1Started){
+                this.tutorialMode1Started = true
+                this.tutorialTimeToLoadSegment = 1000
+                this.tutorialTimeBetweenSegments = 2000
+                this.tutorialSegmentReadTime = 4000
+                this.tutorialTotalSegments = 5
+                // Start Segment
+                this.tutorialSegment = 1
+
+                this.tweens.add({
+                    delay: this.tutorialTimeBetweenSegments,
+                    targets: [this.tutorialText,this.tutorialTextBox],
+                    alpha: { start: 0, to: 1 },
+                    yoyo: true,
+                    hold: this.tutorialSegmentReadTime,
+                    loop: this.tutorialTotalSegments - 1,
+                    duration: this.tutorialTimeToLoadSegment,
+                    ease: Phaser.Math.Easing.Sine.Out,
+
+                    onStart: ()=> {
+                     
+                            this.tutorialText.setText('Hold D \nto \nDefend')
+                        
+                        
+                    },
+
+                    onUpdate: () => {
+                        
+                            if(this.tutorialSegment == 2){
+                                this.tutorialText.setText('Hold D & Move\nto \nEvade')
+                            } if(this.tutorialSegment == 3){
+                                this.tutorialText.setText('Tap/Hold A \nto \nAttack')
+                            } else if (this.tutorialSegment == 4){
+                                this.tutorialText.setText('Tap/Hold Space \nto use\nSignature Skill')
+                            } else if (this.tutorialSegment == 5){
+                                this.tutorialText.setText('Tap/Hold F \nto use\nSecondary Skill')
+                            }
+                        
+                    },
+
+                    onLoop: () => {
+                        this.tutorialSegment += 1
+                        
+                    },
+
+                    onComplete: () => {
+                        
+                         this.tutorialMode1Completed = true
+
+                         this.tutorialsCompleted = true
+                         this.tutorialTextBox.destroy()
+                        this.tutorialText.destroy()
+                    }
+                })
+
+ 
+            }
+
+            
+
+            
+        }
+
+
+        update(time, delta) {
+
+            // V1 Code
+    
+            // UI Module
+            this.uiModule()
+    
+            // Camera Module
+            this.cameraModule()
+    
+            // Player/Controls
+            this.playerModule()
+            this.playerProjectileCleanUp()
+    
+            // Environment
+            this.environmentModule()
+    
+            this.platforms(this)
+    
+            // Enemies
+            this.enemyController()
+    
+            // Stage Management
+            this.stageModule()
+    
+            // Tutorial
+            if(!this.tutorialMode0Completed){
+                if(this.gameMode == 0){
+                this.adaptiveTutorial_Mode0()
+                }
+            }
+    
+            if(!this.tutorialMode1Completed && this.tutorialMode0Completed){
+                if(this.gameMode == 1){
+                    this.adaptiveTutorial_Mode1()
+                }
+            } 
 
 
         // End of V1 Code
