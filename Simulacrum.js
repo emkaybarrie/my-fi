@@ -3708,7 +3708,7 @@ class Simulacrum extends Phaser.Scene {
                 this.camera.flash()
                 this.gameMode = 1
                 this.speedCheckOverride = 0
-
+                this.stageProgressEnabled = false
                 this.physics.world.setBounds(screenWidth, 0, screenWidth * 2, screenHeight)
             } else {
                 if(this.playerSpeed > this.speedCheckThreshold){
@@ -3733,7 +3733,7 @@ class Simulacrum extends Phaser.Scene {
         this.playerBattleSpeed = 0
         this.playerSpeed = 0
         this.camera.stopFollow()
-
+        this.stageProgressEnabled = true
         this.physics.world.setBounds(this.camera.worldView.x, this.camera.worldView.y, screenWidth, screenHeight)
     }
 
