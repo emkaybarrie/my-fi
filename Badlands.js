@@ -2173,7 +2173,7 @@ class Badlands extends Phaser.Scene {
             this.impactProjectile(damageSource)
         }
 
-        if ((!player.isHit || !this.playerIsHit) && !this.player.state.defending) {
+        if ((!player.isHit || !this.playerIsHit) && !this.player.state.defending && this.player.canBeHit) {
             
             player.isHit = true
             this.playerIsHit = true
@@ -2219,12 +2219,12 @@ class Badlands extends Phaser.Scene {
                         if (player.resilienceCurrent <= 0) {
                             player.play(player.animations.downed, true)
 
-                            player.once('animationcomplete', function (anim, frame) {
-                                player.emit('animationcomplete_' + anim.key, frame)
+                            player.once('animationstart', function (anim, frame) {
+                                player.emit('animationstart' + anim.key, frame)
                             }, player)
-                            player.once('animationcomplete_' + player.animations.downed, function () {
+                            player.once('animationstart' + player.animations.downed, function () {
 
-                              
+                        
                                 
 
                             }, this)
@@ -2238,7 +2238,7 @@ class Badlands extends Phaser.Scene {
                     }, this)
          
 
-        } else {
+        } else if (this.player.state.defending && this.player.canBeHit) {
             // Crit Check
 
             var critDamage 
@@ -2280,12 +2280,12 @@ class Badlands extends Phaser.Scene {
                         if (player.resilienceCurrent <= 0) {
                             player.play(player.animations.downed, true)
 
-                            player.once('animationcomplete', function (anim, frame) {
-                                player.emit('animationcomplete_' + anim.key, frame)
+                            player.once('animationstart', function (anim, frame) {
+                                player.emit('animationstart' + anim.key, frame)
                             }, player)
-                            player.once('animationcomplete_' + player.animations.downed, function () {
+                            player.once('animationstart' + player.animations.downed, function () {
 
-                              
+                     
                                 
 
                             }, this)
@@ -2366,7 +2366,7 @@ class Badlands extends Phaser.Scene {
             }
 
             // Lock on Code
-            if (enemy.attacking) {
+            if (!enemy.attacking) {
                 // Enables enemy to automatically face and move towards player
                // if (Math.abs(e.x - this.player.x) <= screenWidth * 0.1) {
                     //&& Math.abs(e.y - this.player.y) <= screenHeight * 0.25 
@@ -2447,7 +2447,7 @@ class Badlands extends Phaser.Scene {
                             if (this.progress >= this.progressToNextLevel * 0.225 && this.progress <= this.progressToNextLevel * 0.25
                                 || this.progress >= this.progressToNextLevel * 0.475 && this.progress <= this.progressToNextLevel * 0.5
                                 || this.progress >= this.progressToNextLevel * 0.725 && this.progress <= this.progressToNextLevel * 0.75
-                                || this.progress >= this.progressToNextLevel * 0.95) {
+                                || this.progress >= this.progressToNextLevel * 0.9) {
                                 enemy.staminaCurrent -= 0.6  
                             } else {
                                 enemy.staminaCurrent -= 0.2  
@@ -3239,7 +3239,9 @@ class Badlands extends Phaser.Scene {
 
         this.r3 = this.add.rectangle(screenWidth * 2, screenHeight * 0.5, screenWidth, screenHeight);
 
-        this.r3.setStrokeStyle(screenWidth * 0.01, 0x6d54a9).setDepth(2);
+        this.r3.setStrokeStyle(screenWidth * 0.015, 0x6d54a9).setDepth(2);
+
+        
 
         // Player
         this.playerIconBoxScaleX = 0.85
@@ -3904,16 +3906,17 @@ class Badlands extends Phaser.Scene {
                 this.speedCheckThreshold = 0.25
             }
 
-            if (this.playerSpeed < this.speedCheckThreshold && this.stage.checkPointType != 1) {
+            if (this.playerSpeed < this.speedCheckThreshold) {
                 this.playerSpeed = 0
                 this.playerBattleSpeed = 0
 
                 this.camera.flash()
                 this.gameMode = 1
                 this.speedCheckOverride = 0
-
+                this.stageProgressEnabled = false
                 this.physics.world.setBounds(screenWidth, 0, screenWidth * 2, screenHeight)
             } else {
+                
                 this.playerIsHit = true
 
                 if(enemy.type == 'Chaser'){
@@ -3940,7 +3943,7 @@ class Badlands extends Phaser.Scene {
         this.playerBattleSpeed = 0
         this.playerSpeed = 0
         this.camera.stopFollow()
-
+        this.stageProgressEnabled = true
         this.physics.world.setBounds(this.camera.worldView.x, this.camera.worldView.y, screenWidth, screenHeight)
     }
 
@@ -3987,7 +3990,11 @@ class Badlands extends Phaser.Scene {
                 }
     
                 this.playerMomentum = 0
+                if(this.player.resilienceCurrent > 0){
                 this.player.canBeHit = true
+                } else if (this.player.resilienceCurrent <= 0){
+                    this.player.canBeHit = false
+                }
     
                 if(this.player.momentum > 0){
                     if (this.player.momentum < 25){

@@ -1968,7 +1968,7 @@ class Simulacrum extends Phaser.Scene {
             this.impactProjectile(damageSource)
         }
 
-        if ((!player.isHit || !this.playerIsHit) && !this.player.state.defending) {
+        if ((!player.isHit || !this.playerIsHit) && !this.player.state.defending && this.player.canBeHit) {
             
             player.isHit = true
             this.playerIsHit = true
@@ -2014,12 +2014,12 @@ class Simulacrum extends Phaser.Scene {
                         if (player.resilienceCurrent <= 0) {
                             player.play(player.animations.downed, true)
 
-                            player.once('animationcomplete', function (anim, frame) {
-                                player.emit('animationcomplete_' + anim.key, frame)
+                            player.once('animationstart', function (anim, frame) {
+                                player.emit('animationstart' + anim.key, frame)
                             }, player)
-                            player.once('animationcomplete_' + player.animations.downed, function () {
+                            player.once('animationstart' + player.animations.downed, function () {
 
-                              
+                        
                                 
 
                             }, this)
@@ -2033,7 +2033,7 @@ class Simulacrum extends Phaser.Scene {
                     }, this)
          
 
-        } else {
+        } else if (this.player.state.defending && this.player.canBeHit) {
             // Crit Check
 
             var critDamage 
@@ -2075,12 +2075,12 @@ class Simulacrum extends Phaser.Scene {
                         if (player.resilienceCurrent <= 0) {
                             player.play(player.animations.downed, true)
 
-                            player.once('animationcomplete', function (anim, frame) {
-                                player.emit('animationcomplete_' + anim.key, frame)
+                            player.once('animationstart', function (anim, frame) {
+                                player.emit('animationstart' + anim.key, frame)
                             }, player)
-                            player.once('animationcomplete_' + player.animations.downed, function () {
+                            player.once('animationstart' + player.animations.downed, function () {
 
-                              
+                     
                                 
 
                             }, this)
@@ -3785,7 +3785,11 @@ class Simulacrum extends Phaser.Scene {
                 }
     
                 this.playerMomentum = 0
+                if(this.player.resilienceCurrent > 0){
                 this.player.canBeHit = true
+                } else if (this.player.resilienceCurrent <= 0){
+                    this.player.canBeHit = false
+                }
     
                 if(this.player.momentum > 0){
                     if (this.player.momentum < 25){
@@ -4997,7 +5001,7 @@ class Simulacrum extends Phaser.Scene {
         +'\nPlayer Attack Damage: ' + Math.round(this.player.attackPower)
         +'\nPlayer Skill Damage: ' + Math.round(this.player.skillPower)
          + '\nPlayer Projectile (Total Free): ' + this.playerProjectiles.getTotalFree()
-         + '\nPlayer Crit Roll: ' + this.playerAttackCrit
+         + '\nPlayer Can Be Hit: ' + this.player.canBeHit
         + '\nDamage Dealt: ' + Math.round(this.playerAttackPower)
          + '\nEnemy HP: ' + this.targetRemainingEnemyHP
         // +'\nPlayer Battle Speed: ' + Math.round(this.playerBattleSpeed * 100) + '%'
