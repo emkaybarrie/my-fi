@@ -22,6 +22,7 @@ class Simulacrum extends Phaser.Scene {
         // Stubbed Data
 
         this.stageData.fgAlpha = [0.6, 1, 1]
+        this.stageData.timeCode = Phaser.Math.Between(1,3)
 
 
     }
@@ -156,6 +157,9 @@ class Simulacrum extends Phaser.Scene {
 
         // Sound Effects
         this.load.audio("enemyTakeMeleeHit", ["assets/sFX/sliceFlesh.wav"]);
+        this.load.audio("takeMeleeHit1", ["assets/sFX/takeMeleeHit1.mp3"]);
+        this.load.audio("pickupGold", ["assets/sFX/pickupGold.ogg"]);
+        this.load.audio("enemyDeath", ["assets/sFX/enemyDeath.mp3"]);
         this.load.audio("nightBorneTakeLightDamage1", ["assets/sFX/Enemy/nightBorneTakeLightDamage1.wav"]);
         this.load.audio("nightBorneTakeLightDamage2", ["assets/sFX/Enemy/nightBorneTakeLightDamage2.wav"]);
         this.load.audio("nightBorneTakeLightDamage3", ["assets/sFX/Enemy/nightBorneTakeLightDamage3.wav"]);
@@ -169,13 +173,21 @@ class Simulacrum extends Phaser.Scene {
         this.load.audio("swordSwing2", ["assets/sFX/swordSwing2.mp3"]);
         this.load.audio("swordSwing3", ["assets/sFX/swordSwing3.mp3"]);
         this.load.audio("swordSwing4", ["assets/sFX/swordSwing4.mp3"]);
-        this.load.audio("playerAttack1", ["assets/sFX/Player/playerAttack1.wav"]);
-        this.load.audio("playerAttack2", ["assets/sFX/Player/playerAttack2.wav"]);
-        this.load.audio("playerAttack3", ["assets/sFX/Player/playerAttack3.wav"]);
-        this.load.audio("playerAttack4", ["assets/sFX/Player/playerAttack4.wav"]);
-        this.load.audio("playerAttack5", ["assets/sFX/Player/playerAttack5.wav"]);
+        this.load.audio("playerAttackA1", ["assets/sFX/Player/playerAttackA1.wav"]);
+        this.load.audio("playerAttackA2", ["assets/sFX/Player/playerAttackA2.wav"]);
+        this.load.audio("playerAttackB1", ["assets/sFX/Player/playerAttackB1.wav"]);
+        this.load.audio("playerAttackB2", ["assets/sFX/Player/playerAttackB2.wav"]);
+        this.load.audio("playerAttackC1", ["assets/sFX/Player/playerAttackC1.wav"]);
+        this.load.audio("playerAttackC2", ["assets/sFX/Player/playerAttackC2.wav"]);
         this.load.audio("playerCriticalStrike1", ["assets/sFX/Player/playerCriticalStrike1.wav"]);
         this.load.audio("playerCriticalStrike2", ["assets/sFX/Player/playerCriticalStrike2.wav"]);
+
+        this.load.audio("playerCast1", ["assets/sFX/Player/playerCast1.wav"]);
+        this.load.audio("playerCast2", ["assets/sFX/Player/playerCast2.wav"]);
+        this.load.audio("playerCast3", ["assets/sFX/Player/playerCast3.wav"]);
+        this.load.audio("playerCast4", ["assets/sFX/Player/playerCast4.wav"]);
+        this.load.audio('fireBoltImpact', 'assets//sFX/Skills/fireballImpact.wav');
+        this.load.audio('fireBoltMain', 'assets/sFX/Skills/fireballFlying.wav');
 
         this.load.audio("playerEvade1", ["assets/sFX/Player/playerEvade1.wav"]);
         this.load.audio("playerEvade2", ["assets/sFX/Player/playerEvade2.wav"]);
@@ -218,6 +230,9 @@ class Simulacrum extends Phaser.Scene {
         this.load.image('thunderBoltIcon', 'assets/skills/thunderBoltIcon.png');
         this.load.image('fireBoltIcon', 'assets/skills/fireBoltIcon.png');
 
+        
+ 
+
         this.load.image('floor', 'assets/floorNeutral.png');
         //Platforms
         this.load.image('platformR1_1', 'assets/platforms/Pad_R1_1A.png');
@@ -234,7 +249,7 @@ class Simulacrum extends Phaser.Scene {
 
         this.load.audio("hordeMusic", ["assets/music/The_Horror.mp3"]);
         this.load.audio("hordeMusic_Overdrive", ["assets/music/She's_Back.mp3"]);
-        this.load.audio("tutorialMusic", ["assets/music/Three_Portraits.mp3"]);
+        this.load.audio("tutorialMusic", ["assets/music/Legend_Has_It.mp3"]);
         this.load.audio("bgMusic1", ["assets/music/The_Apartment.mp3"]);
         //this.load.audio("bgMusic2", ["assets/music/Arbol.mp3"]);
         this.load.audio("bgMusic3", ["assets/music/Nine_Levels.mp3"]);
@@ -250,6 +265,7 @@ class Simulacrum extends Phaser.Scene {
         this.load.audio("bgMusic13", ["assets/music/Dynasties_&_Dystopia.mp3"]);
         this.load.audio("bgMusic14", ["assets/music/Come_Down.mp3"]);
         this.load.audio("bgMusic15", ["assets/music/Blood_On_Me.mp3"]);
+        this.load.audio("bgMusic16", ["assets/music/Three_Portraits.mp3"]);
 
 
     }
@@ -288,7 +304,7 @@ class Simulacrum extends Phaser.Scene {
         if(this.tutorialsCompleted){
             bgMusic = this.sound.add(Phaser.Utils.Array.GetRandom(bgMusicArray), { volume: 0.5})
         } else {
-            bgMusic = this.sound.add('tutorialMusic', { volume: 0.5})
+            bgMusic = this.sound.add('tutorialMusic', { volume: 0.75})
         }
         
         
@@ -351,7 +367,7 @@ class Simulacrum extends Phaser.Scene {
                 //     Phaser.Utils.Array.Add(bgMusicArray,"bgMusic" + songChoice)
                 bgMusic.destroy()
                 bgMusic = this.sound.add(Phaser.Utils.Array.GetRandom(bgMusicArray))
-                bgMusic.setVolume(0.5)
+                bgMusic.setVolume(0.75)
                 bgMusic.play()
             }, this)
 
@@ -1045,7 +1061,8 @@ class Simulacrum extends Phaser.Scene {
         var stateData = {
             attacking: false,
             attackCounter: 1,
-            skillCounter: 0
+            skillCounter: 0,
+            jumping: false
         }
         
         this.player.state = stateData
@@ -1331,7 +1348,7 @@ class Simulacrum extends Phaser.Scene {
                     },this)
                     this.tweens.add({
                         targets: this.stage.checkPointMusicPlayer,
-                        volume: 0.75,
+                        volume: 1,
                         repeat: 0,
                         duration: 2000,
                         ease: Phaser.Math.Easing.Sine.Out,
@@ -1487,7 +1504,7 @@ class Simulacrum extends Phaser.Scene {
                         bgMusic.resume()
                         this.tweens.add({
                             targets: bgMusic,
-                            volume: 0.5,
+                            volume: 0.75,
                             repeat: 0,
                             duration: 2000,
                             ease: Phaser.Math.Easing.Sine.Out,
@@ -2043,18 +2060,34 @@ class Simulacrum extends Phaser.Scene {
 
             enemy.canAct = false
 
+                
+                // if(this.player.state.attackCounter == 1){
+                //     this.sound.play('playerAttackA' + Phaser.Math.Between(1, 2),{volume:Phaser.Math.FloatBetween(0.15, 0.35) })
+                // } else if (this.player.state.attackCounter == 2){
+                //     this.sound.play('playerAttackB' + Phaser.Math.Between(1, 2),{volume:Phaser.Math.FloatBetween(0.25, 0.35) })
+                // } else if (this.player.state.attackCounter == 3){
+                //     this.sound.play('playerAttackC' + Phaser.Math.Between(1, 2),{volume:Phaser.Math.FloatBetween(0.5, 0.75) })
+                // }  
+                
+                    this.sound.play('enemyTakeMeleeHit',{volume:Phaser.Math.FloatBetween(0.85, 1) })
+                
+                
+                
+                
+
                 // Crit Check
                 if (Phaser.Math.Between(0, 100) <= this.critChance) {
                     this.playerAttackCrit = this.player.critDamage
                     this.playerAttackHitBoxVFX.setTint(0xE2A4C6)
                     //this.camera.flash(100,226, 164, 198)
                                     this.camera.shake(250, 0.005)
-                                    this.sound.stopByKey('playerAttack1')
-                                    this.sound.stopByKey('playerAttack2')
-                                    this.sound.stopByKey('playerAttack3')
-                                    this.sound.stopByKey('playerAttack4')
-                                    this.sound.stopByKey('playerAttack5')
-                                    this.sound.play('playerCriticalStrike' + Phaser.Math.Between(1, 2))
+                                    this.sound.stopByKey('playerAttackA1')
+                                    this.sound.stopByKey('playerAttackA2')
+                                    this.sound.stopByKey('playerAttackB1')
+                                    this.sound.stopByKey('playerAttackC1')
+                                    this.sound.stopByKey('playerAttackC2')
+                                    this.sound.play('playerCriticalStrike' + Phaser.Math.Between(1, 1))
+                                    this.sound.play('enemyTakeMeleeHit',{volume:Phaser.Math.FloatBetween(0.75, 1) })
 
                 } else {
                     this.playerAttackCrit = 1
@@ -2119,10 +2152,13 @@ class Simulacrum extends Phaser.Scene {
                             enemy.play(enemy.animationKey + '_Death', true)
 
                             if(enemy.rarity > 2){
-                            this.sound.play('nightBorneTakeHeavyDamage2')
+                            this.sound.play('nightBorneTakeHeavyDamage2',{volume:Phaser.Math.FloatBetween(0.75, 1) })
+                            } else {
+                                this.sound.play('enemyDeath',{volume:Phaser.Math.FloatBetween(0.5, 0.75) })
                             }
 
                             this.gold += Phaser.Math.Between(0, this.baseGoldDrop * 0.075 * enemy.difficultyMod)
+                            this.sound.play('pickupGold',{volume:Phaser.Math.FloatBetween(0.85, 1) })
 
                             enemy.once('animationcomplete', function (anim, frame) {
                                 enemy.emit('animationcomplete_' + anim.key, frame)
@@ -2163,6 +2199,8 @@ class Simulacrum extends Phaser.Scene {
             player.isHit = true
             this.playerIsHit = true
             player.canAct = false
+
+            this.sound.play('playerHit' + Phaser.Math.Between(1,7))
 
                 // Crit Check
 
@@ -2231,6 +2269,7 @@ class Simulacrum extends Phaser.Scene {
          
 
         } else if (this.player.state.defending && this.player.canBeHit) {
+            this.sound.play('takeMeleeHit1',{volume:Phaser.Math.FloatBetween(0.85, 1) })
             // Crit Check
 
             var critDamage 
@@ -2734,6 +2773,13 @@ class Simulacrum extends Phaser.Scene {
     }
 
     fireProjectile(source,projectile,animation,impactAnimation,speed,range,affectedByGravity,damageModifier){
+
+        if (projectile.name == 'Fireball'){
+            this.sound.play('fireBoltMain',{volume:0.95})
+        } else {
+            this.sound.play('fireBoltMain',{volume:0.95,detune:0.5})
+        }
+
         projectile.type = 'projectile'
         projectile.x = source.x + 50
         projectile.y = source.y - 15
@@ -2758,8 +2804,14 @@ class Simulacrum extends Phaser.Scene {
     }
 
     impactProjectile(projectile, velocityReductionPercent = 0.1){
+        
         projectile.play({key:projectile.impactAnimation,frameRate: 10},true)
         projectile.body.checkCollision.none = true
+        if (projectile.name == 'Fireball'){
+            this.sound.play('fireBoltImpact',{volume:0.95})
+        } else {
+            this.sound.play('fireBoltImpact',{volume:0.95,detune:0.5})
+        }
         projectile.setVelocityX(projectile.body.velocity.x * velocityReductionPercent)
         projectile.once('animationcomplete', function(){
             projectile.destroy()
@@ -3794,7 +3846,7 @@ class Simulacrum extends Phaser.Scene {
                 if(this.stage.checkPointType === 0){
                 this.tweens.add({
                     targets: bgMusic,
-                    volume: 0.35,
+                    volume: 0.5,
                     repeat: 0,
                     duration: 4000,
                     ease: Phaser.Math.Easing.Sine.Out,
@@ -4492,6 +4544,16 @@ class Simulacrum extends Phaser.Scene {
                                 if (!this.player.state.attacking){
                                  
                                 this.player.state.attacking = true
+                                if(this.player.state.attackCounter == 1){
+                                    this.sound.play('playerAttackA' + Phaser.Math.Between(1, 2),{volume:Phaser.Math.FloatBetween(0.15, 0.35) })
+                                    this.sound.play('swordSwing' + Phaser.Math.Between(1, 2),{volume:Phaser.Math.FloatBetween(0.15, 0.25) })
+                                } else if (this.player.state.attackCounter == 2){
+                                    this.sound.play('playerAttackB' + Phaser.Math.Between(1, 2),{volume:Phaser.Math.FloatBetween(0.25, 0.35) })
+                                    this.sound.play('swordSwing' + Phaser.Math.Between(1, 3),{volume:Phaser.Math.FloatBetween(0.15, 0.25) })
+                                } else if (this.player.state.attackCounter == 3){
+                                    this.sound.play('playerAttackC' + Phaser.Math.Between(1, 2),{volume:Phaser.Math.FloatBetween(0.5, 0.75) })
+                                    this.sound.play('swordSwing' + Phaser.Math.Between(3, 4),{volume:Phaser.Math.FloatBetween(0.5, 0.6) })
+                                }  
                                 this.player.once('animationcomplete', function(){
                                     this.player.state.attacking = false
                                 },this)
@@ -4586,6 +4648,8 @@ class Simulacrum extends Phaser.Scene {
 
                                 if ((leftHeld || rightHeld) && !this.player.state.evading){
 
+                                    this.sound.play('playerEvade' + Phaser.Math.Between(1,2))
+
                                     if (leftHeld){
                                         this.player.flipX = true
                                     } else if (rightHeld) {
@@ -4644,6 +4708,7 @@ class Simulacrum extends Phaser.Scene {
                                 this.playerSubModule_AirTime(0,this.skillPower,0.35)
                                 if (!this.player.state.casting){
                                     this.player.state.casting = true
+                                    this.sound.play('playerCast' + Phaser.Math.Between(1, 4),{volume:Phaser.Math.FloatBetween(0.35, 0.75) })
                                     this.player.once('animationcomplete', function(){
                                        this.player.state.casting = false
                                    },this)
@@ -4740,6 +4805,7 @@ class Simulacrum extends Phaser.Scene {
                             if (s2Held){
                                 if (!this.player.state.casting){
                                     this.player.state.casting = true
+                                    this.sound.play('playerCast' + Phaser.Math.Between(1, 4),{volume:Phaser.Math.FloatBetween(0.35, 0.75) })
                                     this.player.once('animationcomplete', function(){
                                        this.player.state.casting = false
                                     },this)
@@ -4779,6 +4845,21 @@ class Simulacrum extends Phaser.Scene {
                 // Up Button 
                     
                         if (upHeld){
+
+                            if(!this.player.state.jumping){
+                                this.player.state.jumping = true
+                                if(Phaser.Math.Between(0,100) < 70){
+                                    this.sound.stopByKey('playerEvade1')
+                                    this.sound.stopByKey('playerEvade2')
+                                    this.sound.play('playerEvade' + Phaser.Math.Between(1,2),{volume:Phaser.Math.Between(0.5,0.75)})
+                                }
+                                
+                            }
+
+                            this.player.once('animationcomplete',function(){
+                                this.player.state.jumping = false
+                            },this)
+
                             if(this.gameMode == 0){
                                 this.playerSubModule_Jump()
                             } else if (this.gameMode == 1 && (!a1Held && !a2Held)){

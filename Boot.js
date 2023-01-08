@@ -68,11 +68,11 @@ class Boot extends Phaser.Scene {
        
         //Add Splash Screen, etc preloads
 
-        if(this.sys.game.device.os.desktop){
+        
             for(var i = 0; i < 5; i++){
                 this.load.image('r' + i + 'Icon', ['assets/r' + i +'Icon.png','assets/r' + i +'Icon_n.png']);
             }
-    
+        if(!this.sys.game.device.os.desktop){
             this.load.video('techDemo', 'assets/video/techDemo.mp4', 'loadeddata', false, false);
         }
         
