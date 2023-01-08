@@ -73,7 +73,7 @@ class Boot extends Phaser.Scene {
                 this.load.image('r' + i + 'Icon', ['assets/r' + i +'Icon.png','assets/r' + i +'Icon_n.png']);
             }
         if(!this.sys.game.device.os.desktop){
-            this.load.video('techDemo', 'assets/video/techDemo.mp4', 'loadeddata', false, false);
+            this.load.video('techDemo', 'assets/video/techDemo1.mp4', 'loadeddata', false, false);
         }
         
     }

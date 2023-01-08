@@ -244,6 +244,14 @@ class Simulacrum extends Phaser.Scene {
         this.load.image('platformR4_1', 'assets/platforms/Pad_R4_1A.png');
         this.load.image('platformR4_2', 'assets/platforms/Pad_R4_2A.png');
 
+        // Obstacles
+        this.assetVariants = 3
+
+        for(var i = 1; i < this.assetVariants; i++){
+            this.load.image('rock' + i, 'assets/Terrain/Generic/rock_' + i +'.png');
+        }
+        
+
         this.load.atlas('doomsayer', ['assets/doomsayer.png', 'assets/doomsayer_n.png'], 'assets/doomsayersprites.json');
         this.load.spritesheet('nightBorne', ['assets/nightBorne.png', 'assets/nightBorne.png'], { frameWidth: 80, frameHeight: 80 });
 
@@ -302,9 +310,9 @@ class Simulacrum extends Phaser.Scene {
         ])
 
         if(this.tutorialsCompleted){
-            bgMusic = this.sound.add(Phaser.Utils.Array.GetRandom(bgMusicArray), { volume: 0.5})
+            bgMusic = this.sound.add('hordeMusic', { volume: 0.75})//this.sound.add(Phaser.Utils.Array.GetRandom(bgMusicArray), { volume: 0.5})
         } else {
-            bgMusic = this.sound.add('tutorialMusic', { volume: 0.75})
+            bgMusic = this.sound.add('hordeMusic', { volume: 0.75})//this.sound.add('tutorialMusic', { volume: 0.75})
         }
         
         
@@ -316,6 +324,7 @@ class Simulacrum extends Phaser.Scene {
         this.baseScreenClearTime = 4 // Beats
         this.basePlatformSpawnTime = 6 // Beats 
         this.baseEnemySpawnTime = 4 // Beats 
+        this.baseObstacleSpawnTime = 12 // Beats
 
         this.gameMode = 0 // Starting Game Mode - 0 = Run, 1 = Battle
         this.speedLevel = 2 // Starting Speed Level in Run Mode (rename to Intensity Level)
@@ -357,7 +366,7 @@ class Simulacrum extends Phaser.Scene {
 
         bgMusic.play()
         this.camera.once('camerafadeincomplete', function () {
-            this.stageProgressEnabled = true
+            this.stageProgressEnabled //= true
             playerInputActive = true
 
             // Background Music
@@ -393,6 +402,8 @@ class Simulacrum extends Phaser.Scene {
 
         // Render Stage
 
+        this.stage.enemySpawnEnabled = false
+
         this.renderStageBG(this.bgLayers, this.bgScroll, this.floorMin, this.floorMax, this.floorColour, this.floorVisible, this.fgLayers, this.fgScroll)
 
         // Day/Night System
@@ -405,7 +416,7 @@ class Simulacrum extends Phaser.Scene {
         // Platforms
 
         this.platformGroup = this.physics.add.group({
-            defaultKey: 'platformR' + this.stageData.regionID + '_' + Phaser.Math.Between(1,2),
+            defaultKey: this.stage.terrainKey,
             maxSize: 8
         });
 
@@ -416,6 +427,22 @@ class Simulacrum extends Phaser.Scene {
             loop: true
         });
 
+        // Obstacles
+
+        this.obstacleGroup = this.physics.add.group({
+            defaultKey: 'rock1',
+            maxSize: 20
+        });
+
+        this.obstacleTimer = this.time.addEvent({
+            delay: this.baseObstacleSpawnTime * (60 / this.musicBPM) * 1000,
+            callback: this.spawnObstacle, args: [], callbackScope: this,
+            loop: true
+        });
+
+        this.physics.add.collider(this.obstacleGroup, this.floor);
+        this.physics.add.collider(this.obstacleGroup, this.platformGroup);
+
         // Entities Initialisation
 
         // Enemies
@@ -424,12 +451,6 @@ class Simulacrum extends Phaser.Scene {
             defaultKey: 'doomsayer',
             maxSize: 20
         });
-
-        
-
-        
-
-
 
         this.closestEnemyOutline = this.add.sprite()
         this.closestEnemyOutline.setTintFill(0x7851a9).setAlpha(0.75)
@@ -453,6 +474,7 @@ class Simulacrum extends Phaser.Scene {
         this.physics.add.collider(this.player, this.floor);
         this.physics.add.collider(this.player, this.platformGroup)
         this.physics.add.overlap(this.player, this.enemyGroup, this.enterBattle, null, this)
+        this.physics.add.overlap(this.player, this.obstacleGroup, this.enterBattle, null, this)
         
 
         this.enemyMeleeAttack = this.physics.add.group({
@@ -720,12 +742,16 @@ class Simulacrum extends Phaser.Scene {
 
         }
 
+        this.stage.terrainKey = 'platformR' + this.stageData.regionID + '_' + Phaser.Math.Between(1,2)
         this.floorHeight = Phaser.Math.FloatBetween(floorMin, floorMax)
 
         this.floor = this.physics.add.image(0, screenHeight * this.floorHeight, 'floor').setScale((screenWidth * 5) / 400, 4).setImmovable(true).refreshBody().setOrigin(0)
         this.floor.body.setAllowGravity(false)
         this.floor.setTint(floorColour)
         this.floor.setVisible(floorVisible)
+
+        // this.stage.terrainKey = 'platformR' + this.stageData.regionID + '_' + Phaser.Math.Between(1,2)
+        // this.floor.setTexture(this.stage.terrainKey)
 
         for (var i = fgLayers; i > 0; i--) {
 
@@ -1582,8 +1608,6 @@ class Simulacrum extends Phaser.Scene {
 
     platforms(game) {
 
-
-
         if (game.spawningPlatform) {
 
             for (var i = 0; i < 2; i++) {
@@ -1648,6 +1672,190 @@ class Simulacrum extends Phaser.Scene {
         }.bind(game));
 
 
+    }
+
+    obstacleController() {
+
+
+        this.obstacleGroup.children.each(function (obstacle) {
+
+            obstacle.x -= this.baseSpeed * this.playerSpeed
+
+            if (obstacle.type == 'Normal') {
+                if (obstacle.x < 0) {
+                    obstacle.destroy();
+                }
+            } else if (obstacle.type == 'Chaser') {
+                if (obstacle.x > screenWidth * 4) {
+                    obstacle.destroy();
+                }
+            }
+        }.bind(this));
+
+
+    }
+
+    spawnObstacle(){
+
+        if (this.obstacleGroup.getTotalFree() > 0 && this.stage.checkPointType == 0 && this.gameMode == 0 ) {
+
+            console.log('Obstacle spawned')
+            
+            if(this.tutorialsCompleted){
+           
+                this.stage.obstacleMinSpawn = 1 
+                this.stage.obstacleMaxSpawn = Math.min(2 * (this.playerSpeed  + (this.level / 12))  ,this.obstacleGroup.getTotalFree())
+                    
+          
+            } else {
+                if(!this.tutorialMode0Completed){
+                    this.stage.obstacleMinSpawn = 0 
+                    this.stage.obstacleMaxSpawn = 1
+                }
+                
+            } 
+
+            this.obstacleTimer.delay = Phaser.Math.Between((this.baseObstacleSpawnTime * (60 / this.musicBPM) * 500) * 0.8, (this.baseObstacleSpawnTime * (60 / this.musicBPM) * 500) * 1.2)
+
+        var rarityChanceArray
+            this.stage.obstacleDifficultyModifier = 1 + Phaser.Math.Between(1,5) * (this.level/12)
+        if (Math.round(this.stage.obstacleDifficultyModifier) < 2){
+            rarityChanceArray = [0,5,15]
+        } else if (Math.round(this.stage.obstacleDifficultyModifier) < 3){
+            rarityChanceArray = [0,15,35]
+        } else if (Math.round(this.stage.obstacleDifficultyModifier) < 4){
+            rarityChanceArray = [5,35,75]
+        } else {
+            rarityChanceArray = [15,75,100]
+        }
+
+        // Spawns Random X number ranging from 0 to remaining space in horde maxSize 
+        for (var i = 0; i < Phaser.Math.Between(this.stage.obstacleMinSpawn,this.stage.obstacleMaxSpawn); i++){
+    
+            var spawnedEntity = this.obstacleGroup.get()
+            // Set Terrain Type
+            //if(Phaser.Math.Between(0,100) <= 30){
+            //    spawnedEntity.type = 'Chaser'
+           // } else {
+                spawnedEntity.type = 'Normal'
+           // }
+
+            // Set Difficulty Mod
+            spawnedEntity.difficultyMod = this.stage.obstacleDifficultyModifier
+
+            // Set Rarity
+            // Roll for Mythical (Rarity 4)
+            if(Phaser.Math.Between(0,100) <= rarityChanceArray[1]){
+                spawnedEntity.rarity = 4
+                spawnedEntity.texture = 'rock3'//this.stage.obstacleTextureKey.mythical
+                //spawnedEnemy.animationKey = this.stage.enemyAnimationsKey.mythical
+                //spawnedEntity.setOrigin(0.5, 1)
+                //spawnedEntity.body.setSize(25, 25).setOffset(25, 37.5)
+                //spawnedEntity.setScale(Phaser.Math.FloatBetween(7.5, 8.5)) 
+                //spawnedEntity.resilienceCapacity = Phaser.Math.Between(650, 1300) * (1 + (0.1 * spawnedEntity.difficultyMod))
+
+                // stub
+                //spawnedEntity.attackCollisionStartFrame = 10
+                //spawnedEntity.attackCollisionEndFrame = 11
+                //spawnedEntity.attackRange = screenWidth * 0.1
+ 
+            } else 
+            // Roll for Rare (Rarity 3)
+            if(Phaser.Math.Between(0,100) <= rarityChanceArray[2]){
+                spawnedEntity.rarity = 3
+                spawnedEntity.texture = 'rock3'//this.stage.obstacleTextureKey.mythical
+                //spawnedEntity.animationKey = this.stage.enemyAnimationsKey.rare
+                //spawnedEntity.setOrigin(0.5, 1)
+                //spawnedEntity.body.setSize(25, 25).setOffset(25, 37.5)
+                spawnedEntity.setScale(Phaser.Math.FloatBetween(7.5, 8.5)) 
+                //spawnedEntity.resilienceCapacity = Phaser.Math.Between(500, 1000) * (1 + (0.1 * spawnedEnemy.difficultyMod))
+
+                // stub
+                //spawnedEntity.attackCollisionStartFrame = 10
+                //spawnedEntity.attackCollisionEndFrame = 11
+                //spawnedEntity.attackRange = screenWidth * 0.1
+
+            } else 
+            // Roll for Uncommon (Rarity 2)
+            if(Phaser.Math.Between(0,100) <= rarityChanceArray[3]){
+                spawnedEntity.rarity = 2
+                spawnedEntity.texture = 'rock2'//this.stage.obstacleTextureKey.mythical
+                //spawnedEntity.animationKey = this.stage.enemyAnimationsKey.uncommon
+                //spawnedEnemy.setOrigin(0.5,0.5)
+                //spawnedEnemy.body.setSize(25, 25).setOffset(25, 37.5)
+                //spawnedEntity.setScale(Phaser.Math.FloatBetween(2.5, 3)) 
+                //spawnedEnemy.resilienceCapacity = Phaser.Math.Between(300, 600) * (1 + (0.1 * spawnedEnemy.difficultyMod))
+
+                // stub
+                //spawnedEnemy.attackCollisionStartFrame = 5
+                //spawnedEnemy.attackCollisionEndFrame = 7
+                //spawnedEnemy.attackRange = screenWidth * 0.15
+      
+            } else 
+            // Set to Common (Rarity 1)
+            {
+                spawnedEntity.rarity = 1
+                spawnedEntity.texture = 'rock1'//this.stage.obstacleTextureKey.mythical
+                //spawnedEnemy.animationKey = this.stage.enemyAnimationsKey.common
+                //spawnedEnemy.setOrigin(0.5, 0.5)
+                //spawnedEntity.setScale(Phaser.Math.FloatBetween(2.5, 3)) 
+                //spawnedEnemy.resilienceCapacity = Phaser.Math.Between(150, 300) * (1 + (0.1 * spawnedEnemy.difficultyMod))
+
+                // stub
+                //spawnedEnemy.attackCollisionStartFrame = 5
+                //spawnedEnemy.attackCollisionEndFrame = 7
+                //spawnedEnemy.attackRange = screenWidth * 0.15
+                
+            }
+
+            spawnedEntity.setScale(1)
+
+            // Set Start Position
+
+            if (this.speedLevel == 1) {
+                this.obstaclePositionYMin = screenHeight * 0.5
+                this.obstaclePositionYMax = screenHeight * 0.65
+
+            } else
+                // Level 2
+                if (this.speedLevel == 2) {
+                    this.obstaclePositionYMin = screenHeight * 0.4
+                    this.obstaclePositionYMax = screenHeight * 0.675
+                } else
+                    // Level 3
+                    if (this.speedLevel == 3) {
+                        this.obstaclePositionYMin = screenHeight * 0.3
+                        this.obstaclePositionYMax = screenHeight * 0.7
+                    }
+
+            if(spawnedEntity.type == 'Normal'){
+                spawnedEntity.x =  this.player.x + 500//Phaser.Math.Between(screenWidth * 3 + (this.player.x -  (screenWidth * 2)), screenWidth * 4 )  
+                spawnedEntity.y = this.player. y - 200//Phaser.Math.Between(this.obstaclePositionYMin,this.obstaclePositionYMax)
+                //spawnedEnemy.play(spawnedEnemy.animationKey + '_Idle',true)
+            } else if (spawnedEntity.type == 'Chaser') {
+                spawnedEntity.x = this.camera.scrollX - Phaser.Math.Between((screenWidth * 0.05), (screenWidth * 0.75) )  
+                spawnedEntity.y = Phaser.Math.Between(this.obstaclePositionYMin,this.obstaclePositionYMax)
+                //spawnedEnemy.play(spawnedEnemy.animationKey + '_Move',true)
+            }
+      
+            //spawnedEntity.setPipeline('Light2D')
+            spawnedEntity.body.setAllowGravity(true)
+            //spawnedEntity.setImmovable(true)
+            //spawnedEnemy.isHit = false
+            //spawnedEnemy.hitsTaken = 0
+            //spawnedEnemy.canAct = true
+            //spawnedEnemy.resilienceCurrent = spawnedEnemy.resilienceCapacity
+            //spawnedEnemy.staminaCapacity = 100
+            //spawnedEnemy.staminaCurrent = 100
+            //spawnedEnemy.enragedLevel = 0
+  
+            //spawnedEnemy.targetRange = this.player.x
+            //spawnedEnemy.aggroRange = Phaser.Math.FloatBetween(spawnedEnemy.attackRange * 0.5,spawnedEnemy.attackRange * 1.5)
+
+        
+        }
+
+    }
     }
 
     spawnPlatform() {
@@ -1774,7 +1982,7 @@ class Simulacrum extends Phaser.Scene {
 
     spawnEnemy(){
 
-        if (this.enemyGroup.getTotalFree() > 0 && this.gameMode == 0 ) {
+        if (this.enemyGroup.getTotalFree() > 0 && this.gameMode == 0 && this.stage.enemySpawnEnabled) {
             if(this.tutorialsCompleted){
             if (this.stage.checkPointType == 1){
                 this.stage.enemyMinSpawn = 1 
@@ -1915,118 +2123,6 @@ class Simulacrum extends Phaser.Scene {
 
     }
     }
-
-    // Stub - to be merged with Horde and Chaser
-    // spawnChaser(){
-
-    //     if (this.enemyGroup.getTotalFree() > 0 && this.gameMode == 0) {
-        
-    //     var rarityChanceArray
-
-    //     if (Math.round(this.stage.hordeDifficultyModifier) < 2){
-    //         rarityChanceArray = [0,5,15]
-    //     } else if (Math.round(this.stage.hordeDifficultyModifier) < 3){
-    //         rarityChanceArray = [0,15,35]
-    //     } else if (Math.round(this.stage.hordeDifficultyModifier) < 4){
-    //         rarityChanceArray = [5,35,75]
-    //     } else {
-    //         rarityChanceArray = [15,75,100]
-    //     }
-
-    //     // Spawns Random X number ranging from 0 to remaining space in horde maxSize 
-    //     for (var i = 0; i < Phaser.Math.Between(1,Math.min(this.enemyGroup.getTotalFree(),2)); i++){
-    
-    //         var chaserEnemy = this.enemyGroup.get()
-    //         // Set Enemy Type
-    //         chaserEnemy.type = 'Chaser'
-
-    //         // Set Difficulty Mod
-    //         chaserEnemy.difficultyMod = this.stage.hordeDifficultyModifier
-
-    //         // Set Rarity
-    //         // Roll for Mythical (Rarity 4)
-    //         if(Phaser.Math.Between(0,100) <= rarityChanceArray[1]){
-    //             chaserEnemy.rarity = 4
-    //             chaserEnemy.animationKey = this.stage.enemyAnimationsKey.mythical
-    //             chaserEnemy.setOrigin(0.5, 1)
-    //             chaserEnemy.body.setSize(25, 25).setOffset(25, 37.5)
-    //             chaserEnemy.setScale(Phaser.Math.FloatBetween(7.5, 8.5)) 
-    //             chaserEnemy.resilienceCapacity = Phaser.Math.Between(400, 800) * (1 + (0.1 * chaserEnemy.difficultyMod))
-
-    //             // stub
-    //             chaserEnemy.attackCollisionStartFrame = 10
-    //             chaserEnemy.attackCollisionEndFrame = 11
- 
-    //         } else 
-    //         // Roll for Rare (Rarity 3)
-    //         if(Phaser.Math.Between(0,100) <= rarityChanceArray[2]){
-    //             chaserEnemy.rarity = 3
-    //             chaserEnemy.animationKey = this.stage.enemyAnimationsKey.rare
-    //             chaserEnemy.setOrigin(0.5, 1)
-    //             chaserEnemy.body.setSize(25, 25).setOffset(25, 37.5)
-    //             chaserEnemy.setScale(Phaser.Math.FloatBetween(7.5, 8.5)) 
-    //             chaserEnemy.resilienceCapacity = Phaser.Math.Between(400, 800) * (1 + (0.1 * chaserEnemy.difficultyMod))
-
-    //             // stub
-    //             chaserEnemy.attackCollisionStartFrame = 10
-    //             chaserEnemy.attackCollisionEndFrame = 11
-
-    //         } else 
-    //         // Roll for Uncommon (Rarity 2)
-    //         if(Phaser.Math.Between(0,100) <= rarityChanceArray[3]){
-    //             chaserEnemy.rarity = 2
-    //             chaserEnemy.animationKey = this.stage.enemyAnimationsKey.uncommon
-    //             chaserEnemy.setOrigin(0.5,0.5)
-    //             chaserEnemy.body.setSize(25, 25).setOffset(25, 37.5)
-    //             chaserEnemy.setScale(Phaser.Math.FloatBetween(2.5, 3)) 
-    //             chaserEnemy.resilienceCapacity = Phaser.Math.Between(200, 400) * (1 + (0.1 * chaserEnemy.difficultyMod))
-
-    //             // stub
-    //             chaserEnemy.attackCollisionStartFrame = 5
-    //             chaserEnemy.attackCollisionEndFrame = 7
-      
-    //         } else 
-    //         // Set to Common (Rarity 1)
-    //         {
-    //             chaserEnemy.rarity = 1
-    //             chaserEnemy.animationKey = this.stage.enemyAnimationsKey.common
-    //             chaserEnemy.setOrigin(0.5, 0.5)
-    //             chaserEnemy.setScale(Phaser.Math.FloatBetween(2.5, 3)) 
-    //             chaserEnemy.resilienceCapacity = Phaser.Math.Between(100, 300) * (1 + (0.1 * chaserEnemy.difficultyMod))
-
-    //             // stub
-    //             chaserEnemy.attackCollisionStartFrame = 5
-    //             chaserEnemy.attackCollisionEndFrame = 7
-                
-    //         }
-
-            
-
-    //         // Set Start Position
-      
-    //         chaserEnemy.x = this.camera.scrollX - Phaser.Math.Between((screenWidth * 0.05), (screenWidth * 0.75) )  
-    //         chaserEnemy.y = Phaser.Math.Between(screenHeight * 0.25,screenHeight * 0.75)
-    //         chaserEnemy.play(chaserEnemy.animationKey + '_Move',true)
-
-    //         chaserEnemy.setPipeline('Light2D')
-    //         chaserEnemy.body.setAllowGravity(true)
-    //         chaserEnemy.isHit = false
-    //         chaserEnemy.hitsTaken = 0
-    //         chaserEnemy.canAct = true
-    //         chaserEnemy.resilienceCurrent = chaserEnemy.resilienceCapacity
-    //         chaserEnemy.staminaCapacity = 100
-    //         chaserEnemy.staminaCurrent = 100
-    //         chaserEnemy.enragedLevel = 0
-    //         chaserEnemy.attackRange = screenWidth * 0.1
-    //         chaserEnemy.targetRange = this.player.x
-    //         chaserEnemy.aggroRange = Phaser.Math.FloatBetween(chaserEnemy.attackRange * 0.5,chaserEnemy.attackRange * 1.5)
-
-        
-    //     }
-
-    // }
-    // }
-
 
     enemyTakeHit(damageSource, enemy) {
 
@@ -5188,8 +5284,8 @@ class Simulacrum extends Phaser.Scene {
             if(!this.tutorialMode0Started){
                 this.tutorialMode0Started = true
                 this.tutorialTimeToLoadSegment = 1000
-                this.tutorialTimeBetweenSegments = 2000
-                this.tutorialSegmentReadTime = 4000
+                this.tutorialTimeBetweenSegments = 1000
+                this.tutorialSegmentReadTime = 2000
                 this.tutorialTotalSegments = 2
                 // Start Segment
                 this.tutorialSegment = 1
@@ -5248,8 +5344,8 @@ class Simulacrum extends Phaser.Scene {
 
             if(!this.tutorialMode1Started){
                 this.tutorialMode1Started = true
-                this.tutorialTimeToLoadSegment = 1000
-                this.tutorialTimeBetweenSegments = 2000
+                this.tutorialTimeToLoadSegment = 500
+                this.tutorialTimeBetweenSegments = 1500
                 this.tutorialSegmentReadTime = 4000
                 this.tutorialTotalSegments = 5
                 // Start Segment
@@ -5328,6 +5424,7 @@ class Simulacrum extends Phaser.Scene {
             this.environmentModule()
     
             this.platforms(this)
+            this.obstacleController()
     
             // Enemies
             this.enemyController()
@@ -5362,6 +5459,7 @@ class Simulacrum extends Phaser.Scene {
             + '\nTime Period: ' + this.stageData.timeText
             + '\nMusic Duration: ' + Math.floor(bgMusic.duration / 60) + ':' + Phaser.Math.RoundTo((((bgMusic.duration / 60) - Math.floor(bgMusic.duration / 60)) * 60),-2)
             + '\nPlayer Speed: ' + Math.round(this.playerSpeed * 100) + '%' 
+            +'\nObstacles: ' + this.obstacleGroup.getTotalFree()
         )
         } else
         if(this.gameMode == 1 || this.stage.checkPointType == 1){
@@ -5427,6 +5525,11 @@ class Simulacrum extends Phaser.Scene {
         // Navigation
         if (abortStageHeld) {
             nextScene = true
+            this.tutorialMode0Completed = true
+            this.tutorialMode1Completed = true
+            this.tutorialsCompleted = true
+            this.tutorialTextBox.destroy()
+            this.tutorialText.destroy()
         }
 
         if (nextScene) {
