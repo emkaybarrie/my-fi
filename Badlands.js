@@ -5777,6 +5777,11 @@ class Badlands extends Phaser.Scene {
             this.recordScores()
             this.scene.run('Kianova', { regionID: this.stageData.regionID, stage: this.stageScore, glory: Math.round(this.gloryScore), rewards: this.rewardsScore, gold: this.goldScore })
             this.scene.stop('Badlands')
+            this.tutorialMode0Completed = true
+            this.tutorialMode1Completed = true
+            this.tutorialsCompleted = true
+            this.tutorialTextBox.destroy()
+            this.tutorialText.destroy()
 
         }
 
