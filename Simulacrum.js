@@ -373,8 +373,9 @@ class Simulacrum extends Phaser.Scene {
         // Camera and Music
 
         this.camera = this.cameras.main
-        this.camera.zoom = 1.05
-        this.camera.setBounds(screenWidth, 0, screenWidth * 2, screenHeight)
+        //this.camera.zoom = 1.05
+        this.camera.setBounds(screenWidth, -screenHeight, screenWidth, screenHeight)//.setSize(screenWidth * 1.5,screenHeight * 1.5)//.setViewport(screenWidth * 1.5,screenHeight,screenWidth,screenHeight)
+        //this.camera.y -= screenHeight
         this.camera.centerOnX(screenWidth * 2)
         this.camera.fadeIn(1000)
 
@@ -481,7 +482,7 @@ class Simulacrum extends Phaser.Scene {
         // Player - To be updated
 
         this.playerScale = 4 * (scaleModX)
-        this.player = this.physics.add.sprite(screenWidth * 1.75, screenHeight * 0.5, 'activeAvatar').setScale(this.playerScale).setDepth(1).setPipeline('Light2D')
+        this.player = this.physics.add.sprite(screenWidth * 1.75, screenHeight * 0.5, 'activeAvatar').setScale(this.playerScale,this.playerScale * 1.1).setDepth(1).setPipeline('Light2D')
         this.player.body.setSize(10, 30).setOffset(25, 15).setAllowDrag(true)
         this.player.setBounce(0.05)
         this.player.setCollideWorldBounds(true);
@@ -490,6 +491,7 @@ class Simulacrum extends Phaser.Scene {
         this.physics.add.overlap(this.player, this.enemyGroup, this.mode0CollisionDetection, null, this)
         this.physics.add.overlap(this.player, this.obstacleGroup, this.mode0CollisionDetection, null, this)
         
+        //this.camera.startFollow(this.player,true,0,0.5,(screenWidth * 1.75) - (screenWidth * 2) ,0)
 
         this.enemyMeleeAttack = this.physics.add.group({
             //defaultKey: '',
@@ -762,7 +764,7 @@ class Simulacrum extends Phaser.Scene {
         this.floor = this.physics.add.image(0, screenHeight * this.floorHeight, 'floor').setScale((screenWidth * 5) / 400, 4).setImmovable(true).refreshBody().setOrigin(0)
         this.floor.body.setAllowGravity(false)
         this.floor.setTint(floorColour)
-        this.floor.setVisible(floorVisible)
+        this.floor.setVisible(1)//(floorVisible)
 
         // this.stage.terrainKey = 'platformR' + this.stageData.regionID + '_' + Phaser.Math.Between(1,2)
         // this.floor.setTexture(this.stage.terrainKey)
@@ -1594,7 +1596,8 @@ class Simulacrum extends Phaser.Scene {
     environmentModule() {
         if (this.gameMode == 0) {
             for (var i = 1; i < this.bgLayers + 1; i++) {
-                window['bgL' + i].tilePositionX += (this.baseSpeed * this.playerSpeed) * window['bgL' + i + 'ScrollMod'] * (scaleModX / (screenWidth / this.textures.get('bgL' + i).getSourceImage().width))
+                window['bgL' + i].tilePositionX += (this.baseSpeed * this.playerSpeed) * (window['bgL' + i + 'ScrollMod'] / this.camera.zoom) * (scaleModX / (screenWidth / this.textures.get('bgL' + i).getSourceImage().width))
+               // window['bgL' + i].tilePositionY = (this.camera.scrollY - 400) 
             }
 
             for (var i = 1; i < this.fgLayers + 1; i++) {
@@ -1608,7 +1611,8 @@ class Simulacrum extends Phaser.Scene {
         } else if (this.gameMode == 1) {
 
             for (var i = 1; i < this.bgLayers + 1; i++) {
-                window['bgL' + i].tilePositionX = this.camera.scrollX * window['bgL' + i + 'ScrollMod'] * (scaleModX / (screenWidth / this.textures.get('bgL' + i).getSourceImage().width))
+                window['bgL' + i].tilePositionX = this.camera.scrollX * (window['bgL' + i + 'ScrollMod'] )  * (scaleModX / (screenWidth / this.textures.get('bgL' + i).getSourceImage().width))
+                //awindow['bgL' + i].tilePositionY = (this.camera.scrollY - 400) 
             }
 
             for (var i = 1; i < this.fgLayers + 1; i++) {
@@ -2966,23 +2970,62 @@ class Simulacrum extends Phaser.Scene {
         },this)
     }
 
+     followY(camera, target, x) {
+        // Calculate the difference between the target's y position and the camera's y position
+        let diff = target.y - camera.worldView.y;
+      
+        // If the difference is within a certain threshold, do nothing
+        if (Math.abs(diff) <= 50) {
+          return;
+        }
+      
+        // Calculate the new y position for the camera based on the target's x position and a smoothing factor
+        let newY = camera.y + diff * 0.05;
+      
+        // Set the camera's x and y positions
+        camera.setScroll(x, newY);
+      }
+
+      followX(camera, target, y) {
+        // Calculate the difference between the target's x position and the camera's x position
+        let diff = target.x - camera.x;
+      
+        // If the difference is within a certain threshold, do nothing
+        if (Math.abs(diff) <= 1) {
+          return;
+        }
+      
+        // Calculate the new x position for the camera based on the target's x position and a smoothing factor
+        let newX = camera.x + diff * 0.1;
+      
+        // Set the camera's x and y positions
+        camera.setPosition(newX, y);
+      }
+      
+      
+
     cameraModule() {
 
         if (this.gameMode == 0) {
+            
+          
+            //this.camera.setScroll(screenWidth * 2,this.player.y)
+            //this.followY(this.camera,this.player,screenWidth * 1.5)
+            //this.camera.startFollow(this.player)
 
             if (a1Held) {
-                this.camera.zoomTo(1.1, 500)
+                this.camera.zoomTo(1.3, 500)
             } else if (a2Held) {
-                this.camera.zoomTo(1, 500)
+                this.camera.zoomTo(1.2, 500)
             }else {
-                this.camera.zoomTo(1.05, 250)
+                this.camera.zoomTo(1, 250)
             }
         } else {
 
             if (this.powerBarSource >= 0.75) {
 
                 this.camera.zoomTo(1.15, 50)
-                this.camera.centerOn(this.player.x, screenHeight * 0.5)
+                this.camera.centerOn(this.player.x / this.camera.zoom , screenHeight * 0.5  )
 
             } else if (this.powerBarSource >= 0.5) {
 
@@ -2991,7 +3034,44 @@ class Simulacrum extends Phaser.Scene {
 
             } else {
                 this.camera.zoomTo(1, 500)
-                this.camera.centerOnX(this.player.x)
+                //this.followY(this.camera,this.player,screenWidth * 1.5)
+                //this.camera.centerOnX(this.player.x * this.camera.zoom)
+                //this.followY(this.camera,this.player,this.player.x * this.camera.zoom)
+                
+                //this.camera.startFollow(this.player)
+
+                // // Lock on Camera
+                        // if (this.player.x > this.closestEnemy.x - (300 * scaleModX) && this.playerLockedOn){
+
+                        //     this.camera.pan(this.player.x - (100 * scaleModX),0,100,'Sine.easeInOut',true,
+                        //     (camera, progress) => { 
+                        //         camera.panEffect.destination.x = this.player.x - (100 * scaleModX);
+                        //         if(progress == 1){
+                        //             camera.startFollow(this.player,true,0.5,0.5,100 * scaleModX,0)
+                        //         }
+                        //     })
+
+                        // } else 
+
+                        // if (this.player.x < this.closestEnemy.x + (300 * scaleModX) && this.playerLockedOn){
+
+                        //     this.camera.pan(this.player.x + (100 * scaleModX),0,100,'Sine.easeInOut', true,
+                        //     (camera, progress) => { 
+                        //         camera.panEffect.destination.x = this.player.x + (100 * scaleModX);
+                        //         if(progress == 1){
+                        //             camera.startFollow(player,true,0.5,0.5,-(100 * scaleModX),0)
+                        //         }
+                        //     })
+
+                        // } else if (!this.playerLockedOn) {
+                        //     this.camera.pan(this.player.x + (100 * scaleModX),0,100,'Sine.easeInOut',true,
+                        //     (camera, progress) => { 
+                        //             camera.panEffect.destination.x = this.player.x;
+                        //             if(progress == 1){
+                        //             camera.startFollow(this.player,true,0.5,0.5)
+                        //         }
+                        //     })
+                        // }
 
             }
 
@@ -3040,7 +3120,7 @@ class Simulacrum extends Phaser.Scene {
         // Status Border
 
         if (this.stageProgressEnabled) {
-            this.r3.setActive(1).setVisible(1)
+            //this.r3.setActive(1).setVisible(1)
 
         } else {
             this.r3.setActive(0).setVisible(0)
@@ -4065,7 +4145,7 @@ class Simulacrum extends Phaser.Scene {
                 this.camera.flash()
                 this.gameMode = 1
                 this.stageProgressEnabled = false
-                this.physics.world.setBounds(screenWidth, 0, screenWidth * 2, screenHeight)
+                this.physics.world.setBounds(screenWidth, 0, screenWidth * 2, screenHeight )
             } 
         
     }
@@ -5575,6 +5655,8 @@ class Simulacrum extends Phaser.Scene {
             + '\nTime Period: ' + this.stageData.timeText
             + '\nMusic Duration: ' + Math.floor(bgMusic.duration / 60) + ':' + Phaser.Math.RoundTo((((bgMusic.duration / 60) - Math.floor(bgMusic.duration / 60)) * 60),-2)
             + '\nPlayer Speed: ' + Math.round(this.playerSpeed * 100) + '%' 
+            + '\nTile XY: ' + bgL1.tilePositionX + ' ' + bgL1.tilePositionY 
+            + '\nCamera XY: ' + this.camera.x + ' ' + this.camera.y 
             + '\nStage Progress Enabled: ' + this.stageProgressEnabled 
             +'\nObstacles: ' + this.obstacleGroup.getTotalFree()
         )
