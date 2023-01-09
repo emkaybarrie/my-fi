@@ -198,10 +198,10 @@ class Kianova extends Phaser.Scene {
         this.updateRewards(data)
 
 
-        camera = this.cameras.main.fadeIn(500)
-        camera.flash(1000)
+        this.camera = this.cameras.main.fadeIn(500)
+        this.camera.flash(1000)
         this.sound.stopAll();
-        camera.setBounds(0, 0, screenWidth, screenHeight)
+        this.camera.setBounds(0, 0, screenWidth, screenHeight)
 
 
         var mapScaleX = 1.325 * (scaleModX) 
@@ -463,11 +463,10 @@ class Kianova extends Phaser.Scene {
                                     sector3Icon,sector4Icon,this.sectorIconBox,sector1MapIcon,sector2MapIcon,sector0MapIcon,sector3MapIcon,sector4MapIcon,this.selectedSectorIcon
                                 ]) 
         this.sectorUI.setVisible(0)
-        
 
         
 
-        camera.on('cameraflashcomplete',function(){
+        this.camera.on('cameraflashcomplete',function(){
 
         this.tweens.add({
             delay: 500,
@@ -489,7 +488,7 @@ class Kianova extends Phaser.Scene {
                     this.sound.play('kianovaTheme')
                       
             }
-        });
+        },this);
 
 
         },this)
@@ -535,9 +534,9 @@ class Kianova extends Phaser.Scene {
         if((a1Held || s1Held) && this.controlsEnabled){
         
 
-            camera.fadeOut(250)
+            this.camera.fadeOut(250)
             
-            camera.once('camerafadeoutcomplete',function(){
+            this.camera.once('camerafadeoutcomplete',function(){
                 if(selectedSector == 0){
                     activeRegion = 'Region' + String(Phaser.Math.Between(1,4))
                 } else {
@@ -550,7 +549,7 @@ class Kianova extends Phaser.Scene {
                 nextScene = true
             
             
-            })
+            },this)
         } if ((s2Held || a2Held) && this.controlsEnabled){
             activeUser = null
             this.scene.stop('Kianova')

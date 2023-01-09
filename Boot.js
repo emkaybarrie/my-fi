@@ -151,8 +151,8 @@ class Boot extends Phaser.Scene {
   
         }
     
-        screenHeight = window.innerHeight * window.devicePixelRatio
-        screenWidth = window.innerWidth * window.devicePixelRatio
+        // screenHeight = window.innerHeight * window.devicePixelRatio
+        // screenWidth = window.innerWidth * window.devicePixelRatio
     }
 
     

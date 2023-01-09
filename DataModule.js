@@ -589,7 +589,8 @@ class DataModule extends Phaser.Scene {
     }
 
     update() {
-
+        screenHeight = window.innerHeight * window.devicePixelRatio
+        screenWidth = window.innerWidth * window.devicePixelRatio
     }
 
 

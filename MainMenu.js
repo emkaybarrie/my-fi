@@ -1,5 +1,4 @@
 var activeMenuBox
-var camera
 var firstRun = true
 class MainMenu extends Phaser.Scene {
 
@@ -213,11 +212,12 @@ class MainMenu extends Phaser.Scene {
         
    
 
-        camera = this.cameras.main
+        this.camera = this.cameras.main
         
         this.menuBGScaleX = 1.94 * (scaleModX) 
         this.menuBGScaleY = 1.1 * (scaleModY)
-        var menuBG = this.add.image(0,0,'menuBG').setScale(this.menuBGScaleX,this.menuBGScaleY).setOrigin(0,0)
+        var menuBG = this.add.image(0,0,'menuBG').setOrigin(0,0).setDisplaySize(screenWidth,screenHeight)
+        //var menuBG = this.add.tileSprite(0,-screenHeight * 1,screenWidth,screenHeight * 2,'menuBG').setOrigin(0,0).setTileScale(2,2)//.setDisplaySize(screenWidth,screenHeight)
         
         this.tweens.addCounter({
             from: 180,
@@ -233,7 +233,8 @@ class MainMenu extends Phaser.Scene {
         
         var menuPrompt = this.add.text(screenWidth * 0.30, screenHeight * 0.65, 'Press A to Start', { fontFamily: 'Georgia',align: 'center', fixedWidth:screenWidth * 0.25,fixedHeight:screenHeight * 0.075});
         menuPrompt.setAlpha(0).setFontSize(44 * scaleModX).setOrigin(0.5,0)
-        this.gameTitle = this.add.image(screenWidth * 0.30,screenHeight * 0.2,'gameTitle').setScale(1.25 * scaleModX)
+        this.gameTitle = this.add.image(screenWidth * 0.30,screenHeight * 0.2,'gameTitle').setScale(1.25)
+        //this.gameTitle = this.add.image(screenWidth * 0.30,0,'gameTitle').setScale(1.25)
 
         this.menuOption1 = this.add.text(this.gameTitle.x, screenHeight * 0.65 , 'Start', { fontFamily: 'Georgia',align: 'center', fixedWidth:screenWidth * 0.25,fixedHeight:screenHeight * 0.075});
         this.menuOption2 = this.add.text(this.gameTitle.x,this.menuOption1.y + (screenHeight * 0.07) , 'Test', { fontFamily: 'Georgia',align: 'center', fixedWidth:screenWidth * 0.25,fixedHeight:screenHeight * 0.075});
@@ -268,11 +269,11 @@ class MainMenu extends Phaser.Scene {
                     yoyo: 1,
                     repeat: -1,
                     onUpdate: function (){
-                        if(a1Pressed){
-                            a1Pressed = false
+                        if(a1Held){
+                            a1Held = false
                             menuPrompt.setAlpha(0)
                             tween.stop()
-                            camera.flash(500)
+                            //this.camera.flash(500)
                             menuTextGroup.setVisible(1)
                             activeMenuBox.setVisible(1)
                             firstRun = false
@@ -307,6 +308,10 @@ class MainMenu extends Phaser.Scene {
             scaleX: { value: this.confirmSelection, duration: 0, ease: 'Power1' },
   
         });
+
+      
+
+        
 
         if (!firstRun ){
         if(downHeld && this.selectedOption < 2){
@@ -348,16 +353,17 @@ class MainMenu extends Phaser.Scene {
             if (this.selectedScene != undefined){
                     nextScene = true
             }
-        }
+        }  
+        
     }
         
-      
+    
       
         if (this.selectedOption == 1){
             this.selectedScene = 'ModeSelect'
         } else if (this.selectedOption == 2){
             this.selectedScene = 'Region' + String(Phaser.Math.Between(1,4))
-            this.data = {targetScene:'Simulacrum',targetZone: 0, currentTimePeriod: Phaser.Math.Between(1,4),rarityOverride:null}
+            this.data = {targetScene:'Simulacrum',targetZone: 0, currentTimePeriod: Phaser.Math.Between(1,3),rarityOverride:null}
         } 
 
         if (nextScene){

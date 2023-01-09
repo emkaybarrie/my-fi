@@ -6,13 +6,15 @@ var config = {
     autoFocus: true,
 
     pixelArt: 0,
+    // width: window.innerWidth * window.devicePixelRatio,
+    // height: (window.innerHeight * window.devicePixelRatio),
     scale: {
 
         // parent: 'mygame',
         mode: Phaser.Scale.FIT,
         autoCenter: Phaser.Scale.CENTER_BOTH,
-        width:  window.innerWidth * window.devicePixelRatio, 
-        height: window.innerHeight * window.devicePixelRatio, 
+        width:  window.innerWidth * window.devicePixelRatio , 
+        height: (window.innerHeight * window.devicePixelRatio) , 
         resolution: window.devicePixelRatio || 1
     },
     input: {
