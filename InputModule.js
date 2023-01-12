@@ -47,7 +47,7 @@ class InputModule extends Phaser.Scene {
         this.keyC
 
         this.Y_THRESHOLD_DEFAULT = 0.25
-        this.Y_THRESHOLD_UP = 0.35
+        this.Y_THRESHOLD_UP = 0.55
 
 
 

@@ -18,6 +18,9 @@ class Region1 extends Phaser.Scene {
         this.targetZone = data.targetZone
         this.currentTimePeriod = data.currentTimePeriod
         this.rarityOverride = data.rarityOverride
+        this.startRewards = data.startRewards
+        this.startGlory = data.startGlory
+        this.startGold = data.startGold
         console.log('Region Query Data Imported: ',
                     '\nTarget Zone: ' + this.targetZone,
                     '\nTime Period: ' + this.currentTimePeriod,
@@ -42,9 +45,10 @@ class Region1 extends Phaser.Scene {
         console.log('Refreshing Region Sector Array Lists...')
         // Sector Lists
         this.zone0 = [this.amaranRiverbank,this.gardenGrove,this.darkmoonGlade,this.etherielForest]
+        this.zone1 = [this.gardenGrove,this.darkmoonGlade,this.etherielForest]
         // Sector Root Array
         this.zones = [
-                        this.zone0
+                        this.zone0,this.zone1
                     ]
      
     }
@@ -161,8 +165,8 @@ class Region1 extends Phaser.Scene {
 
                 // Floor Settings
         
-                game.floorMin = 0.95
-                game.floorMax = 0.8 
+                game.floorMin = 0.925
+                game.floorMax = 0.825 
                 game.floorColour = 0x375971 
                 game.floorVisible = false
         
@@ -418,8 +422,13 @@ class Region1 extends Phaser.Scene {
 
         console.log('Applying Stage Data')
 
+        // Stats
+        this.data.set('startGlory',this.startGlory)
+        this.data.set('startRewards',this.startRewards)
+        this.data.set('startGold',this.startGold)
+
         // Store Sector & Rarity Data
-        this.data.set('zone',this.zone)
+        this.data.set('zone',this.targetZone)
         this.data.set('rarity',this.rarity)
  
         // Store Stage Data

@@ -364,7 +364,10 @@ class Badlands extends Phaser.Scene {
         // Sound Effects
         this.load.audio("enemyTakeMeleeHit", ["assets/sFX/sliceFlesh.wav"]);
         this.load.audio("takeMeleeHit1", ["assets/sFX/takeMeleeHit1.mp3"]);
-        this.load.audio("pickupGold", ["assets/sFX/pickupGold.ogg"]);
+        this.load.audio("pickupGold_general", ["assets/sFX/pickupGold_general.wav"]);
+        this.load.audio("pickupGold_loot", ["assets/sFX/pickupGold_loot.ogg"]);
+        this.load.audio("pickupReward_loot", ["assets/sFX/pickupReward_loot.mp3"]);
+        this.load.audio("pickupGlory_loot", ["assets/sFX/pickupGlory_loot.wav"]);
         this.load.audio("enemyDeath", ["assets/sFX/enemyDeath.mp3"]);
         this.load.audio("nightBorneTakeLightDamage1", ["assets/sFX/Enemy/nightBorneTakeLightDamage1.wav"]);
         this.load.audio("nightBorneTakeLightDamage2", ["assets/sFX/Enemy/nightBorneTakeLightDamage2.wav"]);
@@ -374,6 +377,11 @@ class Badlands extends Phaser.Scene {
         this.load.audio("nightBorneTakeHeavyDamage3", ["assets/sFX/Enemy/nightBorneTakeHeavyDamage3.wav"]);
         this.load.audio("nightBorneEvade1", ["assets/sFX/Enemy/nightBorneEvade1.wav"]);
         this.load.audio("nightBorneEvade2", ["assets/sFX/Enemy/nightBorneEvade2.wav"]);
+
+        this.load.audio("nightBorneMinion_Attack", ["assets/sFX/Enemy/Common/nightBorneMinion_Attack.wav"]);
+        
+        this.load.audio("playerJumping", ["assets/sFX/Player/Movement/Jumping.wav"]);
+        this.load.audio("playerLanding", ["assets/sFX/Player/Movement/Landing.wav"]);
 
         this.load.audio("swordSwing1", ["assets/sFX/swordSwing1.wav"]);
         this.load.audio("swordSwing2", ["assets/sFX/swordSwing2.mp3"]);
@@ -417,6 +425,7 @@ class Badlands extends Phaser.Scene {
         this.load.audio("enterCheckPoint1", ["assets/sFX/Player/enterCheckPoint1.wav"]);
         this.load.audio("enterCheckPoint2", ["assets/sFX/Player/enterCheckPoint2.wav"]);
         this.load.audio("exitCheckPoint1", ["assets/sFX/Player/exitCheckPoint1.wav"]);
+        this.load.audio("nextStage1", ["assets/sFX/Player/exitCheckPoint1.wav"]);
 
 
         this.load.spritesheet('whiteHitSmear', 'assets/whiteHitSmear.png', { frameWidth: 1024, frameHeight: 1024 });
@@ -431,7 +440,9 @@ class Badlands extends Phaser.Scene {
         this.load.image('skillIconBox', 'assets/vFX/textBox2a.png');
         this.load.spritesheet('deadlyCombatAssaultIcon', 'assets/skills/deadlyCombatAssaultIcon.png', { frameWidth: 256, frameHeight: 256 });
         this.load.spritesheet('deadlyCombatAssaultHitSmear', 'assets/skills/deadlyCombatAssaultHitSmear.png', { frameWidth: 1024, frameHeight: 1024 });
+        this.load.spritesheet('deadlyCombatAssaultProjectile', 'assets/skills/deadlyCombatAssaultHitSmear.png', { frameWidth: 1024, frameHeight: 1024 });
         this.load.spritesheet('thunderStrikeIcon', 'assets/skills/thunderStrikeIcon.png', { frameWidth: 256, frameHeight: 256 });
+        this.load.spritesheet('thunderStrike', 'assets/skills/thunderStrike.png', { frameWidth: 64, frameHeight: 64 });
 
         this.load.image('thunderBoltIcon', 'assets/skills/thunderBoltIcon.png');
         this.load.image('fireBoltIcon', 'assets/skills/fireBoltIcon.png');
@@ -459,10 +470,17 @@ class Badlands extends Phaser.Scene {
         for(var i = 1; i < this.assetVariants; i++){
             this.load.image('rock' + i, 'assets/Terrain/Generic/rock_' + i +'.png');
         }
+
+        // Power Ups
+
+        // this.load.spritesheet('powerupToCollect', 'assets/Powerups/powerupToCollect.png', { frameWidth: 5760, frameHeight: 96});
+        // this.load.spritesheet('powerupCollected', 'assets/Powerups/powerupCollected.png', { frameWidth: 768, frameHeight: 640});
         
 
         this.load.atlas('doomsayer', ['assets/doomsayer.png', 'assets/doomsayer_n.png'], 'assets/doomsayersprites.json');
-        this.load.spritesheet('nightBorne', ['assets/nightBorne.png', 'assets/nightBorne.png'], { frameWidth: 80, frameHeight: 80 });
+        this.load.spritesheet('nightBorne', ['assets/nightBorne.png', 'assets/nightBorne_n.png'], { frameWidth: 80, frameHeight: 80 });
+        this.load.spritesheet('nightBorne_Archer', ['assets/Enemies/nightBorne_Archer/nightBorne_Archer.png', 'assets/Enemies/nightBorne_Archer/nightBorne_Archer.png'], { frameWidth: 64, frameHeight: 64 });
+        this.load.spritesheet('nightBorne_ArcherProjectile', ['assets/Enemies/nightBorne_Archer/nightBorne_ArcherProjectile.png', 'assets/Enemies/nightBorne_Archer/nightBorne_ArcherProjectile.png'], { frameWidth: 40, frameHeight: 5 });
 
         this.load.audio("hordeMusic", ["assets/music/The_Horror.mp3"]);
         this.load.audio("hordeMusic_Overdrive", ["assets/music/She's_Back.mp3"]);
@@ -476,19 +494,21 @@ class Badlands extends Phaser.Scene {
             this.load.audio("tutorialMusic", ["assets/music/Gumshield.mp3"]);
         } else if(tutorialMusic == 4){
             this.load.audio("tutorialMusic", ["assets/music/Dynasties_&_Dystopia.mp3"]);
+        } else if (tutorialMusic == 5){
+            this.load.audio("tutorialMusic", ["assets/music/Throw_Me_To_The_Wolves.mp3"]);
         }
         
         this.load.audio("bgMusic1", ["assets/music/The_Apartment.mp3"]);
-        //this.load.audio("bgMusic2", ["assets/music/Arbol.mp3"]);
+        this.load.audio("bgMusic2", ["assets/music/Arbol.mp3"]);
         this.load.audio("bgMusic3", ["assets/music/Nine_Levels.mp3"]);
         this.load.audio("bgMusic4", ["assets/music/Katana.mp3"]);
-        //this.load.audio("bgMusic5", ["assets/music/Fate_I.mp3"]);
+        this.load.audio("bgMusic5", ["assets/music/Fate_I.mp3"]);
         this.load.audio("bgMusic6", ["assets/music/Talk_Like_Thunder.mp3"]);
         this.load.audio("bgMusic7", ["assets/music/Thundering_Voices.mp3"]);
-        //this.load.audio("bgMusic8", ["assets/music/Riptide.mp3"]);
+        this.load.audio("bgMusic8", ["assets/music/Riptide.mp3"]);
         this.load.audio("bgMusic9", ["assets/music/Legend_Has_It.mp3"]);
         this.load.audio("bgMusic10", ["assets/music/Gumshield.mp3"]);
-        //this.load.audio("bgMusic11", ["assets/music/Throw_Me_To_The_Wolves.mp3"]);
+        this.load.audio("bgMusic11", ["assets/music/Throw_Me_To_The_Wolves.mp3"]);
         this.load.audio("bgMusic12", ["assets/music/Wide_Eyes.mp3"]);
         this.load.audio("bgMusic13", ["assets/music/Dynasties_&_Dystopia.mp3"]);//
         this.load.audio("bgMusic14", ["assets/music/Come_Down.mp3"]);
@@ -499,8 +519,14 @@ class Badlands extends Phaser.Scene {
     }
 
     create() {
-
+        
         // V1 Code
+
+        // Tutorial
+        
+        this.tutorialMode0Completed = true
+        this.tutorialMode1Completed = true
+        this.tutorialsCompleted = true
 
         // Initialisation & Setup
 
@@ -513,16 +539,16 @@ class Badlands extends Phaser.Scene {
 
         Phaser.Utils.Array.Add(bgMusicArray, [
                                                 'bgMusic1', 
-                                                //'bgMusic2', 
+                                                'bgMusic2', 
                                                 'bgMusic3', 
                                                 'bgMusic4', 
-                                                //'bgMusic5', 
+                                                'bgMusic5', 
                                                 'bgMusic6', 
                                                 'bgMusic7',
-                                                //'bgMusic8', 
+                                                'bgMusic8', 
                                                 'bgMusic9', 
                                                 'bgMusic10', 
-                                                //'bgMusic11', 
+                                                'bgMusic11', 
                                                 'bgMusic12',
                                                  'bgMusic13',
                                                   'bgMusic14',
@@ -530,13 +556,10 @@ class Badlands extends Phaser.Scene {
         ])
 
         if(this.tutorialsCompleted){
-            bgMusic = this.sound.add('tutorialMusic', { volume: 0.5})//this.sound.add(Phaser.Utils.Array.GetRandom(bgMusicArray), { volume: 0.5})
+            bgMusic = this.sound.add(Phaser.Utils.Array.GetRandom(bgMusicArray), { volume: 0.75})
         } else {
-            bgMusic = this.sound.add('tutorialMusic', { volume: 0.5})//this.sound.add('tutorialMusic', { volume: 0.75})
+            bgMusic = this.sound.add('tutorialMusic', { volume: 0.75})//this.sound.add('tutorialMusic', { volume: 0.75})
         }
-        
-        
-       
 
         // Base Variables
 
@@ -544,7 +567,9 @@ class Badlands extends Phaser.Scene {
         this.baseScreenClearTime = 4 // Beats
         this.basePlatformSpawnTime = 6 // Beats 
         this.baseEnemySpawnTime = 4 // Beats 
-        this.baseObstacleSpawnTime = 12 // Beats
+        this.baseObstacleSpawnTime = 8 // Beats
+        this.baseTerrainSpawnTime = 12
+        this.basePowerupSpawnTime = 10
 
         this.gameMode = 0 // Starting Game Mode - 0 = Run, 1 = Battle
         this.speedLevel = 2 // Starting Speed Level in Run Mode (rename to Intensity Level)
@@ -554,12 +579,13 @@ class Badlands extends Phaser.Scene {
         this.playerSpeed = 0
         this.playerBattleSpeed = 0
         this.actionVarient = 1
+        
 
 
-        this.rewards = 0
-        this.level = 1
-        this.glory = 0
-        this.gold = 0
+        this.rewards = this.stageData.startRewards
+        this.level = this.stageData.zone + 1
+        this.glory = this.stageData.startGlory
+        this.gold = this.stageData.startGold
 
 
         this.baseGoldDrop = 100
@@ -567,7 +593,7 @@ class Badlands extends Phaser.Scene {
         this.baseZoneLength = 1000
         this.baseZoneClearTime = (Math.floor(bgMusic.duration / 60) * 60) + (((bgMusic.duration / 60) - Math.floor(bgMusic.duration / 60)) * 60)
         this.progress = 0
-        this.stage = { nextCheckPoint: 1, checkPointType: 0 }
+        this.stage =  { nextCheckPoint: 1, checkPointType: 0 }
         this.progressToNextLevel = this.baseZoneLength
         this.progressToNextCheckPoint = this.progressToNextLevel * 0.25
 
@@ -575,38 +601,6 @@ class Badlands extends Phaser.Scene {
 
         // World Bounds (effective Player Bounds)
         this.physics.world.setBounds(0, -screenHeight * 0.25, screenWidth * 1, screenHeight * (this.stageHeightModifier + 0.25));
-
-        // Camera and Music
-
-        this.camera = this.cameras.main
-        this.camera.setBounds(-screenWidth * 0.25, -screenHeight * 0.0, screenWidth * 2, screenHeight * this.stageHeightModifier)
-        this.camera.zoom = 0.75
-        this.camera.centerOnX(screenWidth * 0.5)
-        this.camera.fadeIn(2000)
-
-        this.cameraFocus = this.physics.add.sprite(screenWidth * 0.5)
-        this.cameraFocus.body.setAllowGravity(false)
-        this.camera.startFollow(this.cameraFocus,true,0,0.25)
-
-        bgMusic.play()
-        this.camera.once('camerafadeincomplete', function () {
-            this.stageProgressEnabled = true
-            playerInputActive = true
-
-            // Background Music
-
-            bgMusic.on('complete', function () {
-                //     songChoice = Math.floor(Phaser.Math.Between(1,songDatabaseSize))
-                //     Phaser.Utils.Array.Add(bgMusicArray,"bgMusic" + songChoice)
-                bgMusic.destroy()
-                bgMusic = this.sound.add(Phaser.Utils.Array.GetRandom(bgMusicArray))
-                bgMusic.setVolume(0.75)
-                bgMusic.play()
-            }, this)
-
-        }, this)
-
-
 
         // Stage (A) - Base Background, Floor, and Base Foreground
 
@@ -626,14 +620,54 @@ class Badlands extends Phaser.Scene {
 
         // Render Stage
 
-        this.stage.enemySpawnEnabled = true
-
         this.renderStageBG(this.bgLayers, this.bgScroll, this.floorMin, this.floorMax, this.floorColour, this.floorVisible, this.fgLayers, this.fgScroll)
+
+        playerInputActive = true
+        this.empowerAvatarStarted = false
+
+        // Camera and Music
+
+        this.camera = this.cameras.main
+        this.camera.setBounds(-screenWidth * 0.25, 0, screenWidth * 2, screenHeight * this.stageHeightModifier)
+        this.camera.centerOnX(screenWidth * 0.75)
+        this.camera.fadeIn(2000)
+
+        this.cameraFocus = this.physics.add.sprite(screenWidth * 0.5,screenHeight * 0.5)
+        this.cameraFocus.body.setAllowGravity(false)
+
+        
+
+        bgMusic.play()
+        this.camera.once('camerafadeincomplete', function () {
+            
+            this.camera.pan(this.cameraFocus.x,this.cameraFocus.y, 3000)
+            this.camera.once('camerapancomplete', function () {
+            //this.stageProgressEnabled = true
+            
+
+            this.camera.startFollow(this.cameraFocus,true,0,0.25)
+            },this)
+
+            // Background Music
+
+            bgMusic.on('complete', function () {
+                //     songChoice = Math.floor(Phaser.Math.Between(1,songDatabaseSize))
+                //     Phaser.Utils.Array.Add(bgMusicArray,"bgMusic" + songChoice)
+                bgMusic.destroy()
+                bgMusic = this.sound.add(Phaser.Utils.Array.GetRandom(bgMusicArray))
+                bgMusic.setVolume(0.75)
+                bgMusic.play()
+            }, this)
+
+
+            
+
+        }, this)
+
 
         // Day/Night System
 
         this.initialise_DayNightSystem()
-
 
         // Stage (B) - Background Objects & Obstacles
 
@@ -651,10 +685,25 @@ class Badlands extends Phaser.Scene {
             loop: true
         });
 
-        // Obstacles
+        // Terrain
+
+        this.terrainGroup = this.physics.add.group({
+            defaultKey: 'rock1',
+            maxSize: 20
+        });
+
+        this.terrainTimer = this.time.addEvent({
+            delay: this.baseTerrainSpawnTime * (60 / this.musicBPM) * 1000,
+            callback: this.spawnTerrain, args: [], callbackScope: this,
+            loop: true
+        });
+
+        this.physics.add.collider(this.terrainGroup, this.floor);
+
+        // Obstacles 
 
         this.obstacleGroup = this.physics.add.group({
-            defaultKey: 'rock1',
+            //defaultKey: '',
             maxSize: 20
         });
 
@@ -665,7 +714,39 @@ class Badlands extends Phaser.Scene {
         });
 
         this.physics.add.collider(this.obstacleGroup, this.floor);
-       // this.physics.add.collider(this.obstacleGroup, this.platformGroup);
+
+        // Powerups
+
+        this.powerupGroup = this.physics.add.group({
+            //defaultKey: '',
+            maxSize: 6
+        });
+
+        this.powerupTimer = this.time.addEvent({
+            delay: this.basePowerupSpawnTime * (60 / this.musicBPM) * 1000,
+            callback: this.spawnPowerup, args: [], callbackScope: this,
+            loop: true
+        });
+
+        // this.anims.create({
+        //     key: 'powerup_ToCollect',
+        //     frames: this.anims.generateFrameNumbers('powerupToCollect',{start: 1, end: 60}),
+        //     frameRate: 30,
+        //     showOnStart: 1,
+        //     repeat: -1
+        // });
+
+        // this.anims.create({
+        //     key: 'powerup_Collected',
+        //     frames: this.anims.generateFrameNumbers('powerupToCollect',{start: 1, end: 30}),
+        //     frameRate: 15,
+        //     showOnStart: 1,
+        //     hideOnComplete: 1
+        // });
+
+        this.physics.add.collider(this.powerupGroup, this.floor);
+        this.physics.add.collider(this.powerupGroup, this.platformGroup);
+
 
         // Entities Initialisation
 
@@ -679,9 +760,6 @@ class Badlands extends Phaser.Scene {
         this.closestEnemyOutline = this.add.sprite()
         this.closestEnemyOutline.setTintFill(0x7851a9).setAlpha(0.75)
 
-
-        this.spawningEnemy = false
-        this.spawningChaserEnemy = false
         this.enemyTimer = this.time.addEvent({ delay: this.baseEnemySpawnTime * (60 / this.musicBPM) * 2000, callback: this.spawnEnemy, args: [], callbackScope: this, loop: true });
 
         this.physics.add.collider(this.enemyGroup, this.floor);
@@ -691,22 +769,22 @@ class Badlands extends Phaser.Scene {
         // Player - To be updated
 
         this.playerScale = 5 * (scaleModX)
-        this.player = this.physics.add.sprite(screenWidth * 0.25, 0, 'activeAvatar').setScale(this.playerScale).setDepth(1).setPipeline('Light2D')
+        this.player = this.physics.add.sprite(screenWidth * 0.25, 0, 'activeAvatar').setScale(this.playerScale).setDepth(2).setPipeline('Light2D')
         this.player.body.setSize(10, 30).setOffset(25, 15).setAllowDrag(true)
         this.player.setBounce(0.05)
         this.player.setCollideWorldBounds(true);
-        this.physics.add.collider(this.player, this.floor);
-        this.physics.add.collider(this.player, this.platformGroup)
+        this.physics.add.collider(this.player, this.floorPlayer, this.enablePlayerBattleStrafe, null, this);
+        this.physics.add.collider(this.player, this.platformGroup, this.disablePlayerBattleStrafe, null, this)
         this.physics.add.overlap(this.player, this.enemyGroup, this.mode0CollisionDetection, null, this)
         this.physics.add.overlap(this.player, this.obstacleGroup, this.mode0CollisionDetection, null, this)
         
 
-        this.enemyMeleeAttack = this.physics.add.group({
+        this.enemyAttackHitboxPool = this.physics.add.group({
             //defaultKey: '',
             //maxSize: 
         });
 
-        this.physics.add.overlap(this.enemyMeleeAttack,this.player, this.playerTakeHit, null, this)
+        this.physics.add.overlap(this.enemyAttackHitboxPool,this.player, this.playerTakeHit, null, this)
 
         this.playerProjectiles = this.physics.add.group({
             //defaultKey: '',
@@ -715,7 +793,7 @@ class Badlands extends Phaser.Scene {
 
         this.playerAttackHitBox = this.add.sprite(this.player.x, this.player.y)
         this.physics.add.existing(this.playerAttackHitBox, false)
-        this.playerAttackHitBox.body.setAllowGravity(false).setSize(175, 100)
+        this.playerAttackHitBox.body.setAllowGravity(false).setSize(400, 300)
         this.playerAttackHitBox.setVisible(0)
         this.playerAttackHitBox.body.checkCollision.none = true
 
@@ -735,7 +813,18 @@ class Badlands extends Phaser.Scene {
 
         this.spotlightPlayerPower = this.lights.addLight(0, 0, this.player.displayWidth * 40, 0x6d54a9, 2.5);
 
+        // Stub
+        this.levelUpAnim = this.add.sprite(this.player.x, 0)
+        this.levelUpAnim.setTint(0x7851a9).setDepth(5).setAlpha(0.65)
+        this.levelUpAnim.setDisplaySize(screenWidth * 0.15,screenHeight * this.stageHeightModifier * (this.floorMin - ((this.floorMin - this.floorMax) * 0.5)))
+        this.levelUpIcon = this.add.sprite(this.camera.scrollX + screenWidth * 0.5,this.player.y - 250,'storedRewardsIcon')
+        this.levelUpIcon.setActive(0).setVisible(0)
+        this.levelUpIcon.setScale(2)
+
+
         this.renderAvatarStats()
+
+        
 
         // Stage 
         this.stage.nextCheckPoint = 1
@@ -747,7 +836,7 @@ class Badlands extends Phaser.Scene {
 
         var importedEnemyData = {
             common: 'nightBorneMinion',
-            uncommon: 'nightBorneMinion',
+            uncommon: 'nightBorne_Archer',
             rare: 'nightBorne',
             mythical: 'nightBorne'
         }
@@ -805,6 +894,57 @@ class Badlands extends Phaser.Scene {
         this.anims.create({
             key: 'nightBorneMinion_Death',
             frames: this.anims.generateFrameNames('doomsayer', { prefix: 'death', start: 1, end: 10 }),
+            frameRate: 12,
+            repeat: 0,
+            hideOnComplete: 1
+
+        });
+
+        this.anims.create({
+            key: 'nightBorne_Archer_Idle',
+            frames: this.anims.generateFrameNumbers('nightBorne_Archer', { start: 40, end: 43 }),
+            frameRate: 10,
+            showOnStart: 1,
+            repeat: -1
+        });
+
+        this.anims.create({
+            key: 'nightBorne_Archer_Move',
+            frames: this.anims.generateFrameNumbers('nightBorne_Archer', { start: 0, end: 7 }),
+            frameRate: 10,
+            showOnStart: 1,
+            repeat: -1
+        });
+
+        this.anims.create({
+            key: 'nightBorne_Archer_Attack',
+            frames: this.anims.generateFrameNumbers('nightBorne_Archer', { start: 24, end: 31 }),
+            frameRate: 18,
+            showOnStart: 1,
+            //repeatDelay: Math.random() * 3000
+            
+        });
+
+        this.anims.create({
+            key: 'nightBorne_Archer_AttackProjectile',
+            frames: this.anims.generateFrameNumbers('nightBorne_ArcherProjectile', { start: 0, end: 0 }),
+            frameRate: 1,
+            showOnStart: 1,
+            //repeatDelay: Math.random() * 3000
+            
+        });
+
+        this.anims.create({
+            key: 'nightBorne_Archer_Hurt',
+            frames: this.anims.generateFrameNumbers('nightBorne_Archer', { start: 8, end: 10 }),
+            frameRate: 10,
+            repeat: 0
+
+        });
+
+        this.anims.create({
+            key: 'nightBorne_Archer_Death',
+            frames: this.anims.generateFrameNumbers('nightBorne_Archer', { start: 8, end: 15 }),
             frameRate: 12,
             repeat: 0,
             hideOnComplete: 1
@@ -925,6 +1065,26 @@ class Badlands extends Phaser.Scene {
             hideOnComplete: 1
         });
 
+        this.anims.create({
+            key: 'deadlyCombatAssaultProjectile',
+            frames: this.anims.generateFrameNumbers('deadlyCombatAssaultProjectile', { start: 0, end: 16 }),
+            frameRate: 60,
+            repeat: 0,
+            showOnStart: 1,
+            hideOnComplete: 1
+        });
+
+
+        this.anims.create({
+            key: 'thunderStrike',
+            frames: this.anims.generateFrameNumbers('thunderStrike', { start: 0, end: 13 }),
+            frameRate: 13,
+            showOnStart: 1,
+            hideOnComplete:1,
+            //repeat: -1,
+            //repeatDelay: 1000
+        });
+
         // V1 Code End
 
         this.debugText = this.add.text(this.lifeIconHolder.x + screenWidth * 0.3, screenHeight * 0.1, this.actionPower, { fontFamily: 'Gothic', fontStyle: 'bold', align: 'left' });
@@ -976,10 +1136,34 @@ class Badlands extends Phaser.Scene {
         this.stage.terrainKey = 'platformR' + this.stageData.regionID + '_' + Phaser.Math.Between(1,2)
         this.floorHeight = Phaser.Math.FloatBetween(floorMin, floorMax)
 
-        this.floor = this.physics.add.image(-screenWidth * 2, screenHeight * this.stageHeightModifier * this.floorHeight, 'floor').setScale((screenWidth * 7) / 400, 10).setImmovable(true).refreshBody().setOrigin(0)
+        this.ground = this.add.image(-screenWidth * 2, screenHeight * this.stageHeightModifier * floorMax, 'floor').setScale((screenWidth * 7) / 400,screenHeight * this.stageHeightModifier * (floorMin - floorMax)).setOrigin(0)
+        this.ground.setTint(floorColour)
+        this.ground.setVisible(floorVisible)
+
+        this.floor = this.physics.add.image(-screenWidth * 2, screenHeight * this.stageHeightModifier * (floorMin - ((floorMin - floorMax) * 0.5)), 'floor').setScale((screenWidth * 7) / 400,screenHeight * this.stageHeightModifier * (floorMin - floorMax)).setImmovable(true).refreshBody().setOrigin(0)
         this.floor.body.setAllowGravity(false)
-        this.floor.setTint(floorColour)
-        this.floor.setVisible(floorVisible)
+        this.floor.setVisible(0)
+
+        this.floorPlayer = this.physics.add.image(-screenWidth * 2, screenHeight * this.stageHeightModifier * floorMin, 'floor').setScale((screenWidth * 7) / 400, 10).setImmovable(true).refreshBody().setOrigin(0)
+        this.floorPlayer.body.setAllowGravity(false)
+        this.floorPlayer.setVisible(0)
+
+        this.playerFloorTargetHeight = screenHeight * this.stageHeightModifier * floorMax
+        this.playerFloorTween =  this.tweens.add({
+            delay: Phaser.Math.Between(500,2500),
+            targets: [this.floorPlayer],         
+            y: this.playerFloorTargetHeight,
+            yoyo: true,
+            hold: Phaser.Math.Between(1000,4000),
+            loop: -1,
+            duration: Phaser.Math.Between(1000,4000),
+            ease: Phaser.Math.Easing.Sine.Out,
+            // onLoop: () => {
+            //     this.playerFloorTargetHeight = screenHeight * this.stageHeightModifier * floorMin
+            // }
+        })
+
+    
 
         // this.stage.terrainKey = 'platformR' + this.stageData.regionID + '_' + Phaser.Math.Between(1,2)
         // this.floor.setTexture(this.stage.terrainKey)
@@ -994,7 +1178,7 @@ class Badlands extends Phaser.Scene {
             window['fgL' + i] = this.add.tileSprite(-screenWidth * 0.5, -screenHeight * 0.0, screenWidth * 2, screenHeight * this.stageHeightModifier,'fgL' + i)
             .setScrollFactor(0,1)
             .setOrigin(0)
-            .setPipeline('Light2D').setDepth(2)//.setAlpha(this.fgAlpha[i-1])
+            .setPipeline('Light2D').setDepth(4)//.setAlpha(this.fgAlpha[i-1])
             window['fgL' + i].setTexture('fgL' + i).setTileScale(this.textureWidthScaleMod * 1, this.textureHeightScaleMod * this.stageHeightModifier)
             window['fgL' + i + 'ScrollMod'] = + fgScroll[i - 1]
 
@@ -1588,7 +1772,6 @@ class Badlands extends Phaser.Scene {
             this.checkPointIcon = 'chaser-checkpoint-icon'
             //this.spawnChaser()
         } else if (this.stage.checkPointType === 2) {
-            //this.spawningHordeEnemy = true
             this.speedCheckOverride = 1
             this.enterBattle()
             this.tweens.add({
@@ -1664,26 +1847,137 @@ class Badlands extends Phaser.Scene {
     }
 
     loadFinalCheckPoint(){
-        // Set stageProgressEnabled to false
-        this.stageProgressEnabled = false;
-        //this.camera.flash(1000,255,0,0)
-        this.camera.flash(1000)
-        // Load Boss function (tbc)
-
-        // Stub
-        this.camera.fadeOut(4000)
-        this.camera.once('camerafadeoutcomplete',function(){
-            this.camera.fadeIn(4000)
-            this.rewards += Phaser.Math.Between(50,100) * (1 + (0.25 * this.level))
-            this.camera.once('camerafadeincomplete',function(){
-                this.stageProgressEnabled = true;
-                this.stage.complete = true
-            },this)
-            
+        this.stage.checkPointType = 'Final'
+        this.enterBattle()
+        this.sound.play("enterCheckPoint" + Phaser.Math.Between(1,1));
         
+        
+        // Load Boss function (tbc)
+        
+        // Post Boss
+        this.levelUpIcon.setDepth(5).setActive(1).setVisible(1).setPosition(this.player.x,this.player.y - 350)
+        
+        this.levelupTween = this.tweens.add({
+            targets: this.levelUpIcon,
+            scale: 3,
+            yoyo: true,
+            duration: 2000,
+            loop: -1,
+
+            onUpdate: () => {
+                            if(Phaser.Math.Distance.BetweenPoints(this.player, this.levelUpIcon) < 100){
+                                this.sound.play('pickupReward_loot',{volume:Phaser.Math.FloatBetween(0.95, 1),detune: -1050,repeat:1})
+                                this.sound.play("exitBattle" + Phaser.Math.Between(1,1));
+                                this.levelUpIcon.destroy()
+                                this.levelupTween.stop()
+                                this.empowerAvatar()
+                                
+                            }
+            }
+
+        })
+
+    }
+
+    empowerAvatar(){
+
+        if(!this.empowerAvatarStarted){
+            this.empowerAvatarStarted = true
+            playerInputActive = false
+            this.player.play(this.player.animations.jump,true)
+            this.player.body.checkCollision.none = true
+            this.player.body.setAllowGravity(false)
+            
+            this.playerBattleStrafeActive = false
+            this.player.setDepth(5)
+            this.player.setVelocity(0)
+        
+                this.tweens.add({
+                    targets: this.player,
+                    y: screenHeight * 0.65,
+                    duration: 1500,
+
+                    onStart: () => {
+                        this.levelUpAnim.play({key:'thunderStrike',frameRate:28},true)
+                        this.camera.shake(500,0.02)
+                        this.camera.flash(50)
+
+                    } ,
+
+                    onComplete: () => {
+                        this.player.play(this.player.animations.fall,true)
+                        
+                        this.floatTween = this.tweens.add({
+                            targets: this.player,
+                            y: this.player.y + this.player.displayHeight * 0.1,
+                            yoyo: true,
+                            duration: 1000,
+                            loop: -1,
+
+                            onLoop: () => {
+                                this.levelUpAnim.play({key:'thunderStrike',frameRate:28},true)
+                                this.camera.shake(300,0.015)
+                            } ,
+        
+                            onUpdate: () => {
+
+                                if(a1Held){
+                                    this.levelUpAnim.stopAfterRepeat(1)
+                                    this.player.play(this.player.animations.fall,true)
+                                    this.empowerAvatarStarted = false  
+                
+                                    this.player.body.setAllowGravity(true)
+                                    this.player.body.checkCollision.none = false
+                                    this.player.flipX = false
+                                    this.goToNextStage()
+                                    
+                                    
+                                }
+                            } 
+                        })
+
+                 
+                    } 
+                })
+                
+        }
+    }
+
+    goToNextStage(){
+        // Stub
+        this.floatTween.stop()
+        this.stage.complete = true
+        
+        this.player.once('animationcomplete',function(){
+            // Auto exit
+            this.empowerAvatarStarted = true
+            this.player.play({key:this.player.animations.run,repeat:-1},true)
+            this.sound.play("nextStage" + Phaser.Math.Between(1,1));
+            this.tweens.add({
+                targets: this.player,
+                x: screenWidth * 2.25,
+                duration: 5000
+            })
+            
+            // Manual Control
+            //playerInputActive = true
+
+            
+            
+
+            // Move to Next stage
+            this.camera.fadeOut(2500)
+            this.camera.once('camerafadeoutcomplete',function(){
+                this.rewards += Phaser.Math.Between(50,100) * (1 + (0.25 * this.level))
+                this.selectedScene = 'Region' + String(Phaser.Math.Between(1,4))
+                this.data = {targetScene:'Simulacrum',targetZone: this.level - 1, currentTimePeriod: Phaser.Math.Between(1,3),rarityOverride:null,
+                startGlory:this.glory,startRewards: this.rewards,startGold:this.gold}
+                this.scene.start(this.selectedScene,this.data)
+                this.scene.stop()
+            },this)
+
         },this)
-
-
+        
 
     }
 
@@ -1768,7 +2062,7 @@ class Badlands extends Phaser.Scene {
                         bgMusic.resume()
                         this.tweens.add({
                             targets: bgMusic,
-                            volume: 0.5,
+                            volume: 0.75,
                             repeat: 0,
                             duration: 2000,
                             ease: Phaser.Math.Easing.Sine.Out,
@@ -1839,6 +2133,8 @@ class Badlands extends Phaser.Scene {
 
 
 
+
+
             // less offset = moving right
             // more offset = moving left
             //this.lightSource.x = Math.abs(this.camera.scrollX) + ((this.lightSourceCameraXOffset * 0.9) + (this.lightSourceCameraXOffset * (0.1 * (this.cameraScrollAnchor / Math.abs(this.camera.scrollX)))))
@@ -1850,7 +2146,7 @@ class Badlands extends Phaser.Scene {
 
     platforms() {
 
-        if (this.spawningPlatform) {
+        if (this.platformGroup.getTotalFree() > 0 && this.spawningPlatform && this.stage.platformSpawnEnabled) {
 
             for (var i = 0; i < 3 + Phaser.Math.Between(0,2); i++) {
                 var platform = this.platformGroup.get()
@@ -1891,6 +2187,11 @@ class Badlands extends Phaser.Scene {
                     platform.setActive(true)
                     platform.setPipeline('Light2D')
                     platform.setImmovable(true)
+                    if(platform.variant == 'Slower'){
+                        platform.setDepth(2)
+                    } else {
+                        platform.setDepth(Phaser.Math.Between(1,3))
+                    }
                     platform.body.setAllowGravity(false)
                     platform.body.checkCollision.down = false
                     platform.body.checkCollision.left = false
@@ -1902,7 +2203,7 @@ class Badlands extends Phaser.Scene {
                     }
                     
                     // Spawn Variant Additions
-                    if(platform.variant == 'Slower'){
+                    if(this.obstacleGroup.getTotalFree() > 0 && platform.variant == 'Slower'){
                         
                         var spawnedEntity = this.obstacleGroup.get()
                         spawnedEntity.type1 = 'Obstacle'
@@ -1910,8 +2211,10 @@ class Badlands extends Phaser.Scene {
                         spawnedEntity.texture = 'platformObstacle1'
                         spawnedEntity.setTexture(spawnedEntity.texture)
                         spawnedEntity.setPipeline('Light2D')
+                        spawnedEntity.setImmovable(true)
                         spawnedEntity.setSize(spawnedEntity.displayWidth,spawnedEntity.displayHeight * 0.4).setOffset(null,-spawnedEntity.displayHeight * 0.05)
                         spawnedEntity.setOrigin(1, 0)
+                        spawnedEntity.setDepth(platform.depth)
                         
                         spawnedEntity.difficultyMod = this.stage.obstacleDifficultyModifier
                         
@@ -1934,7 +2237,20 @@ class Badlands extends Phaser.Scene {
 
         this.platformGroup.children.each(function (platform) {
 
-            platform.x -= this.baseSpeed * this.playerSpeed
+            if(platform.depth == 2){
+                platform.x -= this.baseSpeed * this.playerSpeed
+            } else if(platform.depth == 1){
+                platform.x -= this.baseSpeed * this.playerSpeed * 0.925
+            } else if(platform.depth == 3){
+                platform.x -= this.baseSpeed * this.playerSpeed * 1.075
+            }
+            
+
+            // if (this.floorPlayer.y < this.floor.y) {
+            //     platform.setDepth(3)//(Phaser.Math.Between(0,2))
+            // } else {
+            //     platform.setDepth(1)//(Phaser.Math.Between(0,2))
+            // }
 
             if (platform.active) {
                 if (platform.x < -screenWidth) {
@@ -1953,6 +2269,14 @@ class Badlands extends Phaser.Scene {
 
             obstacle.x -= this.baseSpeed * this.playerSpeed
 
+            // Depth 
+
+            if (obstacle.getBottomCenter().y < this.player.getBottomCenter().y) {
+                obstacle.setDepth(1)//(Phaser.Math.Between(0,2))
+            } else {
+                obstacle.setDepth(3)//(Phaser.Math.Between(0,2))
+            }
+
             if (obstacle.type == 'Normal') {
                 if (obstacle.x < -screenWidth) {
                     obstacle.destroy();
@@ -1967,9 +2291,406 @@ class Badlands extends Phaser.Scene {
 
     }
 
+    powerupController() {
+
+
+        this.powerupGroup.children.each(function (powerup) {
+
+            var dist = Phaser.Math.Distance.BetweenPoints(this.player, powerup);
+
+            powerup.x -= this.baseSpeed * this.playerSpeed
+
+            if(dist < 100){
+                powerup.destroy()
+                if (powerup.variant == 'Rewards') {
+                    this.rewards += powerup.amount 
+                    this.sound.play('pickupReward_loot',{volume:Phaser.Math.FloatBetween(0.95, 1),detune: -750})
+ 
+                } else if (powerup.variant == 'Glory') {
+                    this.glory += powerup.amount 
+                    this.sound.play('pickupGlory_loot',{volume:Phaser.Math.FloatBetween(0.95, 1) })
+                    
+                        
+                } else if (powerup.variant == 'Gold') {
+                    this.gold += powerup.amount 
+                    if(powerup.rarity == 1){
+                        this.sound.play('pickupGold_loot',{volume:Phaser.Math.FloatBetween(0.65, 0.85) })
+                    } else {
+                        this.sound.play('pickupGold_loot',{volume:Phaser.Math.FloatBetween(0.95, 1) })
+                    }
+                        
+                } 
+            }
+
+            if (powerup) {
+                if (powerup.x < -screenWidth) {
+                    powerup.destroy();
+                    //if(powerup)
+                    
+                }
+            } 
+
+        }.bind(this));
+
+
+    }
+
+    spawnPowerup(){
+
+        if (this.powerupGroup.getTotalFree() > 0 && this.stage.checkPointType == 0 && this.gameMode == 0 ) {
+            
+            // Spawn Parameters
+
+            if(this.tutorialsCompleted){
+           
+                this.stage.powerupMinSpawn = 1 
+                this.stage.powerupMaxSpawn = Math.min(2 + (3 * (this.level / 12)),this.powerupGroup.getTotalFree())
+                    
+          
+            } else {
+                if(!this.tutorialMode0Completed){
+                    this.stage.powerupMinSpawn = 0 
+                    this.stage.powerupMaxSpawn = 1
+                }
+                
+            } 
+
+            // Set Difficulty Mod
+                    this.stage.powerupDifficultyModifier = 1 + Phaser.Math.Between(1,5) * (this.level/12)
+                    //spawnedEntity.difficultyMod = this.stage.obstacleDifficultyModifier
+
+            // Rarity Chance Parameters 
+
+            var rarityChanceArray
+                
+            if (Math.round(this.stage.powerupDifficultyModifier) < 2){
+                rarityChanceArray = [0,5,15]//[0,0,10]
+            } else if (Math.round(this.stage.powerupDifficultyModifier) < 3){
+                rarityChanceArray = [0,15,35]//[0,5,15]
+            } else if (Math.round(this.stage.powerupDifficultyModifier) < 4){
+                rarityChanceArray = [5,35,75]//[5,10,35]
+            } else {
+                rarityChanceArray = [15,75,100]//[10,25,50]
+            }
+
+
+            // Spawns Random X number ranging from 0 to remaining space in Group maxSize
+            for (var i = 0; i < Phaser.Math.Between(this.stage.powerupMinSpawn,this.stage.powerupMaxSpawn); i++){
+        
+                var spawnedEntity = this.powerupGroup.get()
+                // Set Terrain Type
+                //if(Phaser.Math.Between(0,100) <= 30){
+                //    spawnedEntity.type = 'Chaser'
+            // } else {
+                    
+                    spawnedEntity.type1 = 'Powerup'
+                    
+            // }
+
+                
+
+                // Set Rarity
+                // Roll for Mythical (Rarity 4)
+                if(Phaser.Math.Between(0,100) <= rarityChanceArray[0]){
+                    spawnedEntity.rarity = 4
+                    spawnedEntity.texture = 'storedRewardsIcon'//this.stage.obstacleTextureKey.mythical
+                    spawnedEntity.variant = 'Rewards'
+                    spawnedEntity.amount = Phaser.Math.Between(100,150)
+                    spawnedEntity.setScale(1)
+                    
+    
+                } else 
+                // Roll for Rare (Rarity 3)
+                if(Phaser.Math.Between(0,100) <= rarityChanceArray[1]){
+                    spawnedEntity.rarity = 3
+                    spawnedEntity.texture = 'gloryIcon'//this.stage.obstacleTextureKey.mythical
+                    spawnedEntity.variant = 'Glory'
+                    spawnedEntity.amount = Phaser.Math.Between(50,75)
+                    spawnedEntity.setScale(1.25)
+
+                } else 
+                // Roll for Uncommon (Rarity 2)
+                if(Phaser.Math.Between(0,100) <= rarityChanceArray[2]){
+                    spawnedEntity.rarity = 2
+                    spawnedEntity.texture = 'goldIcon'
+                    spawnedEntity.variant = 'Gold'
+                    spawnedEntity.amount = Phaser.Math.Between(25,35)
+                    spawnedEntity.setScale(1)
+                } else 
+                // Set to Common (Rarity 1)
+                {
+                    spawnedEntity.rarity = 1
+                    spawnedEntity.texture = 'goldIcon'//this.stage.obstacleTextureKey.mythical
+                    spawnedEntity.variant = 'Gold'
+                    spawnedEntity.amount = Phaser.Math.Between(10,15)
+                    spawnedEntity.setScale(0.75)
+                }
+
+                
+
+                // Set Start Position
+
+
+                //if(spawnedEntity.variant == 'Normal'){
+                    spawnedEntity.x =  Phaser.Math.Between(screenWidth * (2.5 + (i * 0.75)) , screenWidth * (3.5 + (i * 0.75)) )  
+                    if(spawnedEntity.rarity > 2){
+                        spawnedEntity.y = Phaser.Math.Between(-screenHeight * (0.25 - (i * 0.5)),screenHeight * (0.1 - (i * 0.25)))
+                    } else {
+                        spawnedEntity.y = Phaser.Math.Between(0 - (screenHeight * (i * 0.05)),screenHeight * (0.75 - (i * 0.25)))
+                    }
+                    
+                    //spawnedEnemy.play(spawnedEnemy.animationKey + '_Idle',true)
+                //}
+                // else if (spawnedEntity.type == 'Chaser') {
+                //     spawnedEntity.x = this.camera.scrollX - Phaser.Math.Between((screenWidth * 0.05), (screenWidth * 0.75) )  
+                //     spawnedEntity.y = Phaser.Math.Between(this.obstaclePositionYMin,this.obstaclePositionYMax)
+                //     //spawnedEnemy.play(spawnedEnemy.animationKey + '_Move',true)
+                // }
+        
+                
+                // Rarity Based Properties
+                    spawnedEntity.setTexture(spawnedEntity.texture)
+                    //spawnedEntity.play('')
+                    //spawnedEntity.animationKey = this.stage.enemyAnimationsKey.uncommon
+                    //spawnedEnemy.setOrigin(0.5,0.5)
+                    //spawnedEnemy.body.setSize(25, 25).setOffset(25, 37.5)
+                    //spawnedEntity.setScale(Phaser.Math.FloatBetween(2.5, 3)) 
+                    //spawnedEnemy.resilienceCapacity = Phaser.Math.Between(300, 600) * (1 + (0.1 * spawnedEnemy.difficultyMod))
+
+                    // stub
+                    //spawnedEnemy.attackCollisionStartFrame = 5
+                    //spawnedEnemy.attackCollisionEndFrame = 7
+                    //spawnedEnemy.attackRange = screenWidth * 0.15
+
+                // Common Properties
+
+                    spawnedEntity.body.setAllowGravity(true)
+                    spawnedEntity.setBounce(0,0.5)
+                    spawnedEntity.setDepth(2)
+                    //spawnedEntity.setSize(spawnedEntity.width,spawnedEntity.height * 1)//.setOffset(null,-spawnedEntity.displayHeight * 0.05)
+                    //spawnedEntity.setScale(Phaser.Math.Between(7.5,15),Phaser.Math.Between(5,12.5))
+                    //spawnedEntity.setImmovable(true)
+                    //spawnedEnemy.isHit = false
+                    //spawnedEnemy.hitsTaken = 0
+                    //spawnedEnemy.canAct = true
+                    //spawnedEnemy.resilienceCurrent = spawnedEnemy.resilienceCapacity
+                    //spawnedEnemy.staminaCapacity = 100
+                    //spawnedEnemy.staminaCurrent = 100
+                    //spawnedEnemy.enragedLevel = 0
+                    //spawnedEnemy.targetRange = this.player.x
+                    //spawnedEnemy.aggroRange = Phaser.Math.FloatBetween(spawnedEnemy.attackRange * 0.5,spawnedEnemy.attackRange * 1.5)
+                    //spawnedEntity.setOrigin(0.5,0.5)
+                    spawnedEntity.setPipeline('Light2D')
+
+                // Spawn Timer Update 
+
+                this.powerupTimer.delay = Phaser.Math.Between((this.basePowerupSpawnTime * (60 / this.musicBPM) * 1000) * 0.8, (this.basePowerupSpawnTime * (60 / this.musicBPM) * 1000) * 1.2)
+                
+                // Misc - bugs
+
+                this.tweens.add({
+                    delay: Phaser.Math.Between(1000,2000),
+                    targets: [spawnedEntity],
+                    //alpha: 0.75,
+                    scale: '*=1.25',
+                    //y: '-=75',
+                    yoyo: true,
+                    repeat: -1,
+                    duration: 1000,
+                    ease: Phaser.Math.Easing.Sine.Out,
+                    onStart: () => {
+                        spawnedEntity.setVelocity(0)
+                        spawnedEntity.y -= 350
+                        spawnedEntity.body.setAllowGravity(false)
+                        
+                    }
+                })
+            }
+
+    }
+    }
+
+    terrainController() {
+
+
+        this.terrainGroup.children.each(function (terrain) {
+
+            terrain.x -= this.baseSpeed * this.playerSpeed
+
+            // Depth 
+
+            // if (terrain.getBottomCenter().y < this.player.getBottomCenter().y) {
+            //     terrain.setDepth(1)//(Phaser.Math.Between(0,2))
+            // } else {
+            //     terrain.setDepth(3)//(Phaser.Math.Between(0,2))
+            // }
+
+            if (terrain.type == 'Normal') {
+                if (terrain.x < -screenWidth) {
+                    terrain.destroy();
+                }
+            } else if (terrain.type == 'Chaser') {
+                if (terrain.x > screenWidth * 4) {
+                    terrain.destroy();
+                }
+            }
+        }.bind(this));
+
+
+    }
+
+    spawnTerrain(){
+
+        if (this.terrainGroup.getTotalFree() > 0 && this.stage.checkPointType == 0 && this.gameMode == 0 && this.stage.terrainSpawnEnabled ) {
+            
+            if(this.tutorialsCompleted){
+           
+                this.stage.terrainMinSpawn = 1 
+                this.stage.terrainMaxSpawn = Math.min(2 * (this.playerSpeed  + (this.level / 12))  ,this.terrainGroup.getTotalFree())
+                    
+          
+            } else {
+                if(!this.tutorialMode0Completed){
+                    this.stage.terrainMinSpawn = 1
+                    this.stage.terrainMaxSpawn = 2
+                }
+                
+            } 
+
+            this.terrainTimer.delay = Phaser.Math.Between((this.baseTerrainSpawnTime * (60 / this.musicBPM) * 1000) * 0.8, (this.baseTerrainSpawnTime * (60 / this.musicBPM) * 1000) * 1.2)
+
+        var rarityChanceArray
+            this.stage.terrainDifficultyModifier = 1 + Phaser.Math.Between(1,5) * (this.level/12)
+        if (Math.round(this.stage.terrainDifficultyModifier) < 2){
+            rarityChanceArray = [0,5,15]
+        } else if (Math.round(this.stage.terrainDifficultyModifier) < 3){
+            rarityChanceArray = [0,15,35]
+        } else if (Math.round(this.stage.terrainDifficultyModifier) < 4){
+            rarityChanceArray = [5,35,75]
+        } else {
+            rarityChanceArray = [15,75,100]
+        }
+
+        // Spawns Random X number ranging from 0 to remaining space in horde maxSize 
+        for (var i = 0; i < Phaser.Math.Between(this.stage.terrainMinSpawn,this.stage.terrainMaxSpawn); i++){
+    
+            var spawnedEntity = this.terrainGroup.get()
+            // Set Terrain Type
+            //if(Phaser.Math.Between(0,100) <= 30){
+            //    spawnedEntity.type = 'Chaser'
+           // } else {
+                spawnedEntity.type = 'Normal'
+                spawnedEntity.type1 = 'Terrain'
+           // }
+
+            // Set Difficulty Mod
+            spawnedEntity.difficultyMod = this.stage.terrainDifficultyModifier
+
+            // Set Rarity
+            // Roll for Mythical (Rarity 4)
+            if(Phaser.Math.Between(0,100) <= rarityChanceArray[0]){
+                spawnedEntity.rarity = 4
+                spawnedEntity.texture = 'rock3'//this.stage.obstacleTextureKey.mythical
+                //spawnedEnemy.animationKey = this.stage.enemyAnimationsKey.mythical
+                //spawnedEntity.setOrigin(0.5, 1)
+                //spawnedEntity.body.setSize(25, 25).setOffset(25, 37.5)
+                //spawnedEntity.setScale(Phaser.Math.FloatBetween(7.5, 8.5)) 
+                //spawnedEntity.resilienceCapacity = Phaser.Math.Between(650, 1300) * (1 + (0.1 * spawnedEntity.difficultyMod))
+
+                // stub
+                //spawnedEntity.attackCollisionStartFrame = 10
+                //spawnedEntity.attackCollisionEndFrame = 11
+                //spawnedEntity.attackRange = screenWidth * 0.1
+ 
+            } else 
+            // Roll for Rare (Rarity 3)
+            if(Phaser.Math.Between(0,100) <= rarityChanceArray[1]){
+                spawnedEntity.rarity = 3
+                spawnedEntity.texture = 'rock3'//this.stage.obstacleTextureKey.mythical
+                //spawnedEntity.animationKey = this.stage.enemyAnimationsKey.rare
+                //spawnedEntity.setOrigin(0.5, 1)
+                //spawnedEntity.body.setSize(25, 25).setOffset(25, 37.5)
+                //spawnedEntity.setScale(Phaser.Math.FloatBetween(7.5, 8.5)) 
+                //spawnedEntity.resilienceCapacity = Phaser.Math.Between(500, 1000) * (1 + (0.1 * spawnedEnemy.difficultyMod))
+
+                // stub
+                //spawnedEntity.attackCollisionStartFrame = 10
+                //spawnedEntity.attackCollisionEndFrame = 11
+                //spawnedEntity.attackRange = screenWidth * 0.1
+
+            } else 
+            // Roll for Uncommon (Rarity 2)
+            if(Phaser.Math.Between(0,100) <= rarityChanceArray[2]){
+                spawnedEntity.rarity = 2
+                spawnedEntity.texture = 'rock2'//this.stage.obstacleTextureKey.mythical
+                //spawnedEntity.animationKey = this.stage.enemyAnimationsKey.uncommon
+                //spawnedEnemy.setOrigin(0.5,0.5)
+                //spawnedEnemy.body.setSize(25, 25).setOffset(25, 37.5)
+                //spawnedEntity.setScale(Phaser.Math.FloatBetween(2.5, 3)) 
+                //spawnedEnemy.resilienceCapacity = Phaser.Math.Between(300, 600) * (1 + (0.1 * spawnedEnemy.difficultyMod))
+
+                // stub
+                //spawnedEnemy.attackCollisionStartFrame = 5
+                //spawnedEnemy.attackCollisionEndFrame = 7
+                //spawnedEnemy.attackRange = screenWidth * 0.15
+      
+            } else 
+            // Set to Common (Rarity 1)
+            {
+                spawnedEntity.rarity = 1
+                spawnedEntity.texture = 'rock1'//this.stage.obstacleTextureKey.mythical
+                //spawnedEnemy.animationKey = this.stage.enemyAnimationsKey.common
+                //spawnedEnemy.setOrigin(0.5, 0.5)
+                //spawnedEntity.setScale(Phaser.Math.FloatBetween(2.5, 3)) 
+                //spawnedEnemy.resilienceCapacity = Phaser.Math.Between(150, 300) * (1 + (0.1 * spawnedEnemy.difficultyMod))
+
+                // stub
+                //spawnedEnemy.attackCollisionStartFrame = 5
+                //spawnedEnemy.attackCollisionEndFrame = 7
+                //spawnedEnemy.attackRange = screenWidth * 0.15
+                
+            }
+
+            spawnedEntity.setScale(Phaser.Math.Between(7.5,15),Phaser.Math.Between(5,12.5))
+
+            // Set Start Position
+
+
+            if(spawnedEntity.type == 'Normal'){
+                spawnedEntity.x = Phaser.Math.Between(screenWidth * 3.5 + (this.player.x -  (screenWidth)),screenWidth * 2.5 )  
+                spawnedEntity.y = this.floor.y - 100 //Phaser.Math.Between(this.obstaclePositionYMin,this.obstaclePositionYMax)
+                //spawnedEnemy.play(spawnedEnemy.animationKey + '_Idle',true)
+            }
+      
+            
+            spawnedEntity.body.setAllowGravity(true)
+            spawnedEntity.setSize(spawnedEntity.width,spawnedEntity.height * 1)//.setOffset(null,-spawnedEntity.displayHeight * 0.05)
+
+            //spawnedEntity.setImmovable(true)
+            //spawnedEnemy.isHit = false
+            //spawnedEnemy.hitsTaken = 0
+            //spawnedEnemy.canAct = true
+            //spawnedEnemy.resilienceCurrent = spawnedEnemy.resilienceCapacity
+            //spawnedEnemy.staminaCapacity = 100
+            //spawnedEnemy.staminaCurrent = 100
+            //spawnedEnemy.enragedLevel = 0
+  
+            //spawnedEnemy.targetRange = this.player.x
+            //spawnedEnemy.aggroRange = Phaser.Math.FloatBetween(spawnedEnemy.attackRange * 0.5,spawnedEnemy.attackRange * 1.5)
+            //spawnedEntity.setOrigin(0.5,0.5)
+            spawnedEntity.setTexture(spawnedEntity.texture)
+            spawnedEntity.setDepth(2)
+            spawnedEntity.setPipeline('Light2D')
+
+        
+        }
+
+    }
+    }
+
     spawnObstacle(){
 
-        if (this.obstacleGroup.getTotalFree() > 0 && this.stage.checkPointType == 0 && this.gameMode == 0 ) {
+        if (this.obstacleGroup.getTotalFree() > 0 && this.stage.checkPointType == 0 && this.gameMode == 0 && this.stage.obstacleSpawnEnabled) {
             
             if(this.tutorialsCompleted){
            
@@ -1980,7 +2701,7 @@ class Badlands extends Phaser.Scene {
             } else {
                 if(!this.tutorialMode0Completed){
                     this.stage.obstacleMinSpawn = 0 
-                    this.stage.obstacleMaxSpawn = 1
+                    this.stage.obstacleMaxSpawn = 0
                 }
                 
             } 
@@ -2016,7 +2737,7 @@ class Badlands extends Phaser.Scene {
 
             // Set Rarity
             // Roll for Mythical (Rarity 4)
-            if(Phaser.Math.Between(0,100) <= rarityChanceArray[1]){
+            if(Phaser.Math.Between(0,100) <= rarityChanceArray[0]){
                 spawnedEntity.rarity = 4
                 spawnedEntity.texture = 'rock3'//this.stage.obstacleTextureKey.mythical
                 //spawnedEnemy.animationKey = this.stage.enemyAnimationsKey.mythical
@@ -2032,7 +2753,7 @@ class Badlands extends Phaser.Scene {
  
             } else 
             // Roll for Rare (Rarity 3)
-            if(Phaser.Math.Between(0,100) <= rarityChanceArray[2]){
+            if(Phaser.Math.Between(0,100) <= rarityChanceArray[1]){
                 spawnedEntity.rarity = 3
                 spawnedEntity.texture = 'rock3'//this.stage.obstacleTextureKey.mythical
                 //spawnedEntity.animationKey = this.stage.enemyAnimationsKey.rare
@@ -2048,7 +2769,7 @@ class Badlands extends Phaser.Scene {
 
             } else 
             // Roll for Uncommon (Rarity 2)
-            if(Phaser.Math.Between(0,100) <= rarityChanceArray[3]){
+            if(Phaser.Math.Between(0,100) <= rarityChanceArray[2]){
                 spawnedEntity.rarity = 2
                 spawnedEntity.texture = 'rock2'//this.stage.obstacleTextureKey.mythical
                 //spawnedEntity.animationKey = this.stage.enemyAnimationsKey.uncommon
@@ -2110,6 +2831,7 @@ class Badlands extends Phaser.Scene {
             //spawnedEnemy.aggroRange = Phaser.Math.FloatBetween(spawnedEnemy.attackRange * 0.5,spawnedEnemy.attackRange * 1.5)
             //spawnedEntity.setOrigin(0.5,0.5)
             spawnedEntity.setTexture(spawnedEntity.texture)
+            spawnedEntity.setDepth(2)
             spawnedEntity.setPipeline('Light2D')
 
         
@@ -2139,100 +2861,119 @@ class Badlands extends Phaser.Scene {
         }
 
         // Spawns Random X number ranging from 0 to 50% of remaining space in horde maxSize 
-        for (var i = 0; i < Phaser.Math.Between(1,Math.min(this.level * (this.stage.hordeDifficultyModifier * 0.5),this.enemyGroup.getTotalFree())); i++){
+        for (var i = 0; i < Phaser.Math.Between(1,Math.min(this.level * (this.stage.hordeDifficultyModifier * 0.25),this.enemyGroup.getTotalFree())); i++){
     
-            var hordeMember = this.enemyGroup.get()
+            var spawnedEnemy = this.enemyGroup.get()
             // Set Enemy Type
-            hordeMember.type = 'Horde'
+            spawnedEnemy.type = 'Horde'
 
             // Set Difficulty Mod
-            hordeMember.difficultyMod = this.stage.hordeDifficultyModifier
+            spawnedEnemy.difficultyMod = this.stage.hordeDifficultyModifier
 
             // Set Rarity
             // Roll for Mythical (Rarity 4)
-            if(Phaser.Math.Between(0,100) <= rarityChanceArray[1]){
-                hordeMember.rarity = 4
-                hordeMember.animationKey = this.stage.enemyAnimationsKey.mythical
-                hordeMember.setOrigin(0.5, 1)
-                hordeMember.body.setSize(25, 25).setOffset(25, 37.5)
-                hordeMember.setScale(Phaser.Math.FloatBetween(7.5, 8.5)) 
-                hordeMember.resilienceCapacity = Phaser.Math.Between(400, 800) * (1 + (0.1 * hordeMember.difficultyMod))
+            if(Phaser.Math.Between(0,100) <= rarityChanceArray[0]){
+                spawnedEnemy.rarity = 4
+                spawnedEnemy.animationKey = this.stage.enemyAnimationsKey.mythical
+                spawnedEnemy.setOrigin(0.5, 1)
+                spawnedEnemy.body.setSize(25, 25).setOffset(25, 37.5)
+                //spawnedEnemy.setSize(spawnedEnemy.width / 4,spawnedEnemy.height / 4).setOffset((spawnedEnemy.width / 4) * 1.5, (spawnedEnemy.height / 4) * 2)
+                spawnedEnemy.setScale(Phaser.Math.FloatBetween(7.5, 8.5)) 
+                spawnedEnemy.resilienceCapacity = Phaser.Math.Between(650, 1300) * (1 + (0.1 * spawnedEnemy.difficultyMod))
+                spawnedEnemy.animationStance = 'Standard'
+                spawnedEnemy.jumpAttackChance = 15
+                spawnedEnemy.canJumpAttack = true
+                spawnedEnemy.attackType = 'Melee'
 
                 // stub
-                hordeMember.attackCollisionStartFrame = 10
-                hordeMember.attackCollisionEndFrame = 11
-                hordeMember.attackRange = screenWidth * 0.1
+                spawnedEnemy.attackCollisionStartFrame = 10
+                spawnedEnemy.attackCollisionEndFrame = 11
+                spawnedEnemy.attackRange = screenWidth * 0.1
  
             } else 
             // Roll for Rare (Rarity 3)
-            if(Phaser.Math.Between(0,100) <= rarityChanceArray[2]){
-                hordeMember.rarity = 3
-                hordeMember.animationKey = this.stage.enemyAnimationsKey.rare
-                hordeMember.setOrigin(0.5, 1)
-                hordeMember.body.setSize(25, 25).setOffset(25, 37.5)
-                hordeMember.setScale(Phaser.Math.FloatBetween(7.5, 8.5)) 
-                hordeMember.resilienceCapacity = Phaser.Math.Between(400, 800) * (1 + (0.1 * hordeMember.difficultyMod))
+            if(Phaser.Math.Between(0,100) <= rarityChanceArray[1]){
+                spawnedEnemy.rarity = 3
+                spawnedEnemy.animationKey = this.stage.enemyAnimationsKey.rare
+                spawnedEnemy.setOrigin(0.5, 1)
+                spawnedEnemy.body.setSize(25, 25).setOffset(25, 37.5)
+                //spawnedEnemy.setSize(spawnedEnemy.width / 4,spawnedEnemy.height / 4).setOffset((spawnedEnemy.width / 4) * 1.5, (spawnedEnemy.height / 4) * 2)
+                spawnedEnemy.setScale(Phaser.Math.FloatBetween(7.5, 8.5)) 
+                spawnedEnemy.resilienceCapacity = Phaser.Math.Between(500, 1000) * (1 + (0.1 * spawnedEnemy.difficultyMod))
+                spawnedEnemy.jumpAttackChance = 15
+                spawnedEnemy.canJumpAttack = true
+                spawnedEnemy.animationStance = 'Standard'
+                spawnedEnemy.attackType = 'Melee'
 
                 // stub
-                hordeMember.attackCollisionStartFrame = 10
-                hordeMember.attackCollisionEndFrame = 11
-                hordeMember.attackRange = screenWidth * 0.1
+                spawnedEnemy.attackCollisionStartFrame = 10
+                spawnedEnemy.attackCollisionEndFrame = 11
+                spawnedEnemy.attackRange = screenWidth * 0.1
 
             } else 
             // Roll for Uncommon (Rarity 2)
-            if(Phaser.Math.Between(0,100) <= rarityChanceArray[3]){
-                hordeMember.rarity = 2
-                hordeMember.animationKey = this.stage.enemyAnimationsKey.uncommon
-                hordeMember.setOrigin(0.5,0.5)
-                hordeMember.body.setSize(25, 25).setOffset(25, 37.5)
-                hordeMember.setScale(Phaser.Math.FloatBetween(2.5, 3)) 
-                hordeMember.resilienceCapacity = Phaser.Math.Between(200, 400) * (1 + (0.1 * hordeMember.difficultyMod))
+            if(Phaser.Math.Between(0,100) <= rarityChanceArray[2]){
+                spawnedEnemy.rarity = 2
+                spawnedEnemy.animationKey = this.stage.enemyAnimationsKey.uncommon
+                spawnedEnemy.setOrigin(0.5,0.5)
+                spawnedEnemy.body.setSize(25, 30).setOffset(17.5, 17.5)
+                spawnedEnemy.setScale(Phaser.Math.FloatBetween(5, 5)) 
+                spawnedEnemy.resilienceCapacity = Phaser.Math.Between(450, 650) * (1 + (0.1 * spawnedEnemy.difficultyMod))
+                spawnedEnemy.attackType = 'Ranged'
+                spawnedEnemy.animationStance = 'Standard'
+                spawnedEnemy.jumpAttackChance = 20
+                spawnedEnemy.canJumpAttack = true
+                
+                
 
                 // stub
-                hordeMember.attackCollisionStartFrame = 5
-                hordeMember.attackCollisionEndFrame = 7
-                hordeMember.attackRange = screenWidth * 0.15
+                spawnedEnemy.attackCollisionStartFrame = 7
+                spawnedEnemy.attackCollisionEndFrame = 7
+                spawnedEnemy.attackRange = screenWidth * 0.65
       
             } else 
             // Set to Common (Rarity 1)
             {
-                hordeMember.rarity = 1
-                hordeMember.animationKey = this.stage.enemyAnimationsKey.common
-                hordeMember.setOrigin(0.5, 0.5)
-                hordeMember.setScale(Phaser.Math.FloatBetween(2.5, 3)) 
-                hordeMember.resilienceCapacity = Phaser.Math.Between(100, 300) * (1 + (0.1 * hordeMember.difficultyMod))
+                spawnedEnemy.rarity = 1
+                spawnedEnemy.animationKey = this.stage.enemyAnimationsKey.common
+                spawnedEnemy.setOrigin(0.5, 0.5)
+                spawnedEnemy.setScale(Phaser.Math.FloatBetween(2.5, 3)) 
+                spawnedEnemy.resilienceCapacity = Phaser.Math.Between(300, 450) * (1 + (0.1 * spawnedEnemy.difficultyMod))
+                spawnedEnemy.jumpAttackChance = 60
+                spawnedEnemy.animationStance = 'Switch'
+                spawnedEnemy.attackType = 'Melee'
 
                 // stub
-                hordeMember.attackCollisionStartFrame = 5
-                hordeMember.attackCollisionEndFrame = 7
-                hordeMember.attackRange = screenWidth * 0.15
+                spawnedEnemy.attackCollisionStartFrame = 5
+                spawnedEnemy.attackCollisionEndFrame = 7
+                spawnedEnemy.attackRange = screenWidth * 0.15
                 
             }
 
             
-
             // Set Start Position
             if (Phaser.Math.Between(1,100) < 35){
-                hordeMember.x = Phaser.Math.Between(-screenWidth * 1.5 + (this.player.x -  (screenWidth)),-screenWidth * 0.5)  
+                spawnedEnemy.x = Phaser.Math.Between(-screenWidth * 1.5 + (this.player.x -  (screenWidth)),-screenWidth * 0.5)  
             } else {
-                hordeMember.x = Phaser.Math.Between(screenWidth * 3.5 + (this.player.x -  (screenWidth)), screenWidth * 2.5)  
+                spawnedEnemy.x = Phaser.Math.Between(screenWidth * 3.5 + (this.player.x -  (screenWidth)), screenWidth * 2.5)  
             }
             
-            hordeMember.y = Phaser.Math.Between(screenHeight * 0.25,screenHeight * 0.75)
+            spawnedEnemy.y = Phaser.Math.Between(screenHeight * 0.25,screenHeight * 0.75)
 
                 
-                hordeMember.play(hordeMember.animationKey + '_Idle',true)
-                hordeMember.setPipeline('Light2D')
-                hordeMember.body.setAllowGravity(true)
-                hordeMember.isHit = false
-                hordeMember.hitsTaken = 0
-                hordeMember.canAct = true
-                hordeMember.resilienceCurrent = hordeMember.resilienceCapacity
-                hordeMember.staminaCapacity = 100
-                hordeMember.staminaCurrent = 100
-                hordeMember.enragedLevel = 0
-                hordeMember.targetRange = this.player.x
-                hordeMember.aggroRange = Phaser.Math.FloatBetween(hordeMember.attackRange * 0.5,hordeMember.attackRange * 1.5)
+            spawnedEnemy.play(spawnedEnemy.animationKey + '_Idle',true)
+            spawnedEnemy.setPipeline('Light2D')
+            spawnedEnemy.setDepth(2)
+            spawnedEnemy.body.setAllowGravity(true)
+            spawnedEnemy.isHit = false
+            spawnedEnemy.hitsTaken = 0
+            spawnedEnemy.canAct = true
+            spawnedEnemy.resilienceCurrent = spawnedEnemy.resilienceCapacity
+                spawnedEnemy.staminaCapacity = 100
+                spawnedEnemy.staminaCurrent = 100
+                spawnedEnemy.enragedLevel = 0
+                spawnedEnemy.targetRange = this.player.x
+                spawnedEnemy.aggroRange = Phaser.Math.FloatBetween(spawnedEnemy.attackRange * 0.5,spawnedEnemy.attackRange * 1.5)
 
         
         }
@@ -2242,17 +2983,19 @@ class Badlands extends Phaser.Scene {
 
     spawnEnemy(){
 
+        
         if (this.enemyGroup.getTotalFree() > 0 && this.gameMode == 0 && this.stage.enemySpawnEnabled) {
+         
             if(this.tutorialsCompleted){
-            if (this.stage.checkPointType == 1){
-                this.stage.enemyMinSpawn = 1 
-                this.stage.enemyMaxSpawn = Math.min(Phaser.Math.Between(3,6) + this.level * this.stage.hordeDifficultyModifier,this.enemyGroup.getTotalFree())
-                this.enemyTimer.delay = Phaser.Math.Between((this.baseEnemySpawnTime * (60 / this.musicBPM) * 30000) * 0.8, (this.baseEnemySpawnTime * (60 / this.musicBPM) * 30000) * 1.2)   
-            } else {
-                this.stage.enemyMinSpawn = 0 
-                this.stage.enemyMaxSpawn = Math.min(1 + (this.level * 0.5) * this.stage.hordeDifficultyModifier,this.enemyGroup.getTotalFree())
-                this.enemyTimer.delay = Phaser.Math.Between((this.baseEnemySpawnTime * (60 / this.musicBPM) * 2000) * 0.8, (this.baseEnemySpawnTime * (60 / this.musicBPM) * 2000) * 1.2)   
-            }
+                if (this.stage.checkPointType == 0){
+                    this.stage.enemyMinSpawn = 1 
+                    this.stage.enemyMaxSpawn = Math.min(Phaser.Math.Between(2,5) + this.level,this.enemyGroup.getTotalFree())
+                    this.enemyTimer.delay = Phaser.Math.Between((this.baseEnemySpawnTime * (60 / this.musicBPM) * 2000) * 0.8, (this.baseEnemySpawnTime * (60 / this.musicBPM) * 2000) * 1.2)   
+                } else if (this.stage.checkPointType == 2) {
+                    this.stage.enemyMinSpawn = 0 
+                    this.stage.enemyMaxSpawn = Math.min(1 + (this.level * 0.5) * this.stage.hordeDifficultyModifier,this.enemyGroup.getTotalFree())
+                    this.enemyTimer.delay = Phaser.Math.Between((this.baseEnemySpawnTime * (60 / this.musicBPM) * 2000) * 0.8, (this.baseEnemySpawnTime * (60 / this.musicBPM) * 2000) * 1.2)   
+                }
             } else {
                 if(!this.tutorialMode0Completed){
                     this.stage.enemyMinSpawn = 0 
@@ -2293,13 +3036,18 @@ class Badlands extends Phaser.Scene {
 
             // Set Rarity
             // Roll for Mythical (Rarity 4)
-            if(Phaser.Math.Between(0,100) <= rarityChanceArray[1]){
+            if(Phaser.Math.Between(0,100) <= rarityChanceArray[0]){
                 spawnedEnemy.rarity = 4
                 spawnedEnemy.animationKey = this.stage.enemyAnimationsKey.mythical
                 spawnedEnemy.setOrigin(0.5, 1)
                 spawnedEnemy.body.setSize(25, 25).setOffset(25, 37.5)
+                //spawnedEnemy.setSize(spawnedEnemy.width / 4,spawnedEnemy.height / 4).setOffset((spawnedEnemy.width / 4) * 1.5, (spawnedEnemy.height / 4) * 2)
                 spawnedEnemy.setScale(Phaser.Math.FloatBetween(7.5, 8.5)) 
                 spawnedEnemy.resilienceCapacity = Phaser.Math.Between(650, 1300) * (1 + (0.1 * spawnedEnemy.difficultyMod))
+                spawnedEnemy.animationStance = 'Standard'
+                spawnedEnemy.jumpAttackChance = 15
+                spawnedEnemy.canJumpAttack = true
+                spawnedEnemy.attackType = 'Melee'
 
                 // stub
                 spawnedEnemy.attackCollisionStartFrame = 10
@@ -2308,13 +3056,18 @@ class Badlands extends Phaser.Scene {
  
             } else 
             // Roll for Rare (Rarity 3)
-            if(Phaser.Math.Between(0,100) <= rarityChanceArray[2]){
+            if(Phaser.Math.Between(0,100) <= rarityChanceArray[1]){
                 spawnedEnemy.rarity = 3
                 spawnedEnemy.animationKey = this.stage.enemyAnimationsKey.rare
                 spawnedEnemy.setOrigin(0.5, 1)
                 spawnedEnemy.body.setSize(25, 25).setOffset(25, 37.5)
+                //spawnedEnemy.setSize(spawnedEnemy.width / 4,spawnedEnemy.height / 4).setOffset((spawnedEnemy.width / 4) * 1.5, (spawnedEnemy.height / 4) * 2)
                 spawnedEnemy.setScale(Phaser.Math.FloatBetween(7.5, 8.5)) 
                 spawnedEnemy.resilienceCapacity = Phaser.Math.Between(500, 1000) * (1 + (0.1 * spawnedEnemy.difficultyMod))
+                spawnedEnemy.jumpAttackChance = 15
+                spawnedEnemy.canJumpAttack = true
+                spawnedEnemy.animationStance = 'Standard'
+                spawnedEnemy.attackType = 'Melee'
 
                 // stub
                 spawnedEnemy.attackCollisionStartFrame = 10
@@ -2323,18 +3076,24 @@ class Badlands extends Phaser.Scene {
 
             } else 
             // Roll for Uncommon (Rarity 2)
-            if(Phaser.Math.Between(0,100) <= rarityChanceArray[3]){
+            if(Phaser.Math.Between(0,100) <= rarityChanceArray[2]){
                 spawnedEnemy.rarity = 2
                 spawnedEnemy.animationKey = this.stage.enemyAnimationsKey.uncommon
                 spawnedEnemy.setOrigin(0.5,0.5)
-                spawnedEnemy.body.setSize(25, 25).setOffset(25, 37.5)
-                spawnedEnemy.setScale(Phaser.Math.FloatBetween(3.25, 3.75)) 
+                spawnedEnemy.body.setSize(25, 30).setOffset(17.5, 17.5)
+                spawnedEnemy.setScale(Phaser.Math.FloatBetween(5, 5)) 
                 spawnedEnemy.resilienceCapacity = Phaser.Math.Between(450, 650) * (1 + (0.1 * spawnedEnemy.difficultyMod))
+                spawnedEnemy.attackType = 'Ranged'
+                spawnedEnemy.animationStance = 'Standard'
+                spawnedEnemy.jumpAttackChance = 20
+                spawnedEnemy.canJumpAttack = true
+                
+                
 
                 // stub
-                spawnedEnemy.attackCollisionStartFrame = 5
+                spawnedEnemy.attackCollisionStartFrame = 7
                 spawnedEnemy.attackCollisionEndFrame = 7
-                spawnedEnemy.attackRange = screenWidth * 0.15
+                spawnedEnemy.attackRange = screenWidth * 0.65
       
             } else 
             // Set to Common (Rarity 1)
@@ -2344,6 +3103,9 @@ class Badlands extends Phaser.Scene {
                 spawnedEnemy.setOrigin(0.5, 0.5)
                 spawnedEnemy.setScale(Phaser.Math.FloatBetween(2.5, 3)) 
                 spawnedEnemy.resilienceCapacity = Phaser.Math.Between(300, 450) * (1 + (0.1 * spawnedEnemy.difficultyMod))
+                spawnedEnemy.jumpAttackChance = 60
+                spawnedEnemy.animationStance = 'Switch'
+                spawnedEnemy.attackType = 'Melee'
 
                 // stub
                 spawnedEnemy.attackCollisionStartFrame = 5
@@ -2367,6 +3129,7 @@ class Badlands extends Phaser.Scene {
       
             spawnedEnemy.setPipeline('Light2D')
             spawnedEnemy.body.setAllowGravity(true)
+            spawnedEnemy.setDepth(2)
             spawnedEnemy.isHit = false
             spawnedEnemy.hitsTaken = 0
             spawnedEnemy.canAct = true
@@ -2374,6 +3137,7 @@ class Badlands extends Phaser.Scene {
             spawnedEnemy.staminaCapacity = 100
             spawnedEnemy.staminaCurrent = 100
             spawnedEnemy.enragedLevel = 0
+            
   
             spawnedEnemy.targetRange = this.player.x
             spawnedEnemy.aggroRange = Phaser.Math.FloatBetween(spawnedEnemy.attackRange * 0.5,spawnedEnemy.attackRange * 1.5)
@@ -2515,8 +3279,10 @@ class Badlands extends Phaser.Scene {
                                 this.sound.play('enemyDeath',{volume:Phaser.Math.FloatBetween(0.5, 0.75) })
                             }
 
+                            if (Phaser.Math.Between(0, 100) < 15){
                             this.gold += Phaser.Math.Between(0, this.baseGoldDrop * 0.075 * enemy.difficultyMod)
-                            this.sound.play('pickupGold',{volume:Phaser.Math.FloatBetween(0.85, 1) })
+                            this.sound.play('pickupGold_general',{volume:Phaser.Math.FloatBetween(0.5, 0.85) })
+                            }
 
                             enemy.once('animationcomplete', function (anim, frame) {
                                 enemy.emit('animationcomplete_' + anim.key, frame)
@@ -2657,7 +3423,7 @@ class Badlands extends Phaser.Scene {
 
              player.play({key:player.animations.block,frameRate:10}, true)
              player.setVelocityX(0)
-            player.staminaCurrent -= damage * 0.4
+            player.staminaCurrent -= damage * 0.3
 
                     player.once('animationstart', function (anim, frame) {
                         player.emit('animationstart' + anim.key, frame)
@@ -2739,20 +3505,26 @@ class Badlands extends Phaser.Scene {
             // On loop complete for action, canAct = true and loop re-run (or loop for new state if state changes)
 
             // Floor lift - temp
-
-            if (enemy.body.y + (enemy.body.height * 0.5) >= this.floor.body.y - (this.floor.body.height * 0.5)){
-                enemy.body.y = this.floor.body.y - (this.floor.body.height * 0.5) - (enemy.body.height * 0.5)
+            
+            if (enemy.body.y + (enemy.body.height * 0.5) >= this.floor.body.y ){//+ (this.floor.body.height * 0.5)
+                enemy.body.y = this.floor.body.y  - (enemy.body.height * 0.5) // - (this.floor.body.height * 0.5)
             }
 
             // Alternate Depth
 
-            if (enemy) {
-                if (enemy.x > this.player.x + screenWidth * 0.1) {
-                    enemy.setDepth(0)//(Phaser.Math.Between(0,2))
-                } else if (enemy.x < this.player.x - screenWidth * 0.1) {
-                    enemy.setDepth(0)//(Phaser.Math.Between(0,2))
-                }
+            // if (enemy) {
+            //     if (enemy.getBottomCenter().y - 150 < this.player.getBottomCenter().y) {
+            //         enemy.setDepth(1)//(Phaser.Math.Between(0,2))
+            //     } else {
+            //         enemy.setDepth(3)//(Phaser.Math.Between(0,2))
+            //     }
+            // }
+
+            if(enemy.getBottomCenter().y > this.floor.getTopCenter().y && enemy.rarity < 2){
+                enemy.setVelocityY(-750)
             }
+
+            
 
             // Lock on Code
             if (!enemy.attacking) {
@@ -2761,17 +3533,21 @@ class Badlands extends Phaser.Scene {
                     //&& Math.abs(e.y - this.player.y) <= screenHeight * 0.25 
                     //enemyLockedOn = true
                     if (enemy.x < this.player.x) {
-                        if (enemy.rarity < 2) {
-                            enemy.flipX = true
-                        } else {
+                        if(enemy.animationStance == 'Standard'){
                             enemy.flipX = false
+                            enemy.dir = 1
+                        } else {
+                            enemy.flipX = true
+                            enemy.dir = 1
                         }
 
                     } else {
-                        if (enemy.rarity < 2) {
-                            enemy.flipX = false
-                        } else {
+                        if(enemy.animationStance == 'Standard'){
                             enemy.flipX = true
+                            enemy.dir = -1
+                        } else {
+                            enemy.flipX = false
+                            enemy.dir = -1
                         }
                     }
                //} else {
@@ -2932,35 +3708,36 @@ class Badlands extends Phaser.Scene {
     }
 
         enemyEnragedCode(enemy){
-            
-            // Move to Attack Range
-                this.enemyMoveToAttackRange(enemy)
-
-            // Attack in Attack Range
-                this.enemyAttack(enemy)
-
     
+                if (enemy.staminaCurrent)
+                // Move to Attack Range
+                    this.enemyMoveToAttackRange(enemy)
+                // Attack in Attack Range
+                    this.enemyAttack(enemy)
+     
+            
+
         }
 
             enemyMoveToAttackRange(enemy){
                 // Move to Attack Range
-            
+                    
+
+                    
                     // Move to Aggro Range
                     // If Enemy can act, enemy aims for player's current position and charges
                     if(Math.abs(enemy.x - this.player.x) > enemy.aggroRange && enemy.canAct && !enemy.isHit){
                         enemy.canAct = false
                         enemy.targetRange = this.player.x + Phaser.Math.FloatBetween(-enemy.attackRange,enemy.attackRange)
-                        if (this.player.x - enemy.x > 0){
-                            this.dir = 1
-                        } else {
-                            this.dir = -1
-                        }
-                        enemy.setVelocityX(this.dir * Phaser.Math.Between(250,1000))
+                        enemy.setVelocityX(enemy.dir * Phaser.Math.Between(250,1000))
+
+                        // Pay Stamina Cost
+                        enemy.staminaCurrent -= Phaser.Math.Between(5,10)
 
                     }
 
                     // Adjust target
-                    // Enemy tracks player whilst moving, and updates target location if player moves out of aggroRange (new temp roll).  Enemy accelerates/decelerates based on if player moved closer or further
+                    // Enemy tracks player whilst moving, and updates target location if player moves out of aggroRange (new temp roll).  
                     if(Math.abs(enemy.targetRange - this.player.x)  >  Phaser.Math.FloatBetween(enemy.attackRange * 0.5,enemy.attackRange * 1.5)){
                         enemy.targetRange = this.player.x + Phaser.Math.FloatBetween(-enemy.attackRange,enemy.attackRange)
                     }
@@ -2977,11 +3754,13 @@ class Badlands extends Phaser.Scene {
                         
                         }
                     }
+                
 
             }
 
             enemyAttack(enemy){
                 // Attack
+                
                     // If Enemy can act and is in range, enemy attacks
                     if(Math.abs(enemy.x - this.player.x) < enemy.aggroRange && enemy.canAct && !enemy.isHit){
 
@@ -2994,84 +3773,77 @@ class Badlands extends Phaser.Scene {
                         // Hesitation / Rest Roll
                         if(Phaser.Math.Between(0,100) < 85 && enemy.staminaCurrent > Phaser.Math.Between(50,95)){
                             // Jump attempt if out of y range
-                            if (enemy.body.y > this.player.y && this.player.body.velocity.y <= 0){
+                            if (enemy.body.y > this.player.y && this.player.y < this.floor.y - this.player.displayHeight && this.player.body.velocity.y <= 0){
                                 enemy.setVelocityY(Phaser.Math.Between(-1500,-2500))
                                 enemy.canAct = true
                                 enemy.attacking = false
                             } else {
                             // Attack
                             enemy.play({key:enemy.animationKey + '_Attack',frameRate: Phaser.Math.Between(10,20) , delay: Phaser.Math.Between(0,0)},true)
+                            
+                            // SFX
+                            if(enemy.rarity < 3){
+                                this.sound.play('nightBorneMinion_Attack')
+                            }
+                            
 
-                                if (enemy.rarity < 3){
-                                    if(Phaser.Math.Between(0,100) < 75 && enemy.body.y >= this.player.y * 0.8){
-                                    enemy.setVelocityY(Phaser.Math.Between(-1250,-1750))
-                                    if(enemy.flipX){
-                                        enemy.dir = 1
-                                    } else {
-                                        enemy.dir = -1
-                                    }
-                                    enemy.setVelocityX(enemy.dir * Phaser.Math.Between(350,500))
-                                    enemy.once('animationcomplete', function(){
-                                        enemy.setVelocityX(0)
-                                    })
-                                }
-                                   
-                                } else {
-                                    if(Phaser.Math.Between(0,100) < 10 && enemy.body.y >= this.player.y * 0.8){
-                                    enemy.setVelocityY(Phaser.Math.Between(-1500,-1750))
-                                        if(enemy.flipX){
-                                            enemy.dir = -1
-                                        } else {
-                                            enemy.dir = 1
-                                        }
-                                        enemy.setVelocityX(enemy.dir * Phaser.Math.Between(0,150))
+
+                                // Rol for Jump Attack
+                                    if(Phaser.Math.Between(0,100) < enemy.jumpAttackChance && enemy.body.y >= this.player.y * 0.8 && enemy.canJumpAttack == true){
+                                        enemy.setVelocityY(Phaser.Math.Between(-1250,-1750))
+          
+                                        
+                                        enemy.setVelocityX(enemy.dir * Phaser.Math.Between(350,500))
                                         enemy.once('animationcomplete', function(){
                                             enemy.setVelocityX(0)
                                         })
-                                    }
-                                }
+                                    } 
+                                                                      
+                                // Melee Attack
+                                if(enemy.attackType == 'Melee'){
+                                    var meleeAttackHitbox = this.enemyAttackHitboxPool.get()
                                 
-                                
-                                enemy.on('animationupdate', function(){
-                                    if (enemy.anims.getName() == enemy.animationKey + '_Attack'){
-                                        if (enemy.anims.currentFrame.index >= enemy.attackCollisionStartFrame &&  enemy.anims.currentFrame.index <= enemy.attackCollisionEndFrame){        
-                                            meleeAttackHitbox.collisionActive = true 
-                              
-                                        } else {
-                                            meleeAttackHitbox.collisionActive = false 
-                                        }   
-                                    }
-                                })
-                                
-                                var meleeAttackHitbox = this.enemyMeleeAttack.get()
-                                var dir
-                                
-                                if (enemy.x > this.player.x){
-                                    dir = -1
-                                } else {
-                                    dir = 1
-                                }
-                                meleeAttackHitbox.x = enemy.x + 50 * dir
-                                meleeAttackHitbox.y = enemy.body.y + 100 
-                                meleeAttackHitbox.body.setAllowGravity(false).setSize(200,100)
-                                meleeAttackHitbox.type = 'melee'
-                                meleeAttackHitbox.critDamage = 1.25
-                                meleeAttackHitbox.baseDamage = 25
-                                meleeAttackHitbox.hitSmear = 'whiteHitSmear'
-                                meleeAttackHitbox.body.checkCollision.none = true
-                                meleeAttackHitbox.owner = enemy
-                                meleeAttackHitbox.setTexture().setVisible(0)
-                                meleeAttackHitbox.setTint(0x620024)
+                                    meleeAttackHitbox.x = enemy.x + 50 * enemy.dir
+                                    meleeAttackHitbox.y = enemy.body.y + 100 
+                                    meleeAttackHitbox.body.setAllowGravity(false).setSize(200,100)
+                                    meleeAttackHitbox.type = 'Melee'
+                                    meleeAttackHitbox.critDamage = 1.25
+                                    meleeAttackHitbox.baseDamage = 25
+                                    meleeAttackHitbox.hitSmear = 'whiteHitSmear'
+                                    meleeAttackHitbox.body.checkCollision.none = true
+                                    meleeAttackHitbox.owner = enemy
+                                    meleeAttackHitbox.setTexture().setVisible(0)
+                                    meleeAttackHitbox.setTint(0x620024)
 
-                                
-                                
-                                enemy.once('animationcomplete', function(){
-                                    meleeAttackHitbox.destroy() 
-                                })
+                                    enemy.on('animationupdate', function(){
+                                        if (enemy.anims.getName() == enemy.animationKey + '_Attack'){
+                                            if (enemy.anims.currentFrame.index >= enemy.attackCollisionStartFrame &&  enemy.anims.currentFrame.index <= enemy.attackCollisionEndFrame){        
+                                                meleeAttackHitbox.collisionActive = true 
+                                  
+                                            } else {
+                                                meleeAttackHitbox.collisionActive = false 
+                                            }   
+                                        }
+                                    })
+                                    
+                                    enemy.once('animationcomplete', function(){
+                                        meleeAttackHitbox.destroy() 
+                                    })
+                                } else if(enemy.attackType == 'Ranged'){
+                                    enemy.on('animationupdate', function(){
+                                        if (enemy.anims.getName() == enemy.animationKey + '_Attack'){
+                                            if (enemy.anims.currentFrame.index >= enemy.attackCollisionStartFrame &&  enemy.anims.currentFrame.index <= enemy.attackCollisionEndFrame){        
+                                                this.fireProjectile('Enemy',enemy,this.enemyAttackHitboxPool.get(),'nightBorne_Archer_AttackProjectile','nightBorne_Archer_AttackProjectile',1500,2,0,0.75)
+                                  
+                                            }  
+                                        }
+                                    },this)
+                                    
+                                }
 
                             }
                             // Stamina cost
-                            enemy.staminaCurrent -= Phaser.Math.Between(25,50)
+                            enemy.staminaCurrent -= Phaser.Math.Between(25,75)
                         } else {
                             // Hesitation / Recovery
                             enemy.play({key:enemy.animationKey + '_Idle',repeat:0})
@@ -3081,17 +3853,17 @@ class Badlands extends Phaser.Scene {
                         }
                     }
 
-                    this.enemyMeleeAttack.children.each(function (attack) {
+                    this.enemyAttackHitboxPool.children.each(function (attack) {
 
                        
-
-                        if(attack){
-                            if (attack.owner.x > this.player.x){
-                                dir = -1
-                            } else {
-                                dir = 1
-                            }
-                            attack.x = attack.owner.x + 50 * dir
+                        // Melee
+                        if(attack.type == 'Melee'){
+                            // if (attack.owner.x > this.player.x){
+                            //     dir = -1
+                            // } else {
+                            //     dir = 1
+                            // }
+                            attack.x = attack.owner.x + 50 * attack.owner.dir
                             attack.y = attack.owner.body.y + 100 
 
                             // Collision Activation
@@ -3143,12 +3915,14 @@ class Badlands extends Phaser.Scene {
         }.bind(this));
     }
 
-    fireProjectile(source,projectile,animation,impactAnimation,speed,range,affectedByGravity,damageModifier){
+    fireProjectile(owner,source,projectile,animation,impactAnimation,speed,range,affectedByGravity,damageModifier){
 
+        
+        console.log(source.dir)
         if (projectile.name == 'Fireball'){
             this.sound.play('fireBoltMain',{volume:0.95})
-        } else {
-            this.sound.play('fireBoltMain',{volume:0.95,detune:0.5})
+        } else if (projectile.name == 'Thunderbolt') {
+            this.sound.play('fireBoltMain',{volume:0.95,detune:100})
         }
 
         projectile.type = 'projectile'
@@ -3157,33 +3931,69 @@ class Badlands extends Phaser.Scene {
         projectile.maxRange = screenWidth * range
         projectile.mainAnimation = animation
         projectile.impactAnimation = impactAnimation
-        projectile.damage = this.player.skillPower * damageModifier
+        if(owner == 'Player'){
+            projectile.damage = this.player.skillPower * damageModifier
+        } else {
+            projectile.critDamage = 1.25
+            projectile.baseDamage = 25 * damageModifier
+        }
+        
+        projectile.setSize(projectile.displayWidth,projectile.displayHeight)
         projectile.setScale(4)
-        projectile.setDepth(2)
+        projectile.setDepth(source.depth)
         projectile.body.setAllowGravity(affectedByGravity)
 
-        if (source.flipX){
-            this.dir = -1
+        if (source.dir == -1){
+            //this.dir = -1
             projectile.flipX = true
         } else {
-            this.dir = 1
+            //this.dir = 1
             projectile.flipX = false
         }
 
         projectile.play({key:projectile.mainAnimation,frameRate: 10},true)
-        projectile.setVelocityX(this.dir * screenWidth * speed) 
+        
+        // //if(this.playerLockedOn){
+        //         //this.physics.moveToObject(projectile,this.closestEnemy,speed)
+        //     // if (this.closestEnemy.getBottomCenter().y < this.player.getBottomCenter().y - 25){
+        //     //     projectile.setVelocityY(-screenWidth * speed * 0.15) 
+        //     // } else if (this.closestEnemy.getBottomCenter().y > this.player.getBottomCenter().y + 25) {
+        //     //     projectile.setVelocityY(screenWidth * speed * 0.15) 
+    
+        //     // }
+        // //} else {
+        //     //this.physics.moveTo(projectile,source.y - 15,speed)
+            projectile.setVelocityX(source.dir * speed) 
+            if (source.depth == 1){
+                projectile.setVelocityY(speed * 0.05) 
+            } else if (source.depth == 1) {
+                projectile.setVelocityY(speed * 0.05) 
+            }
+        // //}
     }
 
     impactProjectile(projectile, velocityReductionPercent = 0.1){
         
         projectile.play({key:projectile.impactAnimation,frameRate: 10},true)
-        projectile.body.checkCollision.none = true
+        projectile.setScale(6)
+        projectile.setSize(projectile.displayWidth,projectile.displayHeight)
+        
+        if(!projectile.soundPlayed){
+            projectile.soundPlayed = true
         if (projectile.name == 'Fireball'){
             this.sound.play('fireBoltImpact',{volume:0.95})
         } else {
-            this.sound.play('fireBoltImpact',{volume:0.95,detune:0.5})
+            this.sound.play('fireBoltImpact',{volume:0.95,detune:-75})
+        }
         }
         projectile.setVelocityX(projectile.body.velocity.x * velocityReductionPercent)
+        projectile.setVelocityY(projectile.body.velocity.y * velocityReductionPercent)
+
+        projectile.once('animationstart', function(){
+            projectile.body.checkCollision.none = true
+
+        },this)
+        
         projectile.once('animationcomplete', function(){
             projectile.destroy()
         },this)
@@ -3208,24 +4018,27 @@ class Badlands extends Phaser.Scene {
 
     cameraModule() {
 
+        if (this.empowerAvatarStarted){
+            this.camera.zoomTo(Math.max(0.85,this.camera.zoom * 0.975), 150)
+        } else {
         if (this.gameMode == 0) {
 
             
             this.cameraFocus.y = this.player.y //- (this.floor.y - this.player.displayHeight - (screenHeight * 0.5))
 
             if (a1Held) {
-                this.camera.zoomTo(Math.min(1.15,this.camera.zoom * 1.05), 150)
+                this.camera.zoomTo(Math.min(1.25,this.camera.zoom * 1.05), 150)
             } else if (a2Held) {
-                this.camera.zoomTo(Math.max(0.85,this.camera.zoom * 0.95), 150)
+                this.camera.zoomTo(Math.max(0.95,this.camera.zoom * 0.95), 150)
             }else {
 
                     if(!this.playerInAir && this.stageProgressEnabled){
                         
-                    if(this.player.x < screenWidth * 0.25){
-                        this.camera.zoomTo(Math.max(0.75,this.camera.zoom * 0.95), 150)
+                    if(this.player.x < this.camera.scrollX + screenWidth * 0.25){
+                        this.camera.zoomTo(Math.max(0.85,this.camera.zoom * 0.95), 150)
                    
                     } else {
-                        this.camera.zoomTo(Math.max(0.75,this.cameraFocus.y/(this.floor.y - this.player.displayHeight)), 500)
+                        this.camera.zoomTo(Math.max(0.85,this.cameraFocus.y/(this.floor.y - this.player.displayHeight)), 500)
                       
                     }
                     } 
@@ -3233,25 +4046,26 @@ class Badlands extends Phaser.Scene {
                     
                 
             }
-        } else {
-            this.cameraFocus.x = this.player.x
-            this.cameraFocus.y = this.player.y
-
-            if (this.powerBarSource >= 0.75) {
-
-                this.camera.zoomTo(1.15, 50)
-                this.camera.centerOn(this.player.x, screenHeight * 0.5)
-
-            } else if (this.powerBarSource >= 0.5) {
-
-                this.camera.zoomTo(1.1, 100)
-                this.camera.centerOn(this.player.x, screenHeight * 0.5)
-
             } else {
-                this.camera.zoomTo(1, 500)
+                this.cameraFocus.x = this.player.x
+                this.cameraFocus.y = this.player.y
+
+                if (this.powerBarSource >= 0.75) {
+
+                    this.camera.zoomTo(1.25, 50)
+                    this.camera.centerOn(this.player.x, screenHeight * 0.5)
+
+                } else if (this.powerBarSource >= 0.5) {
+
+                    this.camera.zoomTo(1.2, 100)
+                    this.camera.centerOn(this.player.x, screenHeight * 0.5)
+
+                } else {
+                    this.camera.zoomTo(1.1, 500)
+
+                }
 
             }
-
         }
 
 
@@ -3268,6 +4082,11 @@ class Badlands extends Phaser.Scene {
         this.tutorialTextBox.y = (this.player.y - 100) 
         this.tutorialText.x = this.tutorialTextBox.x
         this.tutorialText.y = this.tutorialTextBox.y 
+
+        // Stage Name Text
+        this.stageNameText.setPosition(this.camera.scrollX + screenWidth * 0.5, this.camera.scrollY + screenHeight * 0.5)
+        
+
 
         // Battle Mode Icon
 
@@ -3544,11 +4363,45 @@ class Badlands extends Phaser.Scene {
 
     initialise_UI() {
 
-        this.hudDepth = 2
+        this.hudDepth = 5
+
+
+        // Stage Title
+        this.stageNameText = this.add.text(this.camera.scrollX + screenWidth * 0.5, this.camera.scrollY + screenHeight * 0.5, this.stageData.stageName)
+        .setFontFamily('Georgia').setFontStyle('italic').setFontSize(84 * (scaleModX)).setOrigin(0.5).setDepth(5)
+
+        this.tweens.add({
+            delay: 6000,
+            targets: this.stageNameText,
+            alpha: 0,
+            duration: 1000,
+
+            
+            onComplete: () => {
+                this.stageNameText.setVisible(0).setActive(0)
+                this.stageProgressEnabled = true
+                this.stage.terrainSpawnEnabled = true
+                
+                setTimeout(()=>{
+                    this.stage.platformSpawnEnabled = true
+                },1500)
+                setTimeout(()=>{
+                    this.stage.obstacleSpawnEnabled = false
+                },1500)
+                setTimeout(()=>{
+                    this.stage.enemySpawnEnabled = true
+                },3000)
+                
+                
+               
+            }
+        })
 
         // Tutorial Text Box
         this.tutorialTextBox = this.add.image(0, 0, 'playerIconBox')
         .setDepth(5).setScale(0.25,0.35).setOrigin(0.5).setAlpha(0)
+
+
 
         this.tutorialFontSize = 20
         this.tutorialText = this.add.text(0,0)
@@ -3556,7 +4409,7 @@ class Badlands extends Phaser.Scene {
         // Battle Mode Icon
         this.battleModeIcon = this.add.image(0, 0, 'battle-icon')
         this.battleModeIcon.setAlpha(0)
-        this.battleModeIcon.setScale(1.5)
+        this.battleModeIcon.setScale(1.5).setDepth(this.hudDepth)
 
         this.tweens.add({
             targets: [this.battleModeIcon],
@@ -4265,7 +5118,7 @@ class Badlands extends Phaser.Scene {
                             this.glory -= 0.25
                         }
                         this.stage.obstacleDifficultyModifier *= 1.005
-                        //this.stage.hordeDifficultyModifier *= 1.0025
+                        this.stage.hordeDifficultyModifier *= 1.0025
                 } else {
                     if(entity.type == 'Chaser'){
 
@@ -4305,7 +5158,7 @@ class Badlands extends Phaser.Scene {
                 if(this.stage.checkPointType === 0){
                 this.tweens.add({
                     targets: bgMusic,
-                    volume: 0.75,
+                    volume: 0.5,
                     repeat: 0,
                     duration: 4000,
                     ease: Phaser.Math.Easing.Sine.Out,
@@ -4321,6 +5174,7 @@ class Badlands extends Phaser.Scene {
                 }
                 this.camera.flash()
                 this.gameMode = 1
+                this.playerFloorTween.pause()
                 this.stageProgressEnabled = false
                 this.physics.world.setBounds(-screenWidth * 0.25, -screenHeight * 0.25, screenWidth * 2, screenHeight * (this.stageHeightModifier + 0.25))
                 this.camera.startFollow(this.cameraFocus)
@@ -4332,7 +5186,7 @@ class Badlands extends Phaser.Scene {
         if(this.stage.checkPointType === 0){
             this.tweens.add({
                 targets: bgMusic,
-                volume: 0.5,
+                volume: 0.75,
                 repeat: 0,
                 duration: 2000,
                 ease: Phaser.Math.Easing.Sine.Out,
@@ -4346,6 +5200,7 @@ class Badlands extends Phaser.Scene {
             })
         }
         this.gameMode = 0
+        this.playerFloorTween.resume()
         this.playerBattleSpeed = 0
         this.playerSpeed = 0
         this.stageProgressEnabled = true
@@ -4353,20 +5208,38 @@ class Badlands extends Phaser.Scene {
         this.camera.startFollow(this.cameraFocus)
     }
 
+    enablePlayerBattleStrafe(){
+        if(!this.playerBattleStrafeActive){
+            this.playerBattleStrafeActive = true
+        } 
+
+        
+    }
+
+    disablePlayerBattleStrafe(player,platform){
+        if(this.playerBattleStrafeActive){
+            this.playerBattleStrafeActive = false
+        } 
+
+        this.player.setDepth(platform.depth)
+    }
+
     playerModule(){
 
         // Return To Default Functions
-    
+        if(!this.empowerAvatarStarted){
             // Return Player to Default angle 
             if(!upHeld && !downHeld || this.player.body.onFloor()){
                 this.player.setAngle(0)
                 }
                     
             // Return Player to Default Gravity
-            //if(!a1Held){
+          
+                
                 this.player.body.setGravityY(0)
                 this.player.body.setAllowGravity(1)
-            //}
+        }
+         
     
             // Misc
                 if (!this.playerIsHit || this.gameMode == 1){
@@ -4378,13 +5251,13 @@ class Badlands extends Phaser.Scene {
                 this.playerAttackHitBoxVFX.y = this.playerAttackHitBox.y
     
                 if (this.player.flipX){
-                    this.playerAttackHitBox.x = this.player.x - 10
+                    this.playerAttackHitBox.x = this.player.x - 25
     
                     this.playerAttackHitBoxVFX.flipX = true
                     this.playerAttackHitBoxVFX.x = this.playerAttackHitBox.x - 50
                     
                 } else {
-                    this.playerAttackHitBox.x = this.player.x + 10
+                    this.playerAttackHitBox.x = this.player.x + this.player.displayWidth * 0.15//25
     
                     this.playerAttackHitBoxVFX.flipX = false
                     this.playerAttackHitBoxVFX.x = this.playerAttackHitBox.x + 50
@@ -4447,6 +5320,10 @@ class Badlands extends Phaser.Scene {
             if (this.player.anims.getName() == this.player.animations.action_c){
                 if (this.player.anims.currentFrame.index >= 3 && this.player.anims.currentFrame.index < 5){                                              
                     this.playerAttackHitBox.body.checkCollision.none = false
+                    
+                        
+                       
+                   
                 } else {
                     this.playerAttackHitBox.body.checkCollision.none = true
                 }
@@ -4748,7 +5625,7 @@ class Badlands extends Phaser.Scene {
     
 
                     this.stageProgressEnabled = false
-                    //playerInputActive = false
+                    playerInputActive = false
                     
                     if (this.gameMode == 0){
                         this.player.x -= this.baseSpeed * this.playerSpeed
@@ -4893,6 +5770,12 @@ class Badlands extends Phaser.Scene {
                 } else
             // Recovery animation
                 if (this.playerInAir && this.player.body.onFloor()){
+
+                    if(!this.landingSoundPlayed){
+                        this.landingSoundPlayed = true
+                        this.sound.play("playerLanding",{volume:Phaser.Math.Between(0.5,0.75)});
+                    }
+                    
                     if(this.gameMode == 0){
                         if(!a2Held){
                         if(this.player.body.bottom > this.floor.y - screenHeight * 0.01){
@@ -4906,7 +5789,7 @@ class Badlands extends Phaser.Scene {
                     } else {
                         this.playerInAir = false
                     }
-                    } else if(this.gameMode == 1) {
+                    } else if(this.gameMode == 1 && !this.empowerAvatarStarted) {
                         if(Math.abs(this.playerBattleSpeed) > 1){
                             this.player.play({key:this.player.animations.slide,frameRate:24},true);
                             this.player.x += ((screenWidth * 0.0015) * this.playerBattleSpeed) * this.movementMod
@@ -4917,9 +5800,10 @@ class Badlands extends Phaser.Scene {
                     }
     
                     this.player.once('animationcomplete', function () {
+                        this.landingSoundPlayed = false
                         this.playerInAir = false
                     }, this);
-                } else {
+                } else if (playerInputActive) {
 
                         if (this.gameMode == 0){
                             if(a1Held){
@@ -5155,9 +6039,16 @@ class Badlands extends Phaser.Scene {
                                 this.playerSubModule_AirTime(0,this.skillPower,0.35)
                                 if (!this.player.state.casting){
                                     this.player.state.casting = true
+                                    this.player.focusCurrent -= 25 // Single Use Cost
                                     this.sound.play('playerCast' + Phaser.Math.Between(1, 4),{volume:Phaser.Math.FloatBetween(0.35, 0.75) })
                                     this.player.once('animationcomplete', function(){
                                        this.player.state.casting = false
+                                       if(this.player.state.skillCounter >= 2){
+                                        if(this.playerProjectiles.getTotalFree() > 0){
+                                    this.fireProjectile('Player',this.player,this.playerProjectiles.get(),'deadlyCombatAssaultProjectile'
+                        ,'deadlyCombatAssaultHitSmear',3000,300,0,0.25)
+                                        }
+                                    }
                                    },this)
 
                                    // Set Damage
@@ -5196,6 +6087,13 @@ class Badlands extends Phaser.Scene {
                                         }
 
                                     }
+
+                        //             if(this.player.anims.currentFrame.index >= 9 && this.player.state.skillCounter >= 3){
+                        //                 if(this.playerProjectiles.getTotalFree() > 0){
+                        //             this.fireProjectile('Player',this.player,this.playerProjectiles.get(),'deadlyCombatAssaultProjectile'
+                        // ,'deadlyCombatAssaultHitSmear',3000,300,0,0.25)
+                        //                 }
+                        //             }
 
                                     if(this.player.anims.currentFrame.index <= 9){
                                         this.tweens.add({
@@ -5252,6 +6150,7 @@ class Badlands extends Phaser.Scene {
                             if (s2Held){
                                 if (!this.player.state.casting){
                                     this.player.state.casting = true
+                                    this.player.focusCurrent -= 10 // Single Use Cost
                                     this.sound.play('playerCast' + Phaser.Math.Between(1, 4),{volume:Phaser.Math.FloatBetween(0.35, 0.75) })
                                     this.player.once('animationcomplete', function(){
                                        this.player.state.casting = false
@@ -5269,7 +6168,7 @@ class Badlands extends Phaser.Scene {
                                     this.skillDamageModifier = this.player.skill2.damage_modifier
 
                                    if(this.playerProjectiles.getTotalFree() > 0){
-                                    this.fireProjectile(this.player,this.playerProjectiles.get(),this.skillMainAnimation,this.skillImpactAnimation,this.skillProjectileSpeed,this.skillProjectileRange,this.skillProjectileGravity,this.skillDamageModifier)
+                                    this.fireProjectile('Player',this.player,this.playerProjectiles.get(),this.skillMainAnimation,this.skillImpactAnimation,this.skillProjectileSpeed,this.skillProjectileRange,this.skillProjectileGravity,this.skillDamageModifier)
                                    }
 
                                 }
@@ -5295,10 +6194,12 @@ class Badlands extends Phaser.Scene {
 
                             if(!this.player.state.jumping){
                                 this.player.state.jumping = true
-                                if(Phaser.Math.Between(0,100) < 70){
+                                if(Phaser.Math.Between(0,100) < 45){
                                     this.sound.stopByKey('playerEvade1')
                                     this.sound.stopByKey('playerEvade2')
-                                    this.sound.play('playerEvade' + Phaser.Math.Between(1,2),{volume:Phaser.Math.Between(0.5,0.75)})
+                                    this.sound.play('playerEvade' + Phaser.Math.Between(1,2),{volume:Phaser.Math.Between(0.5,0.75)})                         
+                                } else {
+                                    this.sound.play("playerJumping",{volume:Phaser.Math.Between(0.5,0.75)});  
                                 }
                                 
                             }
@@ -5386,7 +6287,7 @@ class Badlands extends Phaser.Scene {
                                 } else {
                                     this.player.play({key:this.player.animations.idle,frameRate: 8 + (4 * (1 - Math.abs(this.actionPower)))},true)
                                 }
-                            } else if(!this.player.body.onFloor()) {
+                            } else if(!this.player.body.onFloor() && this.player.y + this.player.displayHeight * 0.5 < (screenHeight * this.stageHeightModifier * this.floorMax) - 100) {
                                 this.player.play({key:this.player.animations.fall,frameRate: 10},true)
                             }
                         }
@@ -5395,19 +6296,27 @@ class Badlands extends Phaser.Scene {
                 
                 // Auto lock - 
                 if (this.gameMode == 1) {
-    
+                        // Update Dir
+                        if(!this.player.flipX){
+                            this.player.dir = 1
+                        } else {
+                            this.player.dir = -1
+                        }
+
                         //Enables Player to automatically face closest enemy
                         if (this.closestEnemy){
-                        if(Math.abs(this.player.x - this.closestEnemy.x) <= screenWidth * 0.25){
+                        if(Math.abs(this.player.x - this.closestEnemy.x) <= screenWidth * 0.15){
                             this.playerLockedOn = true
                             // Should carve out (w/ rotation) to seperate function, driven by playerLockedOn
                             if (!leftHeld && !rightHeld){
                                 if(this.player.x < this.closestEnemy.x){
                                 
                                     this.player.flipX = false
+                                    this.player.dir = 1
                                     
                                 } else {
                                     this.player.flipX = true
+                                    this.player.dir = -1
                                     
                                 }
                             }
@@ -5423,6 +6332,99 @@ class Badlands extends Phaser.Scene {
                 }  
     
         // State Machine
+
+            // Depth and Positioning
+
+            this.playerBattleStrafeDirection = 0 // Anticlockwise
+            this.laneSpace = screenHeight * this.stageHeightModifier * (this.floorMin - this.floorMax) * 0.25
+            this.strafeSpeed = 0.1
+
+            if(this.playerBattleStrafeActive){
+                // Auto Set Depth based on strafe position
+                if(this.floorPlayer.y < this.floor.y - this.laneSpace){
+                    this.player.setDepth(1)
+                } else if(this.floorPlayer.y > this.floor.y + this.laneSpace) {
+                    this.player.setDepth(3)
+                } else {
+                    this.player.setDepth(2)
+                }
+
+                if(this.gameMode == 1 && this.playerLockedOn){
+                    // Strafing function
+                    if (this.playerBattleStrafeDirection == 0){
+                        // Moving Right
+                        if(this.player.x < this.closestEnemy.x  && rightHeld && !this.player.state.defending && !this.player.state.attacking){
+                            if(this.floorPlayer.y < screenHeight * this.stageHeightModifier * this.floorMin){
+                                this.floorPlayer.y += this.laneSpace * this.strafeSpeed
+                            }  
+                        } else if(this.player.x > this.closestEnemy.x && rightHeld && !this.player.state.defending && !this.player.state.attacking) {
+                            if(this.floorPlayer.y > screenHeight * this.stageHeightModifier * this.floorMax){
+                                this.floorPlayer.y -= this.laneSpace * this.strafeSpeed
+                            } 
+                        }
+                        // Moving Left
+                        if(this.player.x < this.closestEnemy.x  && leftHeld && !this.player.state.defending && !this.player.state.attacking){
+                            if(this.floorPlayer.y > screenHeight * this.stageHeightModifier * this.floorMax){
+                                this.floorPlayer.y -= this.laneSpace * this.strafeSpeed
+                            }  
+                        } else if(this.player.x > this.closestEnemy.x && leftHeld && !this.player.state.defending && !this.player.state.attacking) {
+                            if(this.floorPlayer.y > screenHeight * this.stageHeightModifier * this.floorMax){
+                                this.floorPlayer.y -= this.laneSpace * this.strafeSpeed
+                            } 
+                        }
+                    } else {
+                        // Moving Right
+                        if(this.player.x < this.closestEnemy.x  && rightHeld && !this.player.state.defending && !this.player.state.attacking){
+                            if(this.floorPlayer.y > screenHeight * this.stageHeightModifier * this.floorMax){
+                                this.floorPlayer.y -= this.laneSpace * this.strafeSpeed
+                            }  
+                        } else if(this.player.x > this.closestEnemy.x && rightHeld && !this.player.state.defending && !this.player.state.attacking) {
+                            if(this.floorPlayer.y < screenHeight * this.stageHeightModifier * this.floorMin){
+                                this.floorPlayer.y += this.laneSpace * this.strafeSpeed
+                            } 
+                        }
+                        // Moving Left
+                        if(this.player.x < this.closestEnemy.x  && leftHeld && !this.player.state.defending && !this.player.state.attacking){
+                            if(this.floorPlayer.y < screenHeight * this.stageHeightModifier * this.floorMin){
+                                this.floorPlayer.y += this.laneSpace * this.strafeSpeed
+                            }  
+                        } else if(this.player.x > this.closestEnemy.x && leftHeld && !this.player.state.defending && !this.player.state.attacking) {
+                            if(this.floorPlayer.y < screenHeight * this.stageHeightModifier * this.floorMin){
+                                this.floorPlayer.y += this.laneSpace * this.strafeSpeed
+                            } 
+                        }
+                    }
+                } else if (this.gameMode == 1){ // Return to centre
+                    if((rightHeld || leftHeld) && !this.player.state.defending && !this.player.state.attacking){
+                        if(this.floorPlayer.y < this.floor.y - this.laneSpace){
+                            this.floorPlayer.y += this.laneSpace * this.strafeSpeed
+                        } else if(this.floorPlayer.y > this.floor.y + this.laneSpace) {
+                            this.floorPlayer.y -= this.laneSpace * this.strafeSpeed
+                        } 
+                    } 
+                }
+            } 
+
+            if(this.gameMode == 0){
+            if(this.player.anims.getName() != this.player.animations.run){
+                this.playerFloorTween.pause()
+            } else {
+                this.playerFloorTween.resume()
+            }
+        }
+
+            
+
+
+            // // Auto Set Depth based on strafe position
+            // if(this.floorPlayer.y < this.floor.y - this.laneSpace){
+            //     this.player.setDepth(1)
+            // } else if(this.floorPlayer.y > this.floor.y + this.laneSpace) {
+            //     this.player.setDepth(3)
+            // } else {
+            //     this.player.setDepth(2)
+            // }
+
     
             // Closest Enemy
     
@@ -5473,7 +6475,7 @@ class Badlands extends Phaser.Scene {
                 }
 
             // Airborne
-                if(!this.player.body.onFloor()){
+                if(!this.player.body.onFloor() && this.player.y + this.player.displayHeight * 0.5 < (screenHeight * this.stageHeightModifier * this.floorMax) - 100){
                     this.playerInAir = true
                 }
     
@@ -5485,7 +6487,7 @@ class Badlands extends Phaser.Scene {
         playerSubModule_Jump(){
     
             if(this.gameMode == 0){
-               this.standingJumpBonus = (-250 * (1 - this.playerSpeed))
+               this.standingJumpBonus = (-200 * (1 - this.playerSpeed))
             } else if(this.gameMode == 1) {
                 this.standingJumpBonus = (-50 * (1 - Math.abs(this.playerBattleSpeed)))
             }
@@ -5771,8 +6773,8 @@ class Badlands extends Phaser.Scene {
                          this.tutorialMode1Completed = true
 
                          this.tutorialsCompleted = true
-                        //  this.tutorialTextBox.destroy()
-                        // this.tutorialText.destroy()
+                         this.tutorialTextBox.destroy()
+                        this.tutorialText.destroy()
                     }
                 })
 
@@ -5786,6 +6788,9 @@ class Badlands extends Phaser.Scene {
 
 
         update(time, delta) {
+
+            // Stub
+            this.levelUpAnim.x = this.player.x
 
             // V1 Code
     
@@ -5801,10 +6806,11 @@ class Badlands extends Phaser.Scene {
     
             // Environment
             this.environmentModule()
-           
-    
+            this.terrainController() 
+
             this.platforms()
             this.obstacleController()
+            this.powerupController()
     
             // Enemies
             this.enemyController()

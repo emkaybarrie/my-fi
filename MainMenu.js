@@ -363,7 +363,7 @@ class MainMenu extends Phaser.Scene {
             this.selectedScene = 'ModeSelect'
         } else if (this.selectedOption == 2){
             this.selectedScene = 'Region' + String(Phaser.Math.Between(1,4))
-            this.data = {targetScene:'Simulacrum',targetZone: 0, currentTimePeriod: Phaser.Math.Between(1,3),rarityOverride:null}
+            this.data = {targetScene:'Simulacrum',targetZone: 0, currentTimePeriod: Phaser.Math.Between(1,3),rarityOverride:null,startRewards: 0,startGlory:0, startGold:0}
         } 
 
         if (nextScene){

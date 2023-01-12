@@ -649,7 +649,8 @@ class Kianova extends Phaser.Scene {
            
 
         if (nextScene && this.controlsEnabled){
-            this.scene.start(activeRegion, {targetScene: 'Badlands',targetZone: 0, currentTimePeriod: Phaser.Math.Between(1,4),rarityOverride:null})
+            this.scene.start(activeRegion, {targetScene: 'Badlands',targetZone: 0, currentTimePeriod: Phaser.Math.Between(1,4),rarityOverride:null,
+                                            startRewards: storedRewards,startGlory:0, startGold:0})
             nextScene = false
             this.scene.stop('Kianova')
             
