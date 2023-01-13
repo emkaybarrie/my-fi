@@ -3363,7 +3363,7 @@ class Simulacrum extends Phaser.Scene {
             // Clean up
 
             if (enemy.active) {
-                if (enemy.body.x < -screenWidth || enemy.body.x < this.camera.scrollX && enemy.staminaCurrent <= 0  || enemy.body.x > screenWidth * 3  || enemy.body.y > screenHeight * this.stageHeightModifier) {
+                if (enemy.body.x < -screenWidth * 1.25 || enemy.body.x > screenWidth * 4  || enemy.body.y > screenHeight * this.stageHeightModifier * 1.25) {
                     enemy.destroy();
                 }
             }
@@ -3898,7 +3898,7 @@ class Simulacrum extends Phaser.Scene {
         if(this.stage.checkPointType == 2){
             this.objectiveText.setText('Survive the Horde')
             this.battleModeIcon.setActive(1).setVisible(1)
-        } else if (this.gameMode == 1){
+        } else if (this.gameMode == 1 && !this.stage.checkPointType == 'Final'){
             this.objectiveText.setText('Clear all enemies')
             this.battleModeIcon.setActive(1).setVisible(1)
         } else {
@@ -6636,13 +6636,13 @@ class Simulacrum extends Phaser.Scene {
         this.debugText.setText('Stage Name: ' + this.stageData.stageName
             // + '\nTime Period: ' + this.stageData.timeText
             // + '\nMusic Duration: ' + Math.floor(bgMusic.duration / 60) + ':' + Phaser.Math.RoundTo((((bgMusic.duration / 60) - Math.floor(bgMusic.duration / 60)) * 60),-2)
-             + '\nStage Progress Enabled: ' + this.stageProgressEnabled 
-            +'\nTerrain - Enabled: ' + this.stage.terrainSpawnEnabled + ' Spawned: ' + this.terrainGroup.countActive()
-            +'\nEnemies - Enabled: ' + this.stage.enemySpawnEnabled + ' Spawned: ' + this.enemyGroup.countActive()
-            //+'\nObstacles Spawned: ' + this.obstacleGroup.countActive()
-            + '\nPowerups Spawned: ' +  this.powerupGroup.countActive()
-            + '\nPlayer Depth: ' +  this.player.depth
-            + '\nPlayer Strafe Enable: ' +  this.playerBattleStrafeActive
+            //  + '\nStage Progress Enabled: ' + this.stageProgressEnabled 
+            // +'\nTerrain - Enabled: ' + this.stage.terrainSpawnEnabled + ' Spawned: ' + this.terrainGroup.countActive()
+            // +'\nEnemies - Enabled: ' + this.stage.enemySpawnEnabled + ' Spawned: ' + this.enemyGroup.countActive()
+            // //+'\nObstacles Spawned: ' + this.obstacleGroup.countActive()
+            // + '\nPowerups Spawned: ' +  this.powerupGroup.countActive()
+            // + '\nPlayer Depth: ' +  this.player.depth
+            // + '\nPlayer Strafe Enable: ' +  this.playerBattleStrafeActive
 
 
         )

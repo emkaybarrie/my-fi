@@ -3570,7 +3570,7 @@ class Badlands extends Phaser.Scene {
             // Clean up
 
             if (enemy.active) {
-                if (enemy.body.x < -screenWidth || enemy.body.x < this.camera.scrollX && enemy.staminaCurrent <= 0  || enemy.body.x > screenWidth * 3  || enemy.body.y > screenHeight * this.stageHeightModifier) {
+                if (enemy.body.x < -screenWidth * 1.25 || enemy.body.x > screenWidth * 4  || enemy.body.y > screenHeight * this.stageHeightModifier * 1.25) {
                     enemy.destroy();
                 }
             }
