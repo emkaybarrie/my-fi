@@ -6844,8 +6844,7 @@ class Badlands extends Phaser.Scene {
             this.tutorialMode0Completed = true
             this.tutorialMode1Completed = true
             this.tutorialsCompleted = true
-            //this.tutorialTextBox.destroy()
-            //this.tutorialText.destroy()
+
 
         }
 

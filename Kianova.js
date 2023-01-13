@@ -663,7 +663,7 @@ class Kianova extends Phaser.Scene {
 
     refreshUI(){
 
-        //this.uiSubModule_setVitalsPercentageAnimated()
+
 
         // Hide Textbox and Info
 

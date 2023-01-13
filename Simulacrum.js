@@ -48,7 +48,6 @@ class Simulacrum extends Phaser.Scene {
 
         this.loadStageBG(this.stageData.stageAssetName, this.stageData.bgLayers, this.stageData.fgLayers)
 
-        // Not need - test env only
         // HUD/UI
 
         // Battle Mode Icon
