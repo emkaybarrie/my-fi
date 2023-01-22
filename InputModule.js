@@ -235,52 +235,6 @@ class InputModule extends Phaser.Scene {
 
     }
 
-    // controllerInterface(scene) {
-
-
-
-    //     scene.input.keyboard.on('keydown', function () {
-
-    //         console.log('Interfacing with Input Module')
-
-    //         scene.buttonPressed = this.buttonPressed
-
-    //         scene.leftHeld = this.leftHeld
-    //         scene.leftPressed = this.leftPressed
-    //         scene.leftReleased = this.leftReleased
-
-    //         scene.rightHeld = this.rightHeld
-    //         scene.rightPressed = this.rightPressed
-    //         scene.rightReleased = this.rightReleased
-
-    //         scene.upHeld = this.upHeld
-    //         scene.upPressed = this.upPressed
-    //         scene.upReleased = this.upReleased
-
-    //         scene.downHeld = this.downHeld
-    //         scene.downPressed = this.downPressed
-    //         scene.downReleased = this.downReleased
-
-    //         scene.a1Held = this.a1Held
-    //         scene.a1Pressed = this.a1Pressed
-    //         scene.a1Released = this.a1Released
-
-    //         scene.a2Held = a2Held
-    //         scene.a2Pressed = a2Pressed
-    //         scene.a2Released = this.a2Released
-
-    //         scene.s1Held = s1Held
-    //         scene.s1Pressed = s1Pressed
-    //         scene.s1Released = this.s1Released
-
-    //         scene.s2Held = s2Held
-    //         scene.s2Pressed = this.s2Pressed
-    //         scene.s2Released = this.s2Released
-    //     })
-
-
-
-    // }
 
 
     activateGamepad(){
@@ -469,8 +423,8 @@ class InputModule extends Phaser.Scene {
 
 
 
-    // activateTouch(){
-    //     this.input.addPointer(8);
+     activateTouch(){
+         this.input.addPointer(8);
     // Touch Controls
 
     // Touch Control Screen Tracking
@@ -611,13 +565,14 @@ class InputModule extends Phaser.Scene {
     // s2Held = false
 
     // }, this);
-    // }
+     }
 
 
     create() {
 
         this.activateKeyboard()
         this.activateGamepad()
+        this.activateTouch()
 
 
 

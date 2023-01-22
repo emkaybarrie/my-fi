@@ -334,10 +334,13 @@ class DataModule extends Phaser.Scene {
 
                         this.avatarData.avatarLevel = selectedAvatarData.AVATAR_LEVEL,
                         this.avatarData.lifeTargetEnergyPool = selectedAvatarData.LIFE_TARGET_ENERGY_POOL,
+                        this.avatarData.resilienceEnergyPoolEmpowermentMultiplier = 1,
                         this.avatarData.lifeRegenModifier = selectedAvatarData.LIFE_REGEN_MODIFIER,
                         this.avatarData.focusTargetEnergyPool = selectedAvatarData.FOCUS_TARGET_ENERGY_POOL,
+                        this.avatarData.focusEnergyPoolEmpowermentMultiplier = 1,
                         this.avatarData.focusRegenModifier = selectedAvatarData.FOCUS_REGEN_MODIFIER,
                         this.avatarData.staminaTargetEnergyPool = selectedAvatarData.STAMINA_TARGET_ENERGY_POOL,
+                        this.avatarData.staminaEnergyPoolEmpowermentMultiplier = 1,
                         this.avatarData.staminaRegenModifier = selectedAvatarData.STAMINA_REGEN_MODIFIER,
                         this.avatarData.actionPowerModifier = selectedAvatarData.ACTION_POWER_MODIFIER,
                         this.avatarData.skillPowerModifier = selectedAvatarData.SKILL_POWER_MODIFIER,

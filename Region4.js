@@ -40,12 +40,14 @@ class Region4 extends Phaser.Scene {
         
         console.log('Refreshing Region Sector Array Lists...')
         // Sector Lists
-        this.zone0 = [this.illuviumForest]
+        this.zone0 = [this.silkwoodForest]
         this.zone1 = [this.silkwoodForest,this.oakmourne]
+        this.zone2 = [this.oakmourne]
+        this.zone3 = [this.illuviumForest]
         // Sector Root Array
         this.zones = [
-                        this.zone0,this.zone1
-                    ]
+            this.zone0,this.zone1,this.zone2,this.zone3,
+        ] 
      
     }
     

@@ -254,7 +254,6 @@ class Badlands extends Phaser.Scene {
 
         this.loadStageBG(this.stageData.stageAssetName, this.stageData.bgLayers, this.stageData.fgLayers)
 
-        // Not need - test env only
         // HUD/UI
 
         // Battle Mode Icon
@@ -528,6 +527,11 @@ class Badlands extends Phaser.Scene {
         this.tutorialMode1Completed = true
         this.tutorialsCompleted = true
 
+        // Empowerment Selection
+
+        this.empowermentSelected = false
+        this.showVitals = false
+
         // Initialisation & Setup
 
         // Load Music
@@ -669,6 +673,33 @@ class Badlands extends Phaser.Scene {
 
         this.initialise_DayNightSystem()
 
+        // Stage 
+        this.stage.nextCheckPoint = 1
+        this.stage.chaserTimer = 8000
+        this.stage.hordeTimer = 2000 // Horde mode Last 4 Minute (i.e song length)
+        this.stage.maxHordeSize = 20
+        this.stage.hordeDifficultyModifier = 1
+        this.stage.enemiesDefeated = 0
+
+        var importedEnemyData = {
+            common: 'nightBorneMinion',
+            uncommon: 'nightBorne_Archer',
+            rare: 'nightBorne',
+            mythical: 'nightBorne'
+        }
+
+        this.stage.enemyAnimationsKey = importedEnemyData
+
+        console.log(this.stage.enemyAnimationsKey)
+
+        this.stageData.availableCheckPoints = [2]
+       
+
+        this.checkPointTimer = this.time.addEvent({ delay: 0, callback: this.updateCheckPointStatus, args: [], callbackScope: this, repeat: 0 });
+
+        this.baseSpeed = screenWidth / (60 * this.baseScreenClearTime * (60 / this.musicBPM))
+        this.speedLevel = 2
+
         // Stage (B) - Background Objects & Obstacles
 
         // Platforms
@@ -754,7 +785,7 @@ class Badlands extends Phaser.Scene {
 
         this.enemyGroup = this.physics.add.group({
             defaultKey: 'doomsayer',
-            maxSize: 20
+            maxSize: this.stage.maxHordeSize
         });
 
         this.closestEnemyOutline = this.add.sprite()
@@ -826,32 +857,7 @@ class Badlands extends Phaser.Scene {
 
         
 
-        // Stage 
-        this.stage.nextCheckPoint = 1
-        this.stage.chaserTimer = 8000
-        this.stage.hordeTimer = 2000 // Horde mode Last 4 Minute (i.e song length)
-        this.stage.maxHordeSize = 20
-        this.stage.hordeDifficultyModifier = 1
-        this.stage.enemiesDefeated = 0
-
-        var importedEnemyData = {
-            common: 'nightBorneMinion',
-            uncommon: 'nightBorne_Archer',
-            rare: 'nightBorne',
-            mythical: 'nightBorne'
-        }
-
-        this.stage.enemyAnimationsKey = importedEnemyData
-
-        console.log(this.stage.enemyAnimationsKey)
-
-        this.stageData.availableCheckPoints = [2]
-       
-
-        this.checkPointTimer = this.time.addEvent({ delay: 0, callback: this.updateCheckPointStatus, args: [], callbackScope: this, repeat: 0 });
-
-        this.baseSpeed = screenWidth / (60 * this.baseScreenClearTime * (60 / this.musicBPM))
-        this.speedLevel = 2
+        
 
 
         // HUD/UI Initialisation
@@ -1447,13 +1453,13 @@ class Badlands extends Phaser.Scene {
 
 
         // Life
-        this.player.lifeCapacity = baseData.lifeCapacity + (baseData.lifeCapacityBonusMax * avatarData.lifeCapacityBonusPercent);
+        this.player.lifeCapacity = (baseData.lifeCapacity + (baseData.lifeCapacityBonusMax * avatarData.lifeCapacityBonusPercent)) * avatarData.resilienceEnergyPoolEmpowermentMultiplier;
 
         this.player.resilienceCurrent = this.player.lifeCapacity;
 
         this.player.lifeRegen = baseData.lifeRegen * avatarData.lifeRegenModifier;
         // Focus
-        this.player.focusCapacity = baseData.focusCapacity + (baseData.focusCapacityBonusMax * avatarData.focusCapacityBonusPercent);
+        this.player.focusCapacity = (baseData.focusCapacity + (baseData.focusCapacityBonusMax * avatarData.focusCapacityBonusPercent)) * avatarData.focusEnergyPoolEmpowermentMultiplier;
 
         this.player.focusCurrent = this.player.focusCapacity * Math.min(1, avatarData.focusCapacityBonusPercent)
 
@@ -1461,7 +1467,7 @@ class Badlands extends Phaser.Scene {
 
         this.player.focusBonusPercent = avatarData.focusCapacityBonusPercent
         // Stamina
-        this.player.staminaCapacity = baseData.staminaCapacity + (baseData.staminaCapacityBonusMax * avatarData.staminaCapacityBonusPercent);
+        this.player.staminaCapacity = (baseData.staminaCapacity + (baseData.staminaCapacityBonusMax * avatarData.staminaCapacityBonusPercent)) * avatarData.staminaEnergyPoolEmpowermentMultiplier;
 
         this.player.staminaCurrent = this.player.staminaCapacity * Math.min(1, avatarData.staminaCapacityBonusPercent)
 
@@ -1517,6 +1523,44 @@ class Badlands extends Phaser.Scene {
 
 
         console.log(this.player)
+
+    }
+
+    refreshAvatarStats() {
+
+        // Get the base data and avatar data from the DataModule Scene
+        var baseData = this.scene.get('DataModule').baseData;
+        var avatarData = this.scene.get('DataModule').avatarData;
+        
+
+        // Life
+        this.player.lifeCapacity = (baseData.lifeCapacity + (baseData.lifeCapacityBonusMax * avatarData.lifeCapacityBonusPercent)) * avatarData.resilienceEnergyPoolEmpowermentMultiplier;
+        this.player.lifeRegen = baseData.lifeRegen * avatarData.lifeRegenModifier;
+
+        // Focus
+        this.player.focusCapacity = (baseData.focusCapacity + (baseData.focusCapacityBonusMax * avatarData.focusCapacityBonusPercent)) * avatarData.focusEnergyPoolEmpowermentMultiplier;
+        this.player.focusRegen = baseData.focusRegen * avatarData.focusRegenModifier;
+        this.player.focusBonusPercent = avatarData.focusCapacityBonusPercent
+
+        // Stamina
+        this.player.staminaCapacity = (baseData.staminaCapacity + (baseData.staminaCapacityBonusMax * avatarData.staminaCapacityBonusPercent)) * avatarData.staminaEnergyPoolEmpowermentMultiplier;
+        this.player.staminaRegen = baseData.staminaRegen * avatarData.staminaRegenModifier;
+        this.player.staminaBonusPercent = avatarData.staminaCapacityBonusPercent
+
+        // Movement 
+
+        this.player.minSpeed = 0
+
+        // Damage
+
+        this.player.attackPower = baseData.actionPower * this.player.staminaCapacity
+        this.player.skillPower = baseData.skillPower * this.player.focusCapacity
+        this.player.critChance = baseData.critChance * avatarData.critChanceModifier
+        this.player.critDamage = baseData.critDamage * avatarData.critDamageModifier
+
+        this.player.travelSpeedMaxModifier = avatarData.travelSpeedMaxModifier;
+        this.player.gloryGenerationModifier = avatarData.gloryGenerationModifier;
+        this.player.goldGenerationModifier = avatarData.goldGenerationModifier;
 
     }
 
@@ -1653,7 +1697,7 @@ class Badlands extends Phaser.Scene {
 
             this.baseProgressRate = (this.baseZoneLength / this.baseZoneClearTime) / 60
             if (this.tutorialMode0Completed){
-                this.progress += this.baseProgressRate * this.playerSpeed * 1
+                this.progress += this.baseProgressRate * this.playerSpeed * 5
             } else {
                 this.progress += this.baseProgressRate * this.playerSpeed * 0.25
             }
@@ -1855,7 +1899,7 @@ class Badlands extends Phaser.Scene {
         // Load Boss function (tbc)
         
         // Post Boss
-        this.levelUpIcon.setDepth(5).setActive(1).setVisible(1).setPosition(this.player.x,this.player.y - 350)
+        this.levelUpIcon.setDepth(5).setActive(1).setVisible(1).setPosition(this.camera.scrollX + screenWidth * 0.5, this.camera.scrollY + screenHeight * 0.35)
         
         this.levelupTween = this.tweens.add({
             targets: this.levelUpIcon,
@@ -1905,6 +1949,91 @@ class Badlands extends Phaser.Scene {
                     } ,
 
                     onComplete: () => {
+                        // Position Empowerment Elements
+                        this.resilienceEmpowermentTextBox.setPosition(this.camera.scrollX + screenWidth * 0.25, this.camera.scrollY + screenHeight * 0.75)
+                        this.resilienceEmpowermentIcon.setPosition(this.resilienceEmpowermentTextBox.x, this.resilienceEmpowermentTextBox.y - this.resilienceEmpowermentTextBox.displayHeight * 0.15)
+                        this.resilienceEmpowermentText.setPosition(this.resilienceEmpowermentTextBox.x, this.resilienceEmpowermentTextBox.y + this.resilienceEmpowermentTextBox.displayHeight * 0.25)
+                        this.resilienceEmpowermentText.setText('Resilience').setColor('#ff0000')
+
+                        this.focusEmpowermentTextBox.setPosition(this.camera.scrollX + screenWidth * 0.5, this.camera.scrollY + screenHeight * 0.75)
+                        this.focusEmpowermentIcon.setPosition(this.focusEmpowermentTextBox.x, this.focusEmpowermentTextBox.y - this.focusEmpowermentTextBox.displayHeight * 0.15)
+                        this.focusEmpowermentText.setPosition(this.focusEmpowermentTextBox.x, this.focusEmpowermentTextBox.y + this.focusEmpowermentTextBox.displayHeight * 0.25)
+                        this.focusEmpowermentText.setText('Focus').setColor('#ffff00')
+
+                        this.staminaEmpowermentTextBox.setPosition(this.camera.scrollX + screenWidth * 0.75, this.camera.scrollY + screenHeight * 0.75)
+                        this.staminaEmpowermentIcon.setPosition(this.staminaEmpowermentTextBox.x, this.staminaEmpowermentTextBox.y - this.staminaEmpowermentTextBox.displayHeight * 0.15)
+                        this.staminaEmpowermentText.setPosition(this.staminaEmpowermentTextBox.x, this.staminaEmpowermentTextBox.y + this.staminaEmpowermentTextBox.displayHeight * 0.25)
+                        this.staminaEmpowermentText.setText('Stamina').setColor('#00FF00')
+
+                        // Show Empowerment Boxes
+                        this.resilienceEmpowermentTextBox.setActive(1).setVisible(1)
+                        this.resilienceEmpowermentText.setActive(1).setVisible(1)
+                        this.resilienceEmpowermentIcon.setActive(1).setVisible(1).setInteractive({ useHandCursor: true })
+
+                        this.focusEmpowermentTextBox.setActive(1).setVisible(1)
+                        this.focusEmpowermentText.setActive(1).setVisible(1)
+                        this.focusEmpowermentIcon.setActive(1).setVisible(1).setInteractive({ useHandCursor: true })
+
+                        this.staminaEmpowermentTextBox.setActive(1).setVisible(1)
+                        this.staminaEmpowermentText.setActive(1).setVisible(1)
+                        this.staminaEmpowermentIcon.setActive(1).setVisible(1).setInteractive({ useHandCursor: true })
+
+                        // Set up Selection Interaction
+
+
+                        this.resilienceEmpowermentIcon.once('pointerup', function(){
+                            this.scene.get('DataModule').avatarData.resilienceEnergyPoolEmpowermentMultiplier += 0.15
+                            
+                            this.empowermentSelected = true
+
+                            this.resilienceEmpowermentTextBox.setActive(0).setVisible(0).disableInteractive()
+                            this.resilienceEmpowermentText.setActive(0).setVisible(0)
+                            this.resilienceEmpowermentIcon.setActive(0).setVisible(0)
+
+                            this.focusEmpowermentTextBox.setActive(0).setVisible(0).disableInteractive()
+                            this.focusEmpowermentText.setActive(0).setVisible(0)
+                            this.focusEmpowermentIcon.setActive(0).setVisible(0)
+
+                            this.staminaEmpowermentTextBox.setActive(0).setVisible(0).disableInteractive()
+                            this.staminaEmpowermentText.setActive(0).setVisible(0)
+                            this.staminaEmpowermentIcon.setActive(0).setVisible(0)
+                        },this)
+
+                        this.focusEmpowermentIcon.once('pointerup', function(){
+                            this.scene.get('DataModule').avatarData.focusEnergyPoolEmpowermentMultiplier += 0.15
+                            this.empowermentSelected = true
+
+                            this.resilienceEmpowermentTextBox.setActive(0).setVisible(0).disableInteractive()
+                            this.resilienceEmpowermentText.setActive(0).setVisible(0)
+                            this.resilienceEmpowermentIcon.setActive(0).setVisible(0)
+
+                            this.focusEmpowermentTextBox.setActive(0).setVisible(0).disableInteractive()
+                            this.focusEmpowermentText.setActive(0).setVisible(0)
+                            this.focusEmpowermentIcon.setActive(0).setVisible(0)
+
+                            this.staminaEmpowermentTextBox.setActive(0).setVisible(0).disableInteractive()
+                            this.staminaEmpowermentText.setActive(0).setVisible(0)
+                            this.staminaEmpowermentIcon.setActive(0).setVisible(0)
+                        },this)
+
+                        this.staminaEmpowermentIcon.once('pointerup', function(){
+                            this.scene.get('DataModule').avatarData.staminaEnergyPoolEmpowermentMultiplier += 0.15
+                            this.empowermentSelected = true
+
+                            this.resilienceEmpowermentTextBox.setActive(0).setVisible(0).disableInteractive()
+                            this.resilienceEmpowermentText.setActive(0).setVisible(0)
+                            this.resilienceEmpowermentIcon.setActive(0).setVisible(0)
+
+                            this.focusEmpowermentTextBox.setActive(0).setVisible(0).disableInteractive()
+                            this.focusEmpowermentText.setActive(0).setVisible(0)
+                            this.focusEmpowermentIcon.setActive(0).setVisible(0)
+
+                            this.staminaEmpowermentTextBox.setActive(0).setVisible(0).disableInteractive()
+                            this.staminaEmpowermentText.setActive(0).setVisible(0)
+                            this.staminaEmpowermentIcon.setActive(0).setVisible(0)
+                        },this)
+
+
                         this.player.play(this.player.animations.fall,true)
                         
                         this.floatTween = this.tweens.add({
@@ -1921,7 +2050,9 @@ class Badlands extends Phaser.Scene {
         
                             onUpdate: () => {
 
-                                if(a1Held){
+                                if(this.empowermentSelected){
+                                    this.refreshAvatarStats()
+                                    this.showVitals = true
                                     this.levelUpAnim.stopAfterRepeat(1)
                                     this.player.play(this.player.animations.fall,true)
                                     this.empowerAvatarStarted = false  
@@ -1970,7 +2101,7 @@ class Badlands extends Phaser.Scene {
             this.camera.once('camerafadeoutcomplete',function(){
                 this.rewards += Phaser.Math.Between(50,100) * (1 + (0.25 * this.level))
                 this.selectedScene = 'Region' + String(Phaser.Math.Between(1,4))
-                this.data = {targetScene:'Simulacrum',targetZone: this.level - 1, currentTimePeriod: Phaser.Math.Between(1,3),rarityOverride:null,
+                this.data = {targetScene:'Badlands',targetZone: this.level - 1, currentTimePeriod: Phaser.Math.Between(1,4),rarityOverride:null,
                 startGlory:this.glory,startRewards: this.rewards,startGold:this.gold}
                 this.scene.start(this.selectedScene,this.data)
                 this.scene.stop()
@@ -4105,7 +4236,7 @@ class Badlands extends Phaser.Scene {
         if(this.stage.checkPointType == 2){
             this.objectiveText.setText('Survive the Horde')
             this.battleModeIcon.setActive(1).setVisible(1)
-        } else if (this.gameMode == 1){
+        } else if (this.gameMode == 1 && !this.stage.checkPointType == 'Final'){
             this.objectiveText.setText('Clear all enemies')
             this.battleModeIcon.setActive(1).setVisible(1)
         } else {
@@ -4365,7 +4496,6 @@ class Badlands extends Phaser.Scene {
 
         this.hudDepth = 5
 
-
         // Stage Title
         this.stageNameText = this.add.text(this.camera.scrollX + screenWidth * 0.5, this.camera.scrollY + screenHeight * 0.5, this.stageData.stageName)
         .setFontFamily('Georgia').setFontStyle('italic').setFontSize(84 * (scaleModX)).setOrigin(0.5).setDepth(5)
@@ -4401,11 +4531,36 @@ class Badlands extends Phaser.Scene {
         this.tutorialTextBox = this.add.image(0, 0, 'playerIconBox')
         .setDepth(5).setScale(0.25,0.35).setOrigin(0.5).setAlpha(0)
 
-
-
         this.tutorialFontSize = 20
         this.tutorialText = this.add.text(0,0)
             .setFontFamily('Arial').setAlign('center').setFontSize(this.tutorialFontSize).setDepth(5).setOrigin(0.5).setAlpha(0);
+
+        // Empowerment Text Boxes
+        this.empowermentBox_XScale = 0.5
+        this.empowermentBox_YScale = 0.75
+
+        this.resilienceEmpowermentTextBox = this.add.image(0, 0, 'playerIconBox')
+        .setDepth(5).setScale(this.empowermentBox_XScale,this.empowermentBox_YScale).setOrigin(0.5).setAlpha(1).setActive(0).setVisible(0)
+
+        this.focusEmpowermentTextBox = this.add.image(0, 0, 'playerIconBox')
+        .setDepth(5).setScale(this.empowermentBox_XScale,this.empowermentBox_YScale).setOrigin(0.5).setAlpha(1).setActive(0).setVisible(0)
+
+        this.staminaEmpowermentTextBox = this.add.image(0, 0, 'playerIconBox')
+        .setDepth(5).setScale(this.empowermentBox_XScale,this.empowermentBox_YScale).setOrigin(0.5).setAlpha(1).setActive(0).setVisible(0)
+        // Text
+        this.empowermentFontSize = 40
+        this.resilienceEmpowermentText = this.add.text(0,0)
+            .setFontFamily('Arial').setAlign('center').setFontSize(this.empowermentFontSize).setDepth(5).setOrigin(0.5).setAlpha(1).setActive(0).setVisible(0);
+        this.focusEmpowermentText = this.add.text(0,0)
+        .setFontFamily('Arial').setAlign('center').setFontSize(this.empowermentFontSize).setDepth(5).setOrigin(0.5).setAlpha(1).setActive(0).setVisible(0);
+        this.staminaEmpowermentText = this.add.text(0,0)
+        .setFontFamily('Arial').setAlign('center').setFontSize(this.empowermentFontSize).setDepth(5).setOrigin(0.5).setAlpha(1).setActive(0).setVisible(0);
+
+        // Icon
+        this.resilienceEmpowermentIcon = this.add.image(0, 0, 'life-icon').setDepth(6).setScale(0.4).setActive(0).setVisible(0)
+        this.focusEmpowermentIcon = this.add.image(0, 0, 'focus-icon').setDepth(6).setScale(0.4).setActive(0).setVisible(0)
+        this.staminaEmpowermentIcon = this.add.image(0, 0, 'stamina-icon').setDepth(6).setScale(0.4).setActive(0).setVisible(0)
+
         // Battle Mode Icon
         this.battleModeIcon = this.add.image(0, 0, 'battle-icon')
         this.battleModeIcon.setAlpha(0)
@@ -4773,7 +4928,7 @@ class Badlands extends Phaser.Scene {
 
         // Alpha Tween
 
-        if (this.player.resilienceCurrent / this.player.lifeCapacity < this.lowVitalsPercent || this.playerIsHit || this.emergencyPower) {
+        if (this.player.resilienceCurrent / this.player.lifeCapacity < this.lowVitalsPercent || this.playerIsHit || this.emergencyPower || this.showVitals) {
             this.tweens.add({
                 targets: [this.lifeIconHolder,
                 this.lifeIcon,
@@ -4860,7 +5015,7 @@ class Badlands extends Phaser.Scene {
 
         // Alpha Tween
 
-        if (this.skillPower < this.lowVitalsPercent || ((s1Held || s2Held) && !this.tutorialsCompleted)) {
+        if (this.skillPower < this.lowVitalsPercent || ((s1Held || s2Held) && !this.tutorialsCompleted) || this.showVitals) {
             this.tweens.add({
                 targets: [this.focusIconHolder,
                 this.focusIcon,
@@ -4944,7 +5099,7 @@ class Badlands extends Phaser.Scene {
 
         // Alpha Tween
 
-        if (this.actionPower < this.lowVitalsPercent || ((a1Held || a2Held) && !this.tutorialsCompleted)) {
+        if (this.actionPower < this.lowVitalsPercent || ((a1Held || a2Held) && !this.tutorialsCompleted) || this.showVitals) {
             this.tweens.add({
                 targets: [this.staminaIconHolder,
                 this.staminaIcon,
