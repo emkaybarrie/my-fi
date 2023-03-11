@@ -219,7 +219,7 @@ class Region2 extends Phaser.Scene {
                 // Floor Settings
         
                 game.floorMin = 0.95
-                game.floorMax = 0.875 
+                game.floorMax = 0.9 
                 game.floorColour = 0x375971  
                 game.floorVisible = false 
 

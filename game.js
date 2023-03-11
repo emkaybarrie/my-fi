@@ -24,7 +24,7 @@ var config = {
     physics:{
         default:'arcade',
         arcade:{
-            gravity:{x: 0, y:5000 * globalGravityMod},
+            gravity:{x: 0, y:7000 * globalGravityMod},
             debug: 0,
             overlapBias: 20
         }

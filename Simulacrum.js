@@ -155,13 +155,18 @@ class Simulacrum extends Phaser.Scene {
 
 
         // Sound Effects
-        this.load.audio("enemyTakeMeleeHit", ["assets/sFX/sliceFlesh.wav"]);
+        this.load.audio("enemyTakeMeleeHit1", ["assets/sFX/sliceFlesh.wav"]);
+        this.load.audio("enemyTakeMeleeHit2", ["assets/sFX/sliceFlesh2.wav"]);
+        this.load.audio("enemyTakeMeleeHit3", ["assets/sFX/sliceFlesh3.mp3"]);
         this.load.audio("takeMeleeHit1", ["assets/sFX/takeMeleeHit1.mp3"]);
         this.load.audio("pickupGold_general", ["assets/sFX/pickupGold_general.wav"]);
         this.load.audio("pickupGold_loot", ["assets/sFX/pickupGold_loot.ogg"]);
         this.load.audio("pickupReward_loot", ["assets/sFX/pickupReward_loot.mp3"]);
         this.load.audio("pickupGlory_loot", ["assets/sFX/pickupGlory_loot.wav"]);
         this.load.audio("enemyDeath", ["assets/sFX/enemyDeath.mp3"]);
+        
+        this.load.audio("nightBorneMinion_TakeHit", ["assets/sFX/Enemy/Common/nightBorneMinion_TakeHit.wav"]);
+
         this.load.audio("nightBorneTakeLightDamage1", ["assets/sFX/Enemy/nightBorneTakeLightDamage1.wav"]);
         this.load.audio("nightBorneTakeLightDamage2", ["assets/sFX/Enemy/nightBorneTakeLightDamage2.wav"]);
         this.load.audio("nightBorneTakeLightDamage3", ["assets/sFX/Enemy/nightBorneTakeLightDamage3.wav"]);
@@ -175,6 +180,7 @@ class Simulacrum extends Phaser.Scene {
         
         this.load.audio("playerJumping", ["assets/sFX/Player/Movement/Jumping.wav"]);
         this.load.audio("playerLanding", ["assets/sFX/Player/Movement/Landing.wav"]);
+        this.load.audio("playerRunning_Grass", ["assets/sFX/Player/Movement/Running_Grass.wav"]);
 
         this.load.audio("swordSwing1", ["assets/sFX/swordSwing1.wav"]);
         this.load.audio("swordSwing2", ["assets/sFX/swordSwing2.mp3"]);
@@ -291,6 +297,8 @@ class Simulacrum extends Phaser.Scene {
             this.load.audio("tutorialMusic", ["assets/music/Throw_Me_To_The_Wolves.mp3"]);
         }
         
+        
+        this.load.audio("bgMusic0", ["assets/music/Fading_Out_(Part IV).mp3"]);
         this.load.audio("bgMusic1", ["assets/music/The_Apartment.mp3"]);
         this.load.audio("bgMusic2", ["assets/music/Arbol.mp3"]);
         this.load.audio("bgMusic3", ["assets/music/Nine_Levels.mp3"]);
@@ -335,22 +343,22 @@ class Simulacrum extends Phaser.Scene {
         this.sound.stopAll();
         bgMusicArray = []
 
-        Phaser.Utils.Array.Add(bgMusicArray, [
-                                                'bgMusic1', 
-                                                'bgMusic2', 
-                                                'bgMusic3', 
-                                                'bgMusic4', 
-                                                'bgMusic5', 
-                                                'bgMusic6', 
-                                                'bgMusic7',
-                                                'bgMusic8', 
-                                                'bgMusic9', 
-                                                'bgMusic10', 
-                                                'bgMusic11', 
-                                                'bgMusic12',
-                                                 'bgMusic13',
-                                                  'bgMusic14',
-                                                  'bgMusic15'
+        Phaser.Utils.Array.Add(bgMusicArray, ['bgMusic0',
+                                               // 'bgMusic1', 
+                                              //  'bgMusic2', 
+                                               // 'bgMusic3', 
+                                               // 'bgMusic4', 
+                                              //  'bgMusic5', 
+                                              //  'bgMusic6', 
+                                              //  'bgMusic7',
+                                              //  'bgMusic8', 
+                                              //  'bgMusic9', 
+                                              //  'bgMusic10', 
+                                              //  'bgMusic11', 
+                                              //  'bgMusic12',
+                                              //   'bgMusic13',
+                                               //   'bgMusic14',
+                                                //  'bgMusic15'
         ])
 
         if(this.tutorialsCompleted){
@@ -361,9 +369,9 @@ class Simulacrum extends Phaser.Scene {
 
         // Base Variables
 
-        this.musicBPM = 131
+        this.musicBPM = 109//131
         this.baseScreenClearTime = 4 // Beats
-        this.basePlatformSpawnTime = 6 // Beats 
+        this.basePlatformSpawnTime = 4 // Beats 
         this.baseEnemySpawnTime = 4 // Beats 
         this.baseObstacleSpawnTime = 8 // Beats
         this.baseTerrainSpawnTime = 12
@@ -467,21 +475,50 @@ class Simulacrum extends Phaser.Scene {
 
         this.initialise_DayNightSystem()
 
+        // Stage 
+        this.stage.nextCheckPoint = 1
+        this.stage.chaserTimer = 8000
+        this.stage.hordeTimer = 1000 // Horde mode Last 4 Minute (i.e song length)
+        this.stage.maxHordeSize = 10
+        this.stage.hordeDifficultyModifier = 1
+        this.stage.enemiesDefeated = 0
+
+        var importedEnemyData = {
+            common: 'nightBorneMinion',
+            uncommon: 'nightBorne_Archer',
+            rare: 'nightBorne',
+            mythical: 'nightBorne'
+        }
+
+        this.stage.enemyAnimationsKey = importedEnemyData
+
+        console.log(this.stage.enemyAnimationsKey)
+
+        this.stageData.availableCheckPoints = [2]
+       
+
+        this.checkPointTimer = this.time.addEvent({ delay: 0, callback: this.updateCheckPointStatus, args: [], callbackScope: this, repeat: 0 });
+
+        this.baseSpeed = screenWidth / (60 * this.baseScreenClearTime * (60 / this.musicBPM))
+        this.speedLevel = 2
+
         // Stage (B) - Background Objects & Obstacles
 
         // Platforms
 
         this.platformGroup = this.physics.add.group({
-            defaultKey: this.stage.terrainKey,
-            maxSize: 12
+            maxSize: 64
         });
 
-        this.spawningPlatform = false
-        this.platformTimer = this.time.addEvent({
-            delay: this.basePlatformSpawnTime * (60 / this.musicBPM) * 1000,
-            callback: this.spawnPlatform, args: [], callbackScope: this,
-            loop: true
-        });
+        // this.platformTimer = this.time.addEvent({
+        //     delay: 0,//this.basePlatformSpawnTime * (60 / this.musicBPM) * Phaser.Math.Between(1000,1000),
+        //     callback: this.createPlatform, args: [], callbackScope: this,
+        //     loop: true
+        // });
+
+        
+
+        this.lastSetPieceEndPositionX = (screenWidth * 4) 
 
         // Terrain
 
@@ -552,13 +589,13 @@ class Simulacrum extends Phaser.Scene {
 
         this.enemyGroup = this.physics.add.group({
             defaultKey: 'doomsayer',
-            maxSize: 2
+            maxSize: this.stage.maxHordeSize
         });
 
         this.closestEnemyOutline = this.add.sprite()
         this.closestEnemyOutline.setTintFill(0x7851a9).setAlpha(0.75)
 
-        this.enemyTimer = this.time.addEvent({ delay: this.baseEnemySpawnTime * (60 / this.musicBPM) * 2000, callback: this.spawnEnemy, args: [], callbackScope: this, loop: true });
+        this.enemyTimer = this.time.addEvent({ delay: this.baseEnemySpawnTime * (60 / this.musicBPM) * 1000, callback: this.spawnEnemy, args: [], callbackScope: this, loop: true });
 
         this.physics.add.collider(this.enemyGroup, this.floor);
         this.physics.add.collider(this.enemyGroup, this.platformGroup);
@@ -567,7 +604,7 @@ class Simulacrum extends Phaser.Scene {
         // Player - To be updated
 
         this.playerScale = 5 * (scaleModX)
-        this.player = this.physics.add.sprite(screenWidth * 0.25, 0, 'activeAvatar').setScale(this.playerScale).setDepth(2).setPipeline('Light2D')
+        this.player = this.physics.add.sprite(screenWidth * 0.25, screenHeight, 'activeAvatar').setScale(this.playerScale).setDepth(2).setPipeline('Light2D')
         this.player.body.setSize(10, 30).setOffset(25, 15).setAllowDrag(true)
         this.player.setBounce(0.05)
         this.player.setCollideWorldBounds(true);
@@ -576,6 +613,10 @@ class Simulacrum extends Phaser.Scene {
         this.physics.add.overlap(this.player, this.enemyGroup, this.mode0CollisionDetection, null, this)
         this.physics.add.overlap(this.player, this.obstacleGroup, this.mode0CollisionDetection, null, this)
         
+        this.shadow = this.add.ellipse(0, 0, this.player.width * 1.5, 15, 0x000000, 0.25);
+        this.shadow.setDepth(0);
+        
+ 
 
         this.enemyAttackHitboxPool = this.physics.add.group({
             //defaultKey: '',
@@ -606,6 +647,7 @@ class Simulacrum extends Phaser.Scene {
 
         this.playerIsHit = false
         this.playerInAir = false
+        this.jumpPower = 0
 
         this.playerTopSpeed = 2
 
@@ -624,32 +666,7 @@ class Simulacrum extends Phaser.Scene {
 
         
 
-        // Stage 
-        this.stage.nextCheckPoint = 1
-        this.stage.chaserTimer = 8000
-        this.stage.hordeTimer = 2000 // Horde mode Last 4 Minute (i.e song length)
-        this.stage.maxHordeSize = 2
-        this.stage.hordeDifficultyModifier = 1
-        this.stage.enemiesDefeated = 0
-
-        var importedEnemyData = {
-            common: 'nightBorneMinion',
-            uncommon: 'nightBorne_Archer',
-            rare: 'nightBorne',
-            mythical: 'nightBorne'
-        }
-
-        this.stage.enemyAnimationsKey = importedEnemyData
-
-        console.log(this.stage.enemyAnimationsKey)
-
-        this.stageData.availableCheckPoints = [2]
-       
-
-        this.checkPointTimer = this.time.addEvent({ delay: 0, callback: this.updateCheckPointStatus, args: [], callbackScope: this, repeat: 0 });
-
-        this.baseSpeed = screenWidth / (60 * this.baseScreenClearTime * (60 / this.musicBPM))
-        this.speedLevel = 2
+        
 
 
         // HUD/UI Initialisation
@@ -914,7 +931,7 @@ class Simulacrum extends Phaser.Scene {
     renderStageBG(bgLayers, bgScroll, floorMin, floorMax, floorColour, floorVisible, fgLayers, fgScroll) {
         for (var i = bgLayers; i > 0; i--) {
 
-            this.stageHeightModifier = 1.5
+            this.stageHeightModifier = 1.25
 
             this.textureToApply = this.textures.get('bgL' + i).getSourceImage()
 
@@ -934,19 +951,22 @@ class Simulacrum extends Phaser.Scene {
         this.stage.terrainKey = 'platformR' + this.stageData.regionID + '_' + Phaser.Math.Between(1,2)
         this.floorHeight = Phaser.Math.FloatBetween(floorMin, floorMax)
 
-        this.ground = this.add.image(-screenWidth * 2, screenHeight * this.stageHeightModifier * floorMax, 'floor').setScale((screenWidth * 7) / 400,screenHeight * this.stageHeightModifier * (floorMin - floorMax)).setOrigin(0)
-        this.ground.setTint(floorColour)
-        this.ground.setVisible(floorVisible)
+        //this.ground = this.add.image(-screenWidth * 2, screenHeight * this.stageHeightModifier * this.floorHeight * 0.95, this.stage.terrainKey).setScale((screenWidth * 7) / 400,10).setOrigin(0)
+        //this.ground = this.add.image(-screenWidth * 2, screenHeight * this.stageHeightModifier * this.floorHeight * 0.95, this.stage.terrainKey).setScale((screenWidth * 7) / 400,1).setOrigin(0)//,screenHeight * this.stageHeightModifier * (floorMin - floorMax)
+        //this.ground.setTint(floorColour)
+        //this.ground.setVisible(floorVisible)
+        //this.ground.setVisible(1)
 
-        this.floor = this.physics.add.image(-screenWidth * 2, screenHeight * this.stageHeightModifier * (floorMin - ((floorMin - floorMax) * 0.5)), 'floor').setScale((screenWidth * 7) / 400,screenHeight * this.stageHeightModifier * (floorMin - floorMax)).setImmovable(true).refreshBody().setOrigin(0)
+        this.floor = this.physics.add.image(-screenWidth * 2, screenHeight * this.stageHeightModifier * this.floorHeight, 'floor').setScale((screenWidth * 7) / 400,screenHeight * this.stageHeightModifier * (floorMin - floorMax)).setImmovable(true).refreshBody().setOrigin(0)
         this.floor.body.setAllowGravity(false)
         this.floor.setVisible(0)
+        
 
-        this.floorPlayer = this.physics.add.image(-screenWidth * 2, screenHeight * this.stageHeightModifier * floorMin, 'floor').setScale((screenWidth * 7) / 400, 10).setImmovable(true).refreshBody().setOrigin(0)
+        this.floorPlayer = this.physics.add.image(-screenWidth * 2, screenHeight * this.stageHeightModifier * this.floorHeight * 1.025, 'floor').setScale((screenWidth * 7) / 400, 10).setImmovable(true).refreshBody().setOrigin(0)
         this.floorPlayer.body.setAllowGravity(false)
         this.floorPlayer.setVisible(0)
 
-        this.playerFloorTargetHeight = screenHeight * this.stageHeightModifier * floorMax
+        this.playerFloorTargetHeight = screenHeight * this.stageHeightModifier * this.floorHeight//(floorMin - ((floorMin - floorMax) * 0.5)) * 1.1
         this.playerFloorTween =  this.tweens.add({
             delay: Phaser.Math.Between(500,2500),
             targets: [this.floorPlayer],         
@@ -1269,7 +1289,7 @@ class Simulacrum extends Phaser.Scene {
 
         // Movement 
 
-        this.player.minSpeed = 0
+        this.player.minSpeed = 0.5
 
         // Damage
 
@@ -1485,11 +1505,11 @@ class Simulacrum extends Phaser.Scene {
 
         // Stage Progress
 
-        if (this.gameMode == 0 && this.stageProgressEnabled) {
+        if (this.gameMode == 0 && this.stageProgressEnabled && this.dayCounter > 0) {
 
             this.baseProgressRate = (this.baseZoneLength / this.baseZoneClearTime) / 60
             if (this.tutorialMode0Completed){
-                this.progress += this.baseProgressRate * this.playerSpeed * 10
+                this.progress += this.baseProgressRate * this.playerSpeed * 0.5//2.5
             } else {
                 this.progress += this.baseProgressRate * this.playerSpeed * 0.25
             }
@@ -1893,7 +1913,7 @@ class Simulacrum extends Phaser.Scene {
             this.camera.once('camerafadeoutcomplete',function(){
                 this.rewards += Phaser.Math.Between(50,100) * (1 + (0.25 * this.level))
                 this.selectedScene = 'Region' + String(Phaser.Math.Between(1,4))
-                this.data = {targetScene:'Simulacrum',targetZone: this.level - 1, currentTimePeriod: Phaser.Math.Between(1,3),rarityOverride:null,
+                this.data = {targetScene:'Badlands',targetZone: this.level - 1, currentTimePeriod: Phaser.Math.Between(1,4),rarityOverride:null,
                 startGlory:this.glory,startRewards: this.rewards,startGold:this.gold}
                 this.scene.start(this.selectedScene,this.data)
                 this.scene.stop()
@@ -2066,118 +2086,145 @@ class Simulacrum extends Phaser.Scene {
     }
 
 
+    createPlatform() {
+
+        if (this.gameMode == 0 && this.spawningPlatform) {
+            this.spawningPlatform = false
+
+            //this.spawningPlatform = false
+            // Think in screens and platforms in a screen
+            // Set number of screens for formation
+            // Use array length to get platform loop number
+            var formationSize
+
+            if (Phaser.Math.Between(0,7) < 3){
+                formationSize = 4
+                var formationPositionArray_X = [0,0.25,0.5,0.75]
+                var formationPositionArray_Y = [200,400,600,800]
+
+                var formationProportionArray_X = [0.25,0.25,0.25,0.25]
+                var formationProportionArray_Y = [0.1,0.1,0.1,0.1]
+
+            } else if (Phaser.Math.Between(0,5) < 6) {
+                formationSize = 8
+                var formationPositionArray_X = [0,0.25,0.5,0.75,1,1.25,1.5,1.75]
+                var formationPositionArray_Y = [200,700,500,800,400,600,300,600]
+
+                var formationProportionArray_X = [0.5,0.15,0.15,0.15,0.5,0.15,0.15,0.15]
+                var formationProportionArray_Y = [0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1]
+            } else {
+                formationSize = 4
+
+                var formationPositionArray_X = [0,0.5,1.5,1.25]
+                var formationPositionArray_Y = [300,500,300,500]
+
+                var formationProportionArray_X = [0.15,0.5,0.1,0.1]
+                var formationProportionArray_Y = [0.1,0.1,0.1,0.1]
+            }
+
+        if (this.platformGroup.getTotalFree() > formationSize && this.stage.platformSpawnEnabled) {
+            
+            const floorPlatform = this.platformGroup.create(
+                (this.lastSetPieceEndPositionX ),
+                this.floor.y,
+                'floor'
+            ).setOrigin(0);
+
+            floorPlatform.setDisplaySize(screenWidth * 4,screenHeight * 0.1)
+            floorPlatform.body.setOffset(0, 25)
+            this.physics.world.enable(floorPlatform);
+
+            floorPlatform.setActive(true)
+            floorPlatform.setPipeline('Light2D')
+            floorPlatform.setImmovable(true)
+            floorPlatform.setDepth(1)
+                    
+            floorPlatform.body.allowGravity = false
+            floorPlatform.body.checkCollision.down = false
+            floorPlatform.body.checkCollision.left = false
+            floorPlatform.body.checkCollision.right = false
+
+             for (var i = 0; i < formationSize; i++) {
+
+                const platform = this.platformGroup.create(
+                    (floorPlatform.x + floorPlatform.displayWidth) + (screenWidth * formationPositionArray_X[i]),// + (this.lastSetPieceEndPositionX - (screenWidth * 4)),
+                    this.floor.y - formationPositionArray_Y[i],
+                    this.stage.terrainKey
+                ).setOrigin(0);
+
+
+                platform.setDisplaySize(screenWidth * formationProportionArray_X[i],screenHeight * formationProportionArray_Y[i])
+                platform.body.setOffset(0, 25)
+                
+                 if(i == 0){
+                    platform.spawnTrigger = true 
+                 }
+
+                if(i == formationSize - 1){
+                    platform.endOfDay = true
+                    this.lastPlatform = platform
+                    
+                } else{
+                    platform.endOfDay = false
+                }
+                
+                this.physics.world.enable(platform);
+
+                //platform.angle = Phaser.Math.Between(-10, 10);
+
+                platform.setActive(true)
+                platform.setPipeline('Light2D')
+                platform.setImmovable(true)
+                platform.setDepth(1)
+                    
+                platform.body.allowGravity = false
+                platform.body.checkCollision.down = false
+                platform.body.checkCollision.left = false
+                platform.body.checkCollision.right = false
+
+                if(Phaser.Math.Between(0,100) < 0){
+                    platform.variant = 'Pickup'
+                } else {
+                    platform.variant = 'Normal'
+                }
+
+            }
+        }
+    }
+      }
 
     platforms() {
 
-        if (this.platformGroup.getTotalFree() > 0 && this.spawningPlatform && this.stage.platformSpawnEnabled) {
-
-            for (var i = 0; i < 3 + Phaser.Math.Between(0,2); i++) {
-                var platform = this.platformGroup.get()
-
-                if (this.speedLevel == 1) {
-
-                    this.platformScaleXMin = 1//2.125
-                    this.platformScaleXMax = 1.25//2.125
-
-                    this.platformPositionYMin = screenHeight * this.stageHeightModifier * 1
-                    this.platformPositionYMax = screenHeight * this.stageHeightModifier * 1.15
-
-                } else
-                    // Level 2
-                    if (this.speedLevel == 2) {
-                        this.platformScaleXMin = 0.75//2
-                        this.platformScaleXMax = 1.5//2.25
-
-                        this.platformPositionYMin = screenHeight * 0.75 * this.stageHeightModifier * 0.9
-                        this.platformPositionYMax = screenHeight * 0.5 * this.stageHeightModifier * 1.175
-                    } else
-                        // Level 3
-                        if (this.speedLevel == 3) {
-                            this.platformScaleXMin = 0.5//1.75
-                            this.platformScaleXMax = 1.75//2.5
-
-                            this.platformPositionYMin = screenHeight * this.stageHeightModifier * 0.3
-                            this.platformPositionYMax = screenHeight * this.stageHeightModifier * 0.7
-                        }
-
-
-                if (platform) {
-                    platform.setOrigin(1, 0)
-                    platform.setTint(this.floorColour)
-                    platform.x = screenWidth * Phaser.Math.FloatBetween(3.25,3.75) + (screenWidth * Phaser.Math.FloatBetween(0.5, 1) * i)
-                    platform.y = Phaser.Math.FloatBetween(this.platformPositionYMin - (screenHeight * 0.2 * i), this.platformPositionYMax - (screenHeight * 0.35 * i))
-                    platform.setScale(Phaser.Math.FloatBetween(this.platformScaleXMin, this.platformScaleXMax) * (Math.abs(2 - (0.5 * i))), Phaser.Math.FloatBetween(0.2, 0.35) * Phaser.Math.FloatBetween(0.75, 2))
-                    platform.setActive(true)
-                    platform.setPipeline('Light2D')
-                    platform.setImmovable(true)
-                    if(platform.variant == 'Slower'){
-                        platform.setDepth(2)
-                    } else {
-                        platform.setDepth(Phaser.Math.Between(1,3))
-                    }
-                    platform.body.setAllowGravity(false)
-                    platform.body.checkCollision.down = false
-                    platform.body.checkCollision.left = false
-                    platform.body.checkCollision.right = false
-                    if(Phaser.Math.Between(0,100) < 30){
-                        platform.variant = 'Slower'
-                    } else {
-                        platform.variant = 'Normal'
-                    }
-                    
-                    // Spawn Variant Additions
-                    if(this.obstacleGroup.getTotalFree() > 0 && platform.variant == 'Slower'){
-                        
-                        var spawnedEntity = this.obstacleGroup.get()
-                        spawnedEntity.type1 = 'Obstacle'
-                        spawnedEntity.type = 'Normal'
-                        spawnedEntity.texture = 'platformObstacle1'
-                        spawnedEntity.setTexture(spawnedEntity.texture)
-                        spawnedEntity.setPipeline('Light2D')
-                        spawnedEntity.setImmovable(true)
-                        spawnedEntity.setSize(spawnedEntity.displayWidth,spawnedEntity.displayHeight * 0.4).setOffset(null,-spawnedEntity.displayHeight * 0.05)
-                        spawnedEntity.setOrigin(1, 0)
-                        spawnedEntity.setDepth(platform.depth)
-                        
-                        spawnedEntity.difficultyMod = this.stage.obstacleDifficultyModifier
-                        
-                        
-                        spawnedEntity.x =  platform.x - (platform.displayWidth * Phaser.Math.FloatBetween(0,0.25))
-                        spawnedEntity.y = platform.y + platform.displayHeight * 0.75
-                        spawnedEntity.displayWidth = platform.displayWidth * Phaser.Math.FloatBetween(0.25,0.75)
-                        spawnedEntity.body.setAllowGravity(false)
-                    }
-                    
-                    
-                    
-
-                }
-            }
-
-
-            this.spawningPlatform = false
-        }
+        this.createPlatform()
 
         this.platformGroup.children.each(function (platform) {
 
-            if(platform.depth == 2){
                 platform.x -= this.baseSpeed * this.playerSpeed
-            } else if(platform.depth == 1){
-                platform.x -= this.baseSpeed * this.playerSpeed * 0.925
-            } else if(platform.depth == 3){
-                platform.x -= this.baseSpeed * this.playerSpeed * 1.075
-            }
-            
 
-            // if (this.floorPlayer.y < this.floor.y) {
-            //     platform.setDepth(3)//(Phaser.Math.Between(0,2))
-            // } else {
-            //     platform.setDepth(1)//(Phaser.Math.Between(0,2))
-            // }
+                if (platform.x < this.player.x && platform.spawnTrigger) {
+                    this.lastSetPieceEndPositionX = this.lastPlatform.x + this.lastPlatform.displayWidth 
+                    platform.spawnTrigger = false
+                    this.spawningPlatform = true
+                    
+         
+
+                }
 
             if (platform.active) {
-                if (platform.x < -screenWidth) {
-                    platform.setActive(false);
+
+                
+
+                if (platform.x < this.player.x && platform.endOfDay) {
+                    // platform.spawnTrigger = false
+                    // this.createPlatform()
+                    platform.endOfDay = false
+                    this.dayCounter += 1
+
+                }
+
+                if (platform.x + platform.displayWidth < -screenWidth) {
+                    
+                    platform.destroy()
                 }
             }
         }.bind(this));
@@ -2763,11 +2810,12 @@ class Simulacrum extends Phaser.Scene {
     }
     }
 
-    spawnPlatform() {
-        if (this.gameMode == 0) {
-            this.spawningPlatform = true
-        }
-    }
+    // spawnPlatform() {
+    //     if (this.gameMode == 0) {
+    //         this.spawningPlatform = true
+    //         this.platformTimer.delay = this.basePlatformSpawnTime * (60 / this.musicBPM) * Phaser.Math.Between(2000,4000)
+    //     }
+    // }
 
     spawnHorde(){
         if(this.enemyGroup.getTotalFree() > 0){
@@ -2802,7 +2850,7 @@ class Simulacrum extends Phaser.Scene {
                 spawnedEnemy.body.setSize(25, 25).setOffset(25, 37.5)
                 //spawnedEnemy.setSize(spawnedEnemy.width / 4,spawnedEnemy.height / 4).setOffset((spawnedEnemy.width / 4) * 1.5, (spawnedEnemy.height / 4) * 2)
                 spawnedEnemy.setScale(Phaser.Math.FloatBetween(7.5, 8.5)) 
-                spawnedEnemy.resilienceCapacity = Phaser.Math.Between(650, 1300) * (1 + (0.1 * spawnedEnemy.difficultyMod))
+                spawnedEnemy.resilienceCapacity = Phaser.Math.Between(6000, 8000) * (1 + (0.1 * spawnedEnemy.difficultyMod))
                 spawnedEnemy.animationStance = 'Standard'
                 spawnedEnemy.jumpAttackChance = 15
                 spawnedEnemy.canJumpAttack = true
@@ -2822,7 +2870,7 @@ class Simulacrum extends Phaser.Scene {
                 spawnedEnemy.body.setSize(25, 25).setOffset(25, 37.5)
                 //spawnedEnemy.setSize(spawnedEnemy.width / 4,spawnedEnemy.height / 4).setOffset((spawnedEnemy.width / 4) * 1.5, (spawnedEnemy.height / 4) * 2)
                 spawnedEnemy.setScale(Phaser.Math.FloatBetween(7.5, 8.5)) 
-                spawnedEnemy.resilienceCapacity = Phaser.Math.Between(500, 1000) * (1 + (0.1 * spawnedEnemy.difficultyMod))
+                spawnedEnemy.resilienceCapacity = Phaser.Math.Between(3000, 4000) * (1 + (0.1 * spawnedEnemy.difficultyMod))
                 spawnedEnemy.jumpAttackChance = 15
                 spawnedEnemy.canJumpAttack = true
                 spawnedEnemy.animationStance = 'Standard'
@@ -2841,7 +2889,7 @@ class Simulacrum extends Phaser.Scene {
                 spawnedEnemy.setOrigin(0.5,0.5)
                 spawnedEnemy.body.setSize(25, 30).setOffset(17.5, 17.5)
                 spawnedEnemy.setScale(Phaser.Math.FloatBetween(5, 5)) 
-                spawnedEnemy.resilienceCapacity = Phaser.Math.Between(450, 650) * (1 + (0.1 * spawnedEnemy.difficultyMod))
+                spawnedEnemy.resilienceCapacity = Phaser.Math.Between(1500, 2000) * (1 + (0.1 * spawnedEnemy.difficultyMod))
                 spawnedEnemy.attackType = 'Ranged'
                 spawnedEnemy.animationStance = 'Standard'
                 spawnedEnemy.jumpAttackChance = 20
@@ -2861,7 +2909,7 @@ class Simulacrum extends Phaser.Scene {
                 spawnedEnemy.animationKey = this.stage.enemyAnimationsKey.common
                 spawnedEnemy.setOrigin(0.5, 0.5)
                 spawnedEnemy.setScale(Phaser.Math.FloatBetween(2.5, 3)) 
-                spawnedEnemy.resilienceCapacity = Phaser.Math.Between(300, 450) * (1 + (0.1 * spawnedEnemy.difficultyMod))
+                spawnedEnemy.resilienceCapacity = Phaser.Math.Between(750, 1000) * (1 + (0.1 * spawnedEnemy.difficultyMod))
                 spawnedEnemy.jumpAttackChance = 60
                 spawnedEnemy.animationStance = 'Switch'
                 spawnedEnemy.attackType = 'Melee'
@@ -2898,6 +2946,9 @@ class Simulacrum extends Phaser.Scene {
                 spawnedEnemy.targetRange = this.player.x
                 spawnedEnemy.aggroRange = Phaser.Math.FloatBetween(spawnedEnemy.attackRange * 0.5,spawnedEnemy.attackRange * 1.5)
 
+                spawnedEnemy.shadow = this.add.ellipse(0, 0, spawnedEnemy.width * 1.5, 15, 0x000000, 0.25);
+                spawnedEnemy.shadow.setDepth(0);
+
         
         }
 
@@ -2912,7 +2963,7 @@ class Simulacrum extends Phaser.Scene {
             if(this.tutorialsCompleted){
                 if (this.stage.checkPointType == 0){
                     this.stage.enemyMinSpawn = 1 
-                    this.stage.enemyMaxSpawn = Math.min(Phaser.Math.Between(2,5) + this.level,this.enemyGroup.getTotalFree())
+                    this.stage.enemyMaxSpawn = Math.min(Phaser.Math.Between(0,3) + this.level,this.enemyGroup.getTotalFree())
                     this.enemyTimer.delay = Phaser.Math.Between((this.baseEnemySpawnTime * (60 / this.musicBPM) * 2000) * 0.8, (this.baseEnemySpawnTime * (60 / this.musicBPM) * 2000) * 1.2)   
                 } else if (this.stage.checkPointType == 2) {
                     this.stage.enemyMinSpawn = 0 
@@ -2966,7 +3017,7 @@ class Simulacrum extends Phaser.Scene {
                 spawnedEnemy.body.setSize(25, 25).setOffset(25, 37.5)
                 //spawnedEnemy.setSize(spawnedEnemy.width / 4,spawnedEnemy.height / 4).setOffset((spawnedEnemy.width / 4) * 1.5, (spawnedEnemy.height / 4) * 2)
                 spawnedEnemy.setScale(Phaser.Math.FloatBetween(7.5, 8.5)) 
-                spawnedEnemy.resilienceCapacity = Phaser.Math.Between(650, 1300) * (1 + (0.1 * spawnedEnemy.difficultyMod))
+                spawnedEnemy.resilienceCapacity = Phaser.Math.Between(6000, 8000) * (1 + (0.1 * spawnedEnemy.difficultyMod))
                 spawnedEnemy.animationStance = 'Standard'
                 spawnedEnemy.jumpAttackChance = 15
                 spawnedEnemy.canJumpAttack = true
@@ -2986,7 +3037,7 @@ class Simulacrum extends Phaser.Scene {
                 spawnedEnemy.body.setSize(25, 25).setOffset(25, 37.5)
                 //spawnedEnemy.setSize(spawnedEnemy.width / 4,spawnedEnemy.height / 4).setOffset((spawnedEnemy.width / 4) * 1.5, (spawnedEnemy.height / 4) * 2)
                 spawnedEnemy.setScale(Phaser.Math.FloatBetween(7.5, 8.5)) 
-                spawnedEnemy.resilienceCapacity = Phaser.Math.Between(500, 1000) * (1 + (0.1 * spawnedEnemy.difficultyMod))
+                spawnedEnemy.resilienceCapacity = Phaser.Math.Between(3000, 4000) * (1 + (0.1 * spawnedEnemy.difficultyMod))
                 spawnedEnemy.jumpAttackChance = 15
                 spawnedEnemy.canJumpAttack = true
                 spawnedEnemy.animationStance = 'Standard'
@@ -3005,7 +3056,7 @@ class Simulacrum extends Phaser.Scene {
                 spawnedEnemy.setOrigin(0.5,0.5)
                 spawnedEnemy.body.setSize(25, 30).setOffset(17.5, 17.5)
                 spawnedEnemy.setScale(Phaser.Math.FloatBetween(5, 5)) 
-                spawnedEnemy.resilienceCapacity = Phaser.Math.Between(450, 650) * (1 + (0.1 * spawnedEnemy.difficultyMod))
+                spawnedEnemy.resilienceCapacity = Phaser.Math.Between(1500, 2000) * (1 + (0.1 * spawnedEnemy.difficultyMod))
                 spawnedEnemy.attackType = 'Ranged'
                 spawnedEnemy.animationStance = 'Standard'
                 spawnedEnemy.jumpAttackChance = 20
@@ -3025,7 +3076,7 @@ class Simulacrum extends Phaser.Scene {
                 spawnedEnemy.animationKey = this.stage.enemyAnimationsKey.common
                 spawnedEnemy.setOrigin(0.5, 0.5)
                 spawnedEnemy.setScale(Phaser.Math.FloatBetween(2.5, 3)) 
-                spawnedEnemy.resilienceCapacity = Phaser.Math.Between(300, 450) * (1 + (0.1 * spawnedEnemy.difficultyMod))
+                spawnedEnemy.resilienceCapacity = Phaser.Math.Between(750, 1000) * (1 + (0.1 * spawnedEnemy.difficultyMod))
                 spawnedEnemy.jumpAttackChance = 60
                 spawnedEnemy.animationStance = 'Switch'
                 spawnedEnemy.attackType = 'Melee'
@@ -3065,11 +3116,139 @@ class Simulacrum extends Phaser.Scene {
             spawnedEnemy.targetRange = this.player.x
             spawnedEnemy.aggroRange = Phaser.Math.FloatBetween(spawnedEnemy.attackRange * 0.5,spawnedEnemy.attackRange * 1.5)
 
-        
+            spawnedEnemy.shadow = this.add.ellipse(0, 0, spawnedEnemy.width * 1.5, 15, 0x000000, 0.25);
+            spawnedEnemy.shadow.setDepth(0);
+            
         }
 
         }
     }
+
+    displayDamageText(damageAmount, source, target, fontSize,fontColour = 0xffffff) {
+        // Round the damage amount to the nearest integer
+        damageAmount = Math.round(damageAmount);
+      
+        // Create the text object
+        let damageText = this.add.text(target.x, target.y, damageAmount, {
+          fontFamily: 'Georgia',
+          fontSize: fontSize,
+          fontStyle: 'bold',
+          align: 'center'
+        });
+
+        // Set text object depth
+        damageText.setDepth(this.hudDepth)
+        // Set text object colour
+        damageText.setTintFill(fontColour)
+        damageText.setTint(fontColour)
+        //damageText.setColor(toString(fontColour))
+      
+        // Position the text object on the same side as the target
+        if (source.x < target.x) {
+          damageText.x = target.x - (target.width * 0.25);
+        } else {
+          damageText.x = target.x + (target.width * 0.25) - damageText.width;
+        }
+      
+         // Position the text object at the  top of the target
+        damageText.y = target.body.y - (target.height * 0.05) //target.y - target.height / 2.5;
+      
+        // Create the tween to animate the damage text
+        let tween = this.tweens.add({
+          targets: damageText,
+          scaleX: 1.2,
+          scaleY: 1.2,
+          y: damageText.y - damageText.height * 4,
+          alpha: 0,
+          duration: 1250,
+          onComplete: function() {
+            damageText.destroy();
+            tween.stop();
+          }
+        });
+      }
+      
+    shadowController(){
+        this.checkAndAddShadowObjects()
+    }
+    
+    checkAndAddShadowObjects() {
+        // Get all game objects
+        const gameObjects = this.children.getAll();
+      
+        // Loop through all game objects
+        gameObjects.forEach(gameObject => {
+          // Check if gameObject.canShadow is true
+          if (gameObject.canShadow) {
+            // Check if gameObject.shadow is false
+            if (!gameObject.shadow) {
+              // Create oval shadow object
+              gameObject.shadow = this.add.ellipse(0, 0, gameObject.width * 1.5, gameObject.height * 0.1, 0x000000, 0.25);
+              gameObject.enableShadow = true;
+            }
+          }
+
+        });
+      }
+
+
+
+     
+    async getAvatarAnimationData(avatarID){
+        // ['IDLE','WALK','RUN','EVADE','SLIDE','CROUCH','JUMP','EDGE_GRAB','EDGE_IDLE','FALL','TUMBLE','BLOCK','TAKE_HIT','DOWNED','JUMP_ACTION', ACTION_A, ACTION_B,ACTION_C,SKILL, CAST]
+
+        this.avatarData.avatarName = this.avatarSpriteData[avatarID].NAME
+
+        var createdAnimations = {
+                        idle: 'player_IDLE',
+                        walk: 'player_WALK',
+                        run: 'player_RUN',
+                        evade: 'player_EVADE',
+                        slide: 'player_SLIDE',
+                        crouch: 'player_CROUCH',
+                        jump: 'player_JUMP',
+                        edge_grab: 'player_EDGE_GRAB',
+                        edge_idle: 'player_EDGE_IDLE',
+                        fall: 'player_FALL',
+                        tumble: 'player_TUMBLE',
+                        block: 'player_BLOCK',
+                        take_hit: 'player_TAKE_HIT',
+                        downed: 'player_DOWNED',
+                        jump_action: 'player_JUMP_ACTION',
+                        action_a: 'player_ACTION_A',
+                        action_b: 'player_ACTION_B',
+                        action_c: 'player_ACTION_C',
+                        skill: 'player_SKILL',
+                        cast: 'player_CAST'
+                    };
+
+        this.avatarData.animations = createdAnimations
+        console.log(this.avatarData)
+    }
+      
+    impactCamera(target,zoomMultiplier){
+        
+        
+        this.cameraOverride = true
+
+        if (!this.impactCameraActive){
+            this.impactCameraActive = true
+            this.anims.pauseAll()
+            this.camera.zoomTo(1.15 + (0.25 * zoomMultiplier), 250 * zoomMultiplier)
+            this.camera.centerOn(target.x, screenHeight * 0.5)
+        }
+        
+
+        this.camera.once('camerazoomcomplete',function(){
+            this.anims.resumeAll()
+            this.cameraOverride = false
+            this.impactCameraActive = false
+            this.camera.zoomTo(1.1, 750)
+        },this)
+
+        
+
+    }  
 
     enemyTakeHit(damageSource, enemy) {
 
@@ -3103,8 +3282,9 @@ class Simulacrum extends Phaser.Scene {
 
             enemy.canAct = false
                 
-                    this.sound.play('enemyTakeMeleeHit',{volume:Phaser.Math.FloatBetween(0.85, 1) })
-
+            if (damageSource.type != 'projectile'){
+                    this.sound.play('enemyTakeMeleeHit' + Phaser.Math.Between(1, 3) ,{volume:Phaser.Math.FloatBetween(0.5, 0.85) })
+            }
                 // Crit Check
                 if (Phaser.Math.Between(0, 100) <= this.critChance) {
                     this.playerAttackCrit = this.player.critDamage
@@ -3118,7 +3298,9 @@ class Simulacrum extends Phaser.Scene {
                                     this.sound.stopByKey('playerAttackC1')
                                     this.sound.stopByKey('playerAttackC2')
                                     this.sound.play('playerCriticalStrike' + Phaser.Math.Between(1, 1))
-                                    this.sound.play('enemyTakeMeleeHit',{volume:Phaser.Math.FloatBetween(0.75, 1) })
+                                    if (damageSource.type != 'projectile'){
+                                        this.sound.play('enemyTakeMeleeHit' + Phaser.Math.Between(1, 3) ,{volume:Phaser.Math.FloatBetween(0.95, 1) })
+                                }
 
                 } else {
                     this.playerAttackCrit = 1
@@ -3142,6 +3324,8 @@ class Simulacrum extends Phaser.Scene {
 
                 this.player.momentum += Math.min(this.playerAttackPower * 0.05,100 - this.player.momentum)
 
+                
+
                 if (!enemy.body.onFloor()) {
                     enemy.setVelocityY(0)
                 }
@@ -3153,13 +3337,15 @@ class Simulacrum extends Phaser.Scene {
                 }
                 
                 // Knockback
-                enemy.setVelocityX(enemy.body.velocity.x + ((Phaser.Math.Between(this.playerAttackPower * 0.25,this.playerAttackPower * 0.5) + (1500 * this.powerBarSource)) * this.player.dir ))
+                enemy.setVelocityX(enemy.body.velocity.x + ((Phaser.Math.Between(this.playerAttackPower * 0.25,this.playerAttackPower * 0.5) + (250 * (1 - this.powerBarSource))) * this.player.dir ))
                 //if(damageSource.type != 'projectile' && this.player.attackCounter == 2){
-                enemy.setVelocityY(enemy.body.velocity.y - (Phaser.Math.Between(this.playerAttackPower * 0.25,this.playerAttackPower * 0.5)) - (2000 * this.powerBarSource))
+                enemy.setVelocityY(enemy.body.velocity.y - (Phaser.Math.Between(this.playerAttackPower * 0.25,this.playerAttackPower * 0.5)) - (750 * (1 - this.powerBarSource)))
                 //}
+
 
                 // Take Hit
                     enemy.play(enemy.animationKey + '_Hurt', true)
+                    this.playerBattleStrafeDirection = Phaser.Math.Between(0,1)
 
                     if(enemy.rarity > 2){
                                       if (Phaser.Math.Between(0, 100) <= 15) {
@@ -3181,8 +3367,24 @@ class Simulacrum extends Phaser.Scene {
                             }
                         }
                     }
+                    } else if (enemy.rarity == 1){
+                        if (Phaser.Math.Between(0, 100) <= 10) {
+                            this.sound.play('nightBorneMinion_TakeHit')
+                        }
+                        
                     }
 
+                // Impact Camera
+
+                if (enemy.resilienceCurrent < this.playerAttackPower * (this.player.momentum/100) || this.playerAttackCrit > 2){
+                if(!this.impactCameraActive){    
+                this.impactCamera(enemy,this.playerAttackCrit)
+                }
+                }
+
+                // Display hit damage
+
+                    this.displayDamageText(this.playerAttackPower,damageSource,enemy,24)
                     
 
                     enemy.once('animationcomplete', function (anim, frame) {
@@ -3192,6 +3394,7 @@ class Simulacrum extends Phaser.Scene {
 
                             enemy.resilienceCurrent -= this.playerAttackPower
                             enemy.setVelocityX(0)
+                    
    
                         if (enemy.resilienceCurrent <= 0) {
                             enemy.play(enemy.animationKey + '_Death', true)
@@ -3213,7 +3416,7 @@ class Simulacrum extends Phaser.Scene {
                             enemy.once('animationcomplete_' + enemy.animationKey +'_Death', function () {
 
                                 enemy.destroy()
-                              
+                                enemy.shadow.destroy()
                                 this.stage.enemiesDefeated += 1
                                 
 
@@ -3236,6 +3439,7 @@ class Simulacrum extends Phaser.Scene {
 
     playerTakeHit(player, damageSource) {
 
+        this.player.setDepth(2)
 
         if (damageSource.type == 'projectile'){
             this.impactProjectile(damageSource)
@@ -3251,9 +3455,10 @@ class Simulacrum extends Phaser.Scene {
 
                 // Crit Check
 
-                var critDamage 
+                var critDamage
                 if (Phaser.Math.Between(0, 100) <= this.critChance) {
                     var critDamage = damageSource.critDamage
+                    
 
                 } else {
                     critDamage = 1
@@ -3268,7 +3473,7 @@ class Simulacrum extends Phaser.Scene {
                 }
                 
 
-                if (damageSource.type != 'projectile'){
+                if (damageSource.type == 'Melee'){
                     damageSource.play(damageSource.hitSmear, true)
                 }
 
@@ -3282,7 +3487,9 @@ class Simulacrum extends Phaser.Scene {
 
                     player.play({key:player.animations.take_hit,frameRate:10}, true)
                     player.setVelocityX(0)
+                    this.playerBattleStrafeDirection = Phaser.Math.Between(0,1)
                     player.resilienceCurrent -= damage
+                    this.displayDamageText(damage,damageSource,player,24,0xE10600)
 
                     player.once('animationcomplete', function (anim, frame) {
                         player.emit('animationcomplete' + anim.key, frame)
@@ -3346,7 +3553,7 @@ class Simulacrum extends Phaser.Scene {
 
              player.play({key:player.animations.block,frameRate:10}, true)
              player.setVelocityX(0)
-            player.staminaCurrent -= damage * 0.3
+            player.staminaCurrent -= damage * 0.005
 
                     player.once('animationstart', function (anim, frame) {
                         player.emit('animationstart' + anim.key, frame)
@@ -3447,7 +3654,20 @@ class Simulacrum extends Phaser.Scene {
                 enemy.setVelocityY(-750)
             }
 
+            // Shadow
+
+            if(!enemy.flipX){
+                enemy.shadow.x = enemy.getBottomCenter().x - enemy.width * 0.25
+            } else {
+                enemy.shadow.x = enemy.getBottomCenter().x + enemy.width * 0.25
+            }
             
+            if(enemy.getBottomCenter().y >= screenHeight * this.stageHeightModifier * this.floorMax * 0.975){
+                enemy.shadow.setVisible(1);
+                enemy.shadow.y = this.floor.getTopCenter().y
+            } else {
+                enemy.shadow.setVisible(0);
+            }
 
             // Lock on Code
             if (!enemy.attacking) {
@@ -3495,6 +3715,7 @@ class Simulacrum extends Phaser.Scene {
             if (enemy.active) {
                 if (enemy.body.x < -screenWidth * 1.25 || enemy.body.x > screenWidth * 4  || enemy.body.y > screenHeight * this.stageHeightModifier * 1.25) {
                     enemy.destroy();
+                    enemy.shadow.destroy()
                 }
             }
 
@@ -3632,7 +3853,7 @@ class Simulacrum extends Phaser.Scene {
 
         enemyEnragedCode(enemy){
     
-                if (enemy.staminaCurrent)
+                //if (enemy.staminaCurrent)
                 // Move to Attack Range
                     this.enemyMoveToAttackRange(enemy)
                 // Attack in Attack Range
@@ -3694,24 +3915,25 @@ class Simulacrum extends Phaser.Scene {
                             enemy.attacking = false
                         })
                         // Hesitation / Rest Roll
-                        if(Phaser.Math.Between(0,100) < 85 && enemy.staminaCurrent > Phaser.Math.Between(50,95)){
+                        if(Phaser.Math.Between(0,100) < 100 && enemy.staminaCurrent > Phaser.Math.Between(25,75)){
+                        
                             // Jump attempt if out of y range
-                            if (enemy.body.y > this.player.y && this.player.y < this.floor.y - this.player.displayHeight && this.player.body.velocity.y <= 0){
+                           if (enemy.body.y > this.player.y && this.player.y < this.floor.y - this.player.displayHeight && this.player.body.velocity.y <= 0){
                                 enemy.setVelocityY(Phaser.Math.Between(-1500,-2500))
-                                enemy.canAct = true
-                                enemy.attacking = false
-                            } else {
+                               enemy.canAct = true
+                               enemy.attacking = false
+                           } else {
                             // Attack
                             enemy.play({key:enemy.animationKey + '_Attack',frameRate: Phaser.Math.Between(10,20) , delay: Phaser.Math.Between(0,0)},true)
                             
                             // SFX
-                            if(enemy.rarity < 3){
-                                this.sound.play('nightBorneMinion_Attack')
+                            if(enemy.rarity < 2 && Phaser.Math.Between(0,100) < 65){
+                                this.sound.play('nightBorneMinion_Attack',{volume: 0.5})
                             }
                             
 
 
-                                // Rol for Jump Attack
+                                // Roll for Jump Attack
                                     if(Phaser.Math.Between(0,100) < enemy.jumpAttackChance && enemy.body.y >= this.player.y * 0.8 && enemy.canJumpAttack == true){
                                         enemy.setVelocityY(Phaser.Math.Between(-1250,-1750))
           
@@ -3756,7 +3978,7 @@ class Simulacrum extends Phaser.Scene {
                                     enemy.on('animationupdate', function(){
                                         if (enemy.anims.getName() == enemy.animationKey + '_Attack'){
                                             if (enemy.anims.currentFrame.index >= enemy.attackCollisionStartFrame &&  enemy.anims.currentFrame.index <= enemy.attackCollisionEndFrame){        
-                                                this.fireProjectile('Enemy',enemy,this.enemyAttackHitboxPool.get(),'nightBorne_Archer_AttackProjectile','nightBorne_Archer_AttackProjectile',1500,2,0,0.75)
+                                                this.fireProjectile('Enemy',enemy,this.enemyAttackHitboxPool.get(),'nightBorne_Archer_AttackProjectile','whiteHitSmear',1500,2,0,0.75)
                                   
                                             }  
                                         }
@@ -3766,12 +3988,13 @@ class Simulacrum extends Phaser.Scene {
 
                             }
                             // Stamina cost
-                            enemy.staminaCurrent -= Phaser.Math.Between(25,75)
+                            enemy.staminaCurrent -= Phaser.Math.Between(50,50)
                         } else {
                             // Hesitation / Recovery
                             enemy.play({key:enemy.animationKey + '_Idle',repeat:0})
                             if (enemy.staminaCurrent < enemy.staminaCapacity){
-                            enemy.staminaCurrent += 5
+                            enemy.staminaCurrent += (100/60)
+                            
                             }
                         }
                     }
@@ -3801,26 +4024,7 @@ class Simulacrum extends Phaser.Scene {
 
             }
 
-    // enemyTakeHit(playerAttackHitBox, enemy) {
 
-   
-
-
-
-
-    //             enemy.setVelocityY(enemy.body.velocity.y + (Phaser.Math.Between((this.player.momentum / 100) * -2500, (this.player.momentum / 100) * 2500) * (Math.max(1, this.playerAttackCrit / 2))))
-
-
-    //             if (enemy.x >= this.player.x) {
-    //                 enemy.setVelocityX(enemy.body.velocity.x + (Phaser.Math.Between((this.player.momentum / 100) * 0, (this.player.momentum / 100) * 250) * this.playerAttackCrit))
-    //             } else {
-    //                 enemy.setVelocityX(enemy.body.velocity.x - (Phaser.Math.Between((this.player.momentum / 100) * 0, (this.player.momentum / 100) * 250) * this.playerAttackCrit))
-    //             }
-
-    //             if (this.player.momentum / 100 > 0.4) {
-    //                 this.camera.shake(500, 0.01)
-    //             }
-        //}
 
 
                      
@@ -3858,7 +4062,7 @@ class Simulacrum extends Phaser.Scene {
             projectile.damage = this.player.skillPower * damageModifier
         } else {
             projectile.critDamage = 1.25
-            projectile.baseDamage = 25 * damageModifier
+            projectile.baseDamage = 5 * damageModifier
         }
         
         projectile.setSize(projectile.displayWidth,projectile.displayHeight)
@@ -3897,15 +4101,23 @@ class Simulacrum extends Phaser.Scene {
 
     impactProjectile(projectile, velocityReductionPercent = 0.1){
         
-        projectile.play({key:projectile.impactAnimation,frameRate: 10},true)
-        projectile.setScale(6)
+        
+        if(projectile.impactAnimation == 'whiteHitSmear'){
+            projectile.setScale(0.35)
+            projectile.setTint(0x620024)
+            projectile.play({key:projectile.impactAnimation,frameRate: 60},true)
+        } else {
+            projectile.setScale(1.5)
+            projectile.play({key:projectile.impactAnimation,frameRate: 10},true)
+        }
+        
         projectile.setSize(projectile.displayWidth,projectile.displayHeight)
         
         if(!projectile.soundPlayed){
             projectile.soundPlayed = true
         if (projectile.name == 'Fireball'){
             this.sound.play('fireBoltImpact',{volume:0.95})
-        } else {
+        } else if (projectile.name == 'Thunderbolt'){
             this.sound.play('fireBoltImpact',{volume:0.95,detune:-75})
         }
         }
@@ -3943,7 +4155,7 @@ class Simulacrum extends Phaser.Scene {
 
         if (this.empowerAvatarStarted){
             this.camera.zoomTo(Math.max(0.85,this.camera.zoom * 0.975), 150)
-        } else {
+        } else if (!this.cameraOverride) {
         if (this.gameMode == 0) {
 
             
@@ -3955,16 +4167,19 @@ class Simulacrum extends Phaser.Scene {
                 this.camera.zoomTo(Math.max(0.95,this.camera.zoom * 0.95), 150)
             }else {
 
-                    if(!this.playerInAir && this.stageProgressEnabled){
+                   //if(!this.playerInAir && this.stageProgressEnabled){
                         
-                    if(this.player.x < this.camera.scrollX + screenWidth * 0.25){
-                        this.camera.zoomTo(Math.max(0.85,this.camera.zoom * 0.95), 150)
+                   // if(this.player.x < this.camera.scrollX + screenWidth * 0.25){
+                    //    this.camera.zoomTo(Math.max(0.85,this.camera.zoom * 0.95), 150)
                    
-                    } else {
+                  //  } else {
+                    if(this.player.y + this.player.displayHeight * 0.5 < this.floor.y - this.player.displayHeight ){
                         this.camera.zoomTo(Math.max(0.85,this.cameraFocus.y/(this.floor.y - this.player.displayHeight)), 500)
-                      
+                    } else {
+                        this.camera.zoomTo(1, 1000)
                     }
-                    } 
+                  //  }
+                  //  } 
                     
                     
                 
@@ -3975,16 +4190,19 @@ class Simulacrum extends Phaser.Scene {
 
                 if (this.powerBarSource >= 0.75) {
 
-                    this.camera.zoomTo(1.25, 50)
-                    this.camera.centerOn(this.player.x, screenHeight * 0.5)
+                    //this.camera.zoomTo(1.25, 50)
+                    //this.camera.centerOn(this.player.x, screenHeight * 0.5)
 
                 } else if (this.powerBarSource >= 0.5) {
 
-                    this.camera.zoomTo(1.2, 100)
-                    this.camera.centerOn(this.player.x, screenHeight * 0.5)
+                    //this.camera.zoomTo(1.2, 100)
+                    //this.camera.centerOn(this.player.x, screenHeight * 0.5)
 
                 } else {
-                    this.camera.zoomTo(1.1, 500)
+                    if (!this.cameraOverride) {
+                    
+                   // this.camera.zoomTo(1.1, 1000)
+                    }
 
                 }
 
@@ -4302,16 +4520,18 @@ class Simulacrum extends Phaser.Scene {
             onComplete: () => {
                 this.stageNameText.setVisible(0).setActive(0)
                 this.stageProgressEnabled = true
-                this.stage.terrainSpawnEnabled = true
+                this.stage.terrainSpawnEnabled = false
                 
                 setTimeout(()=>{
                     this.stage.platformSpawnEnabled = true
+                    this.dayCounter = 1
+                    this.spawningPlatform = true
                 },1500)
                 setTimeout(()=>{
                     this.stage.obstacleSpawnEnabled = false
                 },1500)
                 setTimeout(()=>{
-                    this.stage.enemySpawnEnabled = true
+                    this.stage.enemySpawnEnabled = false
                 },3000)
                 
                 
@@ -4799,7 +5019,7 @@ class Simulacrum extends Phaser.Scene {
 
                 //this.lifeLeftCap.visible = this.lifeMiddle.displayWidth > 0
                 this.focusMiddle.visible = this.focusMiddle.displayWidth > 0
-                this.focusRightCap.visible = this.focusMiddle.displayWidth > 0
+                this.focusRightCap.visible = 0//this.focusMiddle.displayWidth > 0
 
                 this.focusText.setText(Math.floor(this.player.focusCurrent) + ' / ' + Math.floor(this.player.focusCapacity))
             }
@@ -5039,6 +5259,8 @@ class Simulacrum extends Phaser.Scene {
     mode0CollisionDetection(player,entity) {
         if (this.gameMode == 0 && this.player.canBeHit && !this.endRun ) {
 
+            
+
             if (this.speedCheckOverride == 1) {
                 this.speedCheckThreshold = 3
             } else {
@@ -5053,7 +5275,7 @@ class Simulacrum extends Phaser.Scene {
 
                 if(entity.type1 == 'Obstacle'){
                         if(this.playerSpeed > 0.5){
-                            this.playerSpeed -= 0.02
+                            this.playerSpeed -= 0.01
                         }
 
                         // if(this.player.resilienceCurrent > 0 ){
@@ -5073,7 +5295,12 @@ class Simulacrum extends Phaser.Scene {
                         if(this.playerSpeed > 0.25){
                             this.playerSpeed -= 0.25
                         }
-                        this.player.resilienceCurrent -= 25
+
+                        entity.critDamage = 1.25
+                        entity.baseDamage = 15
+
+                         this.playerTakeHit(player,entity)
+
                         if(this.glory > 25){
                             this.glory -= 25
                         }
@@ -5083,9 +5310,15 @@ class Simulacrum extends Phaser.Scene {
                         this.stage.hordeDifficultyModifier *= 1.05
                     } else {
                         if(this.playerSpeed > 0.25){
-                            this.playerSpeed -= 0.04
+                            this.playerSpeed -= 0.02
                         }
-                        this.player.resilienceCurrent -= 0.5
+
+  
+                        entity.critDamage = 1.25
+                        entity.baseDamage = 15
+
+                         this.playerTakeHit(player,entity)
+                        
                         if(this.glory > 0.5){
                             this.glory -= 0.5
                         }
@@ -5099,13 +5332,13 @@ class Simulacrum extends Phaser.Scene {
     }
     enterBattle() {
         if (this.gameMode == 0 && !this.endRun ) {
-
+                this.playerBattleStrafeDirection = Phaser.Math.Between(0,1)
                 this.playerSpeed = 0
                 this.playerBattleSpeed = 0
                 if(this.stage.checkPointType === 0){
                 this.tweens.add({
                     targets: bgMusic,
-                    volume: 0.5,
+                    volume: 0.35,
                     repeat: 0,
                     duration: 4000,
                     ease: Phaser.Math.Easing.Sine.Out,
@@ -5133,7 +5366,7 @@ class Simulacrum extends Phaser.Scene {
         if(this.stage.checkPointType === 0){
             this.tweens.add({
                 targets: bgMusic,
-                volume: 0.75,
+                volume: 0.5,
                 repeat: 0,
                 duration: 2000,
                 ease: Phaser.Math.Easing.Sine.Out,
@@ -5168,7 +5401,7 @@ class Simulacrum extends Phaser.Scene {
             this.playerBattleStrafeActive = false
         } 
 
-        this.player.setDepth(platform.depth)
+        this.player.setDepth(3)
     }
 
     playerModule(){
@@ -5179,7 +5412,7 @@ class Simulacrum extends Phaser.Scene {
             if(!upHeld && !downHeld || this.player.body.onFloor()){
                 this.player.setAngle(0)
                 }
-                    
+                     10
             // Return Player to Default Gravity
           
                 
@@ -5235,6 +5468,18 @@ class Simulacrum extends Phaser.Scene {
                     
                 }
         
+        // Sound FX
+
+        if (this.player.anims.getName() == this.player.animations.run){
+            if (this.player.anims.currentFrame.index == 3){  
+                this.sound.stopByKey('playerRunning_Grass')
+                this.sound.play('playerRunning_Grass',{volume:Phaser.Math.FloatBetween(0.35,0.75)})
+            } else if (this.player.anims.currentFrame.index == 7){
+                this.sound.stopByKey('playerRunning_Grass')
+                this.sound.play('playerRunning_Grass',{volume:Phaser.Math.FloatBetween(0.5,0.9)})
+            } 
+        }
+
         // Hitboxes - temp
         
             if (this.player.anims.getName() != this.player.animations.action_a && this.player.anims.getName() != this.player.animations.action_b  && this.player.anims.getName() != this.player.animations.action_c && this.player.anims.getName() != this.player.animations.skill ){
@@ -5319,29 +5564,29 @@ class Simulacrum extends Phaser.Scene {
             // Core Stats
                 // Player Momentum
     
-                    this.baseMomentumGainPivot = 0.5
+                    this.baseMomentumGainPivot = 0.75
                     this.baseMomentumPercentPivot = 0.75
     
-                    this.baseMomentumGain = 0.1
+                    this.baseMomentumGain = 0.075
                     this.baseMomentumPercent = 0.5   
     
             // Base Stats
-                this.baseTopSpeed = 0.005 + 0.00125  * this.player.staminaBonusPercent
-                this.baseAttack1Speed = 16 + 4  * this.player.staminaBonusPercent
-                this.baseAttack2Speed = 12 + 4  * this.player.staminaBonusPercent
-                this.baseAttack3Speed = 10 + 4  * this.player.staminaBonusPercent
+                this.baseTopSpeed = 0.0035 + 0.00125  * this.player.staminaBonusPercent
+                this.baseAttack1Speed = 14 + 4  * this.player.staminaBonusPercent
+                this.baseAttack2Speed = 10 + 4  * this.player.staminaBonusPercent
+                this.baseAttack3Speed = 8 + 4  * this.player.staminaBonusPercent
                 this.baseJumpHeight = -1500 - (250 * this.player.staminaBonusPercent) 
-                this.baseHangTime = 0.12 + 3  * this.player.staminaBonusPercent
+                this.baseHangTime = 0.1 + 0.75  * this.player.staminaBonusPercent
                 this.baseMinHangHeight = 0.2
-                this.baseDashDistance = screenWidth * 0.15
-                this.baseDashTime = 500
+                this.baseDashDistance = screenWidth * 0.125
+                this.baseDashTime = 250
     
             // Energy Efficency Parameters
                 this.baseEmergencyEnergyCostPercent = 0.1
-                this.baseActionSpeedPercent = 0.75
-                this.baseTopSpeedPercent = 0.75
-                this.baseJumpHeightPercent = 0.75
-                this.baseDashDistancePercent = 0.75
+                this.baseActionSpeedPercent = 0.95
+                this.baseTopSpeedPercent = 0.95
+                this.baseJumpHeightPercent = 0.95
+                this.baseDashDistancePercent = 0.95
             
             // Regen
                 this.player.lifeRegen
@@ -5365,7 +5610,7 @@ class Simulacrum extends Phaser.Scene {
                 // Battle
                 if (this.gameMode == 1){
                     this.action1CostModifier = 0.6
-                    this.action2CostModifier = 0.125
+                    this.action2CostModifier = 0.35
                     this.skill1CostModifier = 1
                     this.skill2CostModifier = 1
     
@@ -5401,7 +5646,7 @@ class Simulacrum extends Phaser.Scene {
     
                 // Lose
                 if (!leftHeld && !rightHeld && Math.abs(this.playerBattleSpeed) < 0.05 ){
-                    this.playerBattleSpeed = 0
+                    //this.playerBattleSpeed = 0
                 }
     
                 if (((a1Held  || a2Held || downHeld || upHeld) && this.gameMode == 1) || (!leftHeld && !rightHeld)){
@@ -5416,15 +5661,22 @@ class Simulacrum extends Phaser.Scene {
                         }
                     } else if (this.gameMode == 1) {
                         if (this.player.body.onFloor()){
+                            this.playerBattleSpeedDecelerationStandard = 0.15
+                            this.playerBattleSpeedDecelerationSprint = 0.075
+                        } else {
                             this.playerBattleSpeedDecelerationStandard = 0.05
                             this.playerBattleSpeedDecelerationSprint = 0.025
-                        } else {
-                            this.playerBattleSpeedDecelerationStandard = 0.025
-                            this.playerBattleSpeedDecelerationSprint = 0.0125
                         }
                     }
                     
-    
+                    if (this.gameMode == 0){ 
+                    if (this.player.x < this.camera.worldView.x + screenWidth * 0.25 ){
+                        this.player.x += 1
+                    } else if (this.player.x > this.camera.worldView.x + screenWidth * 0.25){
+                        this.player.x -=  1
+                    }
+                }
+
                     if (this.playerBattleSpeed < 0){
                         if (this.playerBattleSpeed < -1){
                             this.playerBattleSpeed += this.playerBattleSpeedDecelerationSprint
@@ -5720,17 +5972,24 @@ class Simulacrum extends Phaser.Scene {
 
                     if(!this.landingSoundPlayed){
                         this.landingSoundPlayed = true
-                        this.sound.play("playerLanding",{volume:Phaser.Math.Between(0.5,0.75)});
+                        this.sound.play("playerLanding",{volume:Phaser.Math.Between(0.95,1)});
                     }
                     
-                    if(this.gameMode == 0){
+                    if(this.gameMode == 0 && this.player.anims.getName() != this.player.animations.run ){
                         if(!a2Held){
-                        if(this.player.body.bottom > this.floor.y - screenHeight * 0.01){
-                        this.player.play({key:this.player.animations.slide,frameRate:24},true);
+
+                            if(this.playerSpeed > 1.25){
+                            if(this.player.body.bottom > this.floor.y - screenHeight * 0.01){
+                            this.player.play({key:this.player.animations.slide,frameRate:24},true);
+                            } else {
+                                this.player.play({key:this.player.animations.run,frameRate:this.baseRunFrameRate + (Phaser.Math.Between(14,20) * Math.abs(this.playerSpeed)),repeat:0},true); 
+                            }
                         } else {
-                            this.player.play({key:this.player.animations.run,frameRate:this.baseRunFrameRate + (Phaser.Math.Between(14,20) * Math.abs(this.playerSpeed)),repeat:0},true); 
+                            this.landingSoundPlayed = false
+                            this.playerInAir = false
                         }
                     
+                        
                         this.player.x += screenWidth * 0.0005 * this.playerSpeed
 
                     } else {
@@ -5796,23 +6055,29 @@ class Simulacrum extends Phaser.Scene {
     
                                 if(!this.player.state.slowing){
                                     this.player.state.slowing = true
-                                    this.player.play({key:this.player.animations.evade,frameRate: 3, startFrame: 5},true)
+                                    this.player.play({key:this.player.animations.evade,frameRate: 3 + (1 * (1-this.playerSpeed)), startFrame: 5},true)
+                                    this.player.once('animationcomplete', function(){
+                                        this.player.state.slowed = true
+                                    },this)
+                                } else if (this.player.state.slowed) {
+                                    this.player.play({key:this.player.animations.run,frameRate: this.baseRunFrameRate + (6 * Math.abs(this.playerSpeed))},true)
                                 }
     
                                 // Ground
                                 if (this.player.body.onFloor()){
                                     if(this.playerSpeed > this.player.minSpeed){
-                                        this.playerSpeed -= 0.015  + (0.0125 * Math.max(0,this.actionPower)) 
+                                        this.playerSpeed -= 0.015  + (0.015 * (1.5 - this.playerSpeed)) 
                                     }
                                 } 
                                 // Air
                                 else  {
                                     if(this.playerSpeed > this.player.minSpeed){
-                                        this.playerSpeed -= 0.0075  + (0.0075 * Math.max(0,this.actionPower))
+                                        this.playerSpeed -= 0.0075  + (0.0075 * (1.5 - this.playerSpeed))
                                     }
                                 }
                             } else if (!a2Held){
                                 this.player.state.slowing = false
+                                this.player.state.slowed = false
                             }
 
                         } else if (this.gameMode == 1){
@@ -6076,13 +6341,16 @@ class Simulacrum extends Phaser.Scene {
             
                                             if (this.player.anims.currentFrame.index == 1 ){
                                     
-                                                this.sound.stopByKey('enemyTakeMeleeHit')
+                                                this.sound.stopByKey('enemyTakeMeleeHit1')
+                                                this.sound.stopByKey('enemyTakeMeleeHit2')
+                                                this.sound.stopByKey('enemyTakeMeleeHit3')
+
                                                 this.sound.stopByKey('swordSwing1')
                                                 this.sound.stopByKey('swordSwing2')
                                                 this.sound.stopByKey('swordSwing3')
                                                 this.sound.stopByKey('swordSwing4')
             
-                                                this.sound.play('enemyTakeMeleeHit')
+                                                this.sound.play('enemyTakeMeleeHit' + Phaser.Math.Between(1, 3)) 
                                             } 
             
                                         } 
@@ -6139,6 +6407,15 @@ class Simulacrum extends Phaser.Scene {
                     
                         if (upHeld){
 
+                            //if (this.jumpPower < 1){
+                            //this.jumpPower += (10/60)
+                            //}
+                            this.jumpPower = 1
+                            //if (this.jumpPower >= 1 ){
+                                this.playerSubModule_Jump()
+                                //this.jumpPower = 0
+                            //}
+
                             if(!this.player.state.jumping){
                                 this.player.state.jumping = true
                                 if(Phaser.Math.Between(0,100) < 45){
@@ -6146,7 +6423,7 @@ class Simulacrum extends Phaser.Scene {
                                     this.sound.stopByKey('playerEvade2')
                                     this.sound.play('playerEvade' + Phaser.Math.Between(1,2),{volume:Phaser.Math.Between(0.5,0.75)})                         
                                 } else {
-                                    this.sound.play("playerJumping",{volume:Phaser.Math.Between(0.5,0.75)});  
+                                    this.sound.play("playerJumping",{volume:Phaser.Math.Between(0.75,1)});  
                                 }
                                 
                             }
@@ -6156,12 +6433,20 @@ class Simulacrum extends Phaser.Scene {
                             },this)
 
                             if(this.gameMode == 0){
-                                this.playerSubModule_Jump()
+                                //this.playerSubModule_Jump()
                             } else if (this.gameMode == 1 && (!a1Held && !a2Held)){
                                 this.playerSubModule_Jump()
                             }
                             
-                        } 
+                        } else {
+                            // if (this.jumpPower > 0 ){
+                            //     if (this.jumpPower < 0.75){
+                            //         this.jumpPower = 0.75
+                            //     }
+                            //     this.playerSubModule_Jump()
+                            //     this.jumpPower = 0
+                            // }
+                        }
                 // Down Button
                     
                         if (downHeld){
@@ -6283,17 +6568,17 @@ class Simulacrum extends Phaser.Scene {
             // Depth and Positioning
 
             this.playerBattleStrafeDirection = 0 // Anticlockwise
-            this.laneSpace = screenHeight * this.stageHeightModifier * (this.floorMin - this.floorMax) * 0.25
-            this.strafeSpeed = 0.1
+            this.laneSpace = screenHeight * this.stageHeightModifier * (this.floorMin - this.floorMax) * 0.1
+            this.strafeSpeed = 0.5
 
             if(this.playerBattleStrafeActive){
                 // Auto Set Depth based on strafe position
                 if(this.floorPlayer.y < this.floor.y - this.laneSpace){
-                    this.player.setDepth(1)
+                    this.player.setDepth(2)
                 } else if(this.floorPlayer.y > this.floor.y + this.laneSpace) {
                     this.player.setDepth(3)
                 } else {
-                    this.player.setDepth(2)
+                    this.player.setDepth(3)
                 }
 
                 if(this.gameMode == 1 && this.playerLockedOn){
@@ -6456,10 +6741,12 @@ class Simulacrum extends Phaser.Scene {
                 // Ground
                     if (this.player.body.onFloor()){
                             this.player.setVelocityY(
+                                (
                                                     (this.baseJumpHeight * this.baseJumpHeightPercent ) 
                                                     + 
                                                     ((this.baseJumpHeight * (1-this.baseJumpHeightPercent)) * this.actionPower) 
                                                     + this.standingJumpBonus 
+                                ) * this.jumpPower
                                                     )
 
                     } 
@@ -6511,6 +6798,7 @@ class Simulacrum extends Phaser.Scene {
             // Gain Momentum
             if(!downHeld){
                 if (leftHeld){
+                    if (this.player.x > this.camera.worldView.x + screenWidth * 0.15 || this.gameMode == 1){
                     if (this.playerBattleSpeed > 0){
                         this.playerBattleSpeed -= (this.baseMomentumGainPivot * this.baseMomentumPercentPivot) + 
                                                 (this.baseMomentumGainPivot * (1 - this.baseMomentumPercentPivot) * this.player.staminaBonusPercent) 
@@ -6520,8 +6808,11 @@ class Simulacrum extends Phaser.Scene {
                         this.playerBattleSpeed -= (this.baseMomentumGain * this.baseMomentumPercent) + 
                                                     (this.baseMomentumGain * (1 - this.baseMomentumPercent) * this.player.staminaBonusPercent) 
                     }
+                     } else {
+                        this.playerBattleSpeed = 0
+                     }
                 } else if (rightHeld){
-                    
+                    if (this.player.x < this.camera.worldView.x + screenWidth * 0.35 || this.gameMode == 1){
                         if (this.playerBattleSpeed < 0){
                             this.playerBattleSpeed += (this.baseMomentumGainPivot * this.baseMomentumPercentPivot) + 
                                                     (this.baseMomentumGainPivot * (1 - this.baseMomentumPercentPivot) * this.player.staminaBonusPercent) 
@@ -6532,6 +6823,9 @@ class Simulacrum extends Phaser.Scene {
                                                         (this.baseMomentumGain * (1 - this.baseMomentumPercent) * this.player.staminaBonusPercent) 
                         }
                     
+                    } else {
+                        this.playerBattleSpeed = 0
+                     }
                 }
             }
             // Animation
@@ -6549,6 +6843,8 @@ class Simulacrum extends Phaser.Scene {
             }
 
             if(this.gameMode == 0){
+
+               
                 // Ground
                 if (this.player.body.onFloor() && !downHeld){
         
@@ -6557,7 +6853,7 @@ class Simulacrum extends Phaser.Scene {
                                             (screenWidth * (this.baseTopSpeed * (1- this.baseTopSpeedPercent)) * this.actionPower)) 
                                             * this.playerBattleSpeed
                                             * 
-                                            this.movementMod * this.playerSpeed
+                                            this.movementMod * this.playerSpeed * 0.5
                 } 
                 // Air
                     else if (!this.player.body.onFloor()) {
@@ -6565,8 +6861,9 @@ class Simulacrum extends Phaser.Scene {
                                             (screenWidth * (this.baseTopSpeed * (1- this.baseTopSpeedPercent)) * this.actionPower)) 
                                             * this.playerBattleSpeed
                                             * 
-                                            this.movementMod  * this.playerSpeed * 0.5
+                                            this.movementMod  * this.playerSpeed * 0.25
                 }
+            
             } else {
                 // Ground
                 if (this.player.body.onFloor() && !downHeld){
@@ -6602,9 +6899,9 @@ class Simulacrum extends Phaser.Scene {
                                             * 
                                             this.movementMod  * 0.5
                 }
-            }
-    
             
+    
+            }
         }
 
         adaptiveTutorial_Mode0(){
@@ -6750,7 +7047,19 @@ class Simulacrum extends Phaser.Scene {
             // Player/Controls
             this.playerModule()
             this.playerProjectileCleanUp()
-    
+            if(!this.player.flipX){
+                this.shadow.x = this.player.getBottomCenter().x - this.player.width * 0.25
+            } else {
+                this.shadow.x = this.player.getBottomCenter().x + this.player.width * 0.25
+            }
+            
+            if(this.player.getBottomCenter().y >= screenHeight * this.stageHeightModifier * this.floorMax * 0.975){
+                this.shadow.setVisible(1);
+                this.shadow.y = this.player.getBottomCenter().y
+            } else {
+                this.shadow.setVisible(0);
+            }
+                
             // Environment
             this.environmentModule()
             this.terrainController() 
@@ -6787,7 +7096,8 @@ class Simulacrum extends Phaser.Scene {
         this.debugText.x = this.camera.scrollX + screenWidth * 0.10
         this.debugText.y = this.camera.scrollY + screenHeight * 0.25
 
-        this.debugText.setText(//'Stage Name: ' + this.stageData.stageName
+        this.debugText.setText('\n Day : ' + this.dayCounter 
+            //'Stage Name: ' + this.stageData.stageName
             // + '\nTime Period: ' + this.stageData.timeText
             // + '\nMusic Duration: ' + Math.floor(bgMusic.duration / 60) + ':' + Phaser.Math.RoundTo((((bgMusic.duration / 60) - Math.floor(bgMusic.duration / 60)) * 60),-2)
             //  + '\nStage Progress Enabled: ' + this.stageProgressEnabled 

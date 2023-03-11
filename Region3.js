@@ -40,7 +40,7 @@ class Region3 extends Phaser.Scene {
         
         console.log('Refreshing Region Sector Array Lists...')
         // Sector Lists
-        this.zone0 = [this.cliffsOfLucarus]
+        this.zone0 = [this.lucarianPlains] // [this.cliffsOfLucarus]
         this.zone1 = [this.cliffsOfLucarus]
         this.zone2 = [this.lucarianPlains]
         this.zone3 = [this.lucarianPlains]
@@ -163,7 +163,7 @@ class Region3 extends Phaser.Scene {
                 // Floor Settings
         
                 game.floorMin = 0.95
-                game.floorMax = 0.9 
+                game.floorMax = 0.925 
                 game.floorColour = 0x375971 
                 game.floorVisible = false 
        
