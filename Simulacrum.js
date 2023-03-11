@@ -4531,7 +4531,7 @@ class Simulacrum extends Phaser.Scene {
                     this.stage.obstacleSpawnEnabled = false
                 },1500)
                 setTimeout(()=>{
-                    this.stage.enemySpawnEnabled = false
+                    this.stage.enemySpawnEnabled = true
                 },3000)
                 
                 
